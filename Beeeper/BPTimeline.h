@@ -1,0 +1,22 @@
+//
+//  BPTimeline.h
+//  Beeeper
+//
+//  Created by George Termentzoglou on 4/8/14.
+//  Copyright (c) 2014 Beeeper. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+typedef void(^completed)(BOOL,id);
+
+@interface BPTimeline : NSObject
+
+-(void)getTimelineForUserID:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+
+@property (copy) void(^completed)(BOOL,id);
+
+- (id)init;
++ (BPTimeline *)sharedBP;
+
+@end

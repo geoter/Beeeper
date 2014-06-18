@@ -1,0 +1,54 @@
+//
+//  BPUser.h
+//  Beeeper
+//
+//  Created by George Termentzoglou on 3/15/14.
+//  Copyright (c) 2014 Beeeper. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+typedef void(^completed)(BOOL,id);
+typedef void(^followers_completed)(BOOL,id);
+typedef void(^following_completed)(BOOL,id);
+typedef void(^is_following_completed)(BOOL,id);
+typedef void(^notifications_completed)(BOOL,id);
+
+@interface BPUser : NSObject
+
+@property (copy) void(^completed)(BOOL,id);
+@property (copy) void(^followers_completed)(BOOL,id);
+@property (copy) void(^following_completed)(BOOL,id);
+@property (copy) void(^is_following_completed)(BOOL,id);
+@property (copy) void(^notifications_completed)(BOOL,id);
+
+@property (nonatomic,strong) NSDictionary *user;
+
+#pragma mark - Login
+
+-(NSString *)headerGETRequest:(NSString *)link values:(NSMutableArray *)values;
+-(NSString *)headerPOSTRequest:(NSString *)link values:(NSMutableArray *)values;
+
+-(void)loginUser:(NSString *)username password:(NSString *)password completionBlock:(completed)compbloc;
+-(void)loginFacebookUser:(NSString *)fbid completionBlock:(completed)compbloc;
+-(void)loginTwitterUser:(NSString *)twitterid completionBlock:(completed)compbloc;
+
+-(void)signUpUser:(NSDictionary *)info completionBlock:(completed)compbloc;
+-(void)signUpFacebookUser:(NSDictionary *)info completionBlock:(completed)compbloc;
+
+-(void)getFollowersWithCompletionBlock:(completed)compbloc;
+-(void)getFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+
+-(void)getFollowingWithCompletionBlock:(completed)compbloc;
+-(void)getFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+
+-(void)checkIfFollowing:(NSString *)other_user_id WithCompletionBlock:(completed)compbloc;
+-(void)follow:(NSString *)userID WithCompletionBlock:(completed)compbloc;
+-(void)unfollow:(NSString *)userID WithCompletionBlock:(completed)compbloc;
+
+-(void)getNotificationsWithCompletionBlock:(completed)compbloc;
+
+- (id)init;
++ (BPUser *)sharedBP;
+
+@end

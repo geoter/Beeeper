@@ -160,7 +160,7 @@
         <!--WelcomeVC-->
         <scene sceneID="ws5-6B-OSX">
             <objects>
-                <viewController id="klw-5J-U5i" customClass="WelcomeVC" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="klw-5J-U5i" customClass="WelcomeVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CVd-ad-hK6"/>
                         <viewControllerLayoutGuide type="bottom" id="nFD-59-fCx"/>
@@ -828,7 +828,7 @@ LA Lackers</string>
         <!--TimelineVC-->
         <scene sceneID="Ugw-6C-csW">
             <objects>
-                <viewController storyboardIdentifier="TimelineVC" automaticallyAdjustsScrollViewInsets="NO" id="LpK-xV-FVs" customClass="TimelineVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimelineVC" autoresizesArchivedViewToFullSize="NO" automaticallyAdjustsScrollViewInsets="NO" id="LpK-xV-FVs" customClass="TimelineVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xWz-G9-2eH"/>
                         <viewControllerLayoutGuide type="bottom" id="nJg-gv-Lep"/>
@@ -1272,6 +1272,7 @@ LA Lackers</string>
                             <constraint firstAttribute="trailing" secondItem="Poo-xS-7X6" secondAttribute="trailing" id="pyM-bQ-64g"/>
                         </constraints>
                     </view>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="backBtn" destination="VCq-KI-ydy" id="vWn-9u-A0s"/>
                         <outlet property="followButton" destination="ny3-If-3cg" id="MfH-UM-ItM"/>

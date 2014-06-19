@@ -302,19 +302,19 @@
 }
 
 
--(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
-    
-    CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-    
-    float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
-    
-    NSLog(@"H: %f",height);
-    
-    return height;
-    
-}
+//-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    
+//    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+//    
+//    CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+//    
+//    float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+//    
+//    NSLog(@"H: %f",height);
+//    
+//    return height;
+//    
+//}
 
 -(CGSize)frameForText:(NSAttributedString*)text constrainedToSize:(CGSize)size{
     

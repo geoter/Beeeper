@@ -209,8 +209,9 @@
 
     
     UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vC];
-    
+    navVC.navigationBar.translucent = NO;
     navVC.view.frame = self.containerVC.frame;
+    
     
     for (UIViewController *child in self.childViewControllers) {
         [child removeFromParentViewController];

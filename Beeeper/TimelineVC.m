@@ -31,6 +31,8 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
+    option = segmentIndex;
+    
     if (![userID isKindOfClass:[NSString class]]) {
         userID = [self.user objectForKey:@"id"];
     }
@@ -88,7 +90,7 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
-    [refreshControl addTarget:self action:@selector(getTimeline:) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(getTimeline:option:) forControlEvents:UIControlEventValueChanged];
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     

@@ -133,10 +133,14 @@ static BPHomeFeed *thisWebServices = nil;
 #pragma mark - Friends Feed
 
 -(void)getLocalFriendsFeed:(completed)compbloc{
+    
+    self.localCompleted = compbloc;
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    [self parseResponseString:filePath];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    [self parseResponseString:json WithCompletionBlock:compbloc];
 }
 
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc{
@@ -201,10 +205,11 @@ static BPHomeFeed *thisWebServices = nil;
     
     BOOL succeed = [responseString writeToFile:filePath
                               atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    [self parseResponseString:responseString];
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.completed];
 }
 
--(void)parseResponseString:(NSString *)responseString{
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
@@ -225,7 +230,7 @@ static BPHomeFeed *thisWebServices = nil;
         
     }
     
-    self.completed(YES,bs);
+    compbloc(YES,bs);
 }
 
 

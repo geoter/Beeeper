@@ -120,6 +120,7 @@
 }
 
 -(void)getHomeFeed{
+
     
     [self showLoading];
     
@@ -160,9 +161,6 @@
 }
 
 
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-}
 
 -(void)showFindFriends{
     UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
@@ -172,6 +170,19 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+  
+    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            
+            [self.collectionV reloadData];
+        }
+    }];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

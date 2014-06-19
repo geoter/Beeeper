@@ -132,6 +132,13 @@ static BPHomeFeed *thisWebServices = nil;
 
 #pragma mark - Friends Feed
 
+-(void)getLocalFriendsFeed:(completed)compbloc{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    [self parseResponseString:filePath];
+}
+
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc{
     
     NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970]/1000;
@@ -187,6 +194,18 @@ static BPHomeFeed *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                              atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    [self parseResponseString:responseString];
+}
+
+-(void)parseResponseString:(NSString *)responseString{
+    
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     NSMutableArray *bs = [NSMutableArray array];
@@ -207,7 +226,6 @@ static BPHomeFeed *thisWebServices = nil;
     }
     
     self.completed(YES,bs);
-    
 }
 
 

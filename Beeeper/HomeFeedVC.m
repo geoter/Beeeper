@@ -64,6 +64,7 @@
 {
     [super viewDidLoad];
     
+    
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;

@@ -41,7 +41,7 @@
 		<string>HelveticaNeue-Light.ttf</string>
 		<string>HelveticaNeue-Medium.ttf</string>
 		<string>HelveticaNeue.ttf</string>
-		<string>Roboto-Thin.ttf</string>
+		<string>HelveticaNeue-Thin.ttf</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>

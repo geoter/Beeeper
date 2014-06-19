@@ -21,6 +21,8 @@
 
     [self adjustFonts];
     
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
@@ -38,8 +40,17 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 }
+
+-(void)goBack{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 
 -(void)adjustFonts{

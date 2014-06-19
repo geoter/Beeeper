@@ -31,7 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self adjustFonts];
 }
 
@@ -46,7 +46,6 @@
 }
 
 -(void)goBack{
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

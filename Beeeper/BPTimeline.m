@@ -49,7 +49,8 @@ static BPTimeline *thisWebServices = nil;
 }
 
 
--(void)getTimelineForUserID:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+    
     
     NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
     
@@ -60,7 +61,7 @@ static BPTimeline *thisWebServices = nil;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
-    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",(option == Upcoming)?@"ASC":@"DESC"]];
     [array addObject:[NSString stringWithFormat:@"page=%d",page]];
     [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
     

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -282,10 +282,6 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Beeeper_logo_small.png" translatesAutoresizingMaskIntoConstraints="NO" id="weH-eZ-afa">
-                                            <rect key="frame" x="58" y="32" width="18" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Hg-lV-c3H">
                                             <rect key="frame" x="282" y="17" width="25" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -847,7 +843,7 @@ LA Lackers</string>
                                 <color key="backgroundColor" red="0.85490196078431369" green="0.87450980392156863" blue="0.88627450980392153" alpha="0.0" colorSpace="deviceRGB"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="213-fn-wnw">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="290"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="289"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6sX-R5-R45">
@@ -975,6 +971,26 @@ LA Lackers</string>
                                                         <action selector="followButtonPressed:" destination="LpK-xV-FVs" eventType="touchUpInside" id="mIF-Q6-Mkq"/>
                                                     </connections>
                                                 </button>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oeH-qq-uoD">
+                                                    <rect key="frame" x="3" y="214" width="43" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="settings-icon-timeline.png">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="settingsPressed:" destination="LpK-xV-FVs" eventType="touchUpInside" id="qqT-5K-3UW"/>
+                                                    </connections>
+                                                </button>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bMx-bD-yEP">
+                                                    <rect key="frame" x="272" y="214" width="43" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="import-icon-timeline.png">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="importPressed:" destination="LpK-xV-FVs" eventType="touchUpInside" id="TTR-ca-BXe"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
@@ -1033,7 +1049,7 @@ LA Lackers</string>
                                 </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="113" id="Fte-uh-6db">
-                                        <rect key="frame" x="0.0" y="312" width="320" height="113"/>
+                                        <rect key="frame" x="0.0" y="311" width="320" height="113"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Fte-uh-6db" id="ang-Ug-Ylg">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="113"/>
@@ -1227,6 +1243,15 @@ LA Lackers</string>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ToggleCell" rowHeight="32" id="oaN-vW-g0T">
+                                        <rect key="frame" x="0.0" y="424" width="320" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oaN-vW-g0T" id="UOh-rO-A41">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="32"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="1" green="1" blue="0.36753402217741937" alpha="0.0" colorSpace="calibratedRGB"/>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="LpK-xV-FVs" id="yk0-Hh-HHL"/>
@@ -1252,8 +1277,10 @@ LA Lackers</string>
                         <outlet property="followButton" destination="ny3-If-3cg" id="MfH-UM-ItM"/>
                         <outlet property="followersButton" destination="Z3N-mN-JBX" id="02r-uf-Uzs"/>
                         <outlet property="followingButton" destination="htb-RZ-VVS" id="9cf-LD-750"/>
+                        <outlet property="importIcon" destination="bMx-bD-yEP" id="Pgs-Jp-skm"/>
                         <outlet property="profileImage" destination="xLU-6Q-gX7" id="1iE-ek-gqC"/>
                         <outlet property="profileImageBorderV" destination="j5I-k7-FKf" id="x5h-FN-SsS"/>
+                        <outlet property="settingsIcon" destination="oeH-qq-uoD" id="BfA-sp-YPW"/>
                         <outlet property="tableV" destination="Poo-xS-7X6" id="oTK-HB-Afo"/>
                         <outlet property="topV" destination="6sX-R5-R45" id="gBy-jM-lkB"/>
                         <outlet property="usernameLabel" destination="Xtb-sH-Pau" id="Nqh-ef-lwd"/>
@@ -1266,7 +1293,6 @@ LA Lackers</string>
         </scene>
     </scenes>
     <resources>
-        <image name="Beeeper_logo_small.png" width="18" height="18"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="Welcome_Logo.png" width="150" height="51"/>
         <image name="activityBtn.png" width="34" height="35"/>
@@ -1279,11 +1305,13 @@ LA Lackers</string>
         <image name="editProfileBtn.png" width="48" height="31"/>
         <image name="icon-facebook2.png" width="217" height="215"/>
         <image name="icon-twitter2.png" width="214" height="215"/>
+        <image name="import-icon-timeline.png" width="22" height="22"/>
         <image name="like_icon.png" width="16" height="16"/>
         <image name="nba_494_384.png" width="247" height="192"/>
         <image name="not-following-icon.png" width="28" height="27"/>
         <image name="pin-black.png" width="7" height="11"/>
         <image name="pin_icon_event.png" width="9" height="13"/>
+        <image name="settings-icon-timeline.png" width="21" height="22"/>
         <image name="suggestionsBtn.png" width="56" height="34"/>
         <image name="welcome_screen_0.png" width="320" height="568"/>
     </resources>

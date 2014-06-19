@@ -100,10 +100,10 @@
         if([v isKindOfClass:[UILabel class]])
         {
             if (v.tag == 1) {
-                ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Light" size:26];
+                ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Light" size:26];
             }
             else{
-                ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Light" size:12];
+                ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
                 
                 NSString *lblStr = [(UILabel *)v text];
                 
@@ -111,13 +111,13 @@
                 NSRange range=[lblStr rangeOfString:@"Terms of Use Agreement"];
                 
                 [string addAttribute:NSFontAttributeName
-                               value:[UIFont fontWithName:@"Roboto-Regular" size:12]
+                               value:[UIFont fontWithName:@"HelveticaNeue" size:12]
                                range:range];
                 
                 NSRange range2 =[lblStr rangeOfString:@"Privacy Policy"];
                 
                 [string addAttribute:NSFontAttributeName
-                               value:[UIFont fontWithName:@"Roboto-Regular" size:12]
+                               value:[UIFont fontWithName:@"HelveticaNeue" size:12]
                                range:range2];
                 
                 ((UILabel *)v).attributedText = string;
@@ -126,14 +126,14 @@
         }
         else if ([v isKindOfClass:[UIButton class]]){
             if (v.tag == 4) {
-                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:16];
+                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
             }
         }
         else if ([v isKindOfClass:[UITextField class]]){
             UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
             ((UITextField*)v).leftView = paddingView;
             ((UITextField*)v).leftViewMode = UITextFieldViewModeAlways;
-            ((UITextField*)v).font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+            ((UITextField*)v).font = [UIFont fontWithName:@"HelveticaNeue" size:13];
         }
     }
     

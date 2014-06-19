@@ -94,8 +94,8 @@
     UILabel *dayNumberLbl = (id)[self.scrollV viewWithTag:-2];
     UILabel *monthLbl = (id)[self.scrollV viewWithTag:-1];
     
-    monthLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
-    dayNumberLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
+    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    dayNumberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
 
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
@@ -160,13 +160,13 @@
             switch (txtV.tag) {
                 case 1:
                 {
-                    txtV.font = [UIFont fontWithName:@"Roboto-Light" size:24];
+                    txtV.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:24];
                 }
                     break;
                 case 2:
                 case 3:
                 {
-                    txtV.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+                    txtV.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
                 }
                     break;
                 default:
@@ -175,18 +175,18 @@
         }
         else if ([v isKindOfClass:[UIButton class]]){
             UIButton *btn = (UIButton *)v;
-            btn.titleLabel.font = [UIFont fontWithName:@"Roboto-Light" size:16];
+            btn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
         }
     }
     
     UILabel *fbLbl = (id)[self.fbShareV viewWithTag:2];
-    fbLbl.font = [UIFont fontWithName:@"Roboto-Regular" size:15];
+    fbLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
   
     UILabel *twitterLbl = (id)[self.twitterV viewWithTag:2];
-    twitterLbl.font = [UIFont fontWithName:@"Roboto-Regular" size:15];
+    twitterLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
     
     UILabel *hideFromFollowers = (id)[self.scrollV viewWithTag:10];
-    hideFromFollowers.font = [UIFont fontWithName:@"Roboto-Light" size:13];
+    hideFromFollowers.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13];
 }
 
 - (IBAction)close:(id)sender {

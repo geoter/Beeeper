@@ -143,7 +143,7 @@
 //                
 //                [paragrahStyle setMaximumLineHeight:18];
 //                
-//                [titleStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"Roboto-Medium" size:15] range:NSMakeRange(0, [title length])];
+//                [titleStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:15] range:NSMakeRange(0, [title length])];
 //                [titleStr addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [title length])];
 //                
 //                CGSize size = [self frameForText:titleStr constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
@@ -225,17 +225,17 @@
     UIImageView *imageV = (id)[containerV viewWithTag:3];
     UILabel *titleLbl = (id)[containerV viewWithTag:4];
     
-    monthLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    //monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
     monthLbl.text = [month uppercaseString];
     
-    dayLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:24];
+    //dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
     dayLbl.text = daynumber;
     dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
 
-    titleLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:15];
+    //titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
 //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -263,7 +263,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     area.frame = CGRectMake(37, 190, 108, 32);
     
-    area.font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+    //area.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
     
@@ -285,9 +285,9 @@
     UILabel *favorites = (id)[containerV viewWithTag:-3];
     UILabel *comments = (id)[containerV viewWithTag:-4];
     UILabel *beeeps = (id)[containerV viewWithTag:-5];
-    favorites.font = [UIFont fontWithName:@"Roboto-Light" size:10];
-    comments.font = [UIFont fontWithName:@"Roboto-Light" size:10];
-    beeeps.font = [UIFont fontWithName:@"Roboto-Light" size:10];
+   // favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+   // comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+   // beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
     
     Beeeps *b = [event.beeepFfo.beeeps firstObject];
     
@@ -321,10 +321,10 @@
     UILabel *beeepedByLabel =(id)[beeepedByView viewWithTag:35];
     UILabel *beeepedByNameLabel =(id)[beeepedByView viewWithTag:33];
     
-    beeepedByLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:9];
+    //beeepedByLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
     beeepedByLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
 
-    beeepedByNameLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+    //beeepedByNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
     beeepedByNameLabel.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     beeepedByNameLabel.text = [event.whoFfo.name capitalizedString];
@@ -412,7 +412,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //    
 //    [paragrahStyle setMaximumLineHeight:18];
 //    
-//    [titleStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"Roboto-Medium" size:18] range:NSMakeRange(0, [[event objectForKey:@"title"] length])];
+//    [titleStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:18] range:NSMakeRange(0, [[event objectForKey:@"title"] length])];
 //    [titleStr addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [[event objectForKey:@"title"] length])];
 //    
 //    CGSize size = [self frameForText:titleStr constrainedToSize:CGSizeMake(123, CGFLOAT_MAX)];
@@ -429,6 +429,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

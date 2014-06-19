@@ -751,7 +751,7 @@
 		CE080C8C18B645A3007E2066 /* SideBarVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideBarVC.h; sourceTree = "<group>"; };
 		CE080C8D18B645A3007E2066 /* SideBarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideBarVC.m; sourceTree = "<group>"; };
 		CE080C9618B65CF2007E2066 /* NotificationsPrefsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsPrefsVC.h; sourceTree = "<group>"; };
-		CE080C9718B65CF2007E2066 /* NotificationsPrefsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsPrefsVC.m; sourceTree = "<group>"; };
+		CE080C9718B65CF2007E2066 /* NotificationsPrefsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NotificationsPrefsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE080C9918B661C8007E2066 /* ProfilePrefsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilePrefsVC.h; sourceTree = "<group>"; };
 		CE080C9A18B661C8007E2066 /* ProfilePrefsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfilePrefsVC.m; sourceTree = "<group>"; };
 		CE08DD0A193748FE00B090BE /* like_event@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "like_event@2x.png"; sourceTree = "<group>"; };
@@ -822,7 +822,7 @@
 		CE25F9E718B6761300D8B858 /* TSMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMessageView.h; sourceTree = "<group>"; };
 		CE25F9E818B6761300D8B858 /* TSMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMessageView.m; sourceTree = "<group>"; };
 		CE29EDF818D9BA3E0001EC43 /* HomeFeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeFeedVC.h; sourceTree = "<group>"; };
-		CE29EDF918D9BA3E0001EC43 /* HomeFeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeFeedVC.m; sourceTree = "<group>"; };
+		CE29EDF918D9BA3E0001EC43 /* HomeFeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HomeFeedVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE29EE1418D9CADB0001EC43 /* Add_new_beeep_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Add_new_beeep_btn.png; sourceTree = "<group>"; };
 		CE29EE1518D9CADB0001EC43 /* Add_new_beeep_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add_new_beeep_btn@2x.png"; sourceTree = "<group>"; };
 		CE29EE1618D9CADB0001EC43 /* beeeper_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeeper_logo.png; sourceTree = "<group>"; };
@@ -850,7 +850,7 @@
 		CE29EE2C18D9CADB0001EC43 /* pin_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pin_icon.png; sourceTree = "<group>"; };
 		CE29EE2D18D9CADB0001EC43 /* pin_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin_icon@2x.png"; sourceTree = "<group>"; };
 		CE29EE4818D9EC5F0001EC43 /* BeeepVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepVC.h; sourceTree = "<group>"; };
-		CE29EE4918D9EC5F0001EC43 /* BeeepVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeepVC.m; sourceTree = "<group>"; };
+		CE29EE4918D9EC5F0001EC43 /* BeeepVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BeeepVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE2A6EB418E2F6B900175A9C /* arrow-cell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-cell.png"; sourceTree = "<group>"; };
 		CE2A6EB518E2F6B900175A9C /* arrow-cell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-cell@2x.png"; sourceTree = "<group>"; };
 		CE2BA444193E23C3004D63C3 /* empty-selection0cirlce-suggestit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty-selection0cirlce-suggestit.png"; sourceTree = "<group>"; };
@@ -863,9 +863,9 @@
 		CE35D1EA18D0850A0086C26A /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		CE35D1EC18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Storyboard-No-AutoLayout.storyboard"; sourceTree = "<group>"; };
 		CE35D1EF18D0AFF80086C26A /* FindFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsVC.h; sourceTree = "<group>"; };
-		CE35D1F018D0AFF80086C26A /* FindFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsVC.m; sourceTree = "<group>"; };
+		CE35D1F018D0AFF80086C26A /* FindFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FindFriendsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE36F7AA18D2033000A9E917 /* CommentsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsVC.h; sourceTree = "<group>"; };
-		CE36F7AB18D2033000A9E917 /* CommentsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsVC.m; sourceTree = "<group>"; };
+		CE36F7AB18D2033000A9E917 /* CommentsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CommentsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE36F7AE18D2035F00A9E917 /* PHFComposeBarView_TextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHFComposeBarView_TextView.h; sourceTree = "<group>"; };
 		CE36F7AF18D2035F00A9E917 /* PHFComposeBarView_TextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHFComposeBarView_TextView.m; sourceTree = "<group>"; };
 		CE36F7B018D2035F00A9E917 /* PHFComposeBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHFComposeBarView.h; sourceTree = "<group>"; };
@@ -887,11 +887,11 @@
 		CE529C5E18DB1BD900900EB6 /* add_photo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_photo.png; sourceTree = "<group>"; };
 		CE529C5F18DB1BD900900EB6 /* add_photo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_photo@2x.png"; sourceTree = "<group>"; };
 		CE5D974218DC93560093056B /* ForgotPassVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgotPassVC.h; sourceTree = "<group>"; };
-		CE5D974318DC93560093056B /* ForgotPassVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgotPassVC.m; sourceTree = "<group>"; };
+		CE5D974318DC93560093056B /* ForgotPassVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ForgotPassVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE77BA4418E5A98F00D4051A /* check_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check_btn.png; sourceTree = "<group>"; };
 		CE77BA4518E5A98F00D4051A /* check_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_btn@2x.png"; sourceTree = "<group>"; };
 		CE79422A18DB22CD00748EDD /* BeeepItVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepItVC.h; sourceTree = "<group>"; };
-		CE79422B18DB22CD00748EDD /* BeeepItVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeepItVC.m; sourceTree = "<group>"; };
+		CE79422B18DB22CD00748EDD /* BeeepItVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BeeepItVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE79422D18DB261B00748EDD /* facebook_icon_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook_icon_gray.png; sourceTree = "<group>"; };
 		CE79422E18DB261B00748EDD /* facebook_icon_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook_icon_gray@2x.png"; sourceTree = "<group>"; };
 		CE79422F18DB261B00748EDD /* facebook_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook_icon.png; sourceTree = "<group>"; };
@@ -909,7 +909,7 @@
 		CE79424B18DB3CFA00748EDD /* MVYSideMenuOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVYSideMenuOptions.h; sourceTree = "<group>"; };
 		CE79424C18DB3CFA00748EDD /* MVYSideMenuOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVYSideMenuOptions.m; sourceTree = "<group>"; };
 		CE7CFACF18B78A590044C9AC /* FollowListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowListVC.h; sourceTree = "<group>"; };
-		CE7CFAD018B78A590044C9AC /* FollowListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowListVC.m; sourceTree = "<group>"; };
+		CE7CFAD018B78A590044C9AC /* FollowListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FollowListVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE7CFAD818B797310044C9AC /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
 		CE7CFAD918B797310044C9AC /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
 		CE7CFADA18B797310044C9AC /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
@@ -925,7 +925,7 @@
 		CE7CFAEF18B79BD70044C9AC /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAKeyboardControl.h; sourceTree = "<group>"; };
 		CE7CFAF018B79BD70044C9AC /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAKeyboardControl.m; sourceTree = "<group>"; };
 		CE7CFAF318B7AA910044C9AC /* NotificationsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsVC.h; sourceTree = "<group>"; };
-		CE7CFAF418B7AA910044C9AC /* NotificationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsVC.m; sourceTree = "<group>"; };
+		CE7CFAF418B7AA910044C9AC /* NotificationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NotificationsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE94932B18DB5E8100B99800 /* CRToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRToast.h; sourceTree = "<group>"; };
 		CE94932C18DB5E8100B99800 /* CRToast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRToast.m; sourceTree = "<group>"; };
 		CEA64F0D18B39F4F00B7ECF5 /* Beeeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beeeper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -969,11 +969,11 @@
 		CEEE3ED318C9E26900665C21 /* WelcomeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeVC.m; sourceTree = "<group>"; };
 		CEEE3ED518C9E34000665C21 /* UIView_LoopSubviews.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIView_LoopSubviews.h; sourceTree = "<group>"; };
 		CEEE3ED618C9F08600665C21 /* ChooseSignUpVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseSignUpVC.h; sourceTree = "<group>"; };
-		CEEE3ED718C9F08600665C21 /* ChooseSignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseSignUpVC.m; sourceTree = "<group>"; };
+		CEEE3ED718C9F08600665C21 /* ChooseSignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ChooseSignUpVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CEEE3EDE18C9F23A00665C21 /* icon-mail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-mail.png"; sourceTree = "<group>"; };
 		CEEE3EDF18C9F23A00665C21 /* icon-mail@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-mail@2x.png"; sourceTree = "<group>"; };
 		CEEE3EEA18C9FBD200665C21 /* ChooseLoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseLoginVC.h; sourceTree = "<group>"; };
-		CEEE3EEB18C9FBD200665C21 /* ChooseLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseLoginVC.m; sourceTree = "<group>"; };
+		CEEE3EEB18C9FBD200665C21 /* ChooseLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ChooseLoginVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CEEE3EEE18C9FC9D00665C21 /* icon-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-facebook.png"; sourceTree = "<group>"; };
 		CEEE3EEF18C9FC9E00665C21 /* icon-facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-facebook@2x.png"; sourceTree = "<group>"; };
 		CEEE3EF018C9FC9E00665C21 /* icon-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-twitter.png"; sourceTree = "<group>"; };
@@ -1032,11 +1032,11 @@
 		CEF263D118DC81530047510D /* beeep_it_icon_event.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeep_it_icon_event.png; sourceTree = "<group>"; };
 		CEF263D218DC81530047510D /* beeep_it_icon_event@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeep_it_icon_event@2x.png"; sourceTree = "<group>"; };
 		CEF263D518DC82CA0047510D /* EventVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventVC.h; sourceTree = "<group>"; };
-		CEF263D618DC82CA0047510D /* EventVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventVC.m; sourceTree = "<group>"; };
+		CEF263D618DC82CA0047510D /* EventVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EventVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CEF263D818DC89690047510D /* nba_494_384.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nba_494_384.png; sourceTree = "<group>"; };
 		CEF263D918DC89690047510D /* nba_494_384@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nba_494_384@2x.png"; sourceTree = "<group>"; };
 		CEF822FD18EECF5E000F4087 /* GTSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTSegmentedControl.h; sourceTree = "<group>"; };
-		CEF822FE18EECF5E000F4087 /* GTSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTSegmentedControl.m; sourceTree = "<group>"; };
+		CEF822FE18EECF5E000F4087 /* GTSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GTSegmentedControl.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CEF8230018EEDBC3000F4087 /* GTSegmentedControl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTSegmentedControl.xib; sourceTree = "<group>"; };
 		CEFDE80B18ED651D00E500A9 /* welcome_screen_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = welcome_screen_0.png; sourceTree = "<group>"; };
 		CEFDE80C18ED651D00E500A9 /* welcome_screen_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "welcome_screen_0@2x.png"; sourceTree = "<group>"; };
@@ -2949,8 +2949,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -2962,7 +2962,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "503C1CCA-96E2-4B99-9886-74193678C8E7";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2972,8 +2972,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -2985,7 +2985,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "503C1CCA-96E2-4B99-9886-74193678C8E7";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -200,10 +200,8 @@
     }
     
     
-    UIFont *font = [UIFont fontWithName:@"Roboto-Bold" size:12.0];
-    
     UILabel *lbl = (id)[cell viewWithTag:2];
-    lbl.font = [UIFont fontWithName:@"Roboto-Light" size:12.0];
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0];
 
     NSString *formattedString;
     
@@ -226,18 +224,18 @@
     NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
     
     [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Light" size:12]
+                    value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
                     range:NSMakeRange(0,formattedString.length)];
    
     if (w != nil && ![w.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                  value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                  value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                   range:[formattedString rangeOfString:[w.name capitalizedString]]];
     }
     
     if (wm != nil && ![wm.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                     range:[formattedString rangeOfString:[wm.name capitalizedString]]];
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
@@ -245,7 +243,7 @@
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
         
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[event.title capitalizedString]]];
 
     }
@@ -254,12 +252,12 @@
         EventActivity *event = [activity.eventActivity firstObject];
         NSString *event_title = [event.title capitalizedString];
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:event_title]];
     }
     else{
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:activity.what]];
     }
 
@@ -334,14 +332,14 @@
     header.backgroundColor = [UIColor whiteColor];
     
     UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 303, 18)];
-    mlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:13];
+    mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     mlbl.textColor = [UIColor colorWithRed:183/255.0 green:72/255.0 blue:53/255.0 alpha:1];
     mlbl.text = [month uppercaseString];
     mlbl.textAlignment = NSTextAlignmentCenter;
     [header addSubview:mlbl];
     
     UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 303, 18)];
-    dlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:20];
+    dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
@@ -401,6 +399,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

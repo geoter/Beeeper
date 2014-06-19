@@ -126,7 +126,7 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    ((UITextField *)[cell viewWithTag:1]).font = [UIFont fontWithName:@"Roboto-Bold" size:13];
+    ((UITextField *)[cell viewWithTag:1]).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
     UIImage *optionIcon;
     

@@ -43,17 +43,17 @@
 -(void)adjustFonts{
     
     UILabel *lbl1 = (id)[self.view viewWithTag:1];
-    lbl1.font = [UIFont fontWithName:@"Roboto-Light" size:26];
+    lbl1.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:26];
 	
     UILabel *lbl2 = (id)[self.view viewWithTag:2];
-    lbl2.font = [UIFont fontWithName:@"Roboto-Light" size:15];
+    lbl2.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
 
     NSString *btnTitle = [self.emailSignupButton titleForState:UIControlStateNormal];
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc]initWithString:btnTitle];
     NSRange range=[btnTitle rangeOfString:@"email"];
     
     [string addAttribute:NSFontAttributeName
-                  value:[UIFont fontWithName:@"Roboto-Light" size:15]
+                  value:[UIFont fontWithName:@"HelveticaNeue-Light" size:15]
                   range:[btnTitle rangeOfString:btnTitle]];
     
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1] range:range];

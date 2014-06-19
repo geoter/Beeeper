@@ -62,7 +62,7 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell" forIndexPath:indexPath];
     UILabel *searchResultLabel = (UILabel *)[cell viewWithTag:1];
-    searchResultLabel.font = [UIFont fontWithName:@"Roboto-Light" size:23];
+    searchResultLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:23];
     searchResultLabel.text = [filteredResults objectAtIndex:indexPath.row];
     
     if ([[filteredResults firstObject]isEqualToString:@"No results found"]) {
@@ -106,7 +106,7 @@
     
     UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 0, self.tableV.frame.size.width, 40)];
     numberOfComments.text = [NSString stringWithFormat:@"SEARCH FOR"];
-    numberOfComments.font = [UIFont fontWithName:@"Roboto-Bold" size:11];
+    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
     numberOfComments.textAlignment = NSTextAlignmentLeft;
     [numberOfCommentsV addSubview:numberOfComments];
     

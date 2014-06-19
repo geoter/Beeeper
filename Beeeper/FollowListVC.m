@@ -187,7 +187,7 @@
     numberLbl.textAlignment = NSTextAlignmentRight;
     numberLbl.text = [NSString stringWithFormat:@"%d",people.count];
     numberLbl.textColor = [UIColor whiteColor];
-    numberLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:16];
+    numberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
 
 }
@@ -226,7 +226,7 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    ((UILabel *)[cell viewWithTag:2]).font = [UIFont fontWithName:@"Roboto-Bold" size:13];
+    ((UILabel *)[cell viewWithTag:2]).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
     UIButton *btn = (id)[cell viewWithTag:3];
     UILabel *nameLbl = (id)[cell viewWithTag:2];
@@ -316,6 +316,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

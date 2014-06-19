@@ -213,14 +213,14 @@
     header.backgroundColor = [UIColor whiteColor];
     
     UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 303, 18)];
-    mlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:13];
+    mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     mlbl.textColor = [UIColor colorWithRed:183/255.0 green:72/255.0 blue:53/255.0 alpha:1];
     mlbl.text = [month uppercaseString];
     mlbl.textAlignment = NSTextAlignmentCenter;
     [header addSubview:mlbl];
     
     UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 303, 18)];
-    dlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:20];
+    dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
@@ -255,6 +255,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

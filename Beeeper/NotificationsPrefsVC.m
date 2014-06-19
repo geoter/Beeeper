@@ -51,11 +51,11 @@
     {
         if([v isKindOfClass:[UILabel class]])
         {
-            ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+            ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
             
         }
         else if ([v isKindOfClass:[UIButton class]]){
-            ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:14];
+            ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
         }
     }
     

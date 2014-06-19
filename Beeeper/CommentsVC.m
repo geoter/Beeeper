@@ -127,7 +127,7 @@
     
     name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
     
-    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
     
     txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
     
@@ -162,7 +162,7 @@
         
         Comments *commentObj = (Comments *)objct;
         NSString *comment = commentObj.comment.comment;
-        CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+        CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
         
         return (textViewSize.height + 36 + 8);
     }
@@ -204,6 +204,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

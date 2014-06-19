@@ -806,6 +806,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }
@@ -1050,7 +1051,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     UILabel *nameLbl = (id)[cell viewWithTag:1];
-    nameLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:13];
+    nameLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     nameLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     Comments *cmnts = [comments objectAtIndex:comments.count-1-indexPath.row];
@@ -1059,13 +1060,13 @@
     nameLbl.text = [[NSString stringWithFormat:@"%@ %@",cmnts.commenter.name,cmnts.commenter.lastname] capitalizedString];
     
     UILabel *txtV = (id)[cell viewWithTag:3];
-    txtV.font = [UIFont fontWithName:@"Roboto-Light" size:13];
+    txtV.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13];
     txtV.text = comment.comment;
 
     UILabel *timeLbl = (id)[cell viewWithTag:4];
-    timeLbl.font = [UIFont fontWithName:@"Roboto-Regular" size:10];
+    timeLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
     
-    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
     
     txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
     
@@ -1106,7 +1107,7 @@
     Comments *cmnts = [comments objectAtIndex:comments.count-1-indexPath.row];
     Comment *comment = cmnts.comment;
     
-    CGSize textViewSize = [self frameForText:comment.comment sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:comment.comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
     
     return (textViewSize.height + 36 + 8);
     
@@ -1137,13 +1138,13 @@
     
     UILabel *numberOfComments = [[UILabel alloc]initWithFrame:numberOfCommentsV.bounds];
     numberOfComments.text = [NSString stringWithFormat:@"%d Comments",comments.count];
-    numberOfComments.font = [UIFont fontWithName:@"Roboto-Medium" size:13];
+    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     numberOfComments.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     numberOfComments.textAlignment = NSTextAlignmentCenter;
     [numberOfCommentsV addSubview:numberOfComments];
     
     UIButton *loadMoreButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    loadMoreButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:10];
+    loadMoreButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
     loadMoreButton.frame = numberOfCommentsV.bounds;
     [loadMoreButton setTitle:@"Load More" forState:UIControlStateNormal];
     [loadMoreButton setTitleColor:[UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1] forState:UIControlStateNormal];

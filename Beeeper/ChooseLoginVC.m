@@ -52,16 +52,16 @@
 -(void)adjustFonts{
     
     UILabel *lbl1 = (id)[self.scrollV viewWithTag:1];
-    lbl1.font = [UIFont fontWithName:@"Roboto-Light" size:28];
+    lbl1.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
 	
     UILabel *lbl2 = (id)[self.scrollV viewWithTag:2];
-    lbl2.font = [UIFont fontWithName:@"Roboto-Light" size:16];
+    lbl2.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
 
     UILabel *lbl3 = (id)[self.scrollV viewWithTag:3];
-    lbl3.font = [UIFont fontWithName:@"Roboto-Regular" size:15];
+    lbl3.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
 
     UILabel *lbl4 = (id)[self.scrollV viewWithTag:4];
-    lbl4.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
+    lbl4.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
 }
 
 

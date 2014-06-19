@@ -46,7 +46,7 @@
                                                 <rect key="frame" x="28" y="258" width="264" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                                 <textInputTraits key="textInputTraits" returnKeyType="next"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="k3l-OE-1u0" id="9HH-7i-r0k"/>
@@ -72,7 +72,7 @@
                                             <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Fix-fa-LZ6">
                                                 <rect key="frame" x="28" y="360" width="264" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                 <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title="Forgot your password?">
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -85,14 +85,14 @@
                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="with" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="D6O-t4-mbq">
                                                 <rect key="frame" x="64" y="58" width="192" height="36"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xJj-6J-b2a">
                                                 <rect key="frame" x="64" y="30" width="192" height="36"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="24"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -472,7 +472,7 @@
                                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Wx9-CL-RRr">
                                             <rect key="frame" x="221" y="70" width="27" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <state key="normal" image="C539B115-6FC5-4442-8E85-8504BA1135F6">
+                                            <state key="normal" image="48C827FB-C825-4188-8D88-75D4B073BB8C">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
@@ -485,7 +485,7 @@
                                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="apb-bO-Iwo">
                                             <rect key="frame" x="256" y="72" width="36" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <state key="normal" image="C5E04C8C-734F-4E0D-87AD-D9E0BD174D56">
+                                            <state key="normal" image="3A899C8C-2CDB-4ABA-9CFF-B82B85851DBC">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
@@ -2607,10 +2607,81 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Add_new_beeep_btn.png" width="65" height="65"/>
-        <image name="Beeep_it_btn.png" width="281" height="40"/>
-        <image name="Beeeps_icon.png" width="16" height="16"/>
-        <image name="C539B115-6FC5-4442-8E85-8504BA1135F6" width="27" height="24">
+        <image name="3A899C8C-2CDB-4ABA-9CFF-B82B85851DBC" width="36" height="10">
+            <mutableData key="keyedArchiveRepresentation">
+YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
+GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
+DBIAwAAAgAKACtISCRMVWk5TLm9iamVjdHOhFIADgAnSEgkXGqIYGYAEgAWACBAA0h0JHh9fEBROU1RJ
+RkZSZXByZXNlbnRhdGlvboAGgAdPEQ4OTU0AKgAABagAAAAAAAAAABQUKRkYHSqLGh8s7RkhK/MaICyn
+FxwoLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPHi0RGR8sexofK+UaHyz3GiEstBYaKDoAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFxwoLRogLKgaHy32GSEs6BgdKosUFCkZAAAAAAAAAAAAAAAA
+Gh4mPBogK9kbIS7/GiEt/xohLf8bIS7/Gh8t7xcfK2QAAAAAAAAAAAAAAAAAAAAAAAAAABMfJSkZISzK
+GyEu/xohLf8aIS3/GyEu/xkgLfQaICt4AAAAAQAAAAAAAAAAAAAAAAAAAAAXHytkGh8t7xshLv8aIS3/
+GiEt/xshLv8aICvZGh4mPAAAAAASGiwdGR8r3xshLv8aIS3/GiEt/xohLf8aIS3/GyEu/xohLPgYIC0/
+AAAAAAAAAAAAAAAAEhIkDhkhLMobIi7/GiEt/xohLf8aIS3/GiEt/xohLv8aIS7/GSEpXQAAAAAAAAAA
+AAAAABggLT8aISz4GyEu/xohLf8aIS3/GiEt/xohLf8bIS7/GR8r3xIaLB0XICyYGyEu/xohLf8aIS3/
+GiEt/xohLf8aIS3/GiEt/xsiLv8ZICyuAAAAAgAAAAAAAAAAGSEpXRshLv8aIS3/GiEt/xohLf8aIS3/
+GiEt/xohLf8bIS7/GR8szAAcHAkAAAAAAAAAAhkgLK4bIi7/GiEt/xohLf8aIS3/GiEt/xohLf8aIS3/
+GyEu/xcgLJgZISzyGiEt/xohLf8aIS3/GiEt/xohLf8aIS3/GiEt/xohLv8aHy3kFxcXCwAAAAAAAAAA
+GSAqlxsiLv8aIS3/GiEt/xohLf8aIS3/GiEt/xohLf8aIS3/GR8s9RoaKx4AAAAAFxcXCxofLeQaIS7/
+GiEt/xohLf8aIS3/GiEt/xohLf8aIS3/GiEt/xkhK/MaICzuGiEt/xohLf8aIS3/GiEt/xohLf8aIS3/
+GiEt/xohLv8aHy3kFxcXCwAAAAAAAAAAGh8rlRsiLv8aIS3/GiEt/xohLf8aIS3/GiEt/xohLf8aIS3/
+GR8s9RoaKx4AAAAAFxcXCxohK+IaIS7/GiEt/xohLf8aIS3/GiEt/xohLf8aIS3/GiEt/xkhK/MXICyY
+GyEu/xohLf8aIS3/GiEt/xohLf8aIS3/GiEt/xsiLv8ZICyuAAAAAgAAAAAAAAAAGSEpXRshLv8aIS3/
+GiEt/xohLf8aIS3/GiEt/xohLf8bIS7/GR8szAAcHAkAAAAAAAAAAhkgLK4bIi7/GiEt/xohLf8aIS3/
+GiEt/xohLf8aIS3/GyEu/xcgLJgSGiwdGR8r3xshLv8aIS3/GiEt/xohLf8aIS3/GyEu/xohLPgYICxA
+AAAAAAAAAAAAAAAAEhIkDhkhK8obIi7/GiEt/xohLf8aIS3/GiEt/xohLv8aIS7/GSEpXQAAAAAAAAAA
+AAAAABggLEAaISz4GyEu/xohLf8aIS3/GiEt/xohLf8bIS7/GR8r3xoaKx4AAAAAFR0qPRshLNobIS7/
+GiEt/xohLf8bIS7/Gh8t7xkeK2YAAAAAAAAAAAAAAAAAAAAAAAAAABgeKyoZHy3MGyEu/xohLf8aIS3/
+GyEu/xkgLvUZHyx7AAAAAgAAAAAAAAAAAAAAAAAAAAAZHitmGh8t7xshLv8aIS3/GiEt/xshLv8bISza
+FR0qPQAAAAAAAAAAAAAAABQUKRkZHi2PGiAs7RohK/gZISurFhwsLgAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAOHBwSGB4ofhogK+YZHy37GSAruRoeKzsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+FhwsLhkhK6saISv4GiAs7RkeLY8UFCkZAAAAAAAAAAAADgEAAAMAAAABACQAAAEBAAMAAAABAAoAAAEC
+AAMAAAAEAAAGVgEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAESAAMAAAABAAEAAAEV
+AAMAAAABAAQAAAEWAAMAAAABAAoAAAEXAAQAAAABAAAFoAEcAAMAAAABAAEAAAFSAAMAAAABAAIAAAFT
+AAMAAAAEAAAGXodzAAcAAAeoAAAGZgAAAAAACAAIAAgACAABAAEAAQABAAAHqGFwcGwCIAAAbW50clJH
+QiBYWVogB9kAAgAZAAsAGgALYWNzcEFQUEwAAAAAYXBwbAAAAAAAAAAAAAAAAAAAAAAAAPbWAAEAAAAA
+0y1hcHBsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALZGVzYwAA
+AQgAAABvZHNjbQAAAXgAAAVsY3BydAAABuQAAAA4d3RwdAAABxwAAAAUclhZWgAABzAAAAAUZ1hZWgAA
+B0QAAAAUYlhZWgAAB1gAAAAUclRSQwAAB2wAAAAOY2hhZAAAB3wAAAAsYlRSQwAAB2wAAAAOZ1RSQwAA
+B2wAAAAOZGVzYwAAAAAAAAAUR2VuZXJpYyBSR0IgUHJvZmlsZQAAAAAAAAAAAAAAFEdlbmVyaWMgUkdC
+IFByb2ZpbGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG1s
+dWMAAAAAAAAAHgAAAAxza1NLAAAAKAAAAXhockhSAAAAKAAAAaBjYUVTAAAAJAAAAchwdEJSAAAAJgAA
+Aex1a1VBAAAAKgAAAhJmckZVAAAAKAAAAjx6aFRXAAAAFgAAAmRpdElUAAAAKAAAAnpuYk5PAAAAJgAA
+AqJrb0tSAAAAFgAAAshjc0NaAAAAIgAAAt5oZUlMAAAAHgAAAwBkZURFAAAALAAAAx5odUhVAAAAKAAA
+A0pzdlNFAAAAJgAAAqJ6aENOAAAAFgAAA3JqYUpQAAAAGgAAA4hyb1JPAAAAJAAAA6JlbEdSAAAAIgAA
+A8ZwdFBPAAAAJgAAA+hubE5MAAAAKAAABA5lc0VTAAAAJgAAA+h0aFRIAAAAJAAABDZ0clRSAAAAIgAA
+BFpmaUZJAAAAKAAABHxwbFBMAAAALAAABKRydVJVAAAAIgAABNBhckVHAAAAJgAABPJlblVTAAAAJgAA
+BRhkYURLAAAALgAABT4AVgFhAGUAbwBiAGUAYwBuAP0AIABSAEcAQgAgAHAAcgBvAGYAaQBsAEcAZQBu
+AGUAcgBpAQ0AawBpACAAUgBHAEIAIABwAHIAbwBmAGkAbABQAGUAcgBmAGkAbAAgAFIARwBCACAAZwBl
+AG4A6AByAGkAYwBQAGUAcgBmAGkAbAAgAFIARwBCACAARwBlAG4A6QByAGkAYwBvBBcEMAQzBDAEOwRM
+BD0EOAQ5ACAEPwRABD4ERAQwBDkEOwAgAFIARwBCAFAAcgBvAGYAaQBsACAAZwDpAG4A6QByAGkAcQB1
+AGUAIABSAFYAQpAadSgAIABSAEcAQgAggnJfaWPPj/AAUAByAG8AZgBpAGwAbwAgAFIARwBCACAAZwBl
+AG4AZQByAGkAYwBvAEcAZQBuAGUAcgBpAHMAawAgAFIARwBCAC0AcAByAG8AZgBpAGzHfLwYACAAUgBH
+AEIAINUEuFzTDMd8AE8AYgBlAGMAbgD9ACAAUgBHAEIAIABwAHIAbwBmAGkAbAXkBegF1QXkBdkF3AAg
+AFIARwBCACAF2wXcBdwF2QBBAGwAbABnAGUAbQBlAGkAbgBlAHMAIABSAEcAQgAtAFAAcgBvAGYAaQBs
+AMEAbAB0AGEAbADhAG4AbwBzACAAUgBHAEIAIABwAHIAbwBmAGkAbGZukBoAIABSAEcAQgAgY8+P8GWH
+TvZOAIIsACAAUgBHAEIAIDDXMO0w1TChMKQw6wBQAHIAbwBmAGkAbAAgAFIARwBCACAAZwBlAG4AZQBy
+AGkAYwOTA7UDvQO5A7oDzAAgA8ADwQO/A8YDrwO7ACAAUgBHAEIAUABlAHIAZgBpAGwAIABSAEcAQgAg
+AGcAZQBuAOkAcgBpAGMAbwBBAGwAZwBlAG0AZQBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBlAGwOQg4b
+DiMORA4fDiUOTAAgAFIARwBCACAOFw4xDkgOJw5EDhsARwBlAG4AZQBsACAAUgBHAEIAIABQAHIAbwBm
+AGkAbABpAFkAbABlAGkAbgBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBpAGwAaQBVAG4AaQB3AGUAcgBz
+AGEAbABuAHkAIABwAHIAbwBmAGkAbAAgAFIARwBCBB4EMQRJBDgEOQAgBD8EQAQ+BEQEOAQ7BEwAIABS
+AEcAQgZFBkQGQQAgBioGOQYxBkoGQQAgAFIARwBCACAGJwZEBjkGJwZFAEcAZQBuAGUAcgBpAGMAIABS
+AEcAQgAgAFAAcgBvAGYAaQBsAGUARwBlAG4AZQByAGUAbAAgAFIARwBCAC0AYgBlAHMAawByAGkAdgBl
+AGwAcwBldGV4dAAAAABDb3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRzIHJlc2VydmVk
+LgBYWVogAAAAAAAA81IAAQAAAAEWz1hZWiAAAAAAAAB0TQAAPe4AAAPQWFlaIAAAAAAAAFp1AACscwAA
+FzRYWVogAAAAAAAAKBoAABWfAAC4NmN1cnYAAAAAAAAAAQHNAABzZjMyAAAAAAABDEIAAAXe///zJgAA
+B5IAAP2R///7ov///aMAAAPcAADAbNIiIyQlWiRjbGFzc25hbWVYJGNsYXNzZXNfEBBOU0JpdG1hcElt
+YWdlUmVwoyYnKF8QEE5TQml0bWFwSW1hZ2VSZXBaTlNJbWFnZVJlcFhOU09iamVjdNIiIyorV05TQXJy
+YXmiKijSIiMtLl5OU011dGFibGVBcnJheaMtKijTMDEJMjM0V05TV2hpdGVcTlNDb2xvclNwYWNlRDAg
+MAAQA4AL0iIjNjdXTlNDb2xvcqI2KNIiIzk6V05TSW1hZ2WiOShfEA9OU0tleWVkQXJjaGl2ZXLRPT5U
+cm9vdIABAAgAEQAaACMALQAyADcARQBLAFQAWwBoAG8AdwB5AH4AgACCAIcAkgCUAJYAmACdAKAAogCk
+AKYAqACtAMQAxgDIDtoO3w7qDvMPBg8KDx0PKA8xDzYPPg9BD0YPVQ9ZD2APaA91D3oPfA9+D4MPiw+O
+D5MPmw+eD7APsw+4AAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAD7o
+</mutableData>
+        </image>
+        <image name="48C827FB-C825-4188-8D88-75D4B073BB8C" width="27" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
@@ -2703,80 +2774,9 @@ AJYAmACdAKAAogCkAKYAqACtAMQAxgDIE1oTXxNqE3MThhOKE50TqBOxE7YTvhPBE8YT1RPZE+AT6BP1
 E/oT/BP+FAMUCxQOFBMUGxQeFDAUMxQ4AAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAFDo
 </mutableData>
         </image>
-        <image name="C5E04C8C-734F-4E0D-87AD-D9E0BD174D56" width="36" height="10">
-            <mutableData key="keyedArchiveRepresentation">
-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
-AG4A6AByAGkAYwBQAGUAcgBmAGkAbAAgAFIARwBCACAARwBlAG4A6QByAGkAYwBvBBcEMAQzBDAEOwRM
-BD0EOAQ5ACAEPwRABD4ERAQwBDkEOwAgAFIARwBCAFAAcgBvAGYAaQBsACAAZwDpAG4A6QByAGkAcQB1
-AGUAIABSAFYAQpAadSgAIABSAEcAQgAggnJfaWPPj/AAUAByAG8AZgBpAGwAbwAgAFIARwBCACAAZwBl
-AG4AZQByAGkAYwBvAEcAZQBuAGUAcgBpAHMAawAgAFIARwBCAC0AcAByAG8AZgBpAGzHfLwYACAAUgBH
-AEIAINUEuFzTDMd8AE8AYgBlAGMAbgD9ACAAUgBHAEIAIABwAHIAbwBmAGkAbAXkBegF1QXkBdkF3AAg
-AFIARwBCACAF2wXcBdwF2QBBAGwAbABnAGUAbQBlAGkAbgBlAHMAIABSAEcAQgAtAFAAcgBvAGYAaQBs
-AMEAbAB0AGEAbADhAG4AbwBzACAAUgBHAEIAIABwAHIAbwBmAGkAbGZukBoAIABSAEcAQgAgY8+P8GWH
-TvZOAIIsACAAUgBHAEIAIDDXMO0w1TChMKQw6wBQAHIAbwBmAGkAbAAgAFIARwBCACAAZwBlAG4AZQBy
-AGkAYwOTA7UDvQO5A7oDzAAgA8ADwQO/A8YDrwO7ACAAUgBHAEIAUABlAHIAZgBpAGwAIABSAEcAQgAg
-AGcAZQBuAOkAcgBpAGMAbwBBAGwAZwBlAG0AZQBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBlAGwOQg4b
-DiMORA4fDiUOTAAgAFIARwBCACAOFw4xDkgOJw5EDhsARwBlAG4AZQBsACAAUgBHAEIAIABQAHIAbwBm
-AGkAbABpAFkAbABlAGkAbgBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBpAGwAaQBVAG4AaQB3AGUAcgBz
-AGEAbABuAHkAIABwAHIAbwBmAGkAbAAgAFIARwBCBB4EMQRJBDgEOQAgBD8EQAQ+BEQEOAQ7BEwAIABS
-AEcAQgZFBkQGQQAgBioGOQYxBkoGQQAgAFIARwBCACAGJwZEBjkGJwZFAEcAZQBuAGUAcgBpAGMAIABS
-AEcAQgAgAFAAcgBvAGYAaQBsAGUARwBlAG4AZQByAGUAbAAgAFIARwBCAC0AYgBlAHMAawByAGkAdgBl
-AGwAcwBldGV4dAAAAABDb3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRzIHJlc2VydmVk
-LgBYWVogAAAAAAAA81IAAQAAAAEWz1hZWiAAAAAAAAB0TQAAPe4AAAPQWFlaIAAAAAAAAFp1AACscwAA
-FzRYWVogAAAAAAAAKBoAABWfAAC4NmN1cnYAAAAAAAAAAQHNAABzZjMyAAAAAAABDEIAAAXe///zJgAA
-B5IAAP2R///7ov///aMAAAPcAADAbNIiIyQlWiRjbGFzc25hbWVYJGNsYXNzZXNfEBBOU0JpdG1hcElt
-YWdlUmVwoyYnKF8QEE5TQml0bWFwSW1hZ2VSZXBaTlNJbWFnZVJlcFhOU09iamVjdNIiIyorV05TQXJy
-YXmiKijSIiMtLl5OU011dGFibGVBcnJheaMtKijTMDEJMjM0V05TV2hpdGVcTlNDb2xvclNwYWNlRDAg
-MAAQA4AL0iIjNjdXTlNDb2xvcqI2KNIiIzk6V05TSW1hZ2WiOShfEA9OU0tleWVkQXJjaGl2ZXLRPT5U
-cm9vdIABAAgAEQAaACMALQAyADcARQBLAFQAWwBoAG8AdwB5AH4AgACCAIcAkgCUAJYAmACdAKAAogCk
-AKYAqACtAMQAxgDIDtoO3w7qDvMPBg8KDx0PKA8xDzYPPg9BD0YPVQ9ZD2APaA91D3oPfA9+D4MPiw+O
-D5MPmw+eD7APsw+4AAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAD7o
-</mutableData>
-        </image>
+        <image name="Add_new_beeep_btn.png" width="65" height="65"/>
+        <image name="Beeep_it_btn.png" width="281" height="40"/>
+        <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="activity_container_image_2.png" width="40" height="40"/>
         <image name="add_photo.png" width="99" height="102"/>
         <image name="arrow-cell.png" width="9" height="16"/>

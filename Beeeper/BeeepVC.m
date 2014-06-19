@@ -135,12 +135,12 @@
                 case 2:
                 case 3:
                 {
-                    txtF.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
+                    txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
                 }
                 break;
                 case 4:
                 case 5:{
-                    txtF.font = [UIFont fontWithName:@"Roboto-Bold" size:11];
+                    txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
                 }
                 default:
                     break;

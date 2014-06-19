@@ -32,22 +32,22 @@
     [self.navigationItem setTitleView:titleView];
 
     UILabel *lbl1 = (id)[self.scrollV viewWithTag:1];
-    lbl1.font = [UIFont fontWithName:@"Roboto-Bold" size:23];
+    lbl1.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:23];
     
     UILabel *lbl2 = (id)[self.scrollV viewWithTag:2];
-    lbl2.font = [UIFont fontWithName:@"Roboto-Medium" size:15];
+    lbl2.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     
     UILabel *lbl3 = (id)[self.scrollV viewWithTag:3];
-    lbl3.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
+    lbl3.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     
     UILabel *lbl4 = (id)[self.scrollV viewWithTag:4];
-    lbl4.font = [UIFont fontWithName:@"Roboto-Medium" size:15];
+    lbl4.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     
     UILabel *lbl5 = (id)[self.scrollV viewWithTag:5];
-    lbl5.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
+    lbl5.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     
     UILabel *lbl6 = (id)[self.scrollV viewWithTag:-1];
-    lbl6.font = [UIFont fontWithName:@"Roboto-Bold" size:11];
+    lbl6.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
 }
 
 -(void)goBack{

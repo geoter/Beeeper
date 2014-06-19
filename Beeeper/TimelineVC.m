@@ -170,8 +170,8 @@
     
     [self createMenuButtons:NO];
 
-    self.venueLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
-    self.usernameLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:20];
+    self.venueLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+    self.usernameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
 }
 
 -(void)setUserInfo{
@@ -277,7 +277,7 @@
         lbl.backgroundColor =  [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
         lbl.textColor = [UIColor whiteColor];
         lbl.textAlignment = NSTextAlignmentCenter;
-        lbl.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
         lbl.layer.cornerRadius = 2;
         
         self.followButton.layer.cornerRadius = 2;
@@ -297,7 +297,7 @@
         lbl.backgroundColor = [UIColor whiteColor];
         lbl.textColor = [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
-        lbl.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
         [self.followButton addSubview:lbl];
         self.followButton.hidden = NO;
         
@@ -318,7 +318,7 @@
         lbl.tag = 45;
         
         NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-        lbl.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
         lbl.text = mtext;
         lbl.textAlignment = NSTextAlignmentCenter;
         
@@ -340,7 +340,7 @@
         NSString *text = [NSString stringWithFormat:@"%d Following",following];
         
         lbl.text = text;
-        lbl.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
         lbl.layer.borderColor = [UIColor whiteColor].CGColor;
         lbl.layer.borderWidth = 1.5f;
         lbl.layer.cornerRadius = 2;
@@ -387,13 +387,13 @@
     cell.backgroundColor = [UIColor clearColor];
     
     UILabel *mLbl = (id)[cell viewWithTag:1];
-    mLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     
     UILabel *dLbl = (id)[cell viewWithTag:2];
-    dLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:25];
+    dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
     
     UILabel *titleLbl = (id)[cell viewWithTag:4];
-    titleLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
+    titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
     
 //    [cell viewWithTag:66].layer.masksToBounds = NO;
 //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
@@ -414,7 +414,7 @@
         reminderLabel.hidden = NO;
     }
     
-    reminderLabel.font = [UIFont fontWithName:@"Roboto-Light" size:16];
+    reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
     
     
     Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
@@ -441,9 +441,9 @@
     UILabel *monthLbl = (id)[cell viewWithTag:1];
     
     dayLbl.text = daynumber;
-    dayLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:23];
+    dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
     monthLbl.text = [month uppercaseString];
-    monthLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     
     //Venue name
     
@@ -534,7 +534,7 @@
     footer.backgroundColor =[UIColor clearColor];
     UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
     lbl.text = @"There are no beeeps available.";
-    lbl.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
     lbl.textAlignment = NSTextAlignmentCenter;
     [footer addSubview:lbl];
@@ -553,6 +553,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
 
 }

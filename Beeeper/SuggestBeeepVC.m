@@ -51,10 +51,10 @@
 
 -(void)adjustFonts{
     UILabel *lbl = (id)[self.containerV viewWithTag:1];
-    lbl.font = [UIFont fontWithName:@"Roboto-Light" size:20];
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
 
     lbl = (id)[self.containerV viewWithTag:2];
-    lbl.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
 }
 
 - (void)didReceiveMemoryWarning
@@ -254,6 +254,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

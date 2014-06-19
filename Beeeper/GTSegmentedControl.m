@@ -39,7 +39,7 @@
             UIButton *optionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             optionBtn.frame = CGRectMake(i*width, 1, width, s.height-2);
             optionBtn.backgroundColor = [UIColor clearColor];
-            optionBtn.titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
+            optionBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
             [optionBtn setTitle:option forState:UIControlStateNormal];
             [optionBtn setTitleColor:[UIColor colorWithRed:183/255.0 green:199/255.0 blue:214/255.0 alpha:1] forState:UIControlStateNormal];
             [optionBtn setTag:i];

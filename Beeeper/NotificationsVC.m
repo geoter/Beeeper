@@ -94,10 +94,10 @@
     UIImageView *imgV = (UIImageView *)[cell viewWithTag:1];
     
     UILabel *time = (UILabel *)[cell viewWithTag:2];
-    time.font =  [UIFont fontWithName:@"Roboto-Regular" size:10];
+    time.font =  [UIFont fontWithName:@"HelveticaNeue" size:10];
     
     UILabel *txtV = (id)[cell viewWithTag:3];
-    txtV.font =  [UIFont fontWithName:@"Roboto-Regular" size:13];
+    txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
 
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
     Who *w = [[activity.who firstObject] copy];
@@ -256,18 +256,18 @@
     NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
     
     [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Light" size:12]
+                    value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
                     range:NSMakeRange(0,formattedString.length)];
     
     if (w != nil && ![w.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[w.name capitalizedString]]];
     }
     
     if (wm != nil && ![wm.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[wm.name capitalizedString]]];
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
@@ -275,7 +275,7 @@
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
         
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[event.title capitalizedString]]];
         
     }
@@ -284,12 +284,12 @@
         EventActivity *event = [activity.eventActivity firstObject];
         NSString *event_title = [event.title capitalizedString];
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:event_title]];
     }
     else{
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:activity.what]];
     }
     
@@ -306,7 +306,7 @@
     
     NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
     
-    CGSize textViewSize = [self frameForText:str sizeWithFont:[UIFont fontWithName:@"Roboto-Regular" size:13] constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:str sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:13] constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
     
     return ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
     
@@ -328,6 +328,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
     });
     
 }

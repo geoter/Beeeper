@@ -49,17 +49,17 @@
         if([v isKindOfClass:[UILabel class]])
         {
    
-               ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+               ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
     
             
         }
         else if ([v isKindOfClass:[UIButton class]]){
-                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
         }
         else if ([v isKindOfClass:[UIView class]]){
             
             UIButton *btn = (UIButton *)[v viewWithTag:1];
-            btn.titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+            btn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
         }
     }
     
@@ -67,7 +67,7 @@
     {
         if([v isKindOfClass:[UILabel class]] && v.tag == 4)
         {
-            ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+            ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
         }
     }
     

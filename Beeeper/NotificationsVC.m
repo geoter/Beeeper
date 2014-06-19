@@ -193,7 +193,7 @@
     }
     else{
         
-        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         vC.mode = Timeline_Not_Following;
         
         Who *w = [activity.who firstObject];

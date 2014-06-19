@@ -499,7 +499,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
   
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
     timelineVC.mode = Timeline_Not_Following;
     
     NSDictionary *user = [b.whoFfo dictionaryRepresentation];

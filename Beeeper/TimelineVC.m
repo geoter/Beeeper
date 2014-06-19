@@ -31,8 +31,6 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
-    option = segmentIndex;
-    
     if (![userID isKindOfClass:[NSString class]]) {
         userID = [self.user objectForKey:@"id"];
     }
@@ -125,7 +123,7 @@
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     
     if (self.mode != Timeline_My || self.showBackButton) {
@@ -522,7 +520,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0 && self.mode == Timeline_My) {
+    if (indexPath.row == 0) {
         return 40;
     }
     else{

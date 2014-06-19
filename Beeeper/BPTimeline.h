@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define Upcoming 1
-#define Past 2
+#define Upcoming 0
+#define Past 1
 
 typedef void(^completed)(BOOL,id);
 

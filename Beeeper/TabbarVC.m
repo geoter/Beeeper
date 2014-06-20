@@ -193,7 +193,7 @@
             vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVC"];
             break;
         case 3:{
-                TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+                TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
                 timelineVC.mode = Timeline_My;
                 vC = timelineVC;
             }
@@ -209,8 +209,13 @@
 
     
     UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vC];
-    
+    navVC.navigationBar.translucent = NO;
     navVC.view.frame = self.containerVC.frame;
+    
+    for (UIView *view in [[[navVC.navigationBar subviews] objectAtIndex:0] subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+    }
+
     
     for (UIViewController *child in self.childViewControllers) {
         [child removeFromParentViewController];

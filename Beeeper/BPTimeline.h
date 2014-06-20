@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+#define Upcoming 0
+#define Past 1
+
 typedef void(^completed)(BOOL,id);
 
 @interface BPTimeline : NSObject
 
--(void)getTimelineForUserID:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
 
 @property (copy) void(^completed)(BOOL,id);
 

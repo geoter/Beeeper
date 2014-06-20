@@ -11,12 +11,12 @@
 #define GHShowAnimationID @"GHContextMenuViewRriseAnimationID"
 #define GHDismissAnimationID @"GHContextMenuViewDismissAnimationID"
 
-NSInteger const GHMainItemSize = 44;
-NSInteger const GHMenuItemSize = 40;
+NSInteger const GHMainItemSize = 50;
+NSInteger const GHMenuItemSize = 50;
 NSInteger const GHBorderWidth  = 5;
 
-CGFloat const   GHAnimationDuration = 0.2;
-CGFloat const   GHAnimationDelay = GHAnimationDuration/5;
+CGFloat const   GHAnimationDuration = 0.1;
+CGFloat const   GHAnimationDelay = GHAnimationDuration/10;
 
 
 @interface GHMenuItemLocation : NSObject

@@ -64,6 +64,7 @@
 {
     [super viewDidLoad];
     
+    
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;
@@ -119,6 +120,7 @@
 }
 
 -(void)getHomeFeed{
+
     
     [self showLoading];
     
@@ -159,23 +161,28 @@
 }
 
 
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-}
 
 -(void)showFindFriends{
     UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
--(void)showNotifications{
-     UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"NotificationsVC"];
-    [self.navigationController pushViewController:viewController animated:YES];
-}
-
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+  
+    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            
+            [self.collectionV reloadData];
+        }
+    }];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -225,17 +232,17 @@
     UIImageView *imageV = (id)[containerV viewWithTag:3];
     UILabel *titleLbl = (id)[containerV viewWithTag:4];
     
-    //monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
     monthLbl.text = [month uppercaseString];
     
-    //dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+    dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
     dayLbl.text = daynumber;
     dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
 
-    //titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+    titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
 //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -263,7 +270,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     area.frame = CGRectMake(37, 190, 108, 32);
     
-    //area.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
+    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
     
@@ -274,7 +281,7 @@
     area.text = [loc.venueStation uppercaseString];
     [area sizeToFit];
     area.center = CGPointMake(containerV.center.x, area.center.y);
-    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+4, area.frame.size.width, area.frame.size.height);
+    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
     
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
     areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
@@ -285,15 +292,15 @@
     UILabel *favorites = (id)[containerV viewWithTag:-3];
     UILabel *comments = (id)[containerV viewWithTag:-4];
     UILabel *beeeps = (id)[containerV viewWithTag:-5];
-   // favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-   // comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-   // beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+    favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+    comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+    beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
     
     Beeeps *b = [event.beeepFfo.beeeps firstObject];
     
-    favorites.text = [NSString stringWithFormat:@"%d",b.likes.count];
-    comments.text = [NSString stringWithFormat:@"%d",b.comments.count];
-    beeeps.text = [NSString stringWithFormat:@"%d",event.eventFfo.beeepedBy.count];
+    favorites.text = [NSString stringWithFormat:@"%d",(int)b.likes.count];
+    comments.text = [NSString stringWithFormat:@"%d",(int)b.comments.count];
+    beeeps.text = [NSString stringWithFormat:@"%d",(int)event.eventFfo.beeepedBy.count];
     
     NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
@@ -321,10 +328,10 @@
     UILabel *beeepedByLabel =(id)[beeepedByView viewWithTag:35];
     UILabel *beeepedByNameLabel =(id)[beeepedByView viewWithTag:33];
     
-    //beeepedByLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
+    beeepedByLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
     beeepedByLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
 
-    //beeepedByNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
+    beeepedByNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
     beeepedByNameLabel.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     beeepedByNameLabel.text = [event.whoFfo.name capitalizedString];
@@ -401,7 +408,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, 337);
+    return CGSizeMake(148, 298);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //
@@ -504,7 +511,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
   
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
     timelineVC.mode = Timeline_Not_Following;
     
     NSDictionary *user = [b.whoFfo dictionaryRepresentation];

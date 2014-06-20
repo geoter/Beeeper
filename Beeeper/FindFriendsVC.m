@@ -34,6 +34,7 @@
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     self.tableView.decelerationRate = 0.6;
     
@@ -63,7 +64,6 @@
 }
 
 -(void)goBack{
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -127,37 +127,6 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     ((UITextField *)[cell viewWithTag:1]).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-    
-    UIImage *optionIcon;
-    
-    switch (selectedOption) {
-        case BeeeperButton:
-        {
-            optionIcon = [UIImage imageNamed:@"Beeeper_logo_small"];
-        }
-        break;
-        case FacebookButton:
-        {
-            optionIcon = [UIImage imageNamed:@"facebook_logo_small"];
-        }
-            break;
-        case TwitterButton:
-        {
-            optionIcon = [UIImage imageNamed:@"twitter_icon_small"];
-        }
-            break;
-        case MailButton:
-        {
-            optionIcon = [UIImage imageNamed:@"mail_icon_small"];
-        }
-            break;
-            
-        default:
-            break;
-    }
-    
-    ((UIImageView *)[cell viewWithTag:2]).image = optionIcon;
-    
     
     return cell;
 }

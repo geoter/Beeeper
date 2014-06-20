@@ -120,6 +120,19 @@
     
     self.scrollV.contentSize = CGSizeMake(320, 871);
     
+//    self.monthLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+//    self.dayNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:41];
+//    self.dayLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
+//    self.hourLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+//    
+//    self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:26];
+//    self.venueLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
+//    
+//    self.codeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:13];
+//    self.codeNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+//    self.websiteLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+//    self.tagsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:12];
+    
     
    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
     
@@ -187,7 +200,7 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
     //Website
     
@@ -343,7 +356,7 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
     //Website
     
@@ -500,7 +513,7 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
     //Website
     
@@ -658,7 +671,7 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
     //Website
     

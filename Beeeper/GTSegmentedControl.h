@@ -8,14 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol GTSegmentedControlDelegate <NSObject>
+-(void)selectedSegmentAtIndex:(int)index;
+@end
+
 @interface GTSegmentedControl : UIView
 {
     NSArray *options;
     CGFloat height;
 }
 
+@property (nonatomic,weak) id delegate;
+
 -(void)buttonClicked:(UIButton *)btn;
 
-+(id)initWithOptions:(NSArray *)o size:(CGSize)s;
++(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index;
 
 @end

@@ -13,21 +13,23 @@
 #import "Timeline_Object.h"
 #import "CommentsVC.h"
 #import <QuartzCore/QuartzCore.h>
+#import "GTSegmentedControl.h"
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
     int followers;
     int following;
     BOOL isFollowing;
+    int segmentIndex;
 }
 @end
 
 @implementation TimelineVC
 @synthesize mode,user;
 
--(void)getTimeline:(NSString *)userID{
+-(void)getTimeline:(NSString *)userID option:(int)option{
     
     if (![userID isKindOfClass:[NSString class]]) {
         userID = [self.user objectForKey:@"id"];
@@ -58,7 +60,7 @@
 
     }
     
-    [[BPTimeline sharedBP]getTimelineForUserID:userID WithCompletionBlock:^(BOOL completed,NSArray *objs){
+    [[BPTimeline sharedBP]getTimelineForUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
@@ -86,12 +88,12 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
-    [refreshControl addTarget:self action:@selector(getTimeline:) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(getTimeline:option:) forControlEvents:UIControlEventValueChanged];
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     
     
-    [self getTimeline:[self.user objectForKey:@"id"]];
+    [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
     [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
         
@@ -121,7 +123,7 @@
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     
     if (self.mode != Timeline_My || self.showBackButton) {
@@ -131,6 +133,10 @@
         self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
         [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
         self.backBtn.hidden = NO;
+    }
+    else{
+        self.settingsIcon.hidden = NO;
+        self.importIcon.hidden = NO;
     }
     
 //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
@@ -353,12 +359,6 @@
 
 }
 
-
--(void)showNotifications{
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"NotificationsVC"];
-    [self.navigationController pushViewController:viewController animated:YES];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -376,125 +376,156 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    if (self.mode == Timeline_My) {
+        return beeeps.count + 1;
+    }
     return beeeps.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier;
+    UITableViewCell *cell;
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell.backgroundColor = [UIColor clearColor];
-    
-    UILabel *mLbl = (id)[cell viewWithTag:1];
-    mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-    
-    UILabel *dLbl = (id)[cell viewWithTag:2];
-    dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
-    
-    UILabel *titleLbl = (id)[cell viewWithTag:4];
-    titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
-    
-//    [cell viewWithTag:66].layer.masksToBounds = NO;
-//    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
-//    [cell viewWithTag:66].layer.borderWidth = 0.5;
+    if (indexPath.row == 0) {
 
-    UILabel *reminderLabel = (id)[cell viewWithTag:-6];
-    UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
-    UIButton *beepItbutton = (id)[cell viewWithTag:-8];
-    
-    if (self.mode != Timeline_My) {
-        beepItbutton.hidden = NO;
-        reminderIcon.hidden = YES;
-        reminderLabel.hidden = YES;
+        CellIdentifier = @"ToggleCell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
+        
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex];
+
+        segment.delegate = self;
+        [headerView addSubview:segment];
+        segment.center = CGPointMake(160, 16);
+        [cell addSubview:headerView];
     }
     else{
-        beepItbutton.hidden = YES;
-        reminderIcon.hidden = NO;
-        reminderLabel.hidden = NO;
+        CellIdentifier =  @"Cell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        cell.backgroundColor = [UIColor clearColor];
+        
+        UILabel *mLbl = (id)[cell viewWithTag:1];
+        mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+        
+        UILabel *dLbl = (id)[cell viewWithTag:2];
+        dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
+        
+        UILabel *titleLbl = (id)[cell viewWithTag:4];
+        titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+        
+        //    [cell viewWithTag:66].layer.masksToBounds = NO;
+        //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
+        //    [cell viewWithTag:66].layer.borderWidth = 0.5;
+        
+        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+        UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
+        UIButton *beepItbutton = (id)[cell viewWithTag:-8];
+        
+        if (self.mode != Timeline_My) {
+            beepItbutton.hidden = NO;
+            reminderIcon.hidden = YES;
+            reminderLabel.hidden = YES;
+        }
+        else{
+            beepItbutton.hidden = YES;
+            reminderIcon.hidden = NO;
+            reminderLabel.hidden = NO;
+        }
+        
+        reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+        
+        
+        Timeline_Object *b = [beeeps objectAtIndex:indexPath.row-1];
+        titleLbl.text = [b.event.title capitalizedString];
+        
+        
+        //EVENT DATE
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [formatter setLocale:usLocale];
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
+        NSString *dateStr = [formatter stringFromDate:date];
+        NSArray *components = [dateStr componentsSeparatedByString:@","];
+        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        
+        NSString *month = [day_month objectAtIndex:1];
+        NSString *daynumber = [day_month objectAtIndex:2];
+        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+        
+        UILabel *dayLbl = (id)[cell viewWithTag:2];
+        UILabel *monthLbl = (id)[cell viewWithTag:1];
+        
+        dayLbl.text = daynumber;
+        dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
+        monthLbl.text = [month uppercaseString];
+        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+        
+        //Venue name
+        
+        UILabel *venueLbl = (id)[cell viewWithTag:5];
+        
+        NSString *jsonString = b.event.location;
+        NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = loc.venueStation;
+        
+        //Likes,Beeeps,Comments
+        UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
+        UILabel *likesLbl = (id)[cell viewWithTag:-3];
+        UILabel *commentsLbl = (id)[cell viewWithTag:-4];
+        
+        likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
+        beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
+        
+        //Image
+        
+        UIImageView *imgV = (id)[cell viewWithTag:3];
+        
+        NSString *extension = [[b.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        
+        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[b.event.imageUrl MD5],extension];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            imgV.backgroundColor = [UIColor clearColor];
+            imgV.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            imgV.image = img;
+        }
+        else{
+            imgV.backgroundColor = [UIColor lightGrayColor];
+            imgV.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        }
+
     }
     
-    reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-    
-    
-    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
-    titleLbl.text = [b.event.title capitalizedString];
-    
-    
-    //EVENT DATE
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    [formatter setLocale:usLocale];
-    
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
-    NSString *dateStr = [formatter stringFromDate:date];
-    NSArray *components = [dateStr componentsSeparatedByString:@","];
-    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-    
-    NSString *month = [day_month objectAtIndex:1];
-    NSString *daynumber = [day_month objectAtIndex:2];
-    NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-    NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-
-    UILabel *dayLbl = (id)[cell viewWithTag:2];
-    UILabel *monthLbl = (id)[cell viewWithTag:1];
-    
-    dayLbl.text = daynumber;
-    dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
-    monthLbl.text = [month uppercaseString];
-    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-    
-    //Venue name
-    
-    UILabel *venueLbl = (id)[cell viewWithTag:5];
-
-    NSString *jsonString = b.event.location;
-    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
-    
-    //Likes,Beeeps,Comments
-    UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
-    UILabel *likesLbl = (id)[cell viewWithTag:-3];
-    UILabel *commentsLbl = (id)[cell viewWithTag:-4];
-
-    likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
-    commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
-   
-    //Image
-    
-    UIImageView *imgV = (id)[cell viewWithTag:3];
-   
-    NSString *extension = [[b.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[b.event.imageUrl MD5],extension];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imgV.backgroundColor = [UIColor clearColor];
-        imgV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imgV.image = img;
-    }
-    else{
-        imgV.backgroundColor = [UIColor lightGrayColor];
-        imgV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-    }
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 113;
+    
+    if (indexPath.row == 0) {
+        return 40;
+    }
+    else{
+        return 113;
+    }
 }
 
 -(void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -505,10 +536,14 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    if (indexPath.row == 0) {
+        return;
+    }
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
-    viewController.tml = [beeeps objectAtIndex:indexPath.row];
+    viewController.tml = [beeeps objectAtIndex:indexPath.row-1];
     
     [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -668,15 +703,53 @@
 - (IBAction)followButtonPressed:(id)sender {
     
     if (self.mode == Timeline_Not_Following){
-        self.mode = Timeline_Following;
-        [self createMenuButtons:YES];
+       
+        //follow user
+        [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                self.mode = Timeline_Following;
+                [self createMenuButtons:YES];
+            }
+        }];
+    }
+   else{
+        
+        NSString *username = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
+        
+        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:username delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Unfollow" otherButtonTitles:nil];
+        [popup showInView:self.view];
+       
     }
     
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                self.mode = Timeline_Not_Following;
+                [self createMenuButtons:YES];
+
+            }
+        }];
+        
+    }
 }
 
 - (IBAction)editProfilePressed:(id)sender {
     UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EditProfile"];
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (IBAction)settingsPressed:(id)sender {
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SettingsVC"];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (IBAction)importPressed:(id)sender {
 }
 
 - (IBAction)showSuggestions:(id)sender {
@@ -687,6 +760,21 @@
 - (IBAction)showActivity:(id)sender {
     UIViewController *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ActivityVC"];
     [self.navigationController pushViewController:vC animated:YES];
+}
+
+
+#pragma mark - GTSegmentedControlDelegate
+
+-(void)selectedSegmentAtIndex:(int)index{
+
+    segmentIndex = index;
+    
+    if (index == 0) { //upcoming
+        [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    }
+    else{ //past
+        [self getTimeline:[self.user objectForKey:@"id"] option:Past];
+    }
 }
 
 @end

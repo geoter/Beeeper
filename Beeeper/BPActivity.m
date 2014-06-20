@@ -50,6 +50,18 @@ static BPActivity *thisWebServices = nil;
 
 #pragma mark - Activity
 
+-(void)getLocalActivityWithCompletionBlock:(completed)compbloc{
+    self.local_activity_completed = compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+
+}
+
 -(void)getActivityWithCompletionBlock:(completed)compbloc{
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show"];
@@ -103,6 +115,42 @@ static BPActivity *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.activity_completed];
+}
+
+-(void)activityFailed:(ASIHTTPRequest *)request{
+    
+    NSLog(@"FAILES REQUEST->ACTIVITY");
+    
+    requestFailedCounter++;
+    
+    NSString *responseString = [request responseString];
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
+    
+    if (requestFailedCounter < 5) {
+        [self getActivityWithCompletionBlock:self.activity_completed];
+    }
+    else{
+        self.activity_completed(NO,nil);
+    }
+    
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
+
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     if (responseString.length == 0 || beeeps == nil) { //something went wrong
@@ -128,27 +176,8 @@ static BPActivity *thisWebServices = nil;
         [bs addObject:activity];
     }
     
-    self.activity_completed(YES,bs);
+    compbloc(YES,bs);
 }
-
--(void)activityFailed:(ASIHTTPRequest *)request{
-    
-    NSLog(@"FAILES REQUEST->ACTIVITY");
-    
-    requestFailedCounter++;
-    
-    NSString *responseString = [request responseString];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
-    
-    if (requestFailedCounter < 5) {
-        [self getActivityWithCompletionBlock:self.activity_completed];
-    }
-    else{
-        self.activity_completed(NO,nil);
-    }
-    
-}
-
 #pragma mark - Event
 
 -(void)getEvent:(Activity_Object *)activityObj WithCompletionBlock:(completed)compbloc{
@@ -297,7 +326,7 @@ static BPActivity *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
@@ -326,7 +355,7 @@ static BPActivity *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
@@ -357,7 +386,7 @@ static BPActivity *thisWebServices = nil;
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -380,7 +409,7 @@ static BPActivity *thisWebServices = nil;
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         

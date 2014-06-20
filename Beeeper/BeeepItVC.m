@@ -34,7 +34,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     self.fbShareV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
     self.fbShareV.layer.borderWidth = 1;
     self.fbShareV.layer.masksToBounds = YES;
@@ -44,99 +44,120 @@
     self.twitterV.layer.borderWidth = 1;
     self.twitterV.layer.masksToBounds = YES;
     self.twitterV.layer.cornerRadius = 2;
-    
-    if (tml == nil && self.values != nil) { //Coming from Create event screen
-        Friendsfeed_Object *ff = [[Friendsfeed_Object alloc]init];
-        ff.eventFfo.eventDetailsFfo.title = [values objectForKey:@"title"];
-        ff.eventFfo.eventDetailsFfo.timestamp = [[values objectForKey:@"timestamp"]doubleValue];
-        
-        //{"venue_station":"Save Mart Center","longitude":"36.7468422","latitude":"-119.7725868","address":"Fresno, CA, United States","city":"Fresno","state":" CA","country":"","utcoffset":"-420"}
-        NSMutableString *locationObjc = [[NSMutableString alloc]initWithFormat:@"{\"venue_station\":\"%@\"}",[values objectForKey:@"station"]];
-        
-        ff.eventFfo.eventDetailsFfo.location = locationObjc;
-        ff.eventFfo.eventDetailsFfo.fingerprint = [values objectForKey:@"fingerprint"];
-        tml = ff;
-    }
+
+    [self adjustFonts];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
     
-    [self adjustFonts];
-    
-    NSString *title;
+}
 
-    if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
-        Friendsfeed_Object *ffo = tml;
-        title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    @try {
         
-    }
-    
-    NSDate *date;
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-
-    Timeline_Object *t = tml; //one of those two will be used
-    Friendsfeed_Object *ffo = tml;
-    
-    if ([tml isKindOfClass:[Timeline_Object class]]) {
-        date = [NSDate dateWithTimeIntervalSince1970:t.event.timestamp];
-    }
-    else{
-        date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
-    }
-    
-    NSString *dateStr = [formatter stringFromDate:date];
-    NSArray *components = [dateStr componentsSeparatedByString:@","];
-    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-    
-    NSString *month = [day_month objectAtIndex:1];
-    NSString *daynumber = [day_month objectAtIndex:2];
-    
-    UILabel *dayNumberLbl = (id)[self.scrollV viewWithTag:-2];
-    UILabel *monthLbl = (id)[self.scrollV viewWithTag:-1];
-    
-    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
-    dayNumberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
-
-    dayNumberLbl.text = daynumber;
-    monthLbl.text = [month uppercaseString];
-    
-    NSString *venue;
-    NSString *jsonString;
-    
-    if ([tml isKindOfClass:[Timeline_Object class]]) {
-        jsonString = t.event.location;
-    }
-    else{
-        jsonString = ffo.eventFfo.eventDetailsFfo.location;
-    }
-    
-    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venue = loc.venueStation;
-
-    
-    for (UIView *v in self.scrollV.subviews) {
-        if ([v isKindOfClass:[UITextView class]]) {
-            UITextView *txtV = (UITextView *)v;
+        if (tml == nil && self.values != nil) { //Coming from Create event screen
+            Friendsfeed_Object *ff = [[Friendsfeed_Object alloc]init];
+            ff.eventFfo.eventDetailsFfo.title = [values objectForKey:@"title"];
+            ff.eventFfo.eventDetailsFfo.timestamp = [[values objectForKey:@"timestamp"]doubleValue];
             
-            switch (txtV.tag) {
-                case 1:
-                {
-                    txtV.text = (title)?title:@"n/a";
+            //{"venue_station":"Save Mart Center","longitude":"36.7468422","latitude":"-119.7725868","address":"Fresno, CA, United States","city":"Fresno","state":" CA","country":"","utcoffset":"-420"}
+            NSMutableString *locationObjc = [[NSMutableString alloc]initWithFormat:@"{\"venue_station\":\"%@\",\"longitude\":\"%@\",\"latitude\":\"%@\",\"address\":\"%@\",\"city\":\"%@\",\"state\":\"%@\",\"country\":\"%@\",\"utcoffset\":\"%@\"}",[values objectForKey:@"station"],[values objectForKey:@"longitude"],[values objectForKey:@"latitude"],[values objectForKey:@"address"],[values objectForKey:@"city"],[values objectForKey:@"state"],[values objectForKey:@"country"],[values objectForKey:@"utcoffset"]];
+            
+            ff.eventFfo.eventDetailsFfo.location = locationObjc;
+            ff.eventFfo.eventDetailsFfo.fingerprint = [values objectForKey:@"fingerprint"];
+            tml = ff;
+        }
+        
+        
+        
+        NSString *title;
+        
+        if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
+            Friendsfeed_Object *ffo = tml;
+            title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
+            
+        }
+        
+        NSDate *date;
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        
+        Timeline_Object *t = tml; //one of those two will be used
+        Friendsfeed_Object *ffo = tml;
+        
+        if ([tml isKindOfClass:[Timeline_Object class]]) {
+            date = [NSDate dateWithTimeIntervalSince1970:t.event.timestamp];
+        }
+        else{
+            date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
+        }
+        
+        NSString *dateStr = [formatter stringFromDate:date];
+        NSArray *components = [dateStr componentsSeparatedByString:@","];
+        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        
+        NSString *month = [day_month objectAtIndex:1];
+        NSString *daynumber = [day_month objectAtIndex:2];
+        
+        UILabel *dayNumberLbl = (id)[self.scrollV viewWithTag:-2];
+        UILabel *monthLbl = (id)[self.scrollV viewWithTag:-1];
+        
+        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+        dayNumberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+        
+        dayNumberLbl.text = daynumber;
+        monthLbl.text = [month uppercaseString];
+        
+        NSString *venue;
+        NSString *jsonString;
+        
+        if ([tml isKindOfClass:[Timeline_Object class]]) {
+            jsonString = t.event.location;
+        }
+        else{
+            jsonString = ffo.eventFfo.eventDetailsFfo.location;
+        }
+        
+        NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        if (data != nil) {
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            
+            EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+            venue = loc.venueStation;
+        }
+        
+        for (UIView *v in self.scrollV.subviews) {
+            if ([v isKindOfClass:[UITextView class]]) {
+                UITextView *txtV = (UITextView *)v;
+                
+                switch (txtV.tag) {
+                    case 1:
+                    {
+                        txtV.text = (title)?title:@"n/a";
+                    }
+                        break;
+                    case 3:
+                    {
+                        txtV.text = (venue)?venue:@"n/a";;
+                    }
+                        break;
+                    default:
+                        break;
                 }
-                    break;
-                case 3:
-                {
-                    txtV.text = (venue)?venue:@"n/a";;
-                }
-                    break;
-                default:
-                    break;
             }
         }
+        
     }
+    @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event was created but something went wrong." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    @finally {
+        
+    }
+
 }
 
 -(void)setBeeepTime:(NSNotification *)notif{
@@ -191,47 +212,13 @@
 
 - (IBAction)close:(id)sender {
     
-//    BOOL showNav = [[[NSUserDefaults standardUserDefaults] objectForKey:@"dontShowNavOnClose"] boolValue];
-//    
-//    if (!showNav) {
-//        [self.parentViewController.navigationController setNavigationBarHidden:NO animated:YES];
-//    }
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (sender == nil) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
+            [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
+        }
+    }];
     
-    if (sender == nil) {
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
-    }
-    
-    [UIView animateWithDuration:0.5f
-                     animations:^
-     {
-         self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         [self removeFromParentViewController];
-         [self.view removeFromSuperview];
-         
-         if (sender == nil) { //Beep It pressed
-//             NSDictionary *options = @{
-//                                       kCRToastTextKey : @"Successfully Beeeped!",
-//                                       kCRToastNotificationTypeKey  : @(CRToastTypeNavigationBar),
-//                                       kCRToastTextAlignmentKey : @(NSTextAlignmentCenter),
-//                                       kCRToastBackgroundColorKey : [UIColor colorWithRed:62/255.0 green:187/255.0 blue:45/255.0 alpha:1],
-//                                       kCRToastAnimationInTypeKey : @(CRToastAnimationTypeGravity),
-//                                       kCRToastAnimationOutTypeKey : @(CRToastAnimationTypeGravity),
-//                                       kCRToastAnimationInDirectionKey : @(CRToastAnimationDirectionTop),
-//                                       kCRToastAnimationOutDirectionKey : @(CRToastAnimationDirectionTop)
-//                                       };
-//             [CRToastManager showNotificationWithOptions:options
-//                                         completionBlock:^{
-//                                             
-//                                         }];
-             [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
-         
-         }
-         }
-         
-     ];
 }
 
 - (IBAction)fbShare:(UISwitch *)sender {
@@ -307,10 +294,16 @@
             if (completed) {
                 [self close:nil];
             }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }];
     }
     else{
         NSLog(@"WRONG!");
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
     }
     
 
@@ -320,8 +313,8 @@
     UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
     [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.view.superview addSubview:viewController.view];
-    [self.parentViewController addChildViewController:viewController];
+    [self.view addSubview:viewController.view];
+    [self addChildViewController:viewController];
     
     [UIView animateWithDuration:0.4f
                      animations:^

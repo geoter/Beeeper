@@ -88,6 +88,18 @@
     
     pendingImagesDict = [[NSMutableDictionary alloc]init];
     
+    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            
+            [self.collectionV reloadData];
+        }
+        else{
+             [self showLoading];
+        }
+    }];
+    
     [self getHomeFeed];
     
     self.collectionV.decelerationRate = 0.6;
@@ -120,9 +132,6 @@
 }
 
 -(void)getHomeFeed{
-
-    
-    [self showLoading];
     
     UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
     [refreshControl endRefreshing];
@@ -174,15 +183,6 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-  
-    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            beeeps = [NSMutableArray arrayWithArray:objs];
-            
-            [self.collectionV reloadData];
-        }
-    }];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -306,7 +306,7 @@
     
     NSString *imageName = [NSString stringWithFormat:@"%@.%@",[event.eventFfo.eventDetailsFfo.imageUrl MD5],extension];
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     

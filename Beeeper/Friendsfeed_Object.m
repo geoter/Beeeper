@@ -28,6 +28,14 @@ NSString *const kFriendsfeed_ObjectBeeepFfo = @"beeep";
 @synthesize when = _when;
 @synthesize beeepFfo = _beeepFfo;
 
+- (id) init
+{
+    if (self = [super init])
+    {
+        self.eventFfo = [[EventFfo alloc]init];
+    }
+    return self;
+}
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {

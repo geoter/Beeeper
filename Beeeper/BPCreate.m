@@ -167,6 +167,12 @@ static BPCreate *thisWebServices = nil;
     
     @try {
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if ([[dict allKeys] containsObject:@"errors"]) {
+            self.completed(NO,nil);
+            return;
+        }
+        
         NSString *imgUrl = [dict objectForKey:@"image_url"];
         imgUrl = [self urlencode:imgUrl];
         

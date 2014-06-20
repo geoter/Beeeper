@@ -699,7 +699,7 @@ static BPUser *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
@@ -728,7 +728,7 @@ static BPUser *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
@@ -759,7 +759,7 @@ static BPUser *thisWebServices = nil;
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -782,7 +782,7 @@ static BPUser *thisWebServices = nil;
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         

@@ -517,6 +517,8 @@ static CGFloat kDZNPhotoDisplayMinimumBarHeight = 44.0;
  */
 - (BOOL)canSearchTag:(NSString *)term
 {
+    
+    return NO;
     if ([self.searchDisplayController.searchBar isFirstResponder] && term.length > 2) {
         
         [self resetSearchTimer];

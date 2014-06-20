@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -128,7 +128,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4de-GB-hN6" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="vYw-xX-zh8" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="27" y="234"/>
+            <point key="canvasLocation" x="151" y="257"/>
         </scene>
         <!--CommentsVC - Comments-->
         <scene sceneID="cpL-8T-tFC">
@@ -568,7 +568,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B30-QK-Feq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1178" y="975"/>
+            <point key="canvasLocation" x="1269" y="981"/>
         </scene>
         <!--BeeepVC-->
         <scene sceneID="lga-Sr-kWO">
@@ -1272,7 +1272,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Ut-Fk-a57" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2015" y="975"/>
+            <point key="canvasLocation" x="1989" y="975"/>
         </scene>
         <!--TermsVC-->
         <scene sceneID="ewt-qa-OEx">
@@ -1356,7 +1356,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3zP-QS-W8N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2390" y="967"/>
+            <point key="canvasLocation" x="2350" y="975"/>
         </scene>
         <!--TabbarVC-->
         <scene sceneID="y7q-y7-lwp">
@@ -1474,7 +1474,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9jJ-7y-SKm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="388" y="234"/>
+            <point key="canvasLocation" x="524" y="257"/>
         </scene>
         <!--Notifications PrefsVC - Notification Preferences-->
         <scene sceneID="laW-ei-iZM">
@@ -2494,7 +2494,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tXJ-n7-di5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="812" y="234"/>
+            <point key="canvasLocation" x="895" y="257"/>
         </scene>
         <!--NotificationsVC - Notifications-->
         <scene sceneID="7hY-dL-HJG">
@@ -2561,7 +2561,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ENP-fl-xeH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1216" y="234"/>
+            <point key="canvasLocation" x="1269" y="257"/>
         </scene>
         <!--TimelineVC-->
         <scene sceneID="8Mr-ch-WUX">
@@ -2880,7 +2880,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FsN-QD-TJp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2380" y="241"/>
+            <point key="canvasLocation" x="2350" y="257"/>
         </scene>
     </scenes>
     <resources>

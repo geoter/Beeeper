@@ -30,6 +30,15 @@ NSString *const kEventFfoHashTags = @"hash_tags";
     return [[self alloc] initWithDictionary:dict];
 }
 
+- (id) init
+{
+    if (self = [super init])
+    {
+        self.eventDetailsFfo = [[EventDetailsFfo alloc]init];
+    }
+    return self;
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 {
     self = [super init];

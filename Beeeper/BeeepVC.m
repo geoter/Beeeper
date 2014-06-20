@@ -18,7 +18,7 @@
 #import "BPCreate.h"
 
 @class BorderTextField;
-@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate>
+@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate>
 {
     NSMutableDictionary *values;
     UIImagePickerController *mediaPicker;
@@ -113,12 +113,21 @@
 }
 
 - (void)locationError:(NSError *)error{
-
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Error" message:@"Please make sure Beeeper can receive your current location." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    alert.tag = 99;
+    [alert show];
 }
 
 - (void)locationDisabled{
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Disabled" message:@"Please allow Beeeper to use your current location." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    alert.tag = 99;
     [alert show];
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 99) {
+        [self close:nil];
+    }
 }
 
 -(void)beeepIt:(NSNotification *)notif{
@@ -468,39 +477,49 @@
         [values setObject:keywords forKey:@"keywords"];
         [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"url"];
         
-        [[BPCreate sharedBP]eventCreate:values completionBlock:^(BOOL completed,id objs){
-            
-            if (completed) {
-                BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+        BOOL proceed = [self areAllDataAvailable:values];
+        
+        if (proceed) {
+            [[BPCreate sharedBP]eventCreate:values completionBlock:^(BOOL completed,id objs){
                 
-                if ([objs isKindOfClass:[NSArray class]]) {
-                    viewController.values = [(NSArray *)objs firstObject];
+                if (completed) {
+                    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+                    
+                    if ([objs isKindOfClass:[NSArray class]]) {
+                        viewController.values = [(NSArray *)objs firstObject];
+                    }
+                    else{
+                        viewController.values = objs;
+                    }
+                    
+                    if (values == nil) {
+                        NSLog(@"NIL values");
+                        return;
+                    }
+                    
+                    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
+    //                [self.view.superview addSubview:viewController.view];
+    //                [self.parentViewController addChildViewController:viewController];
+    //
+    //                
+    //                [UIView animateWithDuration:0.4f
+    //                                 animations:^
+    //                 {
+    //                     viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+    //                 }
+    //                                 completion:^(BOOL finished)
+    //                 {
+    //                 }
+    //                 ];;
+                    
+                    [self.navigationController presentViewController:viewController animated:YES completion:NULL];
                 }
-                else{
-                    viewController.values = objs;
-                }
-                
-                if (values == nil) {
-                    NSLog(@"NIL values");
-                    return;
-                }
-                
-                [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-                [self.view.superview addSubview:viewController.view];
-                [self.parentViewController addChildViewController:viewController];
-                
-                [UIView animateWithDuration:0.4f
-                                 animations:^
-                 {
-                     viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     
-                 }
-                 ];;
-            }
-        }];
+            }];
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you have entered all required information" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
 
     }
     @catch (NSException *exception) {
@@ -511,6 +530,11 @@
     }
     
    
+}
+
+-(BOOL)areAllDataAvailable:(NSDictionary *)values{
+
+    return NO;
 }
 
 - (IBAction)imageSelected:(UIButton *)sender {
@@ -623,7 +647,7 @@
 (UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self userPickedPhoto:[info objectForKey:@"UIImagePickerControllerEditedImage"]];
+    [self userPickedPhoto:info];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -634,25 +658,33 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 }
 
 -(void)userPickedPhoto:(NSDictionary *)info{
+   
+    @try {
+        NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
+        NSURL *image_url = [info_values objectForKey:@"source_url"];
+        
+        [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
+        
+        UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+        [chosenPhotoBtn setImage:img forState:UIControlStateNormal];
+        chosenPhotoBtn.hidden = NO;
+        
+        UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
+        addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+        //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
+        //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+        
+        [self imageSelected:chosenPhotoBtn];
+    }
+    @catch (NSException *exception) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong,please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    @finally {
+        
+    }
     
-    NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
-    NSURL *image_url = [info_values objectForKey:@"source_url"];
-    
-    [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
-    
-    UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
-    [chosenPhotoBtn setImage:img forState:UIControlStateNormal];
-    chosenPhotoBtn.hidden = NO;
-    
-    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
-    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
-    //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
-    //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
-    
-    [self imageSelected:chosenPhotoBtn];
-
-
 }
 
 - (NSString *)urlencode:(NSString *)str {

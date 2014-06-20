@@ -15,7 +15,7 @@ static BPTimeline *thisWebServices = nil;
 {
     int page;
     int pageLimit;
-
+    NSString *userID;
     NSString *order;
     NSOperationQueue *operationQueue;
 
@@ -48,9 +48,25 @@ static BPTimeline *thisWebServices = nil;
     return nil;
 }
 
+-(void)getLocalTimelineUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+    
+    self.localCompleted = compbloc;
+    userID = user_id;
+    order = (option == Upcoming)?@"ASC":@"DESC";
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",user_id,order]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+
+}
 
 -(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
     
+    order = (option == Upcoming)?@"ASC":@"DESC";
+    userID = user_id;
     
     NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
     
@@ -61,7 +77,7 @@ static BPTimeline *thisWebServices = nil;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
-    [array addObject:[NSString stringWithFormat:@"order=%@",(option == Upcoming)?@"ASC":@"DESC"]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
     [array addObject:[NSString stringWithFormat:@"page=%d",page]];
     [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
     
@@ -106,7 +122,22 @@ static BPTimeline *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.completed];
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+   
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
@@ -114,14 +145,14 @@ static BPTimeline *thisWebServices = nil;
     
     for (NSDictionary *b in beeeps) {
         Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
-
+        
         NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:beeep];
         [operationQueue addOperation:invocationOperation];
         
         [bs addObject:beeep];
     }
     
-    self.completed(YES,bs);
+    compbloc(YES,bs);
 }
 
 -(void)timelineFailed:(ASIHTTPRequest *)request{
@@ -137,7 +168,7 @@ static BPTimeline *thisWebServices = nil;
     
     NSString *imageName = [NSString stringWithFormat:@"%@.%@",[tml.event.imageUrl MD5],extension];
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     

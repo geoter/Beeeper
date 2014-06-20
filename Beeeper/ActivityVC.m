@@ -46,7 +46,23 @@
 
 -(void)getActivity{
     
-    [self showLoading];
+    [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            activities = [NSMutableArray arrayWithArray:objs];
+            [self groupActivitiesByMonth];
+            
+            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+            numberLbl.textColor = [UIColor whiteColor];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+
+        }
+        else{
+            [self showLoading];
+        }
+    }];
+    
     [[BPActivity sharedBP]getActivityWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
@@ -291,7 +307,7 @@
     }
   
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     

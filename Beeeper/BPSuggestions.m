@@ -157,7 +157,7 @@ static BPSuggestions *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
@@ -184,7 +184,7 @@ static BPSuggestions *thisWebServices = nil;
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[what.imageUrl MD5],extension];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             

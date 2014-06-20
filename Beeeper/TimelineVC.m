@@ -15,7 +15,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GTSegmentedControl.h"
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
@@ -23,6 +23,7 @@
     int following;
     BOOL isFollowing;
     int segmentIndex;
+    BOOL loading;
 }
 @end
 
@@ -30,6 +31,10 @@
 @synthesize mode,user;
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
+    
+    if (option != 0 && option != 1) {
+        option = segmentIndex;
+    }
     
     if (![userID isKindOfClass:[NSString class]]) {
         userID = [self.user objectForKey:@"id"];
@@ -60,12 +65,27 @@
 
     }
     
+    [[BPTimeline sharedBP]getLocalTimelineUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            
+            [self.tableV reloadData];
+        }
+        else{
+            loading = YES;
+        }
+    }];
+
+    
     [[BPTimeline sharedBP]getTimelineForUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
-
+        
         if (completed) {
+            
+            loading = NO;
+            
             beeeps = [NSMutableArray arrayWithArray:objs];
             
             [self.tableV reloadData];
@@ -201,6 +221,23 @@
 }
 
 -(void)downloadUserImageIfNecessery{
+    
+    NSString *imagePath = [user objectForKey:@"image_path"];
+    
+    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+        self.profileImage.image = img;
+    }
+    else{
+
     dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
     dispatch_async(q, ^{
         /* Fetch the image from the server... */
@@ -208,12 +245,16 @@
         imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
         UIImage *img = [[UIImage alloc] initWithData:data];
+        
+        [self saveImage:img withFileName:imageName inDirectory:localPath];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             /* This is the main thread again, where we set the tableView's image to
              be what we just fetched. */
             self.profileImage.image = img;
         });
     });
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -495,7 +536,7 @@
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[b.event.imageUrl MD5],extension];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -555,7 +596,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
-    if(beeeps.count > 0){
+    if(beeeps.count > 0 && !loading){
         return 0;
     }
     else{
@@ -568,7 +609,7 @@
     UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,320.0,50.0)];
     footer.backgroundColor =[UIColor clearColor];
     UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
-    lbl.text = @"There are no beeeps available.";
+    lbl.text = (loading)?@"Loading...":@"There are no beeeps available.";
     lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
     lbl.textAlignment = NSTextAlignmentCenter;
@@ -775,6 +816,39 @@
     else{ //past
         [self getTimeline:[self.user objectForKey:@"id"] option:Past];
     }
+}
+
+
+#pragma mark - MONActivityIndicatorViewDelegate Methods
+
+- (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
+      circleBackgroundColorAtIndex:(NSUInteger)index {
+    
+    CGFloat red   = 250/255.0;
+    CGFloat green = 217/255.0;
+    CGFloat blue  = 0/255.0;
+    CGFloat alpha = 1.0f;
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
+-(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
+    
+    if ([imageName rangeOfString:@"n/a"].location != NSNotFound) {
+        return;
+    }
+    
+    if ([[imageName lowercaseString] rangeOfString:@".png"].location != NSNotFound) {
+        [UIImagePNGRepresentation(image) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@",imageName);
+        
+    } else {
+        
+        BOOL write = [UIImageJPEGRepresentation(image, 1) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@ - %d",directoryPath,write);
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
 
 @end

@@ -40,6 +40,10 @@
             
             if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
+                
+                for (NSDictionary *user in people) {
+                    [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                }
                 [self updateUsersCount];
                 
                 NSMutableArray *true_following = [NSMutableArray array];
@@ -92,6 +96,10 @@
                  people = [NSMutableArray arrayWithArray:objs];
                  following = [NSMutableArray arrayWithArray:people];
                  
+                 for (NSDictionary *user in people) {
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                 }
+                 
                  [self updateUsersCount];
                  [self.tableV reloadData];
                  [self hideLoading];
@@ -112,6 +120,11 @@
          [[BPUsersLookup sharedBP]usersLookup:self.ids completionBlock:^(BOOL completed,NSArray *objs){
              if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
+                 
+                 for (NSDictionary *user in people) {
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                 }
+                 
                  [self updateUsersCount];
                  
                  NSMutableArray *true_following = [NSMutableArray array];
@@ -265,14 +278,7 @@
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
 
-            [[DTO sharedDTO]downloadImageFromURL:imagePath];
-        }
     }
 
     if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {

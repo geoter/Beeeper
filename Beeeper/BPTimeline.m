@@ -32,6 +32,7 @@ static BPTimeline *thisWebServices = nil;
         pageLimit = 50;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }

@@ -265,7 +265,14 @@
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
         
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+
+            [[DTO sharedDTO]downloadImageFromURL:imagePath];
+        }
     }
 
     if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {

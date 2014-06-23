@@ -46,6 +46,8 @@
     
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
+    
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -64,6 +66,7 @@
 {
     [super viewDidLoad];
     
+    rowsToReload = [NSMutableArray array];
     
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
@@ -459,12 +462,20 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
-        [pendingImagesDict removeObjectForKey:imageName];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
+            [rowsToReload removeAllObjects];
+        });
+
+    }
+    
     
 }
 

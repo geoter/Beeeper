@@ -65,6 +65,7 @@ static BPUser *thisWebServices = nil;
         xoauth_displayname = @"RandomName";
         oauth_timestamp = [NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]];
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
     

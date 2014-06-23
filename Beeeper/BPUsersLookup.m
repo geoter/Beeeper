@@ -16,6 +16,7 @@ static BPUsersLookup *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }

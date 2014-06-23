@@ -10,6 +10,12 @@
 
 static DTO *thisDTO = nil;
 
+@interface DTO ()
+{
+    NSOperationQueue *operationQueue;
+}
+@end
+
 @implementation DTO
 
 
@@ -17,6 +23,8 @@ static DTO *thisDTO = nil;
     self = [super init];
     if(self) {
         thisDTO = self;
+        operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
     
@@ -37,6 +45,12 @@ static DTO *thisDTO = nil;
 
 - (void)downloadImageFromURL:(NSString *)url{
     
+    NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImageInBackgroundFromURL:) object:url];
+    [operationQueue addOperation:invocationOperation];
+}
+
+-(void)downloadImageInBackgroundFromURL:(NSString *)url{
+
     NSString *extension = [[url.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
     NSString *imageName = [NSString stringWithFormat:@"%@.%@",[url MD5],extension];
@@ -51,6 +65,7 @@ static DTO *thisDTO = nil;
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }
+
 }
 
 -(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {

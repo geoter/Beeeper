@@ -34,6 +34,7 @@ static BPHomeFeed *thisWebServices = nil;
         order = @"DATE";
         length = 0;
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }

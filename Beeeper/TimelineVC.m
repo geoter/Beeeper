@@ -428,10 +428,8 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (self.mode == Timeline_My) {
-        return beeeps.count + 1;
-    }
-    return beeeps.count;
+
+    return beeeps.count+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

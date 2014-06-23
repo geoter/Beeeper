@@ -26,6 +26,8 @@
 {
     [super viewDidLoad];
     
+    rowsToReload = [NSMutableArray array];
+    
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
     
@@ -335,7 +337,7 @@
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5) {
+    if (rowsToReload.count == 2 || pendingImagesDict.count < 2) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
             [rowsToReload removeAllObjects];

@@ -135,9 +135,6 @@ static BPUser *thisWebServices = nil;
 -(void)signupFinished:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-
-    NSData *data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
    
     @try {
         NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
@@ -175,6 +172,8 @@ static BPUser *thisWebServices = nil;
         [request addPostValue:value forKey:key];
     }
     
+    self.fbSignUpCompleted = compbloc;
+    
     [request setRequestMethod:@"POST"];
 
     [[request UserInfo]setObject:info forKey:@"info"];
@@ -195,8 +194,49 @@ static BPUser *thisWebServices = nil;
  
     NSString *responseString = [request responseString];
     
-    NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSDictionary * response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+   
+    @try {
+       NSArray *errors = [response objectForKey:@"errors"];
+        
+      NSDictionary *error = [errors firstObject];
+        
+      self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
+        
+     return;
+        
+    }
+    @catch (NSException *exception) {
+
+    }
+    @finally {
+
+    }
     
+    @try {
+        NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
+        [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
+            if (completed) {
+                self.fbSignUpCompleted(completed,user);
+            }
+        }];
+    }
+    @catch (NSException *exception) {
+        self.fbSignUpCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+
+    
+    
+}
+
+-(void)fbSignupFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    self.fbSignUpCompleted(NO,nil);
     
 }
 

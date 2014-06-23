@@ -11,6 +11,8 @@
 #import "Timeline_Object.h"
 #import "Friendsfeed_Object.h"
 #import "BPCreate.h"
+#import "Suggestion_Object.h"
+#import "Event_Show_Object.h"
 
 @interface BeeepItVC ()
 {
@@ -78,6 +80,16 @@
             title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
             
         }
+        else if ([tml isKindOfClass:[Event_Show_Object class]]){
+            Event_Show_Object *activity = tml;
+            
+            title = [activity.eventInfo.title capitalizedString];
+            
+        }
+        else if ([tml isKindOfClass:[Suggestion_Object class]]){
+            Suggestion_Object *sgo = tml;
+            title = [sgo.what.title capitalizedString];
+        }
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -85,9 +97,19 @@
         
         Timeline_Object *t = tml; //one of those two will be used
         Friendsfeed_Object *ffo = tml;
+        Suggestion_Object *sgo = tml;
         
         if ([tml isKindOfClass:[Timeline_Object class]]) {
             date = [NSDate dateWithTimeIntervalSince1970:t.event.timestamp];
+        }
+        else if ([tml isKindOfClass:[Event_Show_Object class]]){
+            Event_Show_Object *activity = tml;
+            
+            date = [NSDate dateWithTimeIntervalSince1970:activity.eventInfo.timestamp];
+            
+        }
+        else if ([tml isKindOfClass:[Suggestion_Object class]]){
+            date = [NSDate dateWithTimeIntervalSince1970:sgo.what.timestamp];
         }
         else{
             date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
@@ -114,6 +136,15 @@
         
         if ([tml isKindOfClass:[Timeline_Object class]]) {
             jsonString = t.event.location;
+        }
+        else if ([tml isKindOfClass:[Event_Show_Object class]]){
+            Event_Show_Object *activity = tml;
+            
+            jsonString = activity.eventInfo.location;
+            
+        }
+        else if ([tml isKindOfClass:[Suggestion_Object class]]){
+            jsonString = sgo.what.location;
         }
         else{
             jsonString = ffo.eventFfo.eventDetailsFfo.location;
@@ -151,7 +182,7 @@
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event was created but something went wrong." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
     @finally {
@@ -273,12 +304,25 @@
     
     Timeline_Object *t = tml; //one of those two will be used
     Friendsfeed_Object *ffo = tml;
+    Suggestion_Object *sgo = tml;
     
     NSString  *fingerPrint;
     int timestamp;
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         fingerPrint = t.beeep.beeepInfo.fingerprint;
+        timestamp = t.beeep.beeepInfo.timestamp.doubleValue;
+    }
+    else if ([tml isKindOfClass:[Event_Show_Object class]]){
+        Event_Show_Object *activity = tml;
+        
+        fingerPrint = activity.eventInfo.fingerprint;
+        timestamp = activity.eventInfo.timestamp;
+        
+    }
+    else if([tml isKindOfClass:[Suggestion_Object class]]){
+        fingerPrint = sgo.what.fingerprint;
+        timestamp = sgo.what.timestamp;
     }
     else{
         fingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
@@ -296,7 +340,7 @@
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             }
         }];
     }

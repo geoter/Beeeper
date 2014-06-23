@@ -7,10 +7,24 @@
 //
 
 #import "SignUp_Email_VC.h"
+#import "MissingFields.h"
+#import "LocationManager.h"
 
 @interface SignUp_Email_VC ()
 {
+    LocationManager *locManager;
     NSMutableDictionary *values;
+    NSMutableDictionary *missingInfo;
+    BOOL weHaveAllInfoNeeded;
+    BOOL hasCity;
+    BOOL hasState;
+    BOOL hasCountry;
+    BOOL hasUsername;
+    BOOL hasEmail;
+    BOOL hasFirstName;
+    BOOL hasLastName;
+    BOOL hasSex;
+    BOOL hasPassword;
 }
 @end
 
@@ -32,6 +46,10 @@
  	values = [NSMutableDictionary dictionary];
     
     [self adjustFonts];
+    
+    locManager = [[LocationManager alloc]init];
+    
+    [locManager startTracking];
 }
 
 - (void)didReceiveMemoryWarning
@@ -71,23 +89,127 @@
             }
         }
     }
+    
+    hasUsername = ([values objectForKey:@"username"] != nil);
+    hasEmail = ([values objectForKey:@"email"] != nil);
+    hasFirstName = ([values objectForKey:@"first_name"] != nil);
+    hasLastName = ([values objectForKey:@"last_name"] != nil);
+    hasSex = ([values objectForKey:@"gender"] != nil);
+    hasPassword = ([values objectForKey:@"password"] != nil);
 
     NSInteger minutesFromGMT = [[NSTimeZone localTimeZone] secondsFromGMT]/60;
     [values setObject:[NSString stringWithFormat:@"%d",minutesFromGMT] forKey:@"timezone"];
     
     CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
-    
-    if (userPlace != nil) {
-        [values setObject:userPlace.locality forKey:@"city"];
-        [values setObject:userPlace.administrativeArea forKey:@"state"];
-        [values setObject:userPlace.country forKey:@"country"];
-    }
-    
-    [[BPUser sharedBP]signUpUser:values completionBlock:^(BOOL completed,NSString *user){
-        if (completed) {
-            NSLog(@"%@",user);
+    CLLocation *userloc = [DTO sharedDTO].userLocation;
+
+    if (userPlace != nil && userloc != nil) {
+        
+        NSString *city = userPlace.locality;
+        NSString *state = userPlace.administrativeArea;
+        NSString *country = userPlace.country;
+        
+        hasCity = (city != nil);
+        hasState = (state != nil);
+        hasCountry = (country != nil);
+        
+        if (hasCity) {
+            [values setObject:city forKey:@"city"];
         }
-    }];
+        if (hasState) {
+            [values setObject:state forKey:@"state"];
+        }
+        if (hasCountry) {
+            [values setObject:country forKey:@"country"];
+        }
+        
+        NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
+        
+        NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
+        
+        [values setObject:lat forKey:@"long"];
+        [values setObject:lon forKey:@"lat"];
+        
+        
+        weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry && hasPassword);
+        
+        if (!weHaveAllInfoNeeded) {
+            
+            if (missingInfo == nil) {
+                
+                missingInfo = [NSMutableDictionary dictionary];
+                
+                if (!hasUsername) {
+                    [missingInfo setObject:@"Username" forKey:@"username"];
+                }
+                if (!hasEmail) {
+                    [missingInfo setObject:@"Email" forKey:@"email"];
+                }
+                if (!hasFirstName) {
+                    [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                }
+                if (!hasLastName) {
+                    [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                }
+                
+                if (!hasCity) {
+                    [missingInfo setObject:@"City" forKey:@"city"];
+                }
+                if (!hasState) {
+                    [missingInfo setObject:@"State" forKey:@"state"];
+                }
+                if (!hasCountry) {
+                    [missingInfo setObject:@"Country" forKey:@"country"];
+                }
+                if (!hasPassword) {
+                    [missingInfo setObject:@"Password" forKey:@"password"];
+                }
+                
+                if (!hasSex) {
+                    [missingInfo setObject:@"Gender" forKey:@"gender"];
+                }
+                
+            }
+            
+        }
+        
+        
+        if (missingInfo.allKeys.count != 0) {
+            
+            MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+            mf.fields = [NSMutableDictionary dictionaryWithDictionary:values];
+            mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
+            mf.delegate = self;
+            
+            missingInfo = nil;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController pushViewController:mf animated:YES];
+            });
+            
+            return;
+        }
+        else{
+            
+            [[BPUser sharedBP]signUpUser:values completionBlock:^(BOOL completed,NSString *response){
+                
+                if (completed) {
+                    [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Registration Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                }
+            }];
+            
+        }
+        
+
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+    }
 
 }
 

@@ -92,6 +92,32 @@
         }
     }];
     
+    
+    [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            followers = objs.count;
+            UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
+            if (followersLbl != nil) {
+                NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
+                followersLbl.text = mtext;
+            }
+        }
+    }];
+    
+    [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            following = objs.count;
+            UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
+            if (followingLbl != nil) {
+                NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
+                followingLbl.text = mtext;
+            }
+            
+        }
+    }];
+
    
 }
 
@@ -115,30 +141,6 @@
     
     [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
-    [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            followers = objs.count;
-            UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-            if (followersLbl != nil) {
-                 NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                followersLbl.text = mtext;
-            }
-        }
-    }];
-    
-    [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            following = objs.count;
-            UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-            if (followingLbl != nil) {
-                NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                followingLbl.text = mtext;
-            }
-
-        }
-    }];
     
     
     pendingImagesDict = [NSMutableDictionary dictionary];

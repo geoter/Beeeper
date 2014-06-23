@@ -197,6 +197,8 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    
  //   [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
@@ -650,21 +652,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSLog(@"%@",self.parentViewController.parentViewController);
     
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.parentViewController.parentViewController.view addSubview:viewController.view];
-    [self.parentViewController.parentViewController.view bringSubviewToFront:viewController.view];
-    [self.parentViewController.parentViewController addChildViewController:viewController];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
+    [self presentViewController:viewController animated:YES completion:nil];
 
 }
 

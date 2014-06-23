@@ -86,6 +86,8 @@
         [textField resignFirstResponder];
         [self.scrollV setContentOffset:CGPointZero animated:YES];
         
+        [self showLoading];
+        
         UITextField *username = (id)[self.scrollV viewWithTag:5];
         UITextField *password = (id)[self.view viewWithTag:6];
         

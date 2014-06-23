@@ -8,14 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol MissingFieldsDelegate
--(NSDictionary *)fieldsCompleted;
-@end
 
 @interface MissingFields : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
-@property (nonatomic,strong) NSDictionary *fields;
+@property (nonatomic,strong) NSMutableDictionary *fields;
+@property (nonatomic,strong) NSMutableDictionary *misssingfields;
 @property (nonatomic,assign) id delegate;
+@property (weak, nonatomic) IBOutlet UIButton *joinButton;
+
+- (IBAction)backpressed:(id)sender;
+- (IBAction)joinPressed:(id)sender;
 
 @end

@@ -75,11 +75,20 @@
     sections = [NSMutableArray array];
     
     [suggestions sortUsingComparator:^NSComparisonResult(Suggestion_Object *obj1, Suggestion_Object *obj2) {
-        if (obj1.when > obj2.when) {
+        
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        [formatter setLocale:[NSLocale currentLocale]];
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:obj1.what.timestamp];
+        NSDate *date2 = [NSDate dateWithTimeIntervalSince1970:obj2.what.timestamp];
+        //1401749430
+        //1401749422
+        if (obj1.what.timestamp > obj2.what.timestamp) {
             return (NSComparisonResult)NSOrderedAscending;
         }
         
-        if (obj1.when < obj2.when) {
+        if (obj1.what.timestamp < obj2.what.timestamp) {
             return (NSComparisonResult)NSOrderedDescending;
         }
         return (NSComparisonResult)NSOrderedSame;
@@ -155,6 +164,13 @@
     Who *w = suggestion.who;
     What_Suggest *what = suggestion.what;
 
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = what.timestamp;
+    
+    BOOL futureEvent = (now_time < event_timestamp);
+    UIButton *beeepBtn = (id)[cell viewWithTag:67];
+    beeepBtn.enabled = futureEvent;
+    
     UIImageView *imageV = (id)[cell viewWithTag:1];
     UILabel *nameLbl = (id)[cell viewWithTag:2];
     UILabel *venueLbl = (id)[cell viewWithTag:3];
@@ -274,32 +290,14 @@
     UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSMutableDictionary *event1 = [NSMutableDictionary dictionary];
-    [event1 setObject:@"MAR" forKey:@"month"];
-    [event1 setObject:@"21" forKey:@"day"];
-    [event1 setObject:@"Detroit Pistons vs L.A. Lakers" forKey:@"title"];
-    [event1 setObject:@"Staples Center" forKey:@"area"];
-    [event1 setObject:@"nba_494_384" forKey:@"image"];
+    NSMutableArray *filtered_activities = [self suggestionsForSection:path.section];
+    
+    Suggestion_Object *suggestion = [filtered_activities objectAtIndex:path.row];
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.values = event1;
+    viewController.tml = suggestion;
     
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.view addSubview:viewController.view];
-    [self addChildViewController:viewController];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
-    
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self presentViewController:viewController animated:YES completion:NULL];
 }
 
 -(NSMutableArray *)suggestionsForSection:(int)section{

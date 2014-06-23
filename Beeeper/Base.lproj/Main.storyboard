@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -366,12 +366,13 @@ LA Lackers</string>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="9"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="egV-IX-LpJ">
+                                                <button opaque="NO" tag="67" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="egV-IX-LpJ">
                                                     <rect key="frame" x="244" y="37" width="55" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" image="beeep_it_icon_event.png">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <state key="disabled" image="beeepit_btn_disabled.png"/>
                                                     <connections>
                                                         <action selector="beeepItPressed:" destination="TXV-Bf-CiS" eventType="touchUpInside" id="m5n-bY-mcN"/>
                                                     </connections>
@@ -458,7 +459,7 @@ LA Lackers</string>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhO-PT-toY">
                                         <rect key="frame" x="28" y="365" width="264" height="42"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.90980392160000001" green="0.83529411760000005" blue="0.13725490200000001" alpha="0.80000000000000004" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Join">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -830,6 +831,7 @@ LA Lackers</string>
         <image name="Welcome_Logo.png" width="150" height="51"/>
         <image name="back.png" width="55" height="19"/>
         <image name="beeep_it_icon_event.png" width="81" height="32"/>
+        <image name="beeepit_btn_disabled.png" width="52" height="21"/>
         <image name="checkbox_empty.png" width="25" height="24"/>
         <image name="editProfileBtn.png" width="48" height="31"/>
         <image name="icon-facebook2.png" width="217" height="215"/>

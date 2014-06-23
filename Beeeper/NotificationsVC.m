@@ -179,8 +179,6 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    return;
-    
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
     
     if (activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity != nil) {
@@ -302,19 +300,19 @@
 }
 
 
-//-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    
-//    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
-//    
-//    CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-//    
-//    float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
-//    
-//    NSLog(@"H: %f",height);
-//    
-//    return height;
-//    
-//}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+    
+    CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+    
+    float height = 60.0;((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+    
+    NSLog(@"H: %f",height);
+    
+    return height;
+    
+}
 
 -(CGSize)frameForText:(NSAttributedString*)text constrainedToSize:(CGSize)size{
     

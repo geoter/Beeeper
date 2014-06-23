@@ -84,7 +84,7 @@
                 if (completed) {
                     beeep_Objct = beeep;
                     
-                    if (event_show_Objct || activity.eventActivity.count == 0) {
+                    if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
                         [self showEventForActivityWithBeeep];
                     }
                 }
@@ -92,12 +92,12 @@
 
         }
         
-        if(activity.eventActivity.count > 0){
+        if(activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity.count >0){
             
             [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     event_show_Objct = event;
-                    if (beeep_Objct || activity.beeepInfoActivity.beeepActivity.count == 0) {
+                    if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
                           [self showEventForActivityWithBeeep];
                     }
                 }
@@ -689,10 +689,13 @@
     jsonString = event.eventInfo.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+   
+    if (data != nil) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = loc.venueStation;
+    }
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -988,26 +991,9 @@
 - (IBAction)beeepItPressed:(id)sender {
    
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = tml;
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
+    viewController.tml = event_show_Objct;
     
-    NSLog(@"%@",self.parentViewController.parentViewController);
-    
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.parentViewController.parentViewController.view addSubview:viewController.view];
-    [self.parentViewController.parentViewController.view bringSubviewToFront:viewController.view];
-    [self.parentViewController.parentViewController addChildViewController:viewController];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 - (IBAction)showLikes:(id)sender {

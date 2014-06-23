@@ -185,8 +185,13 @@ static BPActivity *thisWebServices = nil;
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
     NSString *fingerprint = [[activityObj.eventActivity firstObject]valueForKeyPath:@"fingerprint"];
     
+    if (fingerprint == nil) {
+        EventActivity *event = [activityObj.beeepInfoActivity.eventActivity firstObject];
+        fingerprint = event.fingerprint;
+    }
+   
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",fingerprint]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:fingerprint]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -226,10 +231,31 @@ static BPActivity *thisWebServices = nil;
 -(void)eventReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    NSDictionary *eventDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *eventArray;
     
-    Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventDict];
-    self.event_completed(YES,event);
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+
+         Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventObject];
+        self.event_completed(YES,event);
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        
+        if (eventArray.count > 0 ) {
+            Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventArray.firstObject];
+            self.event_completed(YES,event);
+        }
+        else{
+            self.event_completed(NO,nil);
+        }
+    }
+    else{
+        self.event_completed(NO,nil);
+    }
+    
+   
+    
 }
 
 -(void)eventFailed:(ASIHTTPRequest *)request{
@@ -301,10 +327,24 @@ static BPActivity *thisWebServices = nil;
 -(void)beeepFromActivityFinished:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    NSDictionary *eventDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventDict];
-    self.beeep_completed(YES,beeep);
+    NSArray *eventArray;
+    
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventObject];
+        self.beeep_completed(YES,beeep);
+
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:[eventArray firstObject]];
+        self.beeep_completed(YES,beeep);
+    }
+    else{
+        self.beeep_completed(NO,nil);
+    }
+   
 }
 
 -(void)beeepFromActivityFailed:(ASIHTTPRequest *)request{
@@ -442,6 +482,16 @@ static BPActivity *thisWebServices = nil;
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+- (NSString *)urlencode:(NSString *)str {
+    CFStringRef safeString =
+    CFURLCreateStringByAddingPercentEscapes(NULL,
+                                            (CFStringRef)str,
+                                            NULL,
+                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
+                                            kCFStringEncodingUTF8);
+    return [NSString stringWithFormat:@"%@", safeString];
 }
 
 

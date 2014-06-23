@@ -76,6 +76,9 @@ static BPCreate *thisWebServices = nil;
         if ([dict objectForKey:@"beeep"]) {
                 self.completed(YES,nil);
         }
+        else{
+            self.completed(NO,nil);
+        }
     }
     @catch (NSException *exception) {
         self.completed(NO,nil);

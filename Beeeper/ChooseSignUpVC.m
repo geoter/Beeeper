@@ -27,6 +27,8 @@
     BOOL hasLastName;
     BOOL hasSex;
     
+    NSString *signupMethod;
+    
     NSMutableDictionary *missingInfo;
 }
 @end
@@ -53,6 +55,11 @@
     [locManager startTracking];
     
 	[self adjustFonts];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 -(void)adjustFonts{
@@ -87,6 +94,7 @@
 
 - (IBAction)fbLoginPressed:(id)sender {
 
+    signupMethod = @"FB";
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
@@ -154,6 +162,7 @@
                          [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
                      }
                     
+                     
                      [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
 
                      float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
@@ -164,8 +173,9 @@
                      
                      
                      CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
+                     CLLocation *userloc = [DTO sharedDTO].userLocation;
                      
-                     if (userPlace != nil) {
+                     if (userPlace != nil && userloc != nil) {
                          
                          NSString *city = userPlace.locality;
                          NSString *state = userPlace.administrativeArea;
@@ -185,70 +195,89 @@
                              [dict setObject:country forKey:@"country"];
                          }
                          
-                     }
-                     
-                     weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName && hasCity && hasState && hasCountry);
-                     
-                     if (!weHaveAllInfoNeeded) {
-                         
-                         missingInfo = [NSMutableDictionary dictionary];
-                         
-                         if (!hasUsername) {
-                             [missingInfo setObject:@"Username" forKey:@"username"];
-                         }
-                         if (hasEmail) {
-                             [missingInfo setObject:@"Email" forKey:@"email"];
-                         }
-                         if (hasFirstName) {
-                             [missingInfo setObject:@"First Name" forKey:@"first_name"];
-                         }
-                         if (hasLastName) {
-                             [missingInfo setObject:@"Last Name" forKey:@"last_name"];
-                         }
-                         
-                         if (!hasCity) {
-                             [missingInfo setObject:@"City" forKey:@"city"];
-                         }
-                         if (!hasState) {
-                             [missingInfo setObject:@"State" forKey:@"state"];
-                         }
-                         if (!hasCountry) {
-                             [missingInfo setObject:@"Country" forKey:@"country"];
-                         }
-                         
-                     }
-                     
-                     
-                     CLLocation *userloc = [DTO sharedDTO].userLocation;
-                     
-                     if (userloc != nil) {
                          NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
                          
                          NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
-
+                         
                          [dict setObject:lat forKey:@"long"];
                          [dict setObject:lon forKey:@"lat"];
+                         
+                     
+                     
+                         weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry);
+                         
+                         if (!weHaveAllInfoNeeded) {
+                             
+                             if (missingInfo == nil) {
+                                 
+                                 missingInfo = [NSMutableDictionary dictionary];
+                                 
+                                 if (!hasUsername) {
+                                     [missingInfo setObject:@"Username" forKey:@"username"];
+                                 }
+                                 if (!hasEmail) {
+                                     [missingInfo setObject:@"Email" forKey:@"email"];
+                                 }
+                                 if (!hasFirstName) {
+                                     [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                                 }
+                                 if (!hasLastName) {
+                                     [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                                 }
+                                 
+                                 if (!hasCity) {
+                                     [missingInfo setObject:@"City" forKey:@"city"];
+                                 }
+                                 if (!hasState) {
+                                     [missingInfo setObject:@"State" forKey:@"state"];
+                                 }
+                                 if (!hasCountry) {
+                                     [missingInfo setObject:@"Country" forKey:@"country"];
+                                 }
+
+                            }
+                             
+                         }
+                         
+                         
+                         
+                         if (missingInfo.allKeys.count != 0) {
+                             
+                             MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                             mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
+                             mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
+                             mf.delegate = self;
+
+                             missingInfo = nil;
+                             
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self.navigationController pushViewController:mf animated:YES];
+                             });
+                             
+                             return;
+                         }
+                         else{
+                             
+                             [[BPUser sharedBP]signUpFacebookUser:dict completionBlock:^(BOOL completed,NSString *response){
+                                 
+                                 if (completed) {
+                                     [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                                 }
+                                 else{
+                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Registration Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                                 }
+                             }];
+                             
+                         }
+
                      }
                      else{
                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert show];
-                         return ;
+                         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                      }
                      
-                     if (missingInfo.allKeys.count != 0) {
-                         MissingFields *mf = [[MissingFields alloc]init];
-                         mf.fields = missingInfo;
-                         [self presentViewController:mf animated:YES completion:NULL];
-                         return;
-                     }
                      
-                     [[BPUser sharedBP]signUpFacebookUser:dict completionBlock:^(BOOL completed,NSString *following){
-                         
-                         if (completed) {
-                             
-                         }
-                     }];
-
                  }];
                  
              }
@@ -306,7 +335,15 @@
 }
 
 - (IBAction)twitterLoginPressed:(id)sender {
-    
+        signupMethod = @"TW";
+}
+
+- (IBAction)loginPressed:(id)sender {
+  
+  UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+  
+  [self.navigationController pushViewController:menuVC animated:YES];
+  
 }
 
 

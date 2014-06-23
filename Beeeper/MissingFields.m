@@ -36,9 +36,15 @@
     for (NSString *fieldName in self.fields) {
         NSString *fieldPlaceHolder = [self.fields objectForKey:fieldName];
         UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(20, 50*i+50, 280, 40)];
+        textF.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:177/255.0 alpha:1];
+        textF.tag = i;
         textF.placeholder = fieldName;
         textF.backgroundColor = [UIColor clearColor];
-        UIView *v = [UIView alloc]initWithFrame:CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
+        UIView *v = [[UIView alloc]initWithFrame:CGRectMake(20, textF.frame.origin.y+textF.frame.size.height+1, 280, 1)];
+        v.backgroundColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:177/255.0 alpha:1];
+        v.tag = i;
+        [self.scrollV addSubview:textF];
+        [self.scrollV addSubview:v];
     }
 }
 

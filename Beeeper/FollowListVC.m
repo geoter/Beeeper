@@ -16,6 +16,7 @@
     NSMutableArray *people;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *following; //used for finding which users are followed by our user
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -42,8 +43,11 @@
                  people = [NSMutableArray arrayWithArray:objs];
                 
                 for (NSDictionary *user in people) {
-                    [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                    NSArray *keys = user.allKeys;
+                    NSString *imagePath = [user objectForKey:@"image_path"];
+                    [[DTO sharedDTO]downloadImageFromURL:imagePath];
                 }
+                
                 [self updateUsersCount];
                 
                 NSMutableArray *true_following = [NSMutableArray array];
@@ -97,7 +101,7 @@
                  following = [NSMutableArray arrayWithArray:people];
                  
                  for (NSDictionary *user in people) {
-                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
                  }
                  
                  [self updateUsersCount];
@@ -122,7 +126,7 @@
                  people = [NSMutableArray arrayWithArray:objs];
                  
                  for (NSDictionary *user in people) {
-                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"imagePath"]];
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
                  }
                  
                  [self updateUsersCount];
@@ -325,13 +329,20 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [pendingImagesDict removeObjectForKey:imageName];
-    });
+    [rowsToReload addObjectsFromArray:rows];
     
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [rowsToReload removeAllObjects];
+        });
+        
+    }
+
 }
 
 - (IBAction)rightButtonPressed:(UIButton *)sender {

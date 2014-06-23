@@ -48,6 +48,18 @@ static BPSuggestions *thisWebServices = nil;
     return nil;
 }
 
+-(void)getLocalSuggestions:(completed)compbloc{
+    
+    self.localCompleted = compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+}
+
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc{
   
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions"];
@@ -101,32 +113,16 @@ static BPSuggestions *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
     
-    if (responseString.length == 0 || beeeps == nil) { //something went wrong
-        NSLog(@"Empty");
-        [self getSuggestionsWithCompletionBlock:self.completed];
-        return;
-    }
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
 
-    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
-    NSMutableArray *bs = [NSMutableArray array];
-
-    for (NSDictionary *b in beeeps) {
-        
-        Suggestion_Object *activity = [Suggestion_Object modelObjectWithDictionary:b];
-        
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
-        [operationQueue addOperation:invocationOperation];
-        
-        [bs addObject:activity];
-    }
-    
-    self.completed(YES,bs);
-
+    [self parseResponseString:responseString WithCompletionBlock:self.completed];
     
 }
 
@@ -146,6 +142,40 @@ static BPSuggestions *thisWebServices = nil;
         self.completed(NO,nil);
     }
     
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
+    
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (responseString.length == 0 || beeeps == nil) { //something went wrong
+        NSLog(@"Empty");
+        [self getSuggestionsWithCompletionBlock:self.completed];
+        return;
+    }
+    
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (NSDictionary *b in beeeps) {
+        
+        Suggestion_Object *activity = [Suggestion_Object modelObjectWithDictionary:b];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:activity];
+    }
+    
+    self.completed(YES,bs);
+
 }
 
 -(void)downloadImage:(Suggestion_Object *)object{

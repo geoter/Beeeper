@@ -25,6 +25,7 @@
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
+		5EA7FAEA19575E080033C061 /* MissingFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE919575E080033C061 /* MissingFields.m */; };
 		5EE13A1A1950202900540C04 /* BPSuggestions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A191950202900540C04 /* BPSuggestions.m */; };
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
@@ -501,6 +502,8 @@
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPCreate.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
 		5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash@2x.png"; sourceTree = "<group>"; };
+		5EA7FAE819575E080033C061 /* MissingFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MissingFields.h; sourceTree = "<group>"; };
+		5EA7FAE919575E080033C061 /* MissingFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MissingFields.m; sourceTree = "<group>"; };
 		5EE13A181950202900540C04 /* BPSuggestions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSuggestions.h; sourceTree = "<group>"; };
 		5EE13A191950202900540C04 /* BPSuggestions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPSuggestions.m; sourceTree = "<group>"; };
 		5EE13A1C1951604F00540C04 /* Suggestion_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Suggestion_Object.m; sourceTree = "<group>"; };
@@ -2097,6 +2100,8 @@
 				CEEE3EEB18C9FBD200665C21 /* ChooseLoginVC.m */,
 				CEEE3EFF18CA10D900665C21 /* SignUp_Email_VC.h */,
 				CEEE3F0018CA10D900665C21 /* SignUp_Email_VC.m */,
+				5EA7FAE819575E080033C061 /* MissingFields.h */,
+				5EA7FAE919575E080033C061 /* MissingFields.m */,
 				CE5D974218DC93560093056B /* ForgotPassVC.h */,
 				CE5D974318DC93560093056B /* ForgotPassVC.m */,
 			);
@@ -2770,6 +2775,7 @@
 				CE02EBC618EC624D00B5674C /* DZNPhotoPickerController.m in Sources */,
 				5E09B5781924B05800AF5DE8 /* BPHomeFeed.m in Sources */,
 				CE36F7B918D2041600A9E917 /* PHFDelegateChain.m in Sources */,
+				5EA7FAEA19575E080033C061 /* MissingFields.m in Sources */,
 				9673323B1948865500A58217 /* EventInfo.m in Sources */,
 				CE79424E18DB3CFA00748EDD /* MVYSideMenuOptions.m in Sources */,
 				CE02EB9C18EC258500B5674C /* CHTCollectionViewWaterfallFooter.m in Sources */,
@@ -2978,7 +2984,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "503C1CCA-96E2-4B99-9886-74193678C8E7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3001,7 +3007,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "503C1CCA-96E2-4B99-9886-74193678C8E7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

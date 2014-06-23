@@ -456,12 +456,6 @@
     //adjust format of keywords
     @try {
         
-        if (values.allKeys.count < 3) {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error creating Beeep" message:@"Please fill all required information in order to create a new Beeep." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-            return;
-        }
-        
         NSMutableString *keywords = [[NSMutableString alloc]init];
         NSString *keywords_comma  = [values objectForKey:@"keywords"];
         
@@ -517,7 +511,7 @@
             }];
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you have entered all required information" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you have entered all required information and location information are available to Beeeper." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
 
@@ -533,8 +527,8 @@
 }
 
 -(BOOL)areAllDataAvailable:(NSDictionary *)values{
-
-    return NO;
+    if(values.allKeys.count < 13)    return NO;
+    else return YES;
 }
 
 - (IBAction)imageSelected:(UIButton *)sender {

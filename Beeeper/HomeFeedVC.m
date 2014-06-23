@@ -88,20 +88,6 @@
     
     pendingImagesDict = [[NSMutableDictionary alloc]init];
     
-    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            beeeps = [NSMutableArray arrayWithArray:objs];
-            
-            [self.collectionV reloadData];
-        }
-        else{
-             [self showLoading];
-        }
-    }];
-    
-    [self getHomeFeed];
-    
     self.collectionV.decelerationRate = 0.6;
     
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
@@ -130,6 +116,8 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(showFindFriends)];
     self.navigationItem.rightBarButtonItem = rightItem;
 }
+
+
 
 -(void)getHomeFeed{
     
@@ -179,15 +167,50 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+    
+    [self getHomeFeed];
+    
+    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            [self.collectionV reloadData];
+            
+            float scroll_y = [[NSUserDefaults standardUserDefaults]floatForKey:@"homefeed-y"];
+            
+            if (scroll_y != 0) {
+                [self.collectionV setContentOffset:CGPointMake(0, scroll_y) animated:NO];
+            }
+            
+        }
+        else{
+            [self showLoading];
+        }
+    }];
+
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
  //   [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    
+    float scroll_y = self.collectionV.contentOffset.y;
+    [[NSUserDefaults standardUserDefaults]setFloat:scroll_y forKey:@"homefeed-y"];
+   
+    beeeps = nil;
+    pendingImagesDict = nil;
+    [self.collectionV reloadData];
+}
+
 
 - (void)didReceiveMemoryWarning
 {

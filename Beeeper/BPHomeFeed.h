@@ -11,7 +11,6 @@
 @interface BPHomeFeed : NSObject
 typedef void(^completed)(BOOL,id);
 
--(void)getHomeFeedWithCompletionBlock:(completed)compbloc;
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc;
 -(void)getLocalFriendsFeed:(completed)compbloc;
 

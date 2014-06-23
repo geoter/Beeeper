@@ -14,6 +14,7 @@
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (strong, nonatomic) IBOutlet UILabel *notificationLabel;
 @property (nonatomic,assign)  int notifications;
+@property (nonatomic,assign) BOOL showsSplashOnLoad;
 
 - (IBAction)addBeeepPressed:(id)sender;
 - (IBAction)tabbarButtonTapped:(id)sender;

@@ -36,6 +36,11 @@
 {
     [super viewDidLoad];
     
+    if (self.showsSplashOnLoad) {
+        [self showSplashScreen];
+        [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+    }
+    
     [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
     
         if (completed) {
@@ -224,6 +229,37 @@
     
     [self addChildViewController:navVC];
     [self.containerVC addSubview:navVC.view];
+}
+
+
+-(void)showSplashScreen{
+    
+    UIView *backV = [[UIView alloc]initWithFrame:self.view.bounds];
+    backV.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+    UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"beeeper-logo-Splash"]];
+    imgV.tag = 454;
+    imgV.center = CGPointMake(backV.center.x, backV.center.y-22);
+    [backV addSubview:imgV];
+    backV.tag = 323;
+    [self.view addSubview:backV];
+    [self.view bringSubviewToFront:backV];
+}
+
+-(void)hideSplashScreen{
+    
+    UIView *backV = (id)[self.view viewWithTag:323];
+    UIImageView *imgV = (id)[backV viewWithTag:454];
+    
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         CGAffineTransform transform = imgV.transform;
+                         imgV.transform = CGAffineTransformScale(transform, 1.5 , 1.5);
+                         backV.alpha = 0;
+                         
+                     } completion:^(BOOL finished){
+                         [backV removeFromSuperview];
+                     }];
+    
 }
 
 @end

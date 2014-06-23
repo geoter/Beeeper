@@ -92,6 +92,7 @@
         [[BPUser sharedBP]loginUser:username.text password:password.text completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
                 NSLog(@"%@",user);
+                [self setSelectedLoginMethod:[NSDictionary dictionaryWithObjects:@[username.text,password.text] forKeys:@[@"username",@"password"]]];
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.5];
             }
             else{
@@ -119,7 +120,15 @@
 }
 
 -(IBAction)logout:(UIStoryboardSegue *)segue{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
+    NSError *error;
     
+    [[NSFileManager defaultManager]removeItemAtPath:filePath error:&error];
+
+    NSString *crFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
+    [[NSFileManager defaultManager]removeItemAtPath:crFilePath error:NULL];
 }
 
 - (IBAction)forgotPassPressed:(id)sender {
@@ -152,6 +161,7 @@
                  
                  [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
                      if (completed) {
+                         [self setSelectedLoginMethod:@"FB"];
                          [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
                      }
                      else{
@@ -243,7 +253,8 @@
                  
                  [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
                      if (completed) {
-                            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                         [self setSelectedLoginMethod:@"TW"];
+                         [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
                      }
                      else{
                          [self hideLoading];
@@ -295,6 +306,8 @@
             [[BPUser sharedBP]loginFacebookUser:[result objectForKey:@"id"] completionBlock:^(BOOL completed,NSString *user){
                 if (completed) {
                     NSLog(@"%@",user);
+                    
+                    [self setSelectedLoginMethod:@"FB"];
                     [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
                 }
                 else{
@@ -307,7 +320,34 @@
             [self hideLoading];
         }
     }];
+}
+
+-(void)setSelectedLoginMethod:(id)value{
+   
+    NSString *method = value;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
     
+    if ([value isKindOfClass:[NSString class]]) {
+       
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
+        NSError *error;
+        
+        BOOL succeed = [method writeToFile:filePath
+                                atomically:YES encoding:NSUTF8StringEncoding error:&error];
+     
+    }
+    else if([value isKindOfClass:[NSDictionary class]]){
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
+        [value writeToFile:filePath atomically:YES];
+        
+        NSString *methodfilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
+        NSError *error;
+        NSString *method = @"EMAIL";
+        BOOL succeed = [method writeToFile:methodfilePath
+                                atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+    }
 }
 
 -(void)showLoading{

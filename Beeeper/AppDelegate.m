@@ -16,7 +16,8 @@
 
    // [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x4B678B)];
     
-   
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 
     [FBSettings setDefaultAppID: @"253616411483666"];

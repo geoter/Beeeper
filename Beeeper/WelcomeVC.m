@@ -7,6 +7,10 @@
 //
 
 #import "WelcomeVC.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import "AppDelegate.h"
+#import <Social/Social.h>
+#import "TabbarVC.h"
 
 @interface WelcomeVC ()
 {
@@ -27,11 +31,28 @@
     return self;
 }
 
+
+
+-(IBAction)logout:(UIStoryboardSegue *)segue{
+   
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
+    NSError *error;
+    
+    [[NSFileManager defaultManager]removeItemAtPath:filePath error:&error];
+    
+    NSString *crFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
+    [[NSFileManager defaultManager]removeItemAtPath:crFilePath error:NULL];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     [self showSplashScreen];
+    
+    [self autoLoginIfAvailable];
     
     [[UINavigationBar appearance] setBarTintColor: [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
@@ -39,6 +60,174 @@
     
     //Swipe to go back enable
     self.navigationController.interactivePopGestureRecognizer.delegate = nil;
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [self hideSplashScreen];
+}
+
+-(void)autoLoginIfAvailable{
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
+    NSString *method =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+
+    if ([method isEqualToString:@"FB"]) {
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
+        {
+            @try {
+                
+                ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+                
+                ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+                
+                NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                         @"253616411483666", ACFacebookAppIdKey,
+                                         [NSArray arrayWithObject:@"email"], ACFacebookPermissionsKey,
+                                         nil];
+                
+                
+                ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] lastObject];
+                
+                if (fbAccount != nil) {
+                    
+                    id email = [fbAccount valueForKeyPath:@"properties.uid"];
+                    NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
+                    
+                    [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
+                        if (completed) {
+                            [self performSelector:@selector(loginPressed:) withObject:@"FB" afterDelay:0.0];
+                        }
+                        else{
+                            [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+                        }
+                    }];
+                    
+                }
+                else{
+                    [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+                }
+                
+            }
+            @catch (NSException *exception) {
+                [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+            }
+            @finally {
+                
+            }
+        }
+        else
+        {
+            NSLog(@"Not Configured in Settings......"); // show user an alert view that Facebook is not configured in settings.
+            
+            if (FBSession.activeSession.state == FBSessionStateOpen
+                || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+                
+                [self loginFBuser];
+            }
+            else {
+               [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+            }
+            
+        }
+
+    }
+    else if ([method isEqualToString:@"TW"]){
+        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
+        {
+            ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+            
+            ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+            
+            ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+            
+            if (twitterAccount != nil) {
+                
+                ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+                NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
+                NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
+                
+                [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
+                    if (completed) {
+                        [self performSelector:@selector(loginPressed:) withObject:@"TW" afterDelay:0.0];
+                    }
+                    else{
+                        [self hideSplashScreen];
+                    }
+                }];
+                
+            }
+            else{
+                [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+            }
+            
+        }
+        else
+        {
+            
+            [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+        }
+
+    }
+    else if ([method isEqualToString:@"EMAIL"]){
+        
+        NSString *crFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
+        NSDictionary *dictFromFile = [NSDictionary dictionaryWithContentsOfFile:crFilePath];
+        
+        [[BPUser sharedBP]loginUser:[dictFromFile objectForKey:@"username"] password:[dictFromFile objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
+            if (completed) {
+                NSLog(@"%@",user);
+                [self performSelector:@selector(loginPressed:) withObject:@"EMAIL" afterDelay:0.5];
+            }
+            else{
+                 [self hideSplashScreen];
+            }
+        }];
+
+    }
+    else{
+        [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+    }
+    
+}
+
+-(void)loginFBuser{
+    
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"user info: %@", result);
+            [[BPUser sharedBP]loginFacebookUser:[result objectForKey:@"id"] completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    NSLog(@"%@",user);
+                    [self performSelector:@selector(loginPressed:) withObject:@"FB" afterDelay:0.0];
+                }
+                else{
+                    [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:0.0];
+                }
+            }];
+        } else {
+            // An error occurred, we need to handle the error
+            // See: https://developers.facebook.com/docs/ios/errors
+           [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+        }
+    }];
+    
+}
+
+- (IBAction)loginPressed:(id)sender {
+    
+    if (sender != nil) {
+        TabbarVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+        
+        viewController.showsSplashOnLoad = (sender != nil);
+        [self.navigationController pushViewController:viewController animated:NO];
+    }
+    else{
+        UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"ChooseLoginVC"];
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -181,8 +370,6 @@
     backV.tag = 323;
     [self.view addSubview:backV];
     [self.view bringSubviewToFront:backV];
-    
-    [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.5];
 }
 
 -(void)hideSplashScreen{

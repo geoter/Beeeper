@@ -91,6 +91,7 @@
         UITextField *username = (id)[self.scrollV viewWithTag:5];
         UITextField *password = (id)[self.view viewWithTag:6];
         
+        
         [[BPUser sharedBP]loginUser:username.text password:password.text completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
                 NSLog(@"%@",user);
@@ -340,6 +341,8 @@
      
     }
     else if([value isKindOfClass:[NSDictionary class]]){
+        NSDictionary *cr = (id)value;
+        NSString *username= [cr objectForKey:@"username"];
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
         [value writeToFile:filePath atomically:YES];
         

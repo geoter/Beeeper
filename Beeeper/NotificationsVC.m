@@ -42,11 +42,25 @@
 
 -(void)getNotifications{
     
+    [self showLoading];
+    
+    [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
+        
+        UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+        [refreshControl endRefreshing];
+        [self hideLoading];
+        
+        if (completed) {
+            notifications = [NSMutableArray arrayWithArray:objcts];
+            [self.tableV reloadData];
+        }
+    }];
+    
     [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
-        
+        [self hideLoading];
         if (completed) {
             notifications = [NSMutableArray arrayWithArray:objcts];
             [self.tableV reloadData];
@@ -56,8 +70,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
 
@@ -364,6 +377,64 @@
     
     return [overdueMessage stringByAppendingString:@" ago"];
 }
+
+-(void)showLoading{
+    
+    self.tableV.alpha = 0;
+    
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    loadingBGV.backgroundColor = self.view.backgroundColor;
+    
+    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+    indicatorView.delegate = self;
+    indicatorView.numberOfCircles = 3;
+    indicatorView.radius = 8;
+    indicatorView.internalSpacing = 1;
+    indicatorView.center = self.view.center;
+    indicatorView.tag = -565;
+    
+    [loadingBGV addSubview:indicatorView];
+    loadingBGV.tag = -434;
+    [self.view addSubview:loadingBGV];
+    [self.view bringSubviewToFront:loadingBGV];
+    
+    [indicatorView startAnimating];
+    
+}
+
+-(void)hideLoading{
+    
+    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+    [indicatorView stopAnimating];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         loadingBGV.alpha = 0;
+         self.tableV.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         [loadingBGV removeFromSuperview];
+         
+     }
+     ];
+}
+
+
+#pragma mark - MONActivityIndicatorViewDelegate Methods
+
+- (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
+      circleBackgroundColorAtIndex:(NSUInteger)index {
+    
+    CGFloat red   = 250/255.0;
+    CGFloat green = 217/255.0;
+    CGFloat blue  = 0/255.0;
+    CGFloat alpha = 1.0f;
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
 
 
 

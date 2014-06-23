@@ -203,21 +203,30 @@
 }
 
 -(void)setUserInfo{
+    
+    
+    [self showLoading];
     [self downloadUserImageIfNecessery];
     
     if ([user objectForKey:@"name"] == nil || [user objectForKey:@"lastname"] == nil) {
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
+            [self hideLoading];
             if (completed && objs.count >0) {
                 NSDictionary *userDict = [objs firstObject];
                 self.user = userDict;
                 [self setUserInfo];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No user found" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             }
         }];
         
 
     }
     else{
+        [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
     }
 }
@@ -823,6 +832,53 @@
 
 #pragma mark - MONActivityIndicatorViewDelegate Methods
 
+-(void)showLoading{
+    
+    self.tableV.alpha = 0;
+    
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    loadingBGV.backgroundColor = self.view.backgroundColor;
+    
+    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+    indicatorView.delegate = self;
+    indicatorView.numberOfCircles = 3;
+    indicatorView.radius = 8;
+    indicatorView.internalSpacing = 1;
+    indicatorView.center = self.view.center;
+    indicatorView.tag = -565;
+    
+    [loadingBGV addSubview:indicatorView];
+    loadingBGV.tag = -434;
+    [self.view addSubview:loadingBGV];
+    [self.view bringSubviewToFront:loadingBGV];
+    
+    [indicatorView startAnimating];
+    
+}
+
+-(void)hideLoading{
+    
+    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+    [indicatorView stopAnimating];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         loadingBGV.alpha = 0;
+         self.tableV.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         [loadingBGV removeFromSuperview];
+         
+     }
+     ];
+}
+
+
+#pragma mark - MONActivityIndicatorViewDelegate Methods
+
 - (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
       circleBackgroundColorAtIndex:(NSUInteger)index {
     
@@ -832,6 +888,8 @@
     CGFloat alpha = 1.0f;
     return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
+
+
 
 -(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
     
@@ -852,5 +910,7 @@
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
+
+
 
 @end

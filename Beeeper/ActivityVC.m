@@ -52,10 +52,10 @@
             activities = [NSMutableArray arrayWithArray:objs];
             [self groupActivitiesByMonth];
             
-            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
-            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
-            numberLbl.textColor = [UIColor whiteColor];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+//            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+//            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+//            numberLbl.textColor = [UIColor whiteColor];
+//            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
 
         }
         else{
@@ -73,10 +73,10 @@
             activities = [NSMutableArray arrayWithArray:objcts];
             [self groupActivitiesByMonth];
             
-            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
-            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
-            numberLbl.textColor = [UIColor whiteColor];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+//            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+//            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+//            numberLbl.textColor = [UIColor whiteColor];
+//            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
         }
     }];
 

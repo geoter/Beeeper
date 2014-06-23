@@ -22,6 +22,7 @@ typedef void(^notifications_completed)(BOOL,id);
 @property (copy) void(^is_following_completed)(BOOL,id);
 @property (copy) void(^notifications_completed)(BOOL,id);
 @property (copy) completed fbSignUpCompleted;
+@property (copy) completed localNotificationsCompleted;
 
 @property (nonatomic,strong) NSDictionary *user;
 
@@ -47,6 +48,7 @@ typedef void(^notifications_completed)(BOOL,id);
 -(void)follow:(NSString *)userID WithCompletionBlock:(completed)compbloc;
 -(void)unfollow:(NSString *)userID WithCompletionBlock:(completed)compbloc;
 
+-(void)getLocalNotifications:(completed)compbloc;
 -(void)getNotificationsWithCompletionBlock:(completed)compbloc;
 
 - (id)init;

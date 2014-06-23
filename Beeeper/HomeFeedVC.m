@@ -170,9 +170,14 @@
     
     [self getHomeFeed];
     
+    [self showLoading];
+    
     [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
         
         if (completed) {
+            
+            [self hideLoading];
+            
             beeeps = [NSMutableArray arrayWithArray:objs];
             [self.collectionV reloadData];
             
@@ -182,9 +187,6 @@
                 [self.collectionV setContentOffset:CGPointMake(0, scroll_y) animated:NO];
             }
             
-        }
-        else{
-            [self showLoading];
         }
     }];
 

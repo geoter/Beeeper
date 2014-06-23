@@ -191,7 +191,7 @@ static BPActivity *thisWebServices = nil;
     }
    
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:fingerprint]]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];

@@ -707,17 +707,34 @@
     
     isLiker = NO;
     
-    likers =[NSMutableArray arrayWithArray:beeep.likes];
-    
-    if ([likers indexOfObject:my_id] != NSNotFound) {
-        isLiker = YES;
-    }
-    
-    if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+    if(beeep == nil){
+        self.likesLabel.hidden = YES;
+        self.beeepsLabel.hidden = YES;
+        self.commentsLabel.hidden = YES;
+        self.likesButton.hidden = YES;
+        self.commentsButton.hidden = YES;
+        self.likesButton.hidden = YES;
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        
+        likesLbl.text = [NSString stringWithFormat:@"%d",beeep.likes.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",beeep.comments.count];
+        //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
+
+        
+        likers =[NSMutableArray arrayWithArray:beeep.likes];
+        
+        if ([likers indexOfObject:my_id] != NSNotFound) {
+            isLiker = YES;
+        }
+        
+        if (isLiker) {
+            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        }
+        else{
+            [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        }
+
     }
     
     //Tags

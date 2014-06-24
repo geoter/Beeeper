@@ -13,6 +13,8 @@
 #import "BPCreate.h"
 #import "Suggestion_Object.h"
 #import "Event_Show_Object.h"
+#import "SuggestBeeepVC.h"
+#import "Activity_Object.h"
 
 @interface BeeepItVC ()
 {
@@ -90,6 +92,26 @@
             Suggestion_Object *sgo = tml;
             title = [sgo.what.title capitalizedString];
         }
+        else if ([tml isKindOfClass:[Timeline_Object class]]){
+            Timeline_Object *tmlO = tml;
+            title = [tmlO.event.title capitalizedString];
+        }
+        else if ([tml isKindOfClass:[Activity_Object class]]){
+            Activity_Object *activity = tml;
+            
+            if(activity.beeepInfoActivity.eventActivity.count >0){
+                
+                EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+                title = event.title;
+            }
+            else if(activity.eventActivity.count > 0){
+                
+                EventActivity *event = [activity.eventActivity firstObject];
+                NSString *event_title = [event.title capitalizedString];
+                title = [event_title capitalizedString];
+            }
+
+        }
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -111,6 +133,23 @@
         else if ([tml isKindOfClass:[Suggestion_Object class]]){
             date = [NSDate dateWithTimeIntervalSince1970:sgo.what.timestamp];
         }
+        else if ([tml isKindOfClass:[Activity_Object class]]){
+            Activity_Object *activity = tml;
+            
+            if(activity.beeepInfoActivity.eventActivity.count >0){
+                
+                EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+                
+            }
+            else if(activity.eventActivity.count > 0){
+                
+                EventActivity *event = [activity.eventActivity firstObject];
+
+                
+            }
+            
+        }
+
         else{
             date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
         }
@@ -146,6 +185,22 @@
         else if ([tml isKindOfClass:[Suggestion_Object class]]){
             jsonString = sgo.what.location;
         }
+        else if ([tml isKindOfClass:[Activity_Object class]]){
+            Activity_Object *activity = tml;
+            
+            if(activity.beeepInfoActivity.eventActivity.count >0){
+                
+                EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+                
+            }
+            else if(activity.eventActivity.count > 0){
+                
+                EventActivity *event = [activity.eventActivity firstObject];
+
+            }
+            
+        }
+
         else{
             jsonString = ffo.eventFfo.eventDetailsFfo.location;
         }
@@ -346,7 +401,7 @@
     }
     else{
         NSLog(@"WRONG!");
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Make sure you haven't already Beeeped this event." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
     
@@ -370,6 +425,12 @@
          
      }
      ];
+
+}
+
+- (IBAction)suggestItPressed:(id)sender {
+    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    [self presentViewController:viewController animated:YES completion:NULL];
 
 }
 

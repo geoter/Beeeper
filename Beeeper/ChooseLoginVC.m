@@ -151,7 +151,7 @@
         
         NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
                                  @"253616411483666", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObject:@"email"], ACFacebookPermissionsKey,
+                                 [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
                                  nil];
         
         [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
@@ -175,14 +175,19 @@
              }
              else
              {
-                 [self hideLoading];
+                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
                  
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper Disabled" message:@"Please enable Beeeper in your Settings->Facebook" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                  }
                  else
                  {
                      NSLog(@"Error in Login: %@", error);
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+
                  }
              }
          }];
@@ -211,7 +216,7 @@
         else {
             // Open a session showing the user the login UI
             // You must ALWAYS ask for basic_info permissions when opening a session
-            [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"user_friends"]
+            [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"user_friends",@"user_events"]
                                                allowLoginUI:YES
                                           completionHandler:
              ^(FBSession *session, FBSessionState state, NSError *error) {
@@ -311,16 +316,16 @@
                     NSLog(@"%@",user);
                     
                     [self setSelectedLoginMethod:@"FB"];
-                    [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                    [self performSelectorOnMainThread:@selector(loginPressed:) withObject:nil waitUntilDone:NO];
                 }
                 else{
-                    [self hideLoading];
+                    [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
                 }
             }];
         } else {
             // An error occurred, we need to handle the error
             // See: https://developers.facebook.com/docs/ios/errors
-            [self hideLoading];
+            [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
         }
     }];
 }

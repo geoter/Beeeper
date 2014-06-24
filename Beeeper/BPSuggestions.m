@@ -171,8 +171,10 @@ static BPSuggestions *thisWebServices = nil;
         
         NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
         [operationQueue addOperation:invocationOperation];
+        if (activity.what.title != nil) {
+           [bs addObject:activity];
+        }
         
-        [bs addObject:activity];
     }
     
     self.completed(YES,bs);

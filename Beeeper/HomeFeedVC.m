@@ -21,6 +21,7 @@
 #import "GHContextMenuView.h"
 #import "EventWS.h"
 #import "Event_Show_Object.h"
+#import "SuggestBeeepVC.h"
 
 @interface BorderTextField : UITextField
 
@@ -331,6 +332,11 @@
     favorites.text = [NSString stringWithFormat:@"%d",(int)b.likes.count];
     comments.text = [NSString stringWithFormat:@"%d",(int)b.comments.count];
     beeeps.text = [NSString stringWithFormat:@"%d",(int)event.eventFfo.beeepedBy.count];
+    
+    favorites.hidden = (favorites.text.intValue == 0);
+    comments.hidden = (comments.text.intValue == 0);
+    beeeps.hidden = (beeeps.text.intValue == 0);
+
     
     NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
@@ -697,12 +703,24 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
+    Friendsfeed_Object *ffo = [beeeps objectAtIndex:indexpath.row];
+    
+    Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
+    
+    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    
+    [self presentViewController:viewController animated:YES completion:nil];
+    
 }
 
 
 #pragma mark - MONActivityIndicatorView
 
 -(void)showLoading{
+    
+    if (self.collectionV.alpha == 0) {
+        return;
+    }
     
     self.collectionV.alpha = 0;
     

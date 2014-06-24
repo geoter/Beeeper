@@ -116,40 +116,95 @@
     
     Comments *objct = [comments objectAtIndex:indexPath.row];
     
-    double timestamp = objct.comment.timestamp;
-    double now_timestamp = [[NSDate date] timeIntervalSince1970];
-    
-    date.text = [self dailyLanguage:now_timestamp-timestamp];
-    
-    Comments *commentObj = (Comments *)objct;
-    NSString *comment = commentObj.comment.comment;
-    txtV.text = comment;
-    
-    name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
-    
-    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
-    
-    txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
-    
-    NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[commentObj.commenter.imagePath MD5],extension];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        image.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        image.image = img;
+    if (objct.userCommentDict == nil) {
+        
+        double timestamp = objct.comment.timestamp;
+        double now_timestamp = [[NSDate date] timeIntervalSince1970];
+        
+        date.text = [self dailyLanguage:now_timestamp-timestamp];
+        
+        Comments *commentObj = (Comments *)objct;
+        NSString *comment = commentObj.comment.comment;
+        txtV.text = comment;
+        
+        name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
+        
+        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+        
+        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+        
+        NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        
+        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[commentObj.commenter.imagePath MD5],extension];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            image.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            image.image = img;
+        }
+        else{
+            image.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            [[DTO sharedDTO]downloadImageFromURL:commentObj.commenter.imagePath];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        }
+
     }
     else{
-        image.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[DTO sharedDTO]downloadImageFromURL:commentObj.commenter.imagePath];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        
+        date.text= @"Just Now";
+        
+        NSDictionary *user =  [BPUser sharedBP].user;
+        
+        NSString *nameStr=[objct.userCommentDict objectForKey:@"name"];
+        NSString *comment=[objct.userCommentDict objectForKey:@"comment"];
+        txtV.text = comment;
+        name.text = nameStr;
+        
+        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+        
+        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+        
+        NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+        
+        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        
+        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            image.image = img;
+        }
+        else{
+            
+            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+            dispatch_async(q, ^{
+                /* Fetch the image from the server... */
+                NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+                UIImage *img = [[UIImage alloc] initWithData:data];
+                
+                [self saveImage:img withFileName:imageName inDirectory:localPath];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    /* This is the main thread again, where we set the tableView's image to
+                     be what we just fetched. */
+                    image.image = img;
+                });
+            });
+        }
+
     }
+    
     
     return cell;
 }
@@ -162,6 +217,10 @@
         
         Comments *commentObj = (Comments *)objct;
         NSString *comment = commentObj.comment.comment;
+        if (comment == nil) {
+            comment = [commentObj.userCommentDict objectForKey:@"comment"];
+        }
+        
         CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
         
         return (textViewSize.height + 36 + 8);
@@ -268,6 +327,18 @@
         
         [[EventWS sharedBP]postComment:text BeeepId:t.beeep.beeepInfo.weight user:t.beeep.userId WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
+                
+                NSMutableDictionary *commentDict = [NSMutableDictionary dictionary];
+                NSString *name = [[[BPUser sharedBP].user objectForKey:@"name"] capitalizedString];
+                NSString *surname = [[[BPUser sharedBP].user objectForKey:@"lastname"] capitalizedString];
+                
+                [commentDict setObject:[NSString stringWithFormat:@"%@ %@",name,surname] forKey:@"name"];
+                [commentDict setObject:text forKey:@"comment"];
+                
+                Comments *c = [[Comments alloc]init];
+                c.userCommentDict = commentDict;
+                [comments addObject:c];
+
                 [self.tableV reloadData];
                 [self prependTextToTextView:text];
                 [composeBarView setText:@"" animated:YES];
@@ -280,11 +351,27 @@
     else if ([self.event_beeep_object isKindOfClass:[Friendsfeed_Object class]]){
         Friendsfeed_Object *ffo = self.event_beeep_object;
         NSString *userID = ffo.beeepFfo.userId;
+        if (userID == nil) {
+            userID = ffo.whoFfo.whoFfoIdentifier;
+        }
+        
         Beeeps *b = [ffo.beeepFfo.beeeps objectAtIndex:0];
         NSString *weight = b.weight;
         
         [[EventWS sharedBP]postComment:text BeeepId:weight user:userID WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
+                
+                NSMutableDictionary *commentDict = [NSMutableDictionary dictionary];
+                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                
+                [commentDict setObject:[NSString stringWithFormat:@"%@ %@",name,surname] forKey:@"name"];
+                [commentDict setObject:text forKey:@"comment"];
+                
+                Comments *c = [[Comments alloc]init];
+                c.userCommentDict = commentDict;
+                [comments addObject:c];
+                
                 [self.tableV reloadData];
                 [self prependTextToTextView:text];
                 [composeBarView setText:@"" animated:YES];
@@ -412,5 +499,26 @@
     
     return [overdueMessage stringByAppendingString:@" ago"];
 }
+
+-(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
+    
+    if ([imageName rangeOfString:@"n/a"].location != NSNotFound) {
+        return;
+    }
+    
+    if ([[imageName lowercaseString] rangeOfString:@".png"].location != NSNotFound) {
+        [UIImagePNGRepresentation(image) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@",imageName);
+        
+    } else {
+        
+        BOOL write = [UIImageJPEGRepresentation(image, 1) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@ - %d",directoryPath,write);
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
 
 @end

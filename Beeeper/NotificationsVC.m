@@ -37,12 +37,25 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self getNotifications];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+    [[BPUser sharedBP]readNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"readNotifications" object:nil userInfo:nil];
+        }
+    }];
+
 }
 
 -(void)getNotifications{
     
     [self showLoading];
+    
+     self.tableV.decelerationRate = 0.6;
     
     [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
         
@@ -70,6 +83,9 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+
+    [self getNotifications];
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 

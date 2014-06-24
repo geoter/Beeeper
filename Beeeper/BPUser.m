@@ -692,6 +692,50 @@ static BPUser *thisWebServices = nil;
     [self parseResponseString:json WithCompletionBlock:compbloc];
 }
 
+-(void)readNotificationsWithCompletionBlock:(completed)compbloc{
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+    
+    self.readNotificationsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:nil]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(readNotificationsFinished:)];
+    
+    [request setDidFailSelector:@selector(readNotificationsFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)readNotificationsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.readNotificationsCompleted];
+}
+
+-(void)readNotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.readNotificationsCompleted(NO,nil);
+}
 
 -(void)getNotificationsWithCompletionBlock:(completed)compbloc{
    

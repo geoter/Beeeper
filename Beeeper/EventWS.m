@@ -38,33 +38,43 @@ static EventWS *thisWebServices = nil;
     
     self.comment_completed = compbloc;
     
-    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/comment/add"];
+    @try {
+        
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/comment/add"];
+        
+        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+        
+        NSMutableArray *postValues = [NSMutableArray array];
+        
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:user_id forKey:@"user"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:beeep_id forKey:@"beeep_id"]];
+        
+        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+        
+        [request addPostValue:commentText forKey:@"comment"];
+        [request addPostValue:user_id forKey:@"user"];
+        [request addPostValue:beeep_id forKey:@"beeep_id"];
+        
+        [request setRequestMethod:@"POST"];
+        
+        [request setTimeOutSeconds:7.0];
+        
+        [request setDelegate:self];
+        
+        [request setDidFinishSelector:@selector(postCommentFinished:)];
+        
+        [request setDidFailSelector:@selector(postCommentFailed:)];
+        
+        [request startAsynchronous];
+
+    }
+    @catch (NSException *exception) {
+        self.comment_completed(NO,nil);
+    }
+    @finally {
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    NSMutableArray *postValues = [NSMutableArray array];
-    
-    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
-    [postValues addObject:[NSDictionary dictionaryWithObject:user_id forKey:@"user"]];
-    [postValues addObject:[NSDictionary dictionaryWithObject:beeep_id forKey:@"beeep_id"]];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
-    
-    [request addPostValue:commentText forKey:@"comment"];
-    [request addPostValue:user_id forKey:@"user"];
-    [request addPostValue:beeep_id forKey:@"beeep_id"];
-    
-    [request setRequestMethod:@"POST"];
-    
-    [request setTimeOutSeconds:7.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(postCommentFinished:)];
-    
-    [request setDidFailSelector:@selector(postCommentFailed:)];
-    
-    [request startAsynchronous];
+    }
     
 }
 

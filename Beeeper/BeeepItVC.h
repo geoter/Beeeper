@@ -23,5 +23,6 @@
 - (IBAction)hideFromFollowersPressed:(id)sender;
 - (IBAction)beeepIt:(id)sender;
 - (IBAction)beeepTimeSelected:(id)sender;
+- (IBAction)suggestItPressed:(id)sender;
 
 @end

@@ -26,6 +26,8 @@
 {
     [super viewDidLoad];
     
+    self.tableV.decelerationRate = 0.6;
+    
     rowsToReload = [NSMutableArray array];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];

@@ -76,12 +76,6 @@
     
     [suggestions sortUsingComparator:^NSComparisonResult(Suggestion_Object *obj1, Suggestion_Object *obj2) {
         
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        [formatter setLocale:[NSLocale currentLocale]];
-        
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:obj1.what.timestamp];
-        NSDate *date2 = [NSDate dateWithTimeIntervalSince1970:obj2.what.timestamp];
         //1401749430
         //1401749422
         if (obj1.what.timestamp > obj2.what.timestamp) {
@@ -179,10 +173,14 @@
     nameLbl.text = [what.title capitalizedString];
     
     NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    if (data != nil) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = loc.venueStation;
+
+    }
     
     beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
     

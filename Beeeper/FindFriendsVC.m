@@ -10,6 +10,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "AppDelegate.h"
 #import "TimelineVC.h"
+#import <AddressBook/AddressBook.h>
 
 #define BeeeperButton 0
 #define FacebookButton 1
@@ -130,14 +131,15 @@
             
             break;
         case 3:
-            
+            [self showAddressBook];
             break;
             
         default:
             break;
     }
     
-    [UIView transitionWithView:self.tableView
+    
+    [UIView transitionWithView:self.view
                       duration:0.2
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
@@ -147,7 +149,7 @@
     selectedOption = (int)btn.tag;
     
     for (UIButton *btn in [headerView subviews]) {
-        if (btn.tag != selectedOption) {
+        if (btn.tag != selectedOption && [btn isKindOfClass:[UIButton class]]) {
             
             [UIView transitionWithView:self.view
                               duration:0.2
@@ -158,8 +160,81 @@
         }
     }
     
-    [self.tableView reloadData];
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:NO];
+}
+
+-(void)showAddressBook{
+  
+    ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error) {
+        if (!granted){
+            //4
+
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        //5
+        
+        CFErrorRef errorr = NULL;
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &errorr);
+        NSInteger numberOfPeople = ABAddressBookGetPersonCount(addressBook);
+        CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook);
+        
+        NSMutableArray *contacts = [NSMutableArray array];
+        
+        for (NSInteger i = 0; i < numberOfPeople; i++) {
+            ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
+            
+            NSString *firstName = CFBridgingRelease(ABRecordCopyValue(person, kABPersonFirstNameProperty));
+            NSString *lastName  = CFBridgingRelease(ABRecordCopyValue(person, kABPersonLastNameProperty));
+
+            ABMultiValueRef emailMultiValue = ABRecordCopyValue(person, kABPersonEmailProperty);
+            NSArray *emailAddresses = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(emailMultiValue);
+            CFRelease(emailMultiValue);
+
+            if (emailAddresses.count > 0) {
+                NSLog(@"Name:%@ %@ Email: %@", firstName, lastName ,emailAddresses);
+                
+                NSMutableDictionary *p = [NSMutableDictionary dictionary];
+                
+                if(ABPersonHasImageData(person)) {
+                    
+                    NSData *contactImageData = (__bridge NSData*) ABPersonCopyImageDataWithFormat(person,
+                                                                                                  kABPersonImageFormatThumbnail);
+                    UIImage *img = [[UIImage alloc] initWithData:contactImageData];
+                    [p setObject:img forKey:@"image"];
+
+                }
+                
+                if (firstName != nil) {
+                    [p setObject:firstName forKey:@"name"];
+                }
+                if (lastName != nil) {
+                    [p setObject:lastName forKey:@"lastname"];
+                }
+                
+                [p setObject:emailAddresses forKey:@"emails"];
+                
+                [contacts addObject:p];
+                
+//                ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
+//                
+//                CFIndex numberOfPhoneNumbers = ABMultiValueGetCount(phoneNumbers);
+//                for (CFIndex i = 0; i < numberOfPhoneNumbers; i++) {
+//                    NSString *phoneNumber = CFBridgingRelease(ABMultiValueCopyValueAtIndex(phoneNumbers, i));
+//                }
+//                
+//                CFRelease(phoneNumbers);
+
+                NSLog(@"=============================================");
+            }
+            
+        }
+        
+        CFRelease(allPeople);
+        
+        searchedPeople = contacts;
+        [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    });
 }
 
 -(void)requestFBFriends{
@@ -258,39 +333,84 @@
     
     UIImageView *userImage = (id)[cell viewWithTag:2];
     UIImageView *followImage = (id)[cell viewWithTag:3];
-    
+
+    UITextField *emailtxtF = (id)[cell viewWithTag:4];
+
     NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
-    txtF.text = [NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]];
+    NSString *name =[user objectForKey:@"name"];
+    NSString *lastname =[user objectForKey:@"lastname"];
+
+    NSArray *emails= [user objectForKey:@"emails"];
+    NSMutableString *emailsStr = [[NSMutableString alloc]init];
     
+    if (emails.count > 0) {
+
+        for (NSString *email in emails) {
+            [emailsStr appendFormat:@"%@ ,",email];
+        }
+        [emailsStr deleteCharactersInRange:NSMakeRange([emailsStr length]-1, 1)];
+        
+    }
+       if (name && lastname) {
+        txtF.text = [NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]];
+    }
+    else if(name == nil && lastname == nil && emails.count > 0){
+       
+        txtF.text = emailsStr;
+    }
+    else{
+        txtF.text = [NSString stringWithFormat:@"%@",([user objectForKey:@"name"])?[user objectForKey:@"name"]:[user objectForKey:@"lastname"]];
+    }
+
+    emailtxtF.text = emailsStr;
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        userImage.backgroundColor = [UIColor clearColor];
-        userImage.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        userImage.image = img;
-    }
-    else{
-        userImage.image = nil;
+    if (imagePath != nil) {
         
         NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
-        
-    }
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            userImage.backgroundColor = [UIColor clearColor];
+            userImage.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            userImage.image = img;
+        }
+        else{
+            userImage.image = nil;
+            userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+            NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+            
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
+            
+            
+        }
 
+    }
+    else{
+        
+        userImage.image = nil;
+        
+        UIImage *imageContact = [user objectForKey:@"image"];
+        if (imageContact != nil) {
+            userImage.image = imageContact;
+            userImage.backgroundColor = [UIColor clearColor];
+        }
+        else{
+            userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+        }
+
+    }
+    
+   
     
     return cell;
 }
@@ -298,13 +418,20 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
-    timelineVC.mode = Timeline_Not_Following;
-    timelineVC.showBackButton = YES; //in case of My_Timeline
-    NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
-    timelineVC.user = user;
-    
-    [self.navigationController pushViewController:timelineVC animated:YES];
+    if (selectedOption == MailButton) {
+        NSDictionary *contact = [searchedPeople objectAtIndex:indexPath.row];
+        NSLog(@"%@",[contact objectForKey:@"emails"]);
+    }
+    else{
+        TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        timelineVC.mode = Timeline_Not_Following;
+        timelineVC.showBackButton = YES; //in case of My_Timeline
+        NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
+        timelineVC.user = user;
+        
+        [self.navigationController pushViewController:timelineVC animated:YES];
+    }
+   
 }
 
 

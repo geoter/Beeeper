@@ -25,7 +25,7 @@
                   symbolName = "-[EventVC likeIt]"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "425314264.777766"
+                  timestampString = "425318812.804358"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "965"
@@ -39,7 +39,7 @@
                   symbolName = "__17-[EventVC likeIt]_block_invoke418"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "425314264.778003"
+                  timestampString = "425318812.804616"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "965"
@@ -350,22 +350,6 @@
             startingLineNumber = "354"
             endingLineNumber = "354"
             landmarkName = "-composeBarViewDidPressButton:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Beeeper/FindFriendsVC.m"
-            timestampString = "425314264.497648"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
-            landmarkName = "-optionSelectedFromHeader:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

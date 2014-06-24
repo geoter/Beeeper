@@ -60,11 +60,11 @@
         
         if (completed) {
             
-            self.notifications = objcts.count;
+            _notifications = objcts.count;
             
             self.notificationLabel.text = [NSString stringWithFormat:@"%d",self.notifications];
             
-            if (self.notifications <= 0) {
+            if (_notifications <= 0) {
                 
                 [UIView animateWithDuration:0.2f
                                  animations:^

@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString *fingerprint;
 @property (nonatomic, assign) double timestamp;
 @property (nonatomic, strong) NSString *imageUrl;
+@property (nonatomic, strong) NSArray *likes;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *source;
 @property (nonatomic, strong) NSString *title;

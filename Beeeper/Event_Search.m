@@ -13,6 +13,7 @@ NSString *const kEvent_SearchDescription = @"description";
 NSString *const kEvent_SearchFingerprint = @"fingerprint";
 NSString *const kEvent_SearchTimestamp = @"timestamp";
 NSString *const kEvent_SearchImageUrl = @"image_url";
+NSString *const kEvent_SearchLikes = @"likes";
 NSString *const kEvent_SearchUrl = @"url";
 NSString *const kEvent_SearchSource = @"source";
 NSString *const kEvent_SearchTitle = @"title";
@@ -36,6 +37,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
 @synthesize fingerprint = _fingerprint;
 @synthesize timestamp = _timestamp;
 @synthesize imageUrl = _imageUrl;
+@synthesize likes = _likes;
 @synthesize url = _url;
 @synthesize source = _source;
 @synthesize title = _title;
@@ -63,6 +65,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
             self.fingerprint = [self objectOrNilForKey:kEvent_SearchFingerprint fromDictionary:dict];
             self.timestamp = [[self objectOrNilForKey:kEvent_SearchTimestamp fromDictionary:dict] doubleValue];
             self.imageUrl = [self objectOrNilForKey:kEvent_SearchImageUrl fromDictionary:dict];
+            self.likes = [self objectOrNilForKey:kEvent_SearchLikes fromDictionary:dict];
             self.url = [self objectOrNilForKey:kEvent_SearchUrl fromDictionary:dict];
             self.source = [self objectOrNilForKey:kEvent_SearchSource fromDictionary:dict];
             self.title = [self objectOrNilForKey:kEvent_SearchTitle fromDictionary:dict];
@@ -98,6 +101,17 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     [mutableDict setValue:self.fingerprint forKey:kEvent_SearchFingerprint];
     [mutableDict setValue:[NSNumber numberWithDouble:self.timestamp] forKey:kEvent_SearchTimestamp];
     [mutableDict setValue:self.imageUrl forKey:kEvent_SearchImageUrl];
+    NSMutableArray *tempArrayForLikes = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.likes) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForLikes addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForLikes addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForLikes] forKey:kEvent_SearchLikes];
     [mutableDict setValue:self.url forKey:kEvent_SearchUrl];
     [mutableDict setValue:self.source forKey:kEvent_SearchSource];
     [mutableDict setValue:self.title forKey:kEvent_SearchTitle];
@@ -154,6 +168,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     self.fingerprint = [aDecoder decodeObjectForKey:kEvent_SearchFingerprint];
     self.timestamp = [aDecoder decodeDoubleForKey:kEvent_SearchTimestamp];
     self.imageUrl = [aDecoder decodeObjectForKey:kEvent_SearchImageUrl];
+    self.likes = [aDecoder decodeObjectForKey:kEvent_SearchLikes];
     self.url = [aDecoder decodeObjectForKey:kEvent_SearchUrl];
     self.source = [aDecoder decodeObjectForKey:kEvent_SearchSource];
     self.title = [aDecoder decodeObjectForKey:kEvent_SearchTitle];
@@ -173,6 +188,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     [aCoder encodeObject:_fingerprint forKey:kEvent_SearchFingerprint];
     [aCoder encodeDouble:_timestamp forKey:kEvent_SearchTimestamp];
     [aCoder encodeObject:_imageUrl forKey:kEvent_SearchImageUrl];
+    [aCoder encodeObject:_likes forKey:kEvent_SearchLikes];
     [aCoder encodeObject:_url forKey:kEvent_SearchUrl];
     [aCoder encodeObject:_source forKey:kEvent_SearchSource];
     [aCoder encodeObject:_title forKey:kEvent_SearchTitle];
@@ -194,6 +210,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
         copy.fingerprint = [self.fingerprint copyWithZone:zone];
         copy.timestamp = self.timestamp;
         copy.imageUrl = [self.imageUrl copyWithZone:zone];
+        copy.likes = [self.likes copyWithZone:zone];
         copy.url = [self.url copyWithZone:zone];
         copy.source = [self.source copyWithZone:zone];
         copy.title = [self.title copyWithZone:zone];

@@ -21,6 +21,7 @@
 #import "Event_Show_Object.h"
 #import "Beeep_Object.h"
 #import "CommentsVC.h"
+#import "Event_Search.h"
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>{
 
@@ -110,6 +111,19 @@
                 }
             }];
         }
+
+    }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        
+        Event_Search *event = tml;
+        fingerprint = event.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventForActivityWithBeeep];
+            }
+        }];
 
     }
     
@@ -738,7 +752,6 @@
         self.likesLabel.hidden = YES;
         self.beeepsLabel.hidden = YES;
         self.commentsLabel.hidden = YES;
-        self.likesButton.hidden = YES;
     }
     else{
         

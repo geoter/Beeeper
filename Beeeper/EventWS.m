@@ -8,6 +8,7 @@
 
 #import "EventWS.h"
 #import "Event_Search.h"
+#import "Event_Show_Object.h"
 
 static EventWS *thisWebServices = nil;
 
@@ -541,6 +542,84 @@ static EventWS *thisWebServices = nil;
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+
+-(void)getEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.getEvent_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(eventReceived:)];
+    
+    [request setDidFailSelector:@selector(eventFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)eventReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *eventArray;
+    
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+        
+        Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventObject];
+        self.getEvent_completed(YES,event);
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        
+        if (eventArray.count > 0 ) {
+            Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventArray.firstObject];
+            self.getEvent_completed(YES,event);
+        }
+        else{
+            self.getEvent_completed(NO,nil);
+        }
+    }
+    else{
+        self.getEvent_completed(NO,nil);
+    }
+    
+    
+    
+}
+
+-(void)eventFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.getEvent_completed(NO,nil);
 }
 
 

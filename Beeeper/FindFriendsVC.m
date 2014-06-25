@@ -246,7 +246,7 @@
         
         CFRelease(allPeople);
         
-        searchedPeople = contacts;
+        searchedPeople = [NSMutableArray arrayWithArray:contacts];
         [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     });
 }
@@ -355,7 +355,7 @@
     
      if (selectedOption != MailButton) {
     
-        followBtn.hidden = YES;
+        followBtn.hidden = NO;
          
         NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
         
@@ -505,7 +505,7 @@
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
-            searchedPeople = objcts;
+            searchedPeople = [NSMutableArray arrayWithArray:objcts];
             NSRange range = NSMakeRange(0, 1);
             NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
             [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
@@ -527,7 +527,7 @@
         [self getPeople:searchText WithCompletionBlock:^(BOOL completed,NSArray *objcts){
             
             if (completed) {
-                searchedPeople = objcts;
+                searchedPeople = [NSMutableArray arrayWithArray:objcts];
                 NSRange range = NSMakeRange(0, 1);
                 NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
                 [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];

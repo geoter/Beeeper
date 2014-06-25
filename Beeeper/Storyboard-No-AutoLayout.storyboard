@@ -298,7 +298,7 @@
                                         </connections>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="SwP-YN-RBZ">
-                                        <rect key="frame" x="270" y="15" width="37" height="30"/>
+                                        <rect key="frame" x="262" y="12" width="58" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Done">
                                             <color key="titleColor" red="0.9803922176361084" green="0.87843143939971924" blue="0.19607844948768616" alpha="1" colorSpace="deviceRGB"/>

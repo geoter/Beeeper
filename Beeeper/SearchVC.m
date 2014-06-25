@@ -7,11 +7,12 @@
 //
 
 #import "SearchVC.h"
+#import "EventWS.h"
 
 @interface SearchVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
-    NSMutableArray *searchResults;
     NSArray *filteredResults;
+    NSArray *suggestionValues;
 }
 @end
 
@@ -22,17 +23,33 @@
 {
     [super viewDidLoad];
     
-    searchResults = [NSMutableArray arrayWithObjects:@"Basketball",@"U2 Concert",@"NBA All star game",@"Madonna",@"Shakira Live", nil];
-    
+    [self resetSearch];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+}
+
+-(void)resetSearch{
+    
+    suggestionValues = [NSArray arrayWithObjects:@"popular",@"sports",@"cinema",@"music",@"TV",@"nightlife",@"radio",@"deals", nil];
+    
+    filteredResults = suggestionValues;
+    
+    UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
+    numberOfCommentsV.backgroundColor = [UIColor clearColor];
+    
+    UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 0, self.tableV.frame.size.width, 40)];
+    numberOfComments.text = [NSString stringWithFormat:@"SUGGESTIONS"];
+    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
+    numberOfComments.textAlignment = NSTextAlignmentLeft;
+    [numberOfCommentsV addSubview:numberOfComments];
+    
+    self.tableV.tableHeaderView = numberOfCommentsV;
+
+    [self.tableV reloadData];
 }
 
 
@@ -62,17 +79,22 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell" forIndexPath:indexPath];
     UILabel *searchResultLabel = (UILabel *)[cell viewWithTag:1];
     searchResultLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:23];
-    searchResultLabel.text = [filteredResults objectAtIndex:indexPath.row];
     
     if ([[filteredResults firstObject]isEqualToString:@"No results found"]) {
         cell.accessoryType = UITableViewCellAccessoryNone;
+        searchResultLabel.text = [filteredResults firstObject];
     }
     else{
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+         searchResultLabel.text = [NSString stringWithFormat:@"#%@",[filteredResults objectAtIndex:indexPath.row]];
+         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return cell;
 }
 
+-(BOOL)textFieldShouldClear:(UITextField *)textField{
+    [self resetSearch];
+    return YES;
+}
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
@@ -81,68 +103,74 @@
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
     NSString * searchStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    NSPredicate *predicate =
-    [NSPredicate predicateWithFormat:@"self CONTAINS[cd] %@", searchStr];
-    filteredResults  = [searchResults filteredArrayUsingPredicate:predicate];
-    
-    if (filteredResults.count == 0) {
-        self.tapG.enabled = YES;
-        filteredResults = [NSArray arrayWithObject:@"No results found"];
-    }
-    else{
-        self.tapG.enabled = NO;
+
+    if (searchStr.length < 2) {
+        if (searchStr.length == 0) {
+            [self resetSearch];
+        }
+        return YES;
     }
     
-    [self.tableV reloadData];
+    [[EventWS sharedBP]searchKeyword:searchStr WithCompletionBlock:^(BOOL completed,NSArray *keywords){
+        if (completed) {
+        
+            UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
+            numberOfCommentsV.backgroundColor = [UIColor clearColor];
+            
+            UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 0, self.tableV.frame.size.width, 40)];
+            numberOfComments.text = [NSString stringWithFormat:@"SEARCH"];
+            numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
+            numberOfComments.textAlignment = NSTextAlignmentLeft;
+            [numberOfCommentsV addSubview:numberOfComments];
+            
+            self.tableV.tableHeaderView = numberOfCommentsV;
+            
+            filteredResults = keywords;
+
+        }
+        else{
+            filteredResults = [NSArray array];
+        }
+        
+        if (filteredResults.count == 0) {
+            self.tapG.enabled = YES;
+            filteredResults = [NSArray arrayWithObject:@"No results found"];
+        }
+        else{
+            self.tapG.enabled = NO;
+        }
+
+         [self.tableV reloadData];
+    
+    }];
+    
+//    NSPredicate *predicate =
+//    [NSPredicate predicateWithFormat:@"self CONTAINS[cd] %@", searchStr];
+//    filteredResults  = [searchResults filteredArrayUsingPredicate:predicate];
+//    
     
     return YES;
 }
 
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
-    UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
-    numberOfCommentsV.backgroundColor = [UIColor clearColor];
-    
-    UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 0, self.tableV.frame.size.width, 40)];
-    numberOfComments.text = [NSString stringWithFormat:@"SEARCH FOR"];
-    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
-    numberOfComments.textAlignment = NSTextAlignmentLeft;
-    [numberOfCommentsV addSubview:numberOfComments];
-    
-    return numberOfCommentsV;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return (filteredResults.count > 0)?41:0;
-}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    NSString *tag = [filteredResults objectAtIndex:indexPath.row];
+    [[EventWS sharedBP]searchEvent:tag WithCompletionBlock:^(BOOL completed,NSArray *events){
+        if (completed) {
+            NSLog(@"EVENTS");
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No events found" message:@"Please search for another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        }
+    }];
 }
 
-- (IBAction)cancelPressed:(id)sender {
-    
-   // [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [self.searchTextField resignFirstResponder];
-    self.searchTextField.text = @"";
-    
-//    [UIView animateWithDuration:0.7f
-//                     animations:^
-//     {
-//         self.topV.frame = CGRectMake(0, -self.topV.frame.size.height, self.topV.frame.size.width, self.topV.frame.size.height);
-//         self.tableV.alpha = 0.0;
-//     }
-//                     completion:^(BOOL finished)
-//     {
-//         [self.parentViewController.navigationController setNavigationBarHidden:NO animated:YES];
-//         [self removeFromParentViewController];
-//         [self.view removeFromSuperview];
-//     }
-//     ];
-}
 
 - (IBAction)releaseSearch:(id)sender {
-    [self cancelPressed:nil];
+    [self.searchTextField resignFirstResponder];
 }
 
 +(void)showInVC:(UIViewController *)vc{

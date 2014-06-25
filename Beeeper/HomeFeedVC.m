@@ -708,8 +708,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
     
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    viewController.fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
     
-    [self presentViewController:viewController animated:YES completion:nil];
+    if (viewController.fingerprint != nil) {
+         [self presentViewController:viewController animated:YES completion:nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
     
 }
 

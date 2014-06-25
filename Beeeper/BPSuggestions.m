@@ -239,6 +239,91 @@ static BPSuggestions *thisWebServices = nil;
     
 }
 
+-(void)suggestEvent:(NSString *)fingerprint toUsers:(NSArray *)user_ids withCompletionBlock:(completed)compbloc{
+    self.suggestEventCompleted = compbloc;
+    
+    @try {
+        
+        NSMutableString *users_JSON_array = [[NSMutableString alloc]initWithString:@"["];
+        
+        for (NSString *user_id in user_ids) {
+            int i = [user_ids indexOfObject:user_id];
+            if (i == user_ids.count - 1) {
+                [users_JSON_array appendString:user_id];
+            }
+            else{
+                [users_JSON_array appendFormat:@"\"%@\",",user_id];
+            }
+        }
+        
+        [users_JSON_array appendString:@"]"];
+        
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/suggest"];
+        
+        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+        
+        NSMutableArray *postValues = [NSMutableArray array];
+        
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:users_JSON_array] forKey:@"who"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"what"]];
+        
+        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+        
+        [request addPostValue:users_JSON_array forKey:@"who"];
+        [request addPostValue:fingerprint forKey:@"what"];
+        
+        [request setRequestMethod:@"POST"];
+        
+        [request setTimeOutSeconds:7.0];
+        
+        [request setDelegate:self];
+        
+        [request setDidFinishSelector:@selector(suggestEventFinished:)];
+        
+        [request setDidFailSelector:@selector(suggestEventFailed:)];
+        
+        [request startAsynchronous];
+        
+    }
+    @catch (NSException *exception) {
+        self.suggestEventCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+-(void)suggestEventFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if ([dict objectForKey:@"success"] ) {
+            self.suggestEventCompleted(YES,nil);
+        }
+        else{
+            self.suggestEventCompleted(NO,nil);
+        }
+
+    }
+    @catch (NSException *exception) {
+           self.suggestEventCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+  }
+
+-(void)suggestEventFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+       self.suggestEventCompleted(NO,nil);
+    
+}
+
 -(void)saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
     
     if ([imageName rangeOfString:@"n/a"].location != NSNotFound) {
@@ -259,5 +344,14 @@ static BPSuggestions *thisWebServices = nil;
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
 
+- (NSString *)urlencode:(NSString *)str {
+    CFStringRef safeString =
+    CFURLCreateStringByAddingPercentEscapes(NULL,
+                                            (CFStringRef)str,
+                                            NULL,
+                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
+                                            kCFStringEncodingUTF8);
+    return [NSString stringWithFormat:@"%@", safeString];
+}
 
 @end

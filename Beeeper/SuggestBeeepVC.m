@@ -7,6 +7,7 @@
 //
 
 #import "SuggestBeeepVC.h"
+#import "BPSuggestions.h"
 
 @interface SuggestBeeepVC ()
 {
@@ -103,6 +104,23 @@
 
 - (IBAction)donePressed:(id)sender {
     
+    NSMutableArray *users_ids = [NSMutableArray array];
+    
+    for (NSDictionary *user in selectedPeople) {
+        [users_ids addObject:[user objectForKey:@"id"]];
+    }
+    
+    [[BPSuggestions sharedBP]suggestEvent:self.fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
+        if (completed) {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Suggested!"];
+            [self closePressed:nil];
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Suggestion failed. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        }
+    }];
 }
 
 -(void)showInView:(UIView *)v{

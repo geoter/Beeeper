@@ -486,6 +486,11 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *events = [NSMutableArray array];
     
+    if (events.count ==0) {
+        self.searchEvent_completed(NO,nil);
+        return;
+    }
+    
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];
         

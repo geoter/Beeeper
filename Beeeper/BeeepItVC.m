@@ -75,7 +75,6 @@
         }
         
         
-        
         NSString *title;
         
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
@@ -103,7 +102,7 @@
             if(activity.beeepInfoActivity.eventActivity.count >0){
                 
                 EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-                title = event.title;
+                title = [event.title capitalizedString];
             }
             else if(activity.eventActivity.count > 0){
                 
@@ -115,7 +114,7 @@
         }
         else if ([tml isKindOfClass:[Event_Search class]]){
             Event_Search *eventS = tml;
-            title = eventS.title;
+            title = [eventS.title capitalizedString];
         }
         
         NSDate *date;

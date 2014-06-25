@@ -31,6 +31,9 @@
     
     NSMutableArray *searchedPeople;
     UIGestureRecognizer* cancelGesture;
+    
+    NSMutableArray *selectedPeople;
+    NSArray *adressBookPeople;
 
 }
 @end
@@ -41,6 +44,7 @@
 {
     [super viewDidLoad];
 
+    selectedPeople = [NSMutableArray array];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
@@ -118,7 +122,7 @@
 
 -(void)getBeeeperUsers{
     
-    [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [self getPeople:searchBar.text WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
             searchedPeople = [NSMutableArray arrayWithArray:objcts];
@@ -130,6 +134,8 @@
 }
 
 -(void)optionSelectedFromHeader:(UIButton *)btn{
+    
+    [selectedPeople removeAllObjects];
     
     switch (btn.tag) {
         case 0:
@@ -246,7 +252,8 @@
         
         CFRelease(allPeople);
         
-        searchedPeople = [NSMutableArray arrayWithArray:contacts];
+        adressBookPeople = [NSMutableArray arrayWithArray:contacts];
+        searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
         [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     });
 }
@@ -347,15 +354,15 @@
     
     UIImageView *userImage = (id)[cell viewWithTag:2];
     UIButton *followBtn = (id)[cell viewWithTag:3];
-    
-
     UITextField *emailtxtF = (id)[cell viewWithTag:4];
+    UIImageView *tickedV = (id)[cell viewWithTag:5];
 
     NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
     
      if (selectedOption != MailButton) {
     
         followBtn.hidden = NO;
+        tickedV.hidden = YES;
          
         NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
         
@@ -367,8 +374,19 @@
         }
      }
      else{
+         
+         tickedV.hidden = NO;
          followBtn.hidden = YES;
+         
+         if ([selectedPeople indexOfObject:user] != NSNotFound) {
+             [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+         }
+         else{
+             [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
+         }
      }
+    
+    
     
     NSString *name =[user objectForKey:@"name"];
     NSString *lastname =[user objectForKey:@"lastname"];
@@ -451,11 +469,72 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UIImageView *tickedV = (id)[cell viewWithTag:5];
+
     if (selectedOption == MailButton) {
-        NSDictionary *contact = [searchedPeople objectAtIndex:indexPath.row];
-        NSLog(@"%@",[contact objectForKey:@"emails"]);
+
+    
+        NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
+        
+        if ([selectedPeople indexOfObject:user] == NSNotFound) {
+            [selectedPeople addObject:user];
+            tickedV.alpha = 0;
+            tickedV.hidden = NO;
+            
+            [UIView animateWithDuration:0.0f
+                             animations:^
+             {
+                 tickedV.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+                 
+                 [UIView animateWithDuration:0.0f
+                                  animations:^
+                  {
+                      tickedV.alpha = 1;
+                  }
+                                  completion:^(BOOL finished)
+                  {
+                  }
+                  ];
+             }
+             ];
+            
+        }
+        else{
+            [selectedPeople removeObject:user];
+            
+            [UIView animateWithDuration:0.0f
+                             animations:^
+             {
+                 tickedV.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
+                 
+                 [UIView animateWithDuration:0.0f
+                                  animations:^
+                  {
+                      tickedV.alpha = 1;
+                  }
+                                  completion:^(BOOL finished)
+                  {
+                      
+                  }
+                  ];
+                 
+             }
+             ];
+            
+        }
+
     }
     else{
+        
         TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         timelineVC.mode = Timeline_Not_Following;
         timelineVC.showBackButton = YES; //in case of My_Timeline
@@ -502,15 +581,23 @@
 
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar{
-    [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
-        
-        if (completed) {
-            searchedPeople = [NSMutableArray arrayWithArray:objcts];
-            NSRange range = NSMakeRange(0, 1);
-            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-        }
-    }];
+    
+    if (selectedOption == BeeeperButton) {
+          
+        [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+            
+            if (completed) {
+                searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                NSRange range = NSMakeRange(0, 1);
+                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+            }
+        }];
+    }
+    else if (selectedOption == MailButton){
+        searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
+        [self.tableV reloadData];
+    }
 }
 
 - (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -524,6 +611,8 @@
 
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
+     if (selectedOption == BeeeperButton) {
+         
         [self getPeople:searchText WithCompletionBlock:^(BOOL completed,NSArray *objcts){
             
             if (completed) {
@@ -533,7 +622,18 @@
                 [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
             }
         }];
+     }
+     else if (selectedOption == MailButton){
+       
+         if (searchText.length > 0) {
+             searchedPeople = [NSMutableArray arrayWithArray:[adressBookPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name BEGINSWITH[cd] %@)", searchText]]];
+         }
+         else{
+          searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
+         }
 
+         [self.tableV reloadData];
+     }
 }
 
 -(void)getPeople:(NSString *)searchString WithCompletionBlock:(completed)compbloc{

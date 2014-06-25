@@ -299,6 +299,10 @@
                                             <color key="textColor" red="0.63921570777893066" green="0.67450982332229614" blue="0.70196080207824707" alpha="1" colorSpace="deviceRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView hidden="YES" userInteractionEnabled="NO" tag="5" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="suggest_unselected.png" translatesAutoresizingMaskIntoConstraints="NO" id="TEs-R6-FRO">
+                                            <rect key="frame" x="270" y="-1" width="50" height="60"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -852,6 +856,7 @@ LA Lackers</string>
         <image name="nba_494_384.png" width="247" height="192"/>
         <image name="not-following-icon.png" width="28" height="27"/>
         <image name="pin_icon_event.png" width="9" height="13"/>
+        <image name="suggest_unselected.png" width="22" height="22"/>
         <image name="welcome_screen_0.png" width="320" height="568"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

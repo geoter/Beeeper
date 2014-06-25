@@ -37,7 +37,6 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self getNotifications];
 }
 
 -(void)getNotifications{
@@ -70,6 +69,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self getNotifications];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 

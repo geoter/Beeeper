@@ -944,6 +944,64 @@ static BPUser *thisWebServices = nil;
     self.notifications_completed(NO,nil);
 }
 
+#pragma mark - Settings
+
+-(void)getEmailSettingsWithCompletionBlock:(completed)compbloc{
+   
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/notificationsettings"];
+    
+    self.getEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(getEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(getEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.count >0) {
+            self.getEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+           self.getEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+
+}
+
+
+-(void)getEmailSettings_Failed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.getEmailSettingsCompleted(NO,nil);
+}
+
+
 #pragma mark - GET POST requests
 
 -(NSString *)headerGETRequest:(NSString *)link values:(NSMutableArray *)values{

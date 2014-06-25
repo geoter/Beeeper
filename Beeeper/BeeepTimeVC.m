@@ -29,6 +29,10 @@
     self.scrollV.contentSize = CGSizeMake(320, 568);
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

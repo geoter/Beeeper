@@ -15,6 +15,7 @@
 #import "Event_Show_Object.h"
 #import "SuggestBeeepVC.h"
 #import "Activity_Object.h"
+#import "Event_Search.h"
 
 @interface BeeepItVC ()
 {
@@ -74,7 +75,6 @@
         }
         
         
-        
         NSString *title;
         
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
@@ -102,7 +102,7 @@
             if(activity.beeepInfoActivity.eventActivity.count >0){
                 
                 EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-                title = event.title;
+                title = [event.title capitalizedString];
             }
             else if(activity.eventActivity.count > 0){
                 
@@ -111,6 +111,10 @@
                 title = [event_title capitalizedString];
             }
 
+        }
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            Event_Search *eventS = tml;
+            title = [eventS.title capitalizedString];
         }
         
         NSDate *date;
@@ -149,7 +153,10 @@
             }
             
         }
-
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            Event_Search *eventS = tml;
+            date = [NSDate dateWithTimeIntervalSince1970:eventS.timestamp];
+        }
         else{
             date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
         }
@@ -200,7 +207,10 @@
             }
             
         }
-
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            Event_Search *eventS = tml;
+            jsonString = eventS.location;
+        }
         else{
             jsonString = ffo.eventFfo.eventDetailsFfo.location;
         }
@@ -379,6 +389,12 @@
         fingerPrint = sgo.what.fingerprint;
         timestamp = sgo.what.timestamp;
     }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        Event_Search *eventS = tml;
+        fingerPrint = eventS.fingerprint;
+        timestamp = eventS.timestamp;
+    }
+
     else{
         fingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
         timestamp = ffo.eventFfo.eventDetailsFfo.timestamp;

@@ -7,8 +7,19 @@
 //
 
 #import "EventWS.h"
+#import "Event_Search.h"
+#import "Event_Show_Object.h"
 
 static EventWS *thisWebServices = nil;
+
+@interface EventWS ()
+{
+    int pageLimit;
+    int page;
+    NSString *order;
+    NSOperationQueue *operationQueue;
+}
+@end
 
 @implementation EventWS
 
@@ -16,6 +27,12 @@ static EventWS *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
+        pageLimit = 20;
+        page = 0;
+        order = @"ASC";
+        operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
+
     }
     return(self);
 }
@@ -344,6 +361,273 @@ static EventWS *thisWebServices = nil;
     self.like_event_completed(NO,nil);
     
 }
+
+#pragma mark - Search
+
+-(void)searchKeyword:(NSString *)keyword WithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/search"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/search?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"title=%@",keyword]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.searchKeyword_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(searchKeywordFinished:)];
+    
+    [request setDidFailSelector:@selector(searchKeywordFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)searchKeywordFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    NSArray *keywords = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    self.searchKeyword_completed(YES,keywords);
+}
+
+-(void)searchKeywordFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    self.searchKeyword_completed(NO,nil);
+}
+
+-(void)searchEvent:(NSString *)keyword WithCompletionBlock:(completed)compbloc{
+
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
+    
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"query=%@",keyword]];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.searchEvent_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(searchEventFinished:)];
+    
+    [request setDidFailSelector:@selector(searchEventFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)searchEventFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    NSArray *eventsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *events = [NSMutableArray array];
+    
+    if (events.count ==0) {
+        self.searchEvent_completed(NO,nil);
+        return;
+    }
+    
+    for (NSDictionary *event in eventsArray) {
+        Event_Search *e = [Event_Search modelObjectWithDictionary:event];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+        [operationQueue addOperation:invocationOperation];
+        
+        [events addObject:e];
+    }
+
+    
+    self.searchEvent_completed(YES,events);
+}
+
+-(void)searchEventFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    self.searchEvent_completed(NO,nil);
+}
+
+-(void)downloadImage:(Event_Search *)tml{
+    
+    NSString *extension = [[tml.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[tml.imageUrl MD5],extension];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        UIImage * result;
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:tml.imageUrl]];
+        result = [UIImage imageWithData:localData];
+        [self saveImage:result withFileName:imageName inDirectory:localPath];
+    }
+}
+
+-(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
+    
+    if ([imageName rangeOfString:@"n/a"].location != NSNotFound) {
+        return;
+    }
+    
+    if ([[imageName lowercaseString] rangeOfString:@".png"].location != NSNotFound) {
+        [UIImagePNGRepresentation(image) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@",imageName);
+        
+    } else {
+        
+        BOOL write = [UIImageJPEGRepresentation(image, 1) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@ - %d",directoryPath,write);
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+
+-(void)getEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.getEvent_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(eventReceived:)];
+    
+    [request setDidFailSelector:@selector(eventFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)eventReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *eventArray;
+    
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+        
+        Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventObject];
+        self.getEvent_completed(YES,event);
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        
+        if (eventArray.count > 0 ) {
+            Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventArray.firstObject];
+            self.getEvent_completed(YES,event);
+        }
+        else{
+            self.getEvent_completed(NO,nil);
+        }
+    }
+    else{
+        self.getEvent_completed(NO,nil);
+    }
+    
+    
+    
+}
+
+-(void)eventFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.getEvent_completed(NO,nil);
+}
+
+
 
 
 - (NSString *)urlencode:(NSString *)str {

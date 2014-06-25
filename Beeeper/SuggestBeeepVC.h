@@ -12,7 +12,7 @@
 @property (weak, nonatomic) IBOutlet UIView *containerV;
 @property (weak, nonatomic) IBOutlet UITextField *searchTxtF;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
-
+@property (nonatomic,strong) NSString *fingerprint;
 
 - (IBAction)closePressed:(id)sender;
 - (IBAction)donePressed:(id)sender;

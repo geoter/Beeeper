@@ -224,6 +224,8 @@
 		CE0C883718D0C6D400BA548F /* twitter_icon_small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883518D0C6D400BA548F /* twitter_icon_small@2x.png */; };
 		CE0C883E18D0C7B300BA548F /* plus_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883C18D0C7B300BA548F /* plus_btn.png */; };
 		CE0C883F18D0C7B300BA548F /* plus_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883D18D0C7B300BA548F /* plus_btn@2x.png */; };
+		CE19FEAE195AF841006FCBC0 /* BeeepedBy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19FEAC195AF841006FCBC0 /* BeeepedBy.m */; };
+		CE19FEB1195B0E3C006FCBC0 /* Event_Search.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19FEB0195B0E3C006FCBC0 /* Event_Search.m */; };
 		CE25F9C618B66A1100D8B858 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = CE25F9C518B66A1100D8B858 /* SettingsVC.m */; };
 		CE25F9CA18B66B8400D8B858 /* BeeepEventVC.m in Sources */ = {isa = PBXBuildFile; fileRef = CE25F9C918B66B8400D8B858 /* BeeepEventVC.m */; };
 		CE25F9E918B6761300D8B858 /* TSMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE25F9CE18B6761300D8B858 /* TSMessage.m */; };
@@ -805,6 +807,10 @@
 		CE0C883518D0C6D400BA548F /* twitter_icon_small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter_icon_small@2x.png"; sourceTree = "<group>"; };
 		CE0C883C18D0C7B300BA548F /* plus_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus_btn.png; sourceTree = "<group>"; };
 		CE0C883D18D0C7B300BA548F /* plus_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus_btn@2x.png"; sourceTree = "<group>"; };
+		CE19FEAC195AF841006FCBC0 /* BeeepedBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeepedBy.m; sourceTree = "<group>"; };
+		CE19FEAD195AF841006FCBC0 /* BeeepedBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepedBy.h; sourceTree = "<group>"; };
+		CE19FEAF195B0E3C006FCBC0 /* Event_Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event_Search.h; sourceTree = "<group>"; };
+		CE19FEB0195B0E3C006FCBC0 /* Event_Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event_Search.m; sourceTree = "<group>"; };
 		CE25F9C418B66A1100D8B858 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		CE25F9C518B66A1100D8B858 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
 		CE25F9C818B66B8400D8B858 /* BeeepEventVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepEventVC.h; sourceTree = "<group>"; };
@@ -1584,6 +1590,10 @@
 				CE02EC3718EC7C3600B5674C /* R */,
 				CE02EC4318EC7E1000B5674C /* SearchVC.h */,
 				CE02EC4418EC7E1000B5674C /* SearchVC.m */,
+				CE19FEAF195B0E3C006FCBC0 /* Event_Search.h */,
+				CE19FEB0195B0E3C006FCBC0 /* Event_Search.m */,
+				CE19FEAC195AF841006FCBC0 /* BeeepedBy.m */,
+				CE19FEAD195AF841006FCBC0 /* BeeepedBy.h */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -2790,6 +2800,7 @@
 				CE02EBF918EC63CC00B5674C /* UIImage+MultiFormat.m in Sources */,
 				CEF822FF18EECF5E000F4087 /* GTSegmentedControl.m in Sources */,
 				CE080C9B18B661C8007E2066 /* ProfilePrefsVC.m in Sources */,
+				CE19FEAE195AF841006FCBC0 /* BeeepedBy.m in Sources */,
 				9640E505192AB5AE008675BA /* NSString+MD5.m in Sources */,
 				CEA64F5818B3DC4900B7ECF5 /* ChooseCityVC.m in Sources */,
 				CE02EBF218EC63CC00B5674C /* SDWebImageDecoder.m in Sources */,
@@ -2817,6 +2828,7 @@
 				CE36F7B918D2041600A9E917 /* PHFDelegateChain.m in Sources */,
 				5EA7FAEA19575E080033C061 /* MissingFields.m in Sources */,
 				9673323B1948865500A58217 /* EventInfo.m in Sources */,
+				CE19FEB1195B0E3C006FCBC0 /* Event_Search.m in Sources */,
 				CE79424E18DB3CFA00748EDD /* MVYSideMenuOptions.m in Sources */,
 				CE02EB9C18EC258500B5674C /* CHTCollectionViewWaterfallFooter.m in Sources */,
 				CE02EB9318EC1D2000B5674C /* CHTCollectionViewWaterfallLayout.m in Sources */,
@@ -3024,7 +3036,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3047,7 +3059,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

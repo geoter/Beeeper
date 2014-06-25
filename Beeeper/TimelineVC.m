@@ -660,39 +660,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)beeepItPressed:(UIButton *)sender {
-    
-    UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
-    NSIndexPath *path = [self.tableV indexPathForCell:cell];
-    
-    NSMutableDictionary *event1 = [NSMutableDictionary dictionary];
-    [event1 setObject:@"MAR" forKey:@"month"];
-    [event1 setObject:@"21" forKey:@"day"];
-    [event1 setObject:@"Detroit Pistons vs L.A. Lakers" forKey:@"title"];
-    [event1 setObject:@"Staples Center" forKey:@"area"];
-    [event1 setObject:@"nba_494_384" forKey:@"image"];
-    
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.values = event1;
-    
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.view addSubview:viewController.view];
-    [self addChildViewController:viewController];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
-    
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-}
-
 
 - (IBAction)showFollowers:(id)sender {
     FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];

@@ -39,18 +39,6 @@
     
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    
-    [[BPUser sharedBP]readNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
-        
-        if (completed) {
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"readNotifications" object:nil userInfo:nil];
-        }
-    }];
-
-}
-
 -(void)getNotifications{
     
     [self showLoading];
@@ -83,9 +71,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
     [self getNotifications];
-    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 

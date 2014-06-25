@@ -944,6 +944,130 @@ static BPUser *thisWebServices = nil;
     self.notifications_completed(NO,nil);
 }
 
+#pragma mark - Settings
+
+-(void)getEmailSettingsWithCompletionBlock:(completed)compbloc{
+   
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/notificationsettings"];
+    
+    self.getEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(getEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(getEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.count >0) {
+            self.getEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+           self.getEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+
+}
+
+
+-(void)getEmailSettings_Failed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.getEmailSettingsCompleted(NO,nil);
+}
+
+-(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/setnotificationsettings"];
+    
+    self.setEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [postValues addObject:[NSDictionary dictionaryWithObject:value forKey:key]];
+    }
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [request addPostValue:value forKey:key];
+    }
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+
+    
+    [request setDidFinishSelector:@selector(setEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(setEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)setEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSDictionary *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.allKeys.count > 1) {
+            self.setEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+        self.setEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+
+-(void)setEmailSettings_Failed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.setEmailSettingsCompleted(NO,nil);
+}
+
+
 #pragma mark - GET POST requests
 
 -(NSString *)headerGETRequest:(NSString *)link values:(NSMutableArray *)values{

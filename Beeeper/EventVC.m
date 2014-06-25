@@ -21,6 +21,7 @@
 #import "Event_Show_Object.h"
 #import "Beeep_Object.h"
 #import "CommentsVC.h"
+#import "Event_Search.h"
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>{
 
@@ -36,6 +37,8 @@
     
     Beeep_Object *beeep_Objct; //-(void)showEventForActivityWithBeeep
     Event_Show_Object *event_show_Objct; //-(void)showEventForActivityWithBeeep
+    
+    NSString *fingerprint;
 }
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -72,14 +75,17 @@
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         Timeline_Object *t = tml;
+        fingerprint = t.event.fingerprint;
         comments = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.comments];
     }
     else if ([tml isKindOfClass:[Activity_Object class]]){
         
         Activity_Object *activity = tml;
-        
+
         if (activity.beeepInfoActivity.beeepActivity.count > 0) {
-           
+            
+            fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
+            
             [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
                 if (completed) {
                     beeep_Objct = beeep;
@@ -94,6 +100,8 @@
         
         if(activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity.count >0){
             
+            fingerprint = (fingerprint == nil)?[[activity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]:fingerprint;
+            
             [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     event_show_Objct = event;
@@ -103,6 +111,19 @@
                 }
             }];
         }
+
+    }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        
+        Event_Search *event = tml;
+        fingerprint = event.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventForActivityWithBeeep];
+            }
+        }];
 
     }
     
@@ -180,6 +201,7 @@
     
     NSDate *date;
     Suggestion_Object *suggestion = tml;
+    
     
     date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
     
@@ -344,6 +366,8 @@
     NSDate *date;
     Friendsfeed_Object *ffo = tml;
 
+    fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+    
     date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
     
     NSString *dateStr = [formatter stringFromDate:date];
@@ -728,7 +752,6 @@
         self.likesLabel.hidden = YES;
         self.beeepsLabel.hidden = YES;
         self.commentsLabel.hidden = YES;
-        self.likesButton.hidden = YES;
     }
     else{
         
@@ -879,7 +902,16 @@
 
 -(void)suggestIt{
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    [self presentViewController:viewController animated:YES completion:NULL];
+    viewController.fingerprint = fingerprint;
+    
+    if (viewController.fingerprint != nil) {
+        [self presentViewController:viewController animated:YES completion:nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+
 }
 
 -(void)likeIt{

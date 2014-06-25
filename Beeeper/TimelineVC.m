@@ -14,6 +14,7 @@
 #import "CommentsVC.h"
 #import <QuartzCore/QuartzCore.h>
 #import "GTSegmentedControl.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate>
 {
@@ -69,10 +70,10 @@
         if (completed) {
             beeeps = [NSMutableArray arrayWithArray:objs];
             
+            loading = NO;
+            
             [self.tableV reloadData];
-        }
-        else{
-            loading = YES;
+
         }
     }];
 
@@ -129,8 +130,6 @@
          user = [BPUser sharedBP].user;
     }
     
-    [self setUserInfo];
-    
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
@@ -141,7 +140,7 @@
     
     [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
-    
+    self.tableV.decelerationRate = 0.6;
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
@@ -205,10 +204,12 @@
 -(void)setUserInfo{
     
     
-    [self showLoading];
     [self downloadUserImageIfNecessery];
     
     if ([user objectForKey:@"name"] == nil || [user objectForKey:@"lastname"] == nil) {
+        
+         [self showLoading];
+        
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
             [self hideLoading];
@@ -271,6 +272,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
+    [self setUserInfo];
     
     if (self.mode == Timeline_My && !self.showBackButton) {
         [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
@@ -537,6 +540,10 @@
         commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
         beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
         
+        likesLbl.hidden = (likesLbl.text.intValue == 0);
+        commentsLbl.hidden = (commentsLbl.text.intValue == 0);
+        beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
+        
         //Image
         
         UIImageView *imgV = (id)[cell viewWithTag:3];
@@ -800,6 +807,17 @@
 }
 
 - (IBAction)importPressed:(id)sender {
+ 
+    [FBRequestConnection startWithGraphPath:@"/me/events"
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              NSLog(@"%@",result);
+                          }];
 }
 
 - (IBAction)showSuggestions:(id)sender {
@@ -831,6 +849,10 @@
 #pragma mark - MONActivityIndicatorViewDelegate Methods
 
 -(void)showLoading{
+    
+    if (self.tableV.alpha == 0) {
+        return;
+    }
     
     self.tableV.alpha = 0;
     

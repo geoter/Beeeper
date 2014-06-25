@@ -26,6 +26,12 @@
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
 		5EA7FAEA19575E080033C061 /* MissingFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE919575E080033C061 /* MissingFields.m */; };
+		5EA7FAF019594E910033C061 /* suggest_unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEC19594E910033C061 /* suggest_unselected.png */; };
+		5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAED19594E910033C061 /* suggest_selected@2x.png */; };
+		5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */; };
+		5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEF19594E910033C061 /* suggest_selected.png */; };
+		5EA7FAFB19595B060033C061 /* sugget_it_beeep@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */; };
+		5EA7FAFC19595B060033C061 /* sugget_it_beeep.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */; };
 		5EE13A1A1950202900540C04 /* BPSuggestions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A191950202900540C04 /* BPSuggestions.m */; };
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
@@ -504,6 +510,12 @@
 		5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash@2x.png"; sourceTree = "<group>"; };
 		5EA7FAE819575E080033C061 /* MissingFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MissingFields.h; sourceTree = "<group>"; };
 		5EA7FAE919575E080033C061 /* MissingFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MissingFields.m; sourceTree = "<group>"; };
+		5EA7FAEC19594E910033C061 /* suggest_unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_unselected.png; sourceTree = "<group>"; };
+		5EA7FAED19594E910033C061 /* suggest_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_selected@2x.png"; sourceTree = "<group>"; };
+		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
+		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
+		5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sugget_it_beeep@2x.png"; sourceTree = "<group>"; };
+		5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugget_it_beeep.png; sourceTree = "<group>"; };
 		5EE13A181950202900540C04 /* BPSuggestions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSuggestions.h; sourceTree = "<group>"; };
 		5EE13A191950202900540C04 /* BPSuggestions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPSuggestions.m; sourceTree = "<group>"; };
 		5EE13A1C1951604F00540C04 /* Suggestion_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Suggestion_Object.m; sourceTree = "<group>"; };
@@ -1119,6 +1131,7 @@
 		5E08B377192FB62D0090E63E /* Beeep */ = {
 			isa = PBXGroup;
 			children = (
+				5EA7FAF419595A9E0033C061 /* R */,
 				CE29EE4818D9EC5F0001EC43 /* BeeepVC.h */,
 				CE29EE4918D9EC5F0001EC43 /* BeeepVC.m */,
 				CE79422A18DB22CD00748EDD /* BeeepItVC.h */,
@@ -1157,6 +1170,26 @@
 				5E09B58619261AFF00AF5DE8 /* EventWS.m */,
 			);
 			name = Event;
+			sourceTree = "<group>";
+		};
+		5EA7FAEB19594E860033C061 /* Suggest R */ = {
+			isa = PBXGroup;
+			children = (
+				5EA7FAEC19594E910033C061 /* suggest_unselected.png */,
+				5EA7FAED19594E910033C061 /* suggest_selected@2x.png */,
+				5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */,
+				5EA7FAEF19594E910033C061 /* suggest_selected.png */,
+			);
+			name = "Suggest R";
+			sourceTree = "<group>";
+		};
+		5EA7FAF419595A9E0033C061 /* R */ = {
+			isa = PBXGroup;
+			children = (
+				5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */,
+				5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */,
+			);
+			name = R;
 			sourceTree = "<group>";
 		};
 		5EE13A1719501A2200540C04 /* Suggestions */ = {
@@ -2182,6 +2215,8 @@
 			children = (
 				CEF1E5AA18E45D1400DF7539 /* SuggestionsVC.h */,
 				CEF1E5AB18E45D1400DF7539 /* SuggestionsVC.m */,
+				CEF1E5A218E43D8500DF7539 /* SuggestBeeepVC.h */,
+				CEF1E5A318E43D8500DF7539 /* SuggestBeeepVC.m */,
 			);
 			name = Suggestions;
 			sourceTree = "<group>";
@@ -2234,11 +2269,10 @@
 		CEF263AB18DC7EF50047510D /* Event */ = {
 			isa = PBXGroup;
 			children = (
+				5EA7FAEB19594E860033C061 /* Suggest R */,
 				CEF263AC18DC7F000047510D /* R */,
 				CEF263D518DC82CA0047510D /* EventVC.h */,
 				CEF263D618DC82CA0047510D /* EventVC.m */,
-				CEF1E5A218E43D8500DF7539 /* SuggestBeeepVC.h */,
-				CEF1E5A318E43D8500DF7539 /* SuggestBeeepVC.m */,
 			);
 			name = Event;
 			sourceTree = "<group>";
@@ -2423,6 +2457,7 @@
 				CE08DD101937758100B090BE /* tick_following@2x.png in Resources */,
 				9615E8DE192DC37A0099B3E0 /* search_icon_bold.png in Resources */,
 				CEEE3EFB18CA102700665C21 /* checkbox_check.png in Resources */,
+				5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */,
 				962E3D9A194C614900A0DD87 /* facebook-white@2x.png in Resources */,
 				CE29EE3318D9CADB0001EC43 /* beeepit_btn@2x.png in Resources */,
 				CE7CFAE818B797C10044C9AC /* MessageEntrySendButtonPressed.png in Resources */,
@@ -2499,6 +2534,7 @@
 				CE25F9F618B6761300D8B858 /* NotificationBackgroundWarning@2x.png in Resources */,
 				CE25F9EE18B6761300D8B858 /* NotificationBackgroundErrorIcon@2x.png in Resources */,
 				9615E8DB192DC37A0099B3E0 /* back_bold@2x.png in Resources */,
+				5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */,
 				CE79423518DB261B00748EDD /* facebook_icon_gray.png in Resources */,
 				CEEE3ECF18C9E02C00665C21 /* Roboto-Medium.ttf in Resources */,
 				CE29EE4018D9CADB0001EC43 /* like_icon.png in Resources */,
@@ -2531,6 +2567,7 @@
 				CEFDE83518ED8B1B00E500A9 /* clock-icon.png in Resources */,
 				CE25F9F918B6761300D8B858 /* NotificationButtonBackground.png in Resources */,
 				CEA113221952ED77003C8D7B /* Beeep_popup_unpressed.png in Resources */,
+				5EA7FAFB19595B060033C061 /* sugget_it_beeep@2x.png in Resources */,
 				CEF2639918DC59A10047510D /* 4.png in Resources */,
 				CE25F9EC18B6761300D8B858 /* NotificationBackgroundError@2x.png in Resources */,
 				CE0C882B18D0C55800BA548F /* Beeeper_logo_small@2x.png in Resources */,
@@ -2541,6 +2578,7 @@
 				CE29EE4718D9CADB0001EC43 /* pin_icon@2x.png in Resources */,
 				CEF2639D18DC59A10047510D /* 8.png in Resources */,
 				CE08DD2019379A0700B090BE /* yellow-tabbar-timeline.png in Resources */,
+				5EA7FAF019594E910033C061 /* suggest_unselected.png in Resources */,
 				CEFDE82518ED77BD00E500A9 /* Activity_icon.png in Resources */,
 				CE0C882218D0BE5A00BA548F /* option_2_gray.png in Resources */,
 				CE25F9F118B6761300D8B858 /* NotificationBackgroundSuccess.png in Resources */,
@@ -2618,6 +2656,7 @@
 				CEEE3EC318C9D62F00665C21 /* Welcome_Logo.png in Resources */,
 				CE0C881B18D0BE1300BA548F /* option_0_gray@2x.png in Resources */,
 				CE7CFAED18B797C10044C9AC /* MessageEntryInputField@2x.png in Resources */,
+				5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */,
 				962E3DA7194CBD4700A0DD87 /* search_icon_gray@2x.png in Resources */,
 				CE35D1DD18D07E890086C26A /* icon-twitter2@2x.png in Resources */,
 				9615E8B5192DB57C0099B3E0 /* tabbar-notif.png in Resources */,
@@ -2638,6 +2677,7 @@
 				CE79423718DB261B00748EDD /* facebook_icon.png in Resources */,
 				CE2A6EB618E2F6B900175A9C /* arrow-cell.png in Resources */,
 				CEF2639618DC59A10047510D /* 1.png in Resources */,
+				5EA7FAFC19595B060033C061 /* sugget_it_beeep.png in Resources */,
 				CE0C880F18D0BCD300BA548F /* option_1@2x.png in Resources */,
 				CE0C880E18D0BCD300BA548F /* option_1.png in Resources */,
 				CEF1E5A718E452F300DF7539 /* searchBarEvents@2x.png in Resources */,

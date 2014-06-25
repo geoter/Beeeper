@@ -43,6 +43,8 @@
     
     [self showLoading];
     
+     self.tableV.decelerationRate = 0.6;
+    
     [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
         
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];

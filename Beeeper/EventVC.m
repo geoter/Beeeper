@@ -22,7 +22,7 @@
 #import "Beeep_Object.h"
 #import "CommentsVC.h"
 
-@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate>{
+@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>{
 
     NSMutableArray *comments;
     NSMutableArray *beeepers;
@@ -237,6 +237,13 @@
     beeepsLbl.text = [NSString stringWithFormat:@"%d",suggestion.beeepersIds.count];
     
     likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
+    
+    
+    self.likesLabel.hidden = (likers.count == 0);
+    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
+    
+    
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
@@ -412,6 +419,11 @@
         [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
     }
     
+    
+    self.likesLabel.hidden = (likers.count == 0);
+    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
+    
     //Tags
     
     NSMutableString *formattedTags = [[NSMutableString alloc]init];
@@ -555,6 +567,11 @@
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
+    
+
+   self.likesLabel.hidden = (likers.count == 0);
+   self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+   self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
     
     if ([likers indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
@@ -712,8 +729,6 @@
         self.beeepsLabel.hidden = YES;
         self.commentsLabel.hidden = YES;
         self.likesButton.hidden = YES;
-        self.commentsButton.hidden = YES;
-        self.likesButton.hidden = YES;
     }
     else{
         
@@ -734,6 +749,11 @@
         else{
             [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
         }
+        
+        
+        self.likesLabel.hidden = (likers.count == 0);
+        self.commentsLabel.hidden = (commentsLbl.text.length == 0);
+        self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
 
     }
     
@@ -859,8 +879,7 @@
 
 -(void)suggestIt{
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    [self.parentViewController addChildViewController:viewController];
-    [viewController showInView:self.view.superview.superview.superview];
+    [self presentViewController:viewController animated:YES completion:NULL];
 }
 
 -(void)likeIt{
@@ -992,7 +1011,9 @@
 
 
 -(void)showMore{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"More" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", @"Share via Email", @"Copy Link", nil];
     
+    actionSheet.actionSheetStyle = UIActionSheetStyleDefault; [actionSheet showInView:self.view];
 }
 
 -(void)beeepIt:(NSNotification *)notif{
@@ -1008,7 +1029,14 @@
 - (IBAction)beeepItPressed:(id)sender {
    
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = event_show_Objct;
+    
+    if([tml isKindOfClass:[Friendsfeed_Object class]] || [tml isKindOfClass:[Timeline_Object class]] || [tml isKindOfClass:[Suggestion_Object class]]){
+        viewController.tml = self.tml;
+    }
+    else{
+        viewController.tml = event_show_Objct;
+    }
+    
     
     [self presentViewController:viewController animated:YES completion:nil];
 }

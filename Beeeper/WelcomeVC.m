@@ -84,7 +84,7 @@
                 
                 NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
                                          @"253616411483666", ACFacebookAppIdKey,
-                                         [NSArray arrayWithObject:@"email"], ACFacebookPermissionsKey,
+                                         [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
                                          nil];
                 
                 
@@ -127,7 +127,26 @@
                 [self loginFBuser];
             }
             else {
-               [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+                // You must ALWAYS ask for basic_info permissions when opening a session
+                [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"user_friends",@"user_events"]
+                                                   allowLoginUI:YES
+                                              completionHandler:
+                 ^(FBSession *session, FBSessionState state, NSError *error) {
+                     
+                     // Retrieve the app delegate
+                     AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+                     // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+                     [appDelegate sessionStateChanged:session state:state error:error];
+                     
+                     if (FBSessionStateOpen == state) {
+                         [self loginFBuser];
+                     }
+                     else{
+                         [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+                     }
+                     
+                 }];
+
             }
             
         }

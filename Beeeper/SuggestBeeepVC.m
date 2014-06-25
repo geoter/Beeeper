@@ -12,7 +12,8 @@
 {
     NSMutableArray *people;
     NSMutableDictionary *pendingImagesDict;
-    NSMutableArray *selectedIndexes;
+    NSMutableArray *selectedPeople;
+    NSArray *filteredPeople;
 }
 @end
 
@@ -33,7 +34,7 @@
     // Do any additional setup after loading the view.
     [self adjustFonts];
     
-    selectedIndexes = [NSMutableArray array];
+    selectedPeople = [NSMutableArray array];
     pendingImagesDict = [NSMutableDictionary dictionary];
     
     UIColor *color = [UIColor lightTextColor];
@@ -43,6 +44,9 @@
         
         if (completed) {
             people = [NSMutableArray arrayWithArray:objs];
+            NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
+            people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
+            filteredPeople = people;
             [self.tableV reloadData];
         }
     }];
@@ -57,6 +61,36 @@
     lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
 }
 
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
+    NSString * typedStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if(typedStr.length == 0){
+        filteredPeople = people;
+    }
+    else{
+        filteredPeople = [people filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name BEGINSWITH[cd] %@)", typedStr]];
+    }
+    
+    
+    [self.tableV reloadData];
+    
+    return YES;
+}
+
+- (BOOL) textFieldShouldClear:(UITextField *)textField{
+
+    filteredPeople = people;
+    [self.tableV reloadData];
+
+    return YES;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -65,6 +99,10 @@
 
 - (IBAction)closePressed:(id)sender {
     [self hide];
+}
+
+- (IBAction)donePressed:(id)sender {
+    
 }
 
 -(void)showInView:(UIView *)v{
@@ -90,7 +128,7 @@
 
 -(void)hide{
     
-    [UIView animateWithDuration:0.7f
+    /*[UIView animateWithDuration:0.7f
                      animations:^
      {
          self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
@@ -101,7 +139,8 @@
          [self removeFromParentViewController];
          [self.view removeFromSuperview];
      }
-     ];
+     ];*/
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 /*
@@ -126,7 +165,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return people.count;
+    return filteredPeople.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -138,7 +177,7 @@
     UILabel *nameLbl = (id)[cell viewWithTag:2];
     UIImageView *tickedV = (id)[cell viewWithTag:3];
     
-    NSDictionary *user = [people objectAtIndex:indexPath.row];
+    NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
     
     nameLbl.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
     
@@ -172,11 +211,11 @@
         [[DTO sharedDTO]downloadImageFromURL:imagePath];
     }
     
-    if ([selectedIndexes indexOfObject:indexPath] != NSNotFound) {
-        [tickedV setImage:[UIImage imageNamed:@"selection0cirlce-suggestit"]];
+    if ([selectedPeople indexOfObject:user] != NSNotFound) {
+        [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
     }
     else{
-        [tickedV setImage:[UIImage imageNamed:@"empty-selection0cirlce-suggestit"]];
+        [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
     }
 
     
@@ -189,9 +228,11 @@
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     UIImageView *tickedV = (id)[cell viewWithTag:3];
-    
-    if ([selectedIndexes indexOfObject:indexPath] == NSNotFound) {
-        [selectedIndexes addObject:indexPath];
+
+    NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
+
+    if ([selectedPeople indexOfObject:user] == NSNotFound) {
+        [selectedPeople addObject:user];
         tickedV.alpha = 0;
         tickedV.hidden = NO;
  
@@ -202,7 +243,7 @@
      }
                      completion:^(BOOL finished)
      {
-         [tickedV setImage:[UIImage imageNamed:@"selection0cirlce-suggestit"]];
+         [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
          
          [UIView animateWithDuration:0.0f
                           animations:^
@@ -218,7 +259,7 @@
         
     }
     else{
-        [selectedIndexes removeObject:indexPath];
+        [selectedPeople removeObject:user];
         
         [UIView animateWithDuration:0.0f
                          animations:^
@@ -227,7 +268,7 @@
          }
                          completion:^(BOOL finished)
          {
-             [tickedV setImage:[UIImage imageNamed:@"empty-selection0cirlce-suggestit"]];
+             [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
             
              [UIView animateWithDuration:0.0f
                               animations:^

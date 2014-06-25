@@ -40,54 +40,61 @@
         [self showSplashScreen];
         [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
     }
-    
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
-    
-        if (completed) {
-            self.notifications = objcts.count;
-        }
-    }];
+
+    [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     btn.tag = 1;
     
     [self tabbarButtonTapped:btn];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
 }
 
 -(void)updateNotificationsBadge{
     
-    self.notificationLabel.text = [NSString stringWithFormat:@"%d",self.notifications];
     
-    if (self.notifications <= 0) {
-
-        [UIView animateWithDuration:0.2f
-                             animations:^
-             {
-                 self.notificationsBadgeV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                
-             }
-             ];
-    }
-    else{
+    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
-        [UIView animateWithDuration:0.2f
-                         animations:^
-         {
-             self.notificationsBadgeV.alpha = 1;
-         }
-                         completion:^(BOOL finished)
-         {
-             
-         }
-         ];
-    }
-}
+        if (completed) {
+            
+            _notifications = objcts.count;
+            
+            self.notificationLabel.text = [NSString stringWithFormat:@"%d",self.notifications];
+            
+            if (_notifications <= 0) {
+                
+                [UIView animateWithDuration:0.2f
+                                 animations:^
+                 {
+                     self.notificationsBadgeV.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+            }
+            else{
+                
+                [UIView animateWithDuration:0.2f
+                                 animations:^
+                 {
+                     self.notificationsBadgeV.alpha = 1;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+            }
+
+        }
+    }];
+    
+   }
 
 -(void)hideTabbar{
 

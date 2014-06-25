@@ -1001,6 +1001,72 @@ static BPUser *thisWebServices = nil;
     self.getEmailSettingsCompleted(NO,nil);
 }
 
+-(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/setnotificationsettings"];
+    
+    self.setEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [postValues addObject:[NSDictionary dictionaryWithObject:value forKey:key]];
+    }
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [request addPostValue:value forKey:key];
+    }
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+
+    
+    [request setDidFinishSelector:@selector(setEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(setEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)setEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSDictionary *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.allKeys.count > 1) {
+            self.setEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+        self.setEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+
+-(void)setEmailSettings_Failed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.setEmailSettingsCompleted(NO,nil);
+}
+
 
 #pragma mark - GET POST requests
 

@@ -8,9 +8,9 @@
 
 #import "NotificationsPrefsVC.h"
 
-@interface NotificationsPrefsVC ()
+@interface NotificationsPrefsVC ()<MONActivityIndicatorViewDelegate>
 {
-    NSDictionary *settings;
+    NSMutableDictionary *settings;
 }
 @end
 
@@ -34,7 +34,7 @@
     [[BPUser sharedBP]getEmailSettingsWithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
             [self hideLoading];
-            settings = objs;
+            settings = [NSMutableDictionary dictionaryWithDictionary:objs];
             [self updateSettings];
         }
         else{
@@ -62,10 +62,10 @@
     toggleRebeeeps.on = (BOOL)[settings objectForKey:@"beeep"];
     toggleFollows.on = (BOOL)[settings objectForKey:@"follow"];
     toggleSuggestions.on = (BOOL)[settings objectForKey:@"suggest"];
+    toggleComments.on = (BOOL)[settings objectForKey:@"comment"];
 }
 
 -(void)goBack{
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -92,6 +92,55 @@
 }
 
 - (IBAction)togglePressed:(UISwitch *)sender {
+
+    switch (sender.tag) {
+        case 12:
+        {
+            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"like"];
+        }
+        break;
+        case 15:
+        {
+            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"beeep"];
+        }
+            break;
+        case 18:
+        {
+            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"follow"];
+        }
+            break;
+        case 21:
+        {
+           [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"comment"];   
+        }
+            break;
+        case 24:
+        {
+            
+        }
+            break;
+        case 27:
+        {
+             [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"suggest"];
+        }
+            break;
+
+    
+        default:
+            break;
+    }
+    
+    
+    [[BPUser sharedBP]setEmailSettings:settings WithCompletionBlock:^(BOOL completed,NSDictionary *objs){
+        if (completed) {
+            settings = [NSMutableDictionary dictionaryWithDictionary:objs];
+            [self  updateSettings];
+            }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem getting your Notification preferences. Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        }
+    }];
 
     
 }

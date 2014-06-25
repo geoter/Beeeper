@@ -25,6 +25,7 @@ typedef void(^notifications_completed)(BOOL,id);
 @property (copy) completed localNotificationsCompleted;
 @property (copy) completed readNotificationsCompleted;
 @property (copy) completed getEmailSettingsCompleted;
+@property (copy) completed setEmailSettingsCompleted;
 
 @property (nonatomic,strong) NSDictionary *user;
 
@@ -55,6 +56,7 @@ typedef void(^notifications_completed)(BOOL,id);
 -(void)readNotificationsWithCompletionBlock:(completed)compbloc;
 
 -(void)getEmailSettingsWithCompletionBlock:(completed)compbloc;
+-(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc;
 
 - (id)init;
 + (BPUser *)sharedBP;

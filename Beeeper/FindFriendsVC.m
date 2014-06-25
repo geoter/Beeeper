@@ -18,17 +18,18 @@
 #define MailButton 3
 
 
-@interface FindFriendsVC ()<UISearchBarDelegate,UISearchDisplayDelegate>
+@interface FindFriendsVC ()<UISearchBarDelegate,UISearchDisplayDelegate,UIActionSheetDelegate>
 {
     int selectedOption;
     UISearchBar *searchBar;
     UISearchDisplayController *searchDisplayController;
     UIView *headerView;
+    NSIndexPath *actionSheetIndexPath;
     
     int page;
     int pageLimit;
     
-    NSArray *searchedPeople;
+    NSMutableArray *searchedPeople;
     UIGestureRecognizer* cancelGesture;
 
 }
@@ -103,7 +104,7 @@
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
-            searchedPeople = objcts;
+            searchedPeople = [NSMutableArray arrayWithArray:objcts];
             NSRange range = NSMakeRange(0, 1);
             NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
             [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
@@ -115,16 +116,29 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(void)getBeeeperUsers{
+    
+    [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            searchedPeople = [NSMutableArray arrayWithArray:objcts];
+            NSRange range = NSMakeRange(0, 1);
+            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+        }
+    }];
+}
+
 -(void)optionSelectedFromHeader:(UIButton *)btn{
     
     switch (btn.tag) {
         case 0:
-            
+            [self getBeeeperUsers];
             break;
 
         case 1:{ //fb friends
             
-            //[self requestFBFriends];
+            [self requestFBFriends];
             break;
         }
         case 2:
@@ -332,11 +346,30 @@
     txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
     UIImageView *userImage = (id)[cell viewWithTag:2];
-    UIImageView *followImage = (id)[cell viewWithTag:3];
+    UIButton *followBtn = (id)[cell viewWithTag:3];
+    
 
     UITextField *emailtxtF = (id)[cell viewWithTag:4];
 
     NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
+    
+     if (selectedOption != MailButton) {
+    
+        followBtn.hidden = YES;
+         
+        NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+        
+        if (following.boolValue) {
+            [followBtn setImage:[UIImage imageNamed:@"following-icon.png"] forState:UIControlStateNormal] ;
+        }
+        else{
+            [followBtn setImage:[UIImage imageNamed:@"not-following-icon.png"] forState:UIControlStateNormal] ;
+        }
+     }
+     else{
+         followBtn.hidden = YES;
+     }
+    
     NSString *name =[user objectForKey:@"name"];
     NSString *lastname =[user objectForKey:@"lastname"];
 
@@ -582,30 +615,60 @@
     
     NSDictionary *user = [searchedPeople objectAtIndex:path.row];
     
-//    if ([following indexOfObject:user] != NSNotFound) {
-//        
-//        NSString *username = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
-//        
-//        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:username delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Unfollow" otherButtonTitles:nil];
-//        [popup showInView:self.view];
-//        actionSheetIndexPath = path;
-//    }
-//    else{
-//        
-//        //follow user
-//        [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-//            if (completed) {
-//                
-//                [following addObject:user];
-//                
-//                NSArray* rowsToReload = [NSArray arrayWithObjects:path, nil];
-//                
-//                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-//                
-//            }
-//        }];
-//        
-//    }
+    NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+    
+    if (following.boolValue) {
+        
+        NSString *username = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
+        
+        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:username delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Unfollow" otherButtonTitles:nil];
+        [popup showInView:self.view];
+        actionSheetIndexPath = path;
+    }
+    else{
+        
+        //follow user
+        [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
+                [newUser setObject:@"1" forKey:@"following"];
 
+                [searchedPeople replaceObjectAtIndex:path.row withObject:newUser];
+                NSArray* rowsToReload = [NSArray arrayWithObjects:path, nil];
+                
+                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                
+            }
+        }];
+        
+    }
 }
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        
+        NSDictionary *user = [searchedPeople objectAtIndex:actionSheetIndexPath.row];
+        
+        [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
+                [newUser setObject:@"0" forKey:@"following"];
+                
+                [searchedPeople replaceObjectAtIndex:actionSheetIndexPath.row withObject:newUser];
+                NSArray* rowsToReload = [NSArray arrayWithObjects:actionSheetIndexPath, nil];
+                
+                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                
+            }
+            
+            actionSheetIndexPath = nil;
+        }];
+        
+    }
+}
+
 @end

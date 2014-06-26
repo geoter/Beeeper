@@ -409,6 +409,12 @@ static BPUser *thisWebServices = nil;
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
     self.followers_completed(YES,users);
 
 }

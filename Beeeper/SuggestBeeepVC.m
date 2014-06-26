@@ -229,8 +229,6 @@
         NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
-        
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
     }
     
     if ([selectedPeople indexOfObject:user] != NSNotFound) {

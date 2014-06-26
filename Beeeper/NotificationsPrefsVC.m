@@ -134,7 +134,7 @@
     [[BPUser sharedBP]setEmailSettings:settings WithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
             settings = [NSMutableDictionary dictionaryWithDictionary:objs];
-            [self  updateSettings];
+            [self performSelectorOnMainThread:@selector(updateSettings) withObject:nil waitUntilDone:NO];
             }
         else{
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem getting your Notification preferences. Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];

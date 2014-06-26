@@ -100,8 +100,8 @@
 		9638F88218D47E8B007394AC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9638F88118D47E8B007394AC /* QuartzCore.framework */; };
 		9638F88518D4826B007394AC /* BPUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88418D4826B007394AC /* BPUser.m */; };
 		9638F88818D48370007394AC /* DTO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88718D48370007394AC /* DTO.m */; };
-		9640E502192A4A67008675BA /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9640E501192A4A67008675BA /* FacebookSDK.framework */; };
 		9640E505192AB5AE008675BA /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 9640E504192AB5AE008675BA /* NSString+MD5.m */; };
+		964C4A7319520AA500E06EB7 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964C4A7219520AA400E06EB7 /* FacebookSDK.framework */; };
 		967331EF194735F100A58217 /* BPActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 967331EE194735F000A58217 /* BPActivity.m */; };
 		9673321B194863AE00A58217 /* BeeepActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9673320C194863AE00A58217 /* BeeepActivity.m */; };
 		9673321C194863AE00A58217 /* BeeepInfoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9673320E194863AE00A58217 /* BeeepInfoActivity.m */; };
@@ -596,9 +596,9 @@
 		9638F88418D4826B007394AC /* BPUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPUser.m; sourceTree = "<group>"; };
 		9638F88618D48370007394AC /* DTO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTO.h; sourceTree = "<group>"; };
 		9638F88718D48370007394AC /* DTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTO.m; sourceTree = "<group>"; };
-		9640E501192A4A67008675BA /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		9640E503192AB5AE008675BA /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		9640E504192AB5AE008675BA /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		964C4A7219520AA400E06EB7 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		967331ED194735F000A58217 /* BPActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPActivity.h; sourceTree = "<group>"; };
 		967331EE194735F000A58217 /* BPActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPActivity.m; sourceTree = "<group>"; };
 		9673320B194863AE00A58217 /* BeeepActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepActivity.h; sourceTree = "<group>"; };
@@ -1084,11 +1084,11 @@
 				9637AA6418C0E90400651BD8 /* SystemConfiguration.framework in Frameworks */,
 				9637AA6218C0E8F900651BD8 /* MobileCoreServices.framework in Frameworks */,
 				CEA64F4D18B3B7EA00B7ECF5 /* Accounts.framework in Frameworks */,
-				9640E502192A4A67008675BA /* FacebookSDK.framework in Frameworks */,
 				CEA64F4B18B3AFB800B7ECF5 /* Social.framework in Frameworks */,
 				CEA64F1318B39F4F00B7ECF5 /* CoreGraphics.framework in Frameworks */,
 				CEA64F1518B39F4F00B7ECF5 /* UIKit.framework in Frameworks */,
 				CEA64F1118B39F4F00B7ECF5 /* Foundation.framework in Frameworks */,
+				964C4A7319520AA500E06EB7 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1977,9 +1977,9 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				964C4A7219520AA400E06EB7 /* FacebookSDK.framework */,
 				5E1D5648192F616900962F94 /* AddressBookUI.framework */,
 				5E1D5646192F616300962F94 /* AddressBook.framework */,
-				9640E501192A4A67008675BA /* FacebookSDK.framework */,
 				9638F88118D47E8B007394AC /* QuartzCore.framework */,
 				9638F87718D47E4B007394AC /* GLKit.framework */,
 				9638F86F18D47E33007394AC /* AVFoundation.framework */,

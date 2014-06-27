@@ -41,7 +41,11 @@
     NSString *accessTokenSecret;
     
     NSOperationQueue *operationQueue;
-
+    
+    NSMutableArray *newNotifications;
+    NSMutableArray *oldNotifications;
+    BOOL newNotificationsFinished;
+    BOOL oldNotificationsFinished;
 }
 
 @end
@@ -698,10 +702,11 @@ static BPUser *thisWebServices = nil;
     [self parseResponseString:json WithCompletionBlock:compbloc];
 }
 
--(void)readNotificationsWithCompletionBlock:(completed)compbloc{
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+-(void)getNewNotificationsWithCompletionBlock:(completed)compbloc{
     
-    self.readNotificationsCompleted = compbloc;
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/show"];
+    
+    self.newNotificationsCompleted = compbloc;
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
     
@@ -713,39 +718,74 @@ static BPUser *thisWebServices = nil;
     
     [request setDelegate:self];
     
-    [request setDidFinishSelector:@selector(readNotificationsFinished:)];
+    [request setDidFinishSelector:@selector(getNewNotificationsFinished:)];
     
-    [request setDidFailSelector:@selector(readNotificationsFailed:)];
+    [request setDidFailSelector:@selector(getNewNotificationsFailed:)];
     
     [request startAsynchronous];
 
 }
 
--(void)readNotificationsFinished:(ASIHTTPRequest *)request{
+-(void)getNewNotificationsFinished:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    
-    [self parseResponseString:responseString WithCompletionBlock:self.readNotificationsCompleted];
+    [self parseResponseString:responseString WithCompletionBlock:self.newNotificationsCompleted];
 }
 
--(void)readNotificationsFailed:(ASIHTTPRequest *)request{
+-(void)getNewNotificationsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    self.readNotificationsCompleted(NO,nil);
+    self.newNotificationsCompleted(NO,nil);
 }
 
--(void)getNotificationsWithCompletionBlock:(completed)compbloc{
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+          activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    
+    compbloc(YES,bs);
+}
+
+
+-(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc{
    
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/show"];
+    newNotifications = [NSMutableArray array];
+    oldNotifications = [NSMutableArray array];
+    newNotificationsFinished = NO;
+    oldNotificationsFinished = NO;
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
     
     self.notifications_completed = compbloc;
     
@@ -764,41 +804,32 @@ static BPUser *thisWebServices = nil;
     [request setDidFailSelector:@selector(notificationsFailed:)];
     
     [request startAsynchronous];
+    
+    [self getOldNotificationsWithCompletionBlock:compbloc];
 }
 
 -(void)notificationsReceived:(ASIHTTPRequest *)request{
    
     NSString *responseString = [request responseString];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
     
-    [self parseResponseString:responseString WithCompletionBlock:self.notifications_completed];
-
-}
-
--(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
-    
-    if (responseString == nil) {
-        compbloc(NO,nil);
-    }
-
-    NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     NSMutableArray *bs = [NSMutableArray array];
     
-    for (NSString *b in notifications) {
+    for (id b in notificationsArray) {
         
-        NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
@@ -808,8 +839,124 @@ static BPUser *thisWebServices = nil;
         [bs addObject:notification];
     }
     
-    compbloc(YES,bs);
+    newNotificationsFinished = YES;
+    [newNotifications addObjectsFromArray:bs];
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);    
+    }
 }
+
+-(void)notificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    newNotificationsFinished = YES;
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
+
+-(void)getOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
+    
+//    NSMutableArray *array = [NSMutableArray array];
+//    [array addObject:[NSString stringWithFormat:@"limit=30"]];
+//    [array addObject:[NSString stringWithFormat:@"page=1"]];
+//    
+//    for (NSString *str in array) {
+//        [URLwithVars appendFormat:@"%@",str];
+//        
+//        if (str != array.lastObject) {
+//            [URLwithVars appendString:@"&"];
+//        }
+//    }
+    
+    
+   // NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:nil]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)oldNotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    oldNotificationsFinished = YES;
+    [oldNotifications addObjectsFromArray:bs];
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
+-(void)oldNotificationsFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    oldNotificationsFinished = YES;
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+       self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
 
 -(void)downloadImage:(Activity_Object *)actv{
     
@@ -826,7 +973,8 @@ static BPUser *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSString *path = [w.imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -855,7 +1003,8 @@ static BPUser *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSString *path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -886,7 +1035,9 @@ static BPUser *thisWebServices = nil;
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+            NSURL *URL = [NSURL URLWithString:path];
+            NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -909,7 +1060,9 @@ static BPUser *thisWebServices = nil;
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+            NSURL *URL = [NSURL URLWithString:path];
+            NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -941,14 +1094,7 @@ static BPUser *thisWebServices = nil;
 
 
 
--(void)notificationsFailed:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    
-    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
-    
-    self.notifications_completed(NO,nil);
-}
+
 
 #pragma mark - Settings
 

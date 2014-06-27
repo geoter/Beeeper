@@ -25,6 +25,7 @@
     MyDateTimePicker *datePicker;
     UITextField *activeTXTF;
     LocationManager *locManager;
+    NSString *base64Image;
 }
 @end
 
@@ -469,6 +470,7 @@
         }
         
         [values setObject:keywords forKey:@"keywords"];
+        [values setObject:base64Image forKey:@"base64_image"];
         [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"url"];
         
         BOOL proceed = [self areAllDataAvailable:values];
@@ -673,6 +675,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
+        NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
+        base64Image = [self base64forData:imageData];
+        
         [self imageSelected:chosenPhotoBtn];
     }
     @catch (NSException *exception) {
@@ -694,5 +699,57 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                             kCFStringEncodingUTF8);
     return [NSString stringWithFormat:@"%@", safeString];
 }
+
+- (NSString *)contentTypeForImageData:(NSData *)data {
+    uint8_t c;
+    [data getBytes:&c length:1];
+    
+    switch (c) {
+        case 0xFF:
+            return @"image/jpeg";
+        case 0x89:
+            return @"image/png";
+        case 0x47:
+            return @"image/gif";
+        case 0x49:
+        case 0x4D:
+            return @"image/tiff";
+    }
+    return nil;
+}
+
+- (NSString*)base64forData:(NSData*)theData {
+    
+    const uint8_t* input = (const uint8_t*)[theData bytes];
+    NSInteger length = [theData length];
+    
+    static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    
+    NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+    uint8_t* output = (uint8_t*)data.mutableBytes;
+    
+    NSInteger i;
+    for (i=0; i < length; i += 3) {
+        NSInteger value = 0;
+        NSInteger j;
+        for (j = i; j < (i + 3); j++) {
+            value <<= 8;
+            
+            if (j < length) {
+                value |= (0xFF & input[j]);
+            }
+        }
+        
+        NSInteger theIndex = (i / 3) * 4;
+        output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
+        output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
+        output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
+        output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
+    }
+    
+    return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+}
+
+
 
 @end

@@ -56,7 +56,7 @@
 -(void)updateNotificationsBadge{
     
     
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [[BPUser sharedBP]getNewNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
             
@@ -90,6 +90,8 @@
                  }
                  ];
             }
+            
+            [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:30];
 
         }
     }];

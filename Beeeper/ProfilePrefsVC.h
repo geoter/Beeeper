@@ -11,4 +11,6 @@
 @interface ProfilePrefsVC : UIViewController
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 
+- (IBAction)changeProfilePicture:(id)sender;
+
 @end

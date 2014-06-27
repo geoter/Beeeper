@@ -661,7 +661,7 @@
                                         <rect key="frame" x="20" y="108" width="280" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.83137254901960778" green="0.84705882352941175" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                         <connections>
                                             <outlet property="delegate" destination="LzD-Xv-k3n" id="ObS-JB-Xd4"/>
@@ -720,7 +720,7 @@
                                         </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qhe-bZ-15Z">
-                                        <rect key="frame" x="20" y="504" width="270" height="37"/>
+                                        <rect key="frame" x="20" y="504" width="270" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.97647058823529409" green="0.8784313725490196" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -736,7 +736,7 @@
                                         <rect key="frame" x="20" y="172" width="280" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.83137254901960778" green="0.84705882352941175" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <outlet property="delegate" destination="LzD-Xv-k3n" id="MQU-nz-rPN"/>
@@ -746,7 +746,7 @@
                                         <rect key="frame" x="20" y="236" width="280" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.83137254901960778" green="0.84705882352941175" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <outlet property="delegate" destination="LzD-Xv-k3n" id="hKs-WO-OOg"/>
@@ -2038,6 +2038,9 @@
                                                             <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="changeProfilePicture:" destination="s2Z-gV-BIl" eventType="touchUpInside" id="6SK-hM-Uvd"/>
+                                                        </connections>
                                                     </button>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="editProfileBtn.png" id="CTu-0G-2Ng">
                                                         <rect key="frame" x="5" y="5" width="30" height="30"/>

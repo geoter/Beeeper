@@ -59,6 +59,8 @@ typedef void(^notifications_completed)(BOOL,id,id);
 -(void)getEmailSettingsWithCompletionBlock:(completed)compbloc;
 -(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc;
 
+-(void)setUserSettings:(NSDictionary *)settings WithCompletionBlock:(completed)compbloc;
+
 - (id)init;
 + (BPUser *)sharedBP;
 

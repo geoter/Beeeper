@@ -521,34 +521,6 @@
              ];
             
         }
-        else{
-            [selectedPeople removeObject:user];
-            
-            [UIView animateWithDuration:0.0f
-                             animations:^
-             {
-                 tickedV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
-                 
-                 [UIView animateWithDuration:0.0f
-                                  animations:^
-                  {
-                      tickedV.alpha = 1;
-                  }
-                                  completion:^(BOOL finished)
-                  {
-                      
-                  }
-                  ];
-                 
-             }
-             ];
-            
-        }
-
     }
     else{
         

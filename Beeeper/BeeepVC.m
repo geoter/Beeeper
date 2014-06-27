@@ -79,7 +79,7 @@
     self.scrollV.contentSize = CGSizeMake(320, self.scrollV.frame.size.height);
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
-    [self adjustFonts];
+ //   [self adjustFonts];
 }
 
 - (void)locationUpdate:(CLLocation *)location{
@@ -449,6 +449,9 @@
 
         textView.text = @"HASHTAGS (OPTIONAL)";
     }
+    
+    textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+    textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
 }
 
 -(void)hideDatePicker{

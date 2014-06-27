@@ -162,6 +162,55 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = [request responseString];
 }
 
+#pragma mark - User settings
+
+-(void)setUserSettings:(NSDictionary *)settings WithCompletionBlock:(completed)compbloc{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://resources.beeeper.com/signup/"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Referer" value:@"t6FDJXLQnVKLYgZjaqhuiDIO7CxeK+bF+FGJorEBRB55k89C+qAxIyUKYrnTlLLJeEkHYwakO/ZYWVi8m370wQ=="];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.completed = compbloc;
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request addPostValue:[settings objectForKey:@"username"] forKey:@"email"];
+    
+    [request addPostValue:[settings objectForKey:@"name"] forKey:@"name"];
+    
+    [request addPostValue:[settings objectForKey:@"lastname"] forKey:@"lastname"];
+    
+    [request addPostValue:[settings objectForKey:@"timezone"] forKey:@"timezone"];
+    
+    [request addPostValue:[settings objectForKey:@"password"] forKey:@"password"];
+    
+    [request addPostValue:[settings objectForKey:@"city"] forKey:@"city"];
+    
+    [request addPostValue:[settings objectForKey:@"state"] forKey:@"state"];
+    
+    [request addPostValue:[settings objectForKey:@"country"] forKey:@"country"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [[request UserInfo]setObject:settings forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(signupFinished:)];
+    
+    [request setDidFailSelector:@selector(signupFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
 #pragma mark - FB Signup
 
 -(void)signUpFacebookUser:(NSDictionary *)info completionBlock:(completed)compbloc{

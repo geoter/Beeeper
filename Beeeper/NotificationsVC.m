@@ -15,7 +15,10 @@
 @interface NotificationsVC ()
 {
     NSMutableArray *notifications;
+    NSArray *newNotifications;
+    NSArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -28,6 +31,8 @@
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
 //        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
 //    }
+    
+    rowsToReload = [NSMutableArray array];
 
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
@@ -37,33 +42,45 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-}
-
--(void)getNotifications{
-    
-    [self showLoading];
-    
-     self.tableV.decelerationRate = 0.6;
-    
     [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
         
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
         [self hideLoading];
         
-        if (completed) {
+        if (completed && objcts.count > 0) {
             notifications = [NSMutableArray arrayWithArray:objcts];
+            
             [self.tableV reloadData];
+        }
+        else{
+            [self showLoading];
         }
     }];
     
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [self getNotifications];
+    
+}
+
+-(void)getNotifications{
+    
+     self.tableV.decelerationRate = 0.6;
+    
+    newNotifications = nil;
+    oldNotifications = nil;
+    
+    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
         [self hideLoading];
         if (completed) {
-            notifications = [NSMutableArray arrayWithArray:objcts];
+            notifications = [NSMutableArray arrayWithArray:newNotifs];
+            [notifications addObjectsFromArray:oldNotifs];
+            
+            newNotifications = [NSArray arrayWithArray:newNotifs];
+            oldNotifications = [NSArray arrayWithArray:oldNotifs];
+            
             [self.tableV reloadData];
         }
     }];
@@ -71,7 +88,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self getNotifications];
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
@@ -115,6 +132,14 @@
     txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
 
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+    
+    if(newNotifications != nil && [newNotifications indexOfObject:activity] != NSNotFound){
+        cell.backgroundColor = [UIColor lightGrayColor];
+    }
+    else{
+        cell.backgroundColor = [UIColor whiteColor];
+    }
+    
     Who *w = [[activity.who firstObject] copy];
     Whom *wm = [[activity.whom firstObject] copy];
     
@@ -208,6 +233,7 @@
         
         TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         vC.mode = Timeline_Not_Following;
+        vC.showBackButton = YES;
         
         Who *w = [activity.who firstObject];
         Whom *wm = [activity.whom firstObject];
@@ -341,12 +367,20 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [pendingImagesDict removeObjectForKey:imageName];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [rowsToReload removeAllObjects];
+        });
+        
+    }
+    
     
 }
 

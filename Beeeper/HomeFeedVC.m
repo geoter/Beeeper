@@ -180,7 +180,9 @@
         
         if (completed) {
             
-            [self hideLoading];
+            if (objs.count > 0) {
+                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+            }
             
             beeeps = [NSMutableArray arrayWithArray:objs];
             [self.collectionV reloadData];

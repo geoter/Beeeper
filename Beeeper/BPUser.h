@@ -12,7 +12,7 @@ typedef void(^completed)(BOOL,id);
 typedef void(^followers_completed)(BOOL,id);
 typedef void(^following_completed)(BOOL,id);
 typedef void(^is_following_completed)(BOOL,id);
-typedef void(^notifications_completed)(BOOL,id);
+typedef void(^notifications_completed)(BOOL,id,id);
 
 @interface BPUser : NSObject
 
@@ -20,10 +20,11 @@ typedef void(^notifications_completed)(BOOL,id);
 @property (copy) void(^followers_completed)(BOOL,id);
 @property (copy) void(^following_completed)(BOOL,id);
 @property (copy) void(^is_following_completed)(BOOL,id);
-@property (copy) void(^notifications_completed)(BOOL,id);
+@property (copy) void(^notifications_completed)(BOOL,id,id);
 @property (copy) completed fbSignUpCompleted;
 @property (copy) completed localNotificationsCompleted;
-@property (copy) completed readNotificationsCompleted;
+@property (copy) completed newNotificationsCompleted;
+@property (copy) completed oldNotificationsCompleted;
 @property (copy) completed getEmailSettingsCompleted;
 @property (copy) completed setEmailSettingsCompleted;
 
@@ -52,8 +53,8 @@ typedef void(^notifications_completed)(BOOL,id);
 -(void)unfollow:(NSString *)userID WithCompletionBlock:(completed)compbloc;
 
 -(void)getLocalNotifications:(completed)compbloc;
--(void)getNotificationsWithCompletionBlock:(completed)compbloc;
--(void)readNotificationsWithCompletionBlock:(completed)compbloc;
+-(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc;
+-(void)getNewNotificationsWithCompletionBlock:(completed)compbloc;
 
 -(void)getEmailSettingsWithCompletionBlock:(completed)compbloc;
 -(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc;

@@ -361,17 +361,24 @@
     
      if (selectedOption != MailButton) {
     
-        followBtn.hidden = NO;
-        tickedV.hidden = YES;
+         if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
+             followBtn.hidden = YES;
+             tickedV.hidden = YES;
+         }
+         else{
          
-        NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
-        
-        if (following.boolValue) {
-            [followBtn setImage:[UIImage imageNamed:@"following-icon.png"] forState:UIControlStateNormal] ;
-        }
-        else{
-            [followBtn setImage:[UIImage imageNamed:@"not-following-icon.png"] forState:UIControlStateNormal] ;
-        }
+            followBtn.hidden = NO;
+            tickedV.hidden = YES;
+             
+            NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+            
+            if (following.boolValue) {
+                [followBtn setImage:[UIImage imageNamed:@"following-icon.png"] forState:UIControlStateNormal] ;
+            }
+            else{
+                [followBtn setImage:[UIImage imageNamed:@"not-following-icon.png"] forState:UIControlStateNormal] ;
+            }
+         }
      }
      else{
          
@@ -419,49 +426,59 @@
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    if (imagePath != nil) {
-        
-        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            userImage.backgroundColor = [UIColor clearColor];
-            userImage.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            userImage.image = img;
-        }
-        else{
-            userImage.image = nil;
-            userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+    @try {
+    
+        if (imagePath != nil) {
+            
             NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
             NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
             
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
+            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
+            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                userImage.backgroundColor = [UIColor clearColor];
+                userImage.image = nil;
+                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+                userImage.image = img;
+            }
+            else{
+                userImage.image = nil;
+                userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+                NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+                
+                NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+                
+                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
+                
+                
+            }
             
-        }
-
-    }
-    else{
-        
-        userImage.image = nil;
-        
-        UIImage *imageContact = [user objectForKey:@"image"];
-        if (imageContact != nil) {
-            userImage.image = imageContact;
-            userImage.backgroundColor = [UIColor clearColor];
         }
         else{
-            userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+            
+            userImage.image = nil;
+            
+            UIImage *imageContact = [user objectForKey:@"image"];
+            if (imageContact != nil) {
+                userImage.image = imageContact;
+                userImage.backgroundColor = [UIColor clearColor];
+            }
+            else{
+                userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+            }
+            
         }
+        
+        
 
     }
-    
-   
+    @catch (NSException *exception) {
+        NSLog(@"provlima");
+    }
+    @finally {
+        
+    }
     
     return cell;
 }

@@ -486,7 +486,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *events = [NSMutableArray array];
     
-    if (events.count ==0) {
+    if (eventsArray.count ==0) {
         self.searchEvent_completed(NO,nil);
         return;
     }

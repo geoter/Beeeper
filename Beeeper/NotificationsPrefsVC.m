@@ -58,11 +58,17 @@
     UISwitch *toggleFriendsJoined = (id)[[self.scrollV viewWithTag:22]viewWithTag:24];
     UISwitch *toggleSuggestions = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
     
-    toggleLikes.on = (BOOL)[settings objectForKey:@"like"];
-    toggleRebeeeps.on = (BOOL)[settings objectForKey:@"beeep"];
-    toggleFollows.on = (BOOL)[settings objectForKey:@"follow"];
-    toggleSuggestions.on = (BOOL)[settings objectForKey:@"suggest"];
-    toggleComments.on = (BOOL)[settings objectForKey:@"comment"];
+    NSString *beeep = [settings objectForKey:@"beeep"];
+    NSString *like = [settings objectForKey:@"like"];
+    NSString *follow = [settings objectForKey:@"follow"];
+    NSString *suggest = [settings objectForKey:@"suggest"];
+    NSString *comment = [settings objectForKey:@"comment"];
+    
+    toggleLikes.on = like.boolValue;
+    toggleRebeeeps.on = beeep.boolValue;
+    toggleFollows.on = follow.boolValue;
+    toggleSuggestions.on = suggest.boolValue;
+    toggleComments.on = comment.boolValue;
 }
 
 -(void)goBack{
@@ -134,7 +140,7 @@
     [[BPUser sharedBP]setEmailSettings:settings WithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
             settings = [NSMutableDictionary dictionaryWithDictionary:objs];
-            [self  updateSettings];
+            [self performSelectorOnMainThread:@selector(updateSettings) withObject:nil waitUntilDone:NO];
             }
         else{
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem getting your Notification preferences. Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];

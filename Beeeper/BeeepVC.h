@@ -12,6 +12,7 @@
 @property (weak, nonatomic) IBOutlet UIPageControl *imagesPageControl;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 @property (weak, nonatomic) IBOutlet UIScrollView *containerScrollV;
+@property (weak, nonatomic) IBOutlet UIView *tagsV;
 - (IBAction)releaseKeyborad:(id)sender;
 
 - (IBAction)close:(id)sender;

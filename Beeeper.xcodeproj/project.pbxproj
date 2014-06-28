@@ -174,6 +174,8 @@
 		CE02EC3E18EC7D0A00B5674C /* search_icon_2.png in Resources */ = {isa = PBXBuildFile; fileRef = CE02EC3C18EC7D0A00B5674C /* search_icon_2.png */; };
 		CE02EC3F18EC7D0A00B5674C /* search_icon_2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE02EC3D18EC7D0A00B5674C /* search_icon_2@2x.png */; };
 		CE02EC4518EC7E1000B5674C /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = CE02EC4418EC7E1000B5674C /* SearchVC.m */; };
+		CE038421195D73DB00C4BC52 /* create-event-close-buton.png in Resources */ = {isa = PBXBuildFile; fileRef = CE03841F195D73DB00C4BC52 /* create-event-close-buton.png */; };
+		CE038422195D73DB00C4BC52 /* create-event-close-buton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE038420195D73DB00C4BC52 /* create-event-close-buton@2x.png */; };
 		CE042A011938BF6700E3167A /* pin-black.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0429FF1938BF6700E3167A /* pin-black.png */; };
 		CE042A021938BF6700E3167A /* pin-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE042A001938BF6700E3167A /* pin-black@2x.png */; };
 		CE042A051938D1F600E3167A /* search_icon_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE042A031938D1F600E3167A /* search_icon_white@2x.png */; };
@@ -751,6 +753,8 @@
 		CE02EC3D18EC7D0A00B5674C /* search_icon_2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search_icon_2@2x.png"; sourceTree = "<group>"; };
 		CE02EC4318EC7E1000B5674C /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		CE02EC4418EC7E1000B5674C /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchVC.m; sourceTree = "<group>"; };
+		CE03841F195D73DB00C4BC52 /* create-event-close-buton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "create-event-close-buton.png"; sourceTree = "<group>"; };
+		CE038420195D73DB00C4BC52 /* create-event-close-buton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "create-event-close-buton@2x.png"; sourceTree = "<group>"; };
 		CE0429FF1938BF6700E3167A /* pin-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-black.png"; sourceTree = "<group>"; };
 		CE042A001938BF6700E3167A /* pin-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin-black@2x.png"; sourceTree = "<group>"; };
 		CE042A031938D1F600E3167A /* search_icon_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search_icon_white@2x.png"; sourceTree = "<group>"; };
@@ -1771,6 +1775,8 @@
 		CE29EDFB18D9C5080001EC43 /* R */ = {
 			isa = PBXGroup;
 			children = (
+				CE03841F195D73DB00C4BC52 /* create-event-close-buton.png */,
+				CE038420195D73DB00C4BC52 /* create-event-close-buton@2x.png */,
 				9615E8D3192DC3680099B3E0 /* Tabbarchanges */,
 				CE02EB9D18EC441600B5674C /* search_icon.png */,
 				CE02EB9E18EC441600B5674C /* search_icon@2x.png */,
@@ -2667,6 +2673,7 @@
 				CE0C881B18D0BE1300BA548F /* option_0_gray@2x.png in Resources */,
 				CE7CFAED18B797C10044C9AC /* MessageEntryInputField@2x.png in Resources */,
 				5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */,
+				CE038421195D73DB00C4BC52 /* create-event-close-buton.png in Resources */,
 				962E3DA7194CBD4700A0DD87 /* search_icon_gray@2x.png in Resources */,
 				CE35D1DD18D07E890086C26A /* icon-twitter2@2x.png in Resources */,
 				9615E8B5192DB57C0099B3E0 /* tabbar-notif.png in Resources */,
@@ -2716,6 +2723,7 @@
 				CEF263A018DC59A10047510D /* 11.png in Resources */,
 				CEEE3ED118C9E02C00665C21 /* Roboto-Thin.ttf in Resources */,
 				962E3DA2194C614900A0DD87 /* pinterest-white.png in Resources */,
+				CE038422195D73DB00C4BC52 /* create-event-close-buton@2x.png in Resources */,
 				CE0C882A18D0C55800BA548F /* Beeeper_logo_small.png in Resources */,
 				CE35D1E918D084B60086C26A /* back@2x.png in Resources */,
 				CE25F9F518B6761300D8B858 /* NotificationBackgroundWarning.png in Resources */,
@@ -3036,7 +3044,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3059,7 +3067,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

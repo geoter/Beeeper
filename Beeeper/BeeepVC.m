@@ -18,7 +18,7 @@
 #import "BPCreate.h"
 
 @class BorderTextField;
-@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate>
+@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate>
 {
     NSMutableDictionary *values;
     UIImagePickerController *mediaPicker;
@@ -40,6 +40,8 @@
     return self;
 }
 
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -54,6 +56,15 @@
         
         [locManager startTracking];
     }
+    else{
+        [self getLocationInfo:[DTO sharedDTO].userPlace];
+    }
+    
+    self.tagsV.layer.borderColor = [UIColor colorWithRed:221/255.0 green:224/255.0 blue:226/255.0 alpha:1].CGColor;
+    self.tagsV.layer.borderWidth = 1;
+    self.tagsV.layer.masksToBounds = YES;
+    self.tagsV.layer.cornerRadius = 2;
+
     
     datePicker = [[MyDateTimePicker alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 260)];
     datePicker.tag = 99;
@@ -68,7 +79,7 @@
     self.scrollV.contentSize = CGSizeMake(320, self.scrollV.frame.size.height);
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
-    [self adjustFonts];
+ //   [self adjustFonts];
 }
 
 - (void)locationUpdate:(CLLocation *)location{
@@ -388,6 +399,61 @@
     return YES;
 }
 
+-(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
+    
+    [self.containerScrollV setContentOffset:CGPointMake(0, 200) animated:YES];
+    textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+    textView.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+    
+    if ([textView.text isEqualToString:@"HASHTAGS (OPTIONAL)"]) {
+        textView.text = @"";
+    }
+    
+    return YES;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+
+    NSString * typedStr = [textView.text stringByReplacingCharactersInRange:range withString:text];
+    
+    if (typedStr.length == 0) {
+        
+        //remove value
+        [values removeObjectForKey:@"keywords"];
+    }
+    else{
+        //save value
+        
+        if ([text isEqualToString:@"\n"]) {
+            
+            [self.containerScrollV setContentOffset:CGPointZero animated:YES];
+            [textView resignFirstResponder];
+            // Return FALSE so that the final '\n' character doesn't get added
+            return NO;
+        }
+        
+        [values setObject:typedStr forKey:@"keywords"];
+    }
+
+    
+    return YES;
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView{
+    if (textView.text.length == 0) {
+        [values removeObjectForKey:@"keywords"];
+
+        textView.text = @"HASHTAGS (OPTIONAL)";
+    }
+    
+    textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+    textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
+}
+
 -(void)hideDatePicker{
     MyDateTimePicker *picker = (MyDateTimePicker*)[self.view viewWithTag:99];
     [picker setHidden:YES animated:YES];
@@ -529,7 +595,7 @@
 }
 
 -(BOOL)areAllDataAvailable:(NSDictionary *)values{
-    if(values.allKeys.count < 13)    return NO;
+    if(values.allKeys.count < 14)    return NO;
     else return YES;
 }
 
@@ -548,9 +614,6 @@
   
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
 
 - (IBAction)addPhotoPressed:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {

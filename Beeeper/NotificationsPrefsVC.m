@@ -10,6 +10,7 @@
 
 @interface NotificationsPrefsVC ()<MONActivityIndicatorViewDelegate>
 {
+    NSMutableDictionary *downloadedSettings;
     NSMutableDictionary *settings;
 }
 @end
@@ -31,10 +32,12 @@
     
     [self showLoading];
     
+    settings = [NSMutableDictionary dictionary];
+    
     [[BPUser sharedBP]getEmailSettingsWithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
             [self hideLoading];
-            settings = [NSMutableDictionary dictionaryWithDictionary:objs];
+            downloadedSettings = [NSMutableDictionary dictionaryWithDictionary:objs];
             [self updateSettings];
         }
         else{
@@ -58,11 +61,11 @@
     UISwitch *toggleFriendsJoined = (id)[[self.scrollV viewWithTag:22]viewWithTag:24];
     UISwitch *toggleSuggestions = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
     
-    NSString *beeep = [settings objectForKey:@"beeep"];
-    NSString *like = [settings objectForKey:@"like"];
-    NSString *follow = [settings objectForKey:@"follow"];
-    NSString *suggest = [settings objectForKey:@"suggest"];
-    NSString *comment = [settings objectForKey:@"comment"];
+    NSString *beeep = [downloadedSettings objectForKey:@"beeep"];
+    NSString *like = [downloadedSettings objectForKey:@"like"];
+    NSString *follow = [downloadedSettings objectForKey:@"follow"];
+    NSString *suggest = [downloadedSettings objectForKey:@"suggest"];
+    NSString *comment = [downloadedSettings objectForKey:@"comment"];
     
     toggleLikes.on = like.boolValue;
     toggleRebeeeps.on = beeep.boolValue;
@@ -102,22 +105,24 @@
     switch (sender.tag) {
         case 12:
         {
-            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"like"];
+            [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"like"];
+            
         }
         break;
         case 15:
         {
-            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"beeep"];
+            [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"beeep"];
         }
             break;
         case 18:
         {
-            [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"follow"];
+            [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"follow"];
         }
             break;
         case 21:
         {
-           [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"comment"];   
+           [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"comment"];
+
         }
             break;
         case 24:
@@ -127,7 +132,7 @@
             break;
         case 27:
         {
-             [settings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"suggest"];
+             [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"suggest"];
         }
             break;
 
@@ -136,10 +141,16 @@
             break;
     }
     
+    [settings setObject:[downloadedSettings objectForKey:@"like"] forKey:@"likes"];
+    [settings setObject:[downloadedSettings objectForKey:@"beeep"] forKey:@"beeep"];
+    [settings setObject:[downloadedSettings objectForKey:@"follow"] forKey:@"setfollows"];
+    [settings setObject:[downloadedSettings objectForKey:@"comment"] forKey:@"setcomments"];
+    [settings setObject:[downloadedSettings objectForKey:@"suggest"] forKey:@"suggestions"];
+    
     
     [[BPUser sharedBP]setEmailSettings:settings WithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
-            settings = [NSMutableDictionary dictionaryWithDictionary:objs];
+            downloadedSettings = [NSMutableDictionary dictionaryWithDictionary:objs];
             [self performSelectorOnMainThread:@selector(updateSettings) withObject:nil waitUntilDone:NO];
             }
         else{

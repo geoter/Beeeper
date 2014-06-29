@@ -11,10 +11,11 @@
 #import "UIImagePickerController+Edit.h"
 #import "UIImagePickerController+Block.h"
 
-@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate>
+@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
-       UIImagePickerController *mediaPicker;
-        NSString *base64Image;
+    UIImagePickerController *mediaPicker;
+    NSString *base64Image;
+    NSDictionary *user;
 }
 @end
 
@@ -39,6 +40,7 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self adjustFonts];
+    [self setUserInfo];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -71,6 +73,54 @@
     
 }
 
+-(void)setUserInfo{
+    
+    
+    user = [BPUser sharedBP].user;
+    
+    [self downloadUserImageIfNecessery];
+    
+    
+}
+
+-(void)downloadUserImageIfNecessery{
+    
+    NSString *imagePath = [user objectForKey:@"image_path"];
+    
+    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+        self.profileImage.image = img;
+    }
+    else{
+        
+        dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+        dispatch_async(q, ^{
+            /* Fetch the image from the server... */
+            NSString *imagePath = [user objectForKey:@"image_path"];
+            imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+            UIImage *img = [[UIImage alloc] initWithData:data];
+            
+            [self saveImage:img withFileName:imageName inDirectory:localPath];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                /* This is the main thread again, where we set the tableView's image to
+                 be what we just fetched. */
+                self.profileImage.image = img;
+            });
+        });
+    }
+}
+
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -79,24 +129,28 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     
-    if (textField.tag == 3) {
-        //show Location Popup
-        [self.scrollV endEditing:YES];
-        [self performSegueWithIdentifier:@"chooseCity" sender:self];
-        return NO;
-    }
     
-    [self.scrollV setContentOffset:CGPointMake(0, textField.frame.origin.y - 140) animated:YES];
+    if (textField.superview.frame.origin.y > 200) {
+         [self.scrollV setContentOffset:CGPointMake(0, textField.superview.frame.origin.y - 200) animated:YES];
+    }
     
     return YES;
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
+
+    if (textField.returnKeyType == UIReturnKeyNext) {
+        int nextTag = textField.tag +1;
+        UITextField *txtF = (id)[self.scrollV viewWithTag:nextTag];
+        [txtF becomeFirstResponder];
+    }
+    else{
+        [textField resignFirstResponder];
+    }
     
-    [textField resignFirstResponder];
+     [self.scrollV setContentOffset:CGPointZero animated:YES];
     
-    int nextTag = textField.tag +1;
-    UITextField *txtF = (id)[self.scrollV viewWithTag:nextTag];
+    
 
 //    if (textField.tag >= 4) {
 //          [self.scrollV setContentOffset:CGPointMake(0, self.scrollV.contentSize.height - self.scrollV.frame.size.height) animated:YES];
@@ -211,8 +265,24 @@
                 break;
             case 1://search web
             {
+                DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
+                picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
+                picker.allowsEditing = YES;
+                picker.delegate = self;
+                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
+                picker.enablePhotoDownload = YES;
+                picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
                 
-            }
+                picker.finalizationBlock = ^(DZNPhotoPickerController *picker, NSDictionary *info) {
+                    [self userPickedPhoto:info];
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                };
+                
+                picker.cancellationBlock = ^(DZNPhotoPickerController *picker) {
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                };
+                
+                [self presentViewController:picker animated:YES completion:NO];            }
                 break;
             default:
                 break;
@@ -328,6 +398,27 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
+
+-(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
+    
+    if ([imageName rangeOfString:@"n/a"].location != NSNotFound) {
+        return;
+    }
+    
+    if ([[imageName lowercaseString] rangeOfString:@".png"].location != NSNotFound) {
+        [UIImagePNGRepresentation(image) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@",imageName);
+        
+    } else {
+        
+        BOOL write = [UIImageJPEGRepresentation(image, 1) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+        NSLog(@"Saved Image: %@ - %d",directoryPath,write);
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
 
 
 @end

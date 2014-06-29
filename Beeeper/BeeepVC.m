@@ -630,7 +630,7 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
-    if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+    if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera                                  ]) {
         
         mediaPicker = [[UIImagePickerController alloc] init];
         [mediaPicker setDelegate:self];
@@ -695,7 +695,24 @@
                 break;
             case 1://search web
             {
+                DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
+                picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
+                picker.allowsEditing = YES;
+                picker.delegate = self;
+                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
+                picker.enablePhotoDownload = YES;
+                picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
                 
+                picker.finalizationBlock = ^(DZNPhotoPickerController *picker, NSDictionary *info) {
+                    [self userPickedPhoto:info];
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                };
+                
+                picker.cancellationBlock = ^(DZNPhotoPickerController *picker) {
+                    [picker dismissViewControllerAnimated:YES completion:NULL];
+                };
+                
+                [self presentViewController:picker animated:YES completion:NO];
             }
                 break;
             default:

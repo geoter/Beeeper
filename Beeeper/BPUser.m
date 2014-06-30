@@ -184,11 +184,12 @@ static BPUser *thisWebServices = nil;
        @try {
            id object = [settings objectForKey:key];
            [request addPostValue:object forKey:key];
-           [postValues addObject:[NSDictionary dictionaryWithObject:object forKey:key]];
+           [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:object] forKey:key]];
   
         }
         @catch (NSException *exception) {
-            NSLog(@"error-> %@",key);
+            [request addPostValue:@"0" forKey:key];
+            [postValues addObject:[NSDictionary dictionaryWithObject:@"0" forKey:key]];
         }
         @finally {
             

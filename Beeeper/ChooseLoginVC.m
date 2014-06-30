@@ -14,6 +14,7 @@
 
 @interface ChooseLoginVC ()<UITextFieldDelegate,MONActivityIndicatorViewDelegate>
 {
+    UITapGestureRecognizer *tapG;
 }
 @end
 
@@ -31,7 +32,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+   
+
 	[self adjustFonts];
 }
 
@@ -46,6 +48,16 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 
+}
+
+-(void)hideKeyboard:(UITapGestureRecognizer *)g{
+    for (UIView *v in self.scrollV.subviews) {
+        if ([v isKindOfClass:[UITextField class]]) {
+            UITextField *txtF = (id)v;
+            [txtF resignFirstResponder];
+        }
+    }
+   [self.scrollV setContentOffset:CGPointZero animated:YES];
 }
 
 
@@ -74,15 +86,21 @@
 #pragma mark - UITextfield
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField{
+
+    tapG = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard:)];
+    [self.scrollV addGestureRecognizer:tapG];
     [self.scrollV setContentOffset:CGPointMake(0, IS_IPHONE_5?50:90) animated:YES];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    
     if (textField.tag == 5) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:6];
         [txtF becomeFirstResponder];
     }
     else{
+        [self.scrollV removeGestureRecognizer:tapG];
         [textField resignFirstResponder];
         [self.scrollV setContentOffset:CGPointZero animated:YES];
         

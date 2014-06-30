@@ -16,6 +16,8 @@ typedef void(^completed)(BOOL,id);
 @property (copy) completed searchKeyword_completed;
 @property (copy) completed searchEvent_completed;
 @property (copy) completed getEvent_completed;
+@property (copy) completed get_All_Events_completed;
+@property (copy) completed get_All_Local_Events_completed;
 
 @property (copy) void(^like_beeep_completed)(BOOL,id);
 
@@ -33,5 +35,6 @@ typedef void(^completed)(BOOL,id);
 
 -(void)searchKeyword:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
 -(void)searchEvent:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
-
+-(void)getAllEventsWithCompletionBlock:(completed)compbloc;
+-(void)getAllLocalEvents:(completed)compbloc;
 @end

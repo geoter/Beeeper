@@ -25,6 +25,7 @@
     BOOL hasLastName;
     BOOL hasSex;
     BOOL hasPassword;
+   UITapGestureRecognizer *tapG;
 }
 @end
 
@@ -51,6 +52,17 @@
     
     [locManager startTracking];
 }
+
+-(void)hideKeyboard:(UITapGestureRecognizer *)g{
+    for (UIView *v in self.scrollV.subviews) {
+        if ([v isKindOfClass:[UITextField class]]) {
+            UITextField *txtF = (id)v;
+            [txtF resignFirstResponder];
+        }
+    }
+    [self.scrollV setContentOffset:CGPointZero animated:YES];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -277,15 +289,22 @@
 #pragma mark - UITextfield
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField{
+    
+    tapG = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard:)];
+    [self.scrollV addGestureRecognizer:tapG];
+    
     [self.scrollV setContentOffset:CGPointMake(0, IS_IPHONE_5?0:30) animated:YES];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
+   
+    
     if (textField.tag != 3) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:textField.tag+1];
         [txtF becomeFirstResponder];
     }
     else{
+        [self.scrollV removeGestureRecognizer:tapG];
         [textField resignFirstResponder];
         [self.scrollV setContentOffset:CGPointZero animated:YES];
     }

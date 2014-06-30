@@ -40,6 +40,13 @@
 		5E51B89519609A7000DB2E6F /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89219609A7000DB2E6F /* SVGeocoder.m */; };
 		5E51B89619609A7000DB2E6F /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89419609A7000DB2E6F /* SVPlacemark.m */; };
 		5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B89719609A9200DB2E6F /* MapKit.framework */; };
+		5E51B89B19613FD300DB2E6F /* BorderTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89A19613FD300DB2E6F /* BorderTextField.m */; };
+		5E51B8C219614C7900DB2E6F /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8B719614C7900DB2E6F /* GKCropBorderView.m */; };
+		5E51B8C319614C7900DB2E6F /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8B919614C7900DB2E6F /* GKImageCropOverlayView.m */; };
+		5E51B8C419614C7900DB2E6F /* GKImageCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8BB19614C7900DB2E6F /* GKImageCropView.m */; };
+		5E51B8C519614C7900DB2E6F /* GKImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8BD19614C7900DB2E6F /* GKImageCropViewController.m */; };
+		5E51B8C619614C7900DB2E6F /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8BF19614C7900DB2E6F /* GKImagePicker.m */; };
+		5E51B8C719614C7900DB2E6F /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8C119614C7900DB2E6F /* GKResizeableCropOverlayView.m */; };
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
@@ -552,6 +559,20 @@
 		5E51B89319609A7000DB2E6F /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
 		5E51B89419609A7000DB2E6F /* SVPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPlacemark.m; sourceTree = "<group>"; };
 		5E51B89719609A9200DB2E6F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		5E51B89919613FD300DB2E6F /* BorderTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BorderTextField.h; sourceTree = "<group>"; };
+		5E51B89A19613FD300DB2E6F /* BorderTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BorderTextField.m; sourceTree = "<group>"; };
+		5E51B8B619614C7900DB2E6F /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKCropBorderView.h; sourceTree = "<group>"; };
+		5E51B8B719614C7900DB2E6F /* GKCropBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKCropBorderView.m; sourceTree = "<group>"; };
+		5E51B8B819614C7900DB2E6F /* GKImageCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropOverlayView.h; sourceTree = "<group>"; };
+		5E51B8B919614C7900DB2E6F /* GKImageCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropOverlayView.m; sourceTree = "<group>"; };
+		5E51B8BA19614C7900DB2E6F /* GKImageCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropView.h; sourceTree = "<group>"; };
+		5E51B8BB19614C7900DB2E6F /* GKImageCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropView.m; sourceTree = "<group>"; };
+		5E51B8BC19614C7900DB2E6F /* GKImageCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropViewController.h; sourceTree = "<group>"; };
+		5E51B8BD19614C7900DB2E6F /* GKImageCropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImageCropViewController.m; sourceTree = "<group>"; };
+		5E51B8BE19614C7900DB2E6F /* GKImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImagePicker.h; sourceTree = "<group>"; };
+		5E51B8BF19614C7900DB2E6F /* GKImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImagePicker.m; sourceTree = "<group>"; };
+		5E51B8C019614C7900DB2E6F /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
+		5E51B8C119614C7900DB2E6F /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
 		5E9D2DA2192DDCF700A765C9 /* BPCreate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPCreate.h; sourceTree = "<group>"; };
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPCreate.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
@@ -1267,6 +1288,25 @@
 			path = "../../../Frameworks/SVGeocoder-master/SVGeocoder";
 			sourceTree = "<group>";
 		};
+		5E51B8B519614C7900DB2E6F /* GKClasses */ = {
+			isa = PBXGroup;
+			children = (
+				5E51B8B619614C7900DB2E6F /* GKCropBorderView.h */,
+				5E51B8B719614C7900DB2E6F /* GKCropBorderView.m */,
+				5E51B8B819614C7900DB2E6F /* GKImageCropOverlayView.h */,
+				5E51B8B919614C7900DB2E6F /* GKImageCropOverlayView.m */,
+				5E51B8BA19614C7900DB2E6F /* GKImageCropView.h */,
+				5E51B8BB19614C7900DB2E6F /* GKImageCropView.m */,
+				5E51B8BC19614C7900DB2E6F /* GKImageCropViewController.h */,
+				5E51B8BD19614C7900DB2E6F /* GKImageCropViewController.m */,
+				5E51B8BE19614C7900DB2E6F /* GKImagePicker.h */,
+				5E51B8BF19614C7900DB2E6F /* GKImagePicker.m */,
+				5E51B8C019614C7900DB2E6F /* GKResizeableCropOverlayView.h */,
+				5E51B8C119614C7900DB2E6F /* GKResizeableCropOverlayView.m */,
+			);
+			path = GKClasses;
+			sourceTree = "<group>";
+		};
 		5EA7FAEB19594E860033C061 /* Suggest R */ = {
 			isa = PBXGroup;
 			children = (
@@ -1701,6 +1741,7 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5E51B8B519614C7900DB2E6F /* GKClasses */,
 				5E51B89019609A7000DB2E6F /* SVGeocoder */,
 				5E51B8691960759400DB2E6F /* SPGooglePlacesAutocomplete */,
 				962E3D8F194C613600A0DD87 /* GHContextMenuView */,
@@ -2250,6 +2291,8 @@
 				5EA7FAE919575E080033C061 /* MissingFields.m */,
 				CE5D974218DC93560093056B /* ForgotPassVC.h */,
 				CE5D974318DC93560093056B /* ForgotPassVC.m */,
+				5E51B89919613FD300DB2E6F /* BorderTextField.h */,
+				5E51B89A19613FD300DB2E6F /* BorderTextField.m */,
 			);
 			name = "Welcome-Login-Signup";
 			sourceTree = "<group>";
@@ -2854,10 +2897,12 @@
 				5EE13A221951604F00540C04 /* What_Suggest.m in Sources */,
 				CE02EC3318EC64D800B5674C /* AFURLConnectionOperation.m in Sources */,
 				CE02EC3118EC64D800B5674C /* AFNetworkActivityIndicatorManager.m in Sources */,
+				5E51B8C719614C7900DB2E6F /* GKResizeableCropOverlayView.m in Sources */,
 				CE25F9FD18B6761300D8B858 /* TSMessageView.m in Sources */,
 				5E51B89619609A7000DB2E6F /* SVPlacemark.m in Sources */,
 				CE02EBCB18EC624D00B5674C /* DZNPhotoServiceFactory.m in Sources */,
 				CEEE3F0118CA10D900665C21 /* SignUp_Email_VC.m in Sources */,
+				5E51B89B19613FD300DB2E6F /* BorderTextField.m in Sources */,
 				969591E51948A8A900526AA0 /* BeeepFfo.m in Sources */,
 				9637AA5B18C0E7B800651BD8 /* ASIInputStream.m in Sources */,
 				96A9D70518F4743C007CD1FF /* BPTimeline.m in Sources */,
@@ -2890,6 +2935,7 @@
 				CE02EBFA18EC63CC00B5674C /* UIImage+WebP.m in Sources */,
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
 				CEA64F4918B3A71400B7ECF5 /* LoginVC.m in Sources */,
+				5E51B8C419614C7900DB2E6F /* GKImageCropView.m in Sources */,
 				CE02EC3218EC64D800B5674C /* AFPropertyListRequestOperation.m in Sources */,
 				5E51B8761960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m in Sources */,
 				9637AA3A18C0E73200651BD8 /* Base64Transcoder.c in Sources */,
@@ -2898,6 +2944,7 @@
 				CE36F7AC18D2033000A9E917 /* CommentsVC.m in Sources */,
 				5E09B5741923BFC800AF5DE8 /* BPUsersLookup.m in Sources */,
 				CE35D1F118D0AFF80086C26A /* FindFriendsVC.m in Sources */,
+				5E51B8C619614C7900DB2E6F /* GKImagePicker.m in Sources */,
 				96D08A1219463AA3005F8419 /* MONActivityIndicatorView.m in Sources */,
 				CE02EBC718EC624D00B5674C /* DZNPhotoPickerControllerConstants.m in Sources */,
 				9673321B194863AE00A58217 /* BeeepActivity.m in Sources */,
@@ -2905,6 +2952,7 @@
 				CE02EBFB18EC63CC00B5674C /* UIImageView+WebCache.m in Sources */,
 				5E09B55F192216D800AF5DE8 /* EventLocation.m in Sources */,
 				5EE13A261951AE7200540C04 /* Beeep_Object.m in Sources */,
+				5E51B8C219614C7900DB2E6F /* GKCropBorderView.m in Sources */,
 				969591E71948A8A900526AA0 /* EventDetailsFfo.m in Sources */,
 				CE7CFAF118B79BD70044C9AC /* DAKeyboardControl.m in Sources */,
 				CE02EBF918EC63CC00B5674C /* UIImage+MultiFormat.m in Sources */,
@@ -2912,6 +2960,7 @@
 				CE080C9B18B661C8007E2066 /* ProfilePrefsVC.m in Sources */,
 				CE19FEAE195AF841006FCBC0 /* BeeepedBy.m in Sources */,
 				9640E505192AB5AE008675BA /* NSString+MD5.m in Sources */,
+				5E51B8C519614C7900DB2E6F /* GKImageCropViewController.m in Sources */,
 				CEA64F5818B3DC4900B7ECF5 /* ChooseCityVC.m in Sources */,
 				CE02EBF218EC63CC00B5674C /* SDWebImageDecoder.m in Sources */,
 				CE02EBCC18EC624D00B5674C /* UIImagePickerController+Block.m in Sources */,
@@ -2932,6 +2981,7 @@
 				CE7CFADC18B797310044C9AC /* HPGrowingTextView.m in Sources */,
 				CE02EC2F18EC64D800B5674C /* AFImageRequestOperation.m in Sources */,
 				CE02EC2E18EC64D800B5674C /* AFHTTPRequestOperation.m in Sources */,
+				5E51B8C319614C7900DB2E6F /* GKImageCropOverlayView.m in Sources */,
 				CEA64F5518B3C48A00B7ECF5 /* SignUpVC.m in Sources */,
 				CE02EBC618EC624D00B5674C /* DZNPhotoPickerController.m in Sources */,
 				5E09B5781924B05800AF5DE8 /* BPHomeFeed.m in Sources */,

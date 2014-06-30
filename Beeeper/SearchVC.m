@@ -698,8 +698,18 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
-            [rowsToReload removeAllObjects];
+            
+            @try {
+                [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+
         });
         
     }

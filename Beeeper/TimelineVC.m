@@ -259,6 +259,7 @@
         /* Fetch the image from the server... */
         NSString *imagePath = [user objectForKey:@"image_path"];
         imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        imagePath = [imagePath stringByReplacingOccurrencesOfString:@"//" withString:@"http://"];
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
         UIImage *img = [[UIImage alloc] initWithData:data];
         

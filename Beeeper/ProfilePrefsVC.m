@@ -12,10 +12,11 @@
 #import "UIImagePickerController+Block.h"
 #import "SPGooglePlacesAutocompleteDemoViewController.h"
 #import "SPGooglePlacesAutocomplete.h"
+#import "GKImagePicker.h"
 
-@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
+@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate,GKImagePickerDelegate>
 {
-    UIImagePickerController *mediaPicker;
+    GKImagePicker *mediaPicker;
     NSString *base64Image;
     NSDictionary *user;
     NSString *gender;
@@ -80,13 +81,13 @@
         [dict setObject:[user objectForKey:@"city"] forKey:@"city"];
         [dict setObject:[user objectForKey:@"state"] forKey:@"state"];
         [dict setObject:[user objectForKey:@"country"] forKey:@"country"];
-        [dict setObject:[user objectForKey:@"lat"] forKey:@"lat"];
-        [dict setObject:[user objectForKey:@"long"] forKey:@"long"];
+       // [dict setObject:[user objectForKey:@"lat"] forKey:@"lat"];
+       // [dict setObject:[user objectForKey:@"long"] forKey:@"long"];
 
     }
     
     if (base64Image != nil) {
-       // [dict setObject:base64Image forKey:@"base64_image"];
+        [dict setObject:base64Image forKey:@"base64_image"];
     }
     
     [[BPUser sharedBP]setUserSettings:dict WithCompletionBlock:^(BOOL completed,NSArray *objs){
@@ -130,6 +131,12 @@
 -(void)placeSelected:(NSNotification *)notif{
     self.place = [notif.userInfo objectForKey:@"LocationObject"];
    self.locationTxtF.text = self.place.formattedAddress;
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+    
+    self.navigationItem.rightBarButtonItem = rightButton;
+
 }
 
 -(void)adjustFonts{
@@ -150,20 +157,28 @@
 
 -(void)setUserInfo{
     
+    @try {
+        user = [BPUser sharedBP].user;
+        
+        [self downloadUserImageIfNecessery];
+        
+        self.firstNameTextfield.text = [[user objectForKey:@"name"] capitalizedString];
+        self.lastNameTextfield.text = [[user objectForKey:@"lastname"] capitalizedString];
+        self.usernameTextfield.text = [[user objectForKey:@"username"] capitalizedString];
+        self.segmentControl.selectedSegmentIndex = ([user objectForKey:@"sex"] != nil && ![[user objectForKey:@"sex"] isKindOfClass:[NSNull class]] && [[user objectForKey:@"sex"] intValue] == 1)?0:1;
+        
+        NSString *city = [[user objectForKey:@"city"] capitalizedString];
+        NSString *country = [[user objectForKey:@"country"] capitalizedString];
+        
+        self.locationTxtF.text = [NSString stringWithFormat:@"%@, %@",city,country];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+    @finally {
+        
+    }
     
-    user = [BPUser sharedBP].user;
-    
-    [self downloadUserImageIfNecessery];
-    
-    self.firstNameTextfield.text = [[user objectForKey:@"name"] capitalizedString];
-    self.lastNameTextfield.text = [[user objectForKey:@"lastname"] capitalizedString];
-    self.usernameTextfield.text = [[user objectForKey:@"username"] capitalizedString];
-    self.segmentControl.selectedSegmentIndex = ([[user objectForKey:@"sex"] intValue] == 1)?0:1;
-    
-    NSString *city = [[user objectForKey:@"city"] capitalizedString];
-    NSString *country = [[user objectForKey:@"country"] capitalizedString];
-    
-    self.locationTxtF.text = [NSString stringWithFormat:@"%@, %@",city,country];
     
 }
 
@@ -220,8 +235,8 @@
         return NO;
     }
     
-    if (textField.superview.frame.origin.y > 200) {
-         [self.scrollV setContentOffset:CGPointMake(0, textField.superview.frame.origin.y - 200) animated:YES];
+    if (textField.superview.frame.origin.y > 150) {
+        [self.scrollV setContentOffset:CGPointMake(0, textField.superview.frame.origin.y - ((IS_IPHONE_5)?200:130)) animated:YES];
     }
     
     
@@ -327,26 +342,27 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
+    
+    mediaPicker = [[GKImagePicker alloc] init];
+    mediaPicker.cropSize = CGSizeMake(310, 241);
+    mediaPicker.delegate = self;
+    
     if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        
-        mediaPicker = [[UIImagePickerController alloc] init];
-        [mediaPicker setDelegate:self];
-        mediaPicker.allowsEditing = YES;
         
         
         switch (buttonIndex) {
             case 0: //Take Photo
             {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                    mediaPicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-                    [self presentViewController:mediaPicker animated:YES completion:NULL];
+                    mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+                    [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
                 }
             }
                 break;
             case 1: //Choose existing
             {
-                mediaPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                [self presentViewController:mediaPicker animated:YES completion:NULL];
+                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
             }
                 break;
                         default:
@@ -354,16 +370,12 @@
         }
     }
     else{
-        mediaPicker = [[UIImagePickerController alloc] init];
-        [mediaPicker setDelegate:self];
-        mediaPicker.allowsEditing = YES;
-        
         
         switch (buttonIndex) {
             case 0: //Choose existing
             {
-                mediaPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                [self presentViewController:mediaPicker animated:YES completion:NULL];
+                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
             }
                 break;
                       default:
@@ -461,35 +473,34 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 }
 
 - (NSString*)base64forData:(NSData*)theData {
-    
+
     const uint8_t* input = (const uint8_t*)[theData bytes];
-    NSInteger length = [theData length];
-    
+	NSInteger length = [theData length];
+	
     static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    
+	
     NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
     uint8_t* output = (uint8_t*)data.mutableBytes;
-    
-    NSInteger i;
+	
+	NSInteger i,i2;
     for (i=0; i < length; i += 3) {
         NSInteger value = 0;
-        NSInteger j;
-        for (j = i; j < (i + 3); j++) {
+		for (i2=0; i2<3; i2++) {
             value <<= 8;
-            
-            if (j < length) {
-                value |= (0xFF & input[j]);
+            if (i+i2 < length) {
+                value |= (0xFF & input[i+i2]);
             }
         }
-        
+		
         NSInteger theIndex = (i / 3) * 4;
         output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
         output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
         output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
         output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
     }
-    
+	
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+
 }
 
 -(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
@@ -510,6 +521,70 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+# pragma mark -
+# pragma mark GKImagePicker Delegate Methods
+
+- (void)imagePicker:(GKImagePicker *)imagePicker pickedImage:(UIImage *)image{
+    
+    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
+    chosenPhotoBtn.hidden = NO;
+    
+    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
+    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+    //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
+    //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    base64Image = [self base64forData:imageData];
+    
+    if (base64Image != nil) {
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                        style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+        
+        self.navigationItem.rightBarButtonItem = rightButton;
+    }
+    
+    changedImage = YES;
+    self.profileImage.image = image;
+    [self hideImagePicker];
+
+}
+
+- (void)hideImagePicker{
+    [mediaPicker.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+}
+
+# pragma mark -
+# pragma mark UIImagePickerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo{
+    
+    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
+    chosenPhotoBtn.hidden = NO;
+    
+    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
+    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+    //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
+    //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    base64Image = [self base64forData:imageData];
+    
+    if (base64Image != nil) {
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                        style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+        
+        self.navigationItem.rightBarButtonItem = rightButton;
+    }
+    
+    changedImage = YES;
+    self.profileImage.image = image;
+    [self hideImagePicker];
+    
 }
 
 

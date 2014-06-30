@@ -16,12 +16,13 @@
 #import "LocationManager.h"
 #import <AddressBook/AddressBook.h>
 #import "BPCreate.h"
+#import "GKImagePicker.h"
 
 @class BorderTextField;
-@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate>
+@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate,GKImagePickerDelegate>
 {
     NSMutableDictionary *values;
-    UIImagePickerController *mediaPicker;
+    GKImagePicker *mediaPicker;
     MyDateTimePicker *datePicker;
     UITextField *activeTXTF;
     LocationManager *locManager;
@@ -536,8 +537,12 @@
         }
         
         [values setObject:keywords forKey:@"keywords"];
-        [values setObject:base64Image forKey:@"base64_image"];
-        [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"url"];
+      
+        if (base64Image) {
+            [values setObject:base64Image forKey:@"base64_image"];
+        }
+
+        [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"src"];
         
         BOOL proceed = [self areAllDataAvailable:values];
         
@@ -595,8 +600,61 @@
 }
 
 -(BOOL)areAllDataAvailable:(NSDictionary *)values{
-    if(values.allKeys.count < 14)    return NO;
+    
+    BOOL mpike = NO;
+    
+    if (![values objectForKey:@"title"]) {
+        [self invalidTextfield:self.titleTxtF];
+        mpike = YES;
+    }
+    else{
+        [self validTextfield:self.titleTxtF];
+    }
+    if (![values objectForKey:@"timestamp"]) {
+        [self invalidTextfield:self.dateTxtF];
+        mpike = YES;
+    }
+    else{
+        [self validTextfield:self.dateTxtF];
+    }
+
+    if (![values objectForKey:@"station"]) {
+        [self invalidTextfield:self.venueTxtF];
+        mpike = YES;
+    }
+    else{
+        [self validTextfield:self.venueTxtF];
+    }
+    
+    if(values.allKeys.count < 14 || mpike)    return NO;
     else return YES;
+}
+
+-(void)invalidTextfield:(BorderTextField *)txtF{
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {    txtF.layer.borderColor = [UIColor redColor].CGColor;
+         txtF.layer.borderWidth = 1.0f;
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+}
+
+-(void)validTextfield:(BorderTextField *)txtF{
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {    txtF.layer.borderColor = [UIColor clearColor].CGColor;
+         txtF.layer.borderWidth = 0.0f;
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+
 }
 
 - (IBAction)imageSelected:(UIButton *)sender {
@@ -630,26 +688,25 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
+    mediaPicker = [[GKImagePicker alloc] init];
+    mediaPicker.cropSize = CGSizeMake(310, 241);
+    mediaPicker.delegate = self;
+    
     if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera                                  ]) {
-        
-        mediaPicker = [[UIImagePickerController alloc] init];
-        [mediaPicker setDelegate:self];
-        mediaPicker.allowsEditing = YES;
-        
         
         switch (buttonIndex) {
             case 0: //Take Photo
             {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                    mediaPicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-                    [self presentViewController:mediaPicker animated:YES completion:NULL];
+                    mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+                    [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
                 }
             }
                 break;
             case 1: //Choose existing
             {
-                mediaPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                [self presentViewController:mediaPicker animated:YES completion:NULL];
+                 mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                 [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
             }
                 break;
             case 2://search web
@@ -681,16 +738,12 @@
         }
     }
     else{
-        mediaPicker = [[UIImagePickerController alloc] init];
-        [mediaPicker setDelegate:self];
-        mediaPicker.allowsEditing = YES;
-        
         
         switch (buttonIndex) {
             case 0: //Choose existing
             {
-                mediaPicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-                [self presentViewController:mediaPicker animated:YES completion:NULL];
+                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
             }
                 break;
             case 1://search web
@@ -801,34 +854,86 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (NSString*)base64forData:(NSData*)theData {
     
     const uint8_t* input = (const uint8_t*)[theData bytes];
-    NSInteger length = [theData length];
-    
+	NSInteger length = [theData length];
+	
     static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    
+	
     NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
     uint8_t* output = (uint8_t*)data.mutableBytes;
-    
-    NSInteger i;
+	
+	NSInteger i,i2;
     for (i=0; i < length; i += 3) {
         NSInteger value = 0;
-        NSInteger j;
-        for (j = i; j < (i + 3); j++) {
+		for (i2=0; i2<3; i2++) {
             value <<= 8;
-            
-            if (j < length) {
-                value |= (0xFF & input[j]);
+            if (i+i2 < length) {
+                value |= (0xFF & input[i+i2]);
             }
         }
-        
+		
         NSInteger theIndex = (i / 3) * 4;
         output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
         output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
         output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
         output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
     }
-    
+	
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+
 }
+
+# pragma mark -
+# pragma mark GKImagePicker Delegate Methods
+
+- (void)imagePicker:(GKImagePicker *)imagePicker pickedImage:(UIImage *)image{
+
+    NSLog(@"%@",NSStringFromCGSize(image.size));
+    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
+    chosenPhotoBtn.hidden = NO;
+    [chosenPhotoBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
+ 
+    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
+    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+    //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
+    //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    base64Image = [self base64forData:imageData];
+    
+    [self imageSelected:chosenPhotoBtn];
+    
+    [self hideImagePicker];
+}
+
+- (void)hideImagePicker{
+    [mediaPicker.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+}
+
+# pragma mark -
+# pragma mark UIImagePickerDelegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo{
+  
+    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
+    [chosenPhotoBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    chosenPhotoBtn.hidden = NO;
+    
+    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
+    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+    //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
+    //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    base64Image = [self base64forData:imageData];
+    
+    [self imageSelected:chosenPhotoBtn];
+    
+    [self hideImagePicker];
+
+}
+
 
 
 

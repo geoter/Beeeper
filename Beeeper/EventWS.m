@@ -511,6 +511,132 @@ static EventWS *thisWebServices = nil;
     self.searchEvent_completed(NO,nil);
 }
 
+-(void)getAllEventsWithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
+    
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.get_All_Events_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(getAllEventsFinished:)];
+    
+    [request setDidFailSelector:@selector(getAllEventsFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)getAllEventsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+    
+    NSArray *eventsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *events = [NSMutableArray array];
+    
+    if (eventsArray.count ==0) {
+        self.get_All_Events_completed(NO,nil);
+        return;
+    }
+    
+    for (NSDictionary *event in eventsArray) {
+        Event_Search *e = [Event_Search modelObjectWithDictionary:event];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+        [operationQueue addOperation:invocationOperation];
+        
+        [events addObject:e];
+    }
+    
+    
+    self.get_All_Events_completed(YES,events);
+}
+
+-(void)getAllEventsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    self.get_All_Events_completed(NO,nil);
+}
+
+
+-(void)getAllLocalEvents:(completed)compbloc{
+    
+    self.get_All_Local_Events_completed = compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    NSArray *eventsArray = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *events = [NSMutableArray array];
+    
+    if (eventsArray.count ==0) {
+        self.get_All_Local_Events_completed(NO,nil);
+        return;
+    }
+    
+    for (NSDictionary *event in eventsArray) {
+        Event_Search *e = [Event_Search modelObjectWithDictionary:event];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+        [operationQueue addOperation:invocationOperation];
+        
+        [events addObject:e];
+    }
+    
+    
+    self.get_All_Local_Events_completed(YES,events);
+
+}
+
 -(void)downloadImage:(Event_Search *)tml{
     
     NSString *extension = [[tml.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];

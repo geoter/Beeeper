@@ -18,4 +18,9 @@
 - (IBAction)showBeeepLikes:(id)sender;
 - (IBAction)showBeeepComments:(id)sender;
 - (IBAction)showReBeeeps:(id)sender;
+
+- (IBAction)showEventLikes:(id)sender;
+- (IBAction)showEventComments:(id)sender;
+- (IBAction)showEventBeepers:(id)sender;
+
 @end

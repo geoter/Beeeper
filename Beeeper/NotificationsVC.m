@@ -375,8 +375,18 @@
     
     if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-            [rowsToReload removeAllObjects];
+            
+            @try {
+                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+
         });
         
     }

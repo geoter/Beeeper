@@ -35,7 +35,7 @@
     [refreshControl addTarget:self action:@selector(getActivity) forControlEvents:UIControlEventValueChanged];
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
-    
+    self.tableV.decelerationRate = 0.6;
     pendingImagesDict = [NSMutableDictionary dictionary];
     
     [self getActivity];
@@ -155,49 +155,60 @@
 
 
 -(void)groupActivitiesByMonth{
-    
-    activitiesPerSection = [NSMutableDictionary dictionary];
-    
-    NSMutableArray *sectionsArr = [NSMutableArray array];
-    
-    [activities sortUsingComparator:^NSComparisonResult(Activity_Object *obj1, Activity_Object *obj2) {
-        if (obj1.when > obj2.when) {
-            return (NSComparisonResult)NSOrderedAscending;
+   
+    @try {
+        activitiesPerSection = [NSMutableDictionary dictionary];
+        
+        NSMutableArray *sectionsArr = [NSMutableArray array];
+        
+        [activities sortUsingComparator:^NSComparisonResult(Activity_Object *obj1, Activity_Object *obj2) {
+            if (obj1.when > obj2.when) {
+                return (NSComparisonResult)NSOrderedAscending;
+            }
+            
+            if (obj1.when < obj2.when) {
+                return (NSComparisonResult)NSOrderedDescending;
+            }
+            return (NSComparisonResult)NSOrderedSame;
+        }];
+        
+        for (Activity_Object *activity in activities) {
+            //EVENT DATE
+            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            [formatter setLocale:usLocale];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
+            NSString *dateStr = [formatter stringFromDate:date];
+            NSArray *components = [dateStr componentsSeparatedByString:@","];
+            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+            
+            NSString *month = [day_month objectAtIndex:1];
+            NSString *daynumber = [day_month objectAtIndex:2];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+            
+            NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+            
+            if ([sectionsArr indexOfObject:signature] == NSNotFound) {
+                [sectionsArr addObject:signature];
+            }
         }
         
-        if (obj1.when < obj2.when) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-    
-    for (Activity_Object *activity in activities) {
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        sections = sectionsArr;
         
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
-        
-        if ([sectionsArr indexOfObject:signature] == NSNotFound) {
-            [sectionsArr addObject:signature];
-        }
+        [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+
     }
-    
-    sections = sectionsArr;
-    
-    [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES ];
+    @catch (NSException *exception) {
+        NSLog(@"ESKASE");
+    }
+    @finally {
+
+    }
+   
 }
 
 - (void)didReceiveMemoryWarning

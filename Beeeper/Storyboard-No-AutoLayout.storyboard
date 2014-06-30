@@ -1028,7 +1028,7 @@
                                             <action selector="close:" destination="LzD-Xv-k3n" eventType="touchUpInside" id="UR8-H4-pLF"/>
                                         </connections>
                                     </button>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="BEEEP TIME" minimumFontSize="17" id="nY1-6X-mqV">
+                                    <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="BEEEP TIME" minimumFontSize="17" id="nY1-6X-mqV">
                                         <rect key="frame" x="19" y="166" width="262" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1077,7 +1077,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="SHARE TO" minimumFontSize="17" id="2zB-97-AgG">
+                                    <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="SHARE TO" minimumFontSize="17" id="2zB-97-AgG">
                                         <rect key="frame" x="20" y="251" width="262" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1182,7 +1182,9 @@
                     <connections>
                         <outlet property="beeepTimeButton" destination="kjN-Mq-rZL" id="Ckp-Zl-dpS"/>
                         <outlet property="fbShareV" destination="k6b-FO-ySb" id="U8R-1o-ecq"/>
+                        <outlet property="fbSwitch" destination="k9u-CF-xrg" id="IhG-fh-udl"/>
                         <outlet property="scrollV" destination="7B2-FY-gh3" id="A6M-wR-xE0"/>
+                        <outlet property="twitterSwitch" destination="YqG-Ki-d6L" id="un2-5D-dvr"/>
                         <outlet property="twitterV" destination="KFA-LV-RSJ" id="2fa-hK-frz"/>
                     </connections>
                 </viewController>

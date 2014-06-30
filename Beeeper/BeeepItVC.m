@@ -16,11 +16,15 @@
 #import "SuggestBeeepVC.h"
 #import "Activity_Object.h"
 #import "Event_Search.h"
+#import <Twitter/Twitter.h>
+#import <Social/Social.h>
 
 @interface BeeepItVC ()
 {
     NSString *beepTime;
     int beepTimeSeconds;
+    NSMutableString *shareText;
+    NSString *imageURL;
 }
 @end
 
@@ -62,6 +66,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    shareText = [[NSMutableString alloc]init];
     
     @try {
         
@@ -120,6 +126,8 @@
             Event_Search *eventS = tml;
             title = [eventS.title capitalizedString];
         }
+        
+        [shareText appendString:title];
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -181,6 +189,8 @@
         dayNumberLbl.text = daynumber;
         monthLbl.text = [month uppercaseString];
         
+        [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+        
         NSString *venue;
         NSString *jsonString;
         
@@ -225,6 +235,7 @@
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
             venue = loc.venueStation;
+            [shareText appendFormat:@"@%@",venue];
         }
         
         for (UIView *v in self.scrollV.subviews) {
@@ -248,6 +259,28 @@
             }
         }
         
+        NSString *imageUrl;
+        if ([tml isKindOfClass:[Timeline_Object class]]) {
+            imageUrl = t.event.imageUrl;
+        }
+        else if ([tml isKindOfClass:[Event_Show_Object class]]){
+            Event_Show_Object *activity = tml;
+            imageUrl = activity.eventInfo.imageUrl;;
+            
+        }
+        else if([tml isKindOfClass:[Suggestion_Object class]]){
+            imageUrl = sgo.what.imageUrl;
+        }
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            Event_Search *eventS = tml;
+            imageUrl = eventS.imageUrl;
+        }
+        
+        else{
+            imageUrl = ffo.eventFfo.eventDetailsFfo.imageUrl;
+        }
+        imageURL = imageUrl;
+
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -325,6 +358,7 @@
     UIView *superV = sender.superview;
     
     if (sender.on) {
+        [self sendFacebook];
         UIImageView *icon = (id)[superV viewWithTag:1];
         [icon setImage:[UIImage imageNamed:@"facebook_icon"]];
         UILabel *lbl = (id)[superV viewWithTag:2];
@@ -343,6 +377,7 @@
     UIView *superV = sender.superview;
     
     if (sender.on) {
+        [self sendTwitter];
         UIImageView *icon = (id)[superV viewWithTag:1];
         [icon setImage:[UIImage imageNamed:@"twitter_icon"]];
         UILabel *lbl = (id)[superV viewWithTag:2];
@@ -354,6 +389,104 @@
         UILabel *lbl = (id)[superV viewWithTag:2];
         lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
     }
+}
+
+-(void)sendFacebook{
+    
+    NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imageURL MD5],extension];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+    
+    [composeController setInitialText:shareText];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        
+       UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+       [composeController addImage:img];
+    }
+
+    [composeController addURL: [NSURL URLWithString:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultCancelled) {
+            
+            UIImageView *icon = (id)[self.fbSwitch.superview viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
+            UILabel *lbl = (id)[self.fbSwitch.superview viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+            self.fbSwitch.on = NO;
+            
+        } else
+            
+        {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+    
+    
+}
+
+-(void)sendTwitter {
+    
+    NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imageURL MD5],extension];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    
+    [composeController setInitialText:shareText];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        
+        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+        [composeController addImage:img];
+    }
+    
+    [composeController addURL: [NSURL URLWithString:@"http://www.beeeper.com"]];
+
+    
+    [self presentViewController:composeController
+                       animated:YES completion:nil];
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultCancelled) {
+            UIImageView *icon = (id)[self.twitterSwitch.superview viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
+            UILabel *lbl = (id)[self.twitterSwitch.superview viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+            self.twitterSwitch.on = NO;
+
+            
+        } else
+            
+        {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+        }
+        
+        //   [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+    
 }
 
 - (IBAction)hideFromFollowersPressed:(UIButton *)sender {

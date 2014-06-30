@@ -16,6 +16,8 @@
 @property (nonatomic,strong) NSDictionary *values;
 @property (weak, nonatomic) IBOutlet UIButton *beeepTimeButton;
 @property (nonatomic,strong) id tml;
+@property (weak, nonatomic) IBOutlet UISwitch *fbSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *twitterSwitch;
 
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;

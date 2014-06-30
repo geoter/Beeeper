@@ -977,18 +977,6 @@ static BPUser *thisWebServices = nil;
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
     
-//    NSMutableArray *array = [NSMutableArray array];
-//    [array addObject:[NSString stringWithFormat:@"limit=30"]];
-//    [array addObject:[NSString stringWithFormat:@"page=1"]];
-//    
-//    for (NSString *str in array) {
-//        [URLwithVars appendFormat:@"%@",str];
-//        
-//        if (str != array.lastObject) {
-//            [URLwithVars appendString:@"&"];
-//        }
-//    }
-    
     
    // NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     

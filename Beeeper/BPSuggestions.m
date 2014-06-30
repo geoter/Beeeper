@@ -29,7 +29,7 @@ static BPSuggestions *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         page = 0;
-        pageLimit = 40;
+        pageLimit = 10;
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
         requestFailedCounter = 0;

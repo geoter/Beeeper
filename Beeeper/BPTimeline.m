@@ -13,7 +13,7 @@ static BPTimeline *thisWebServices = nil;
 
 @interface BPTimeline ()
 {
-    int page;
+    int timeline_page;
     int pageLimit;
     NSString *userID;
     NSString *order;
@@ -28,8 +28,8 @@ static BPTimeline *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        page = 0;
-        pageLimit = 50;
+        timeline_page = 0;
+        pageLimit = 10;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
@@ -64,7 +64,66 @@ static BPTimeline *thisWebServices = nil;
 
 }
 
+-(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+ 
+    order = (option == Upcoming)?@"ASC":@"DESC";
+    userID = user_id;
+    
+    timeline_page++;
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",timeline_page]];
+    [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(timelineFinished:)];
+    
+    [request setDidFailSelector:@selector(timelineFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
 -(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+    
+    timeline_page = 0;
     
     order = (option == Upcoming)?@"ASC":@"DESC";
     userID = user_id;
@@ -79,7 +138,7 @@ static BPTimeline *thisWebServices = nil;
     [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"order=%@",order]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",timeline_page]];
     [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
     
     for (NSString *str in array) {
@@ -138,6 +197,7 @@ static BPTimeline *thisWebServices = nil;
    
     if (responseString == nil) {
         compbloc(NO,nil);
+        timeline_page--;
     }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -160,6 +220,7 @@ static BPTimeline *thisWebServices = nil;
     NSString *responseString = [request responseString];
     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
 
+    timeline_page--;
     self.completed(NO,nil);
 }
 

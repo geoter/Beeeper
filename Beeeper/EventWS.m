@@ -27,7 +27,7 @@ static EventWS *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        pageLimit = 20;
+        pageLimit = 10;
         page = 0;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];

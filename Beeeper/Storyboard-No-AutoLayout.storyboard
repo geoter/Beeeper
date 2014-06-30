@@ -3203,6 +3203,21 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="1" green="1" blue="0.36753402219999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="LoadMoreCell" rowHeight="51" id="OOP-u7-nnV">
+                                        <rect key="frame" x="0.0" y="456" width="320" height="51"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="OOP-u7-nnV" id="K6Y-oC-6kd">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="white" id="PK0-b5-jeD">
+                                                    <rect key="frame" x="150" y="8" width="20" height="20"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </activityIndicatorView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="1" green="0.46758375483633441" blue="0.42715956321392401" alpha="0.0" colorSpace="calibratedRGB"/>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="Rt9-l3-4WD" id="Hm9-qx-QUE"/>

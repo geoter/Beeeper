@@ -17,6 +17,7 @@ typedef void(^completed)(BOOL,id);
 
 -(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
 -(void)getLocalTimelineUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
+-(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
 
 @property (copy) void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;

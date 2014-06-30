@@ -17,6 +17,7 @@ typedef void(^completed)(BOOL,id);
 -(void)getBeeepInfoFromActivity:(Activity_Object *)actObj WithCompletionBlock:(completed)compbloc;
 -(void)getEvent:(Activity_Object *)activityObj WithCompletionBlock:(completed)compbloc;
 -(void)getLocalActivityWithCompletionBlock:(completed)compbloc;
+-(void)nextPageActivityWithCompletionBlock:(completed)compbloc;
 
 @property (copy) completed beeep_completed;
 @property (copy) completed event_completed;

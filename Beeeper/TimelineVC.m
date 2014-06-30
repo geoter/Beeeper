@@ -25,13 +25,45 @@
     BOOL isFollowing;
     int segmentIndex;
     BOOL loading;
+    BOOL loadNextPage;
 }
 @end
 
 @implementation TimelineVC
 @synthesize mode,user;
 
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPTimeline sharedBP]nextPageTimelineForUserID:[self.user objectForKey:@"id"] option:segmentIndex WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+        [refreshControl endRefreshing];
+        
+        if (completed) {
+            
+            loading = NO;
+            
+            [beeeps addObjectsFromArray:objs];
+            
+            if (objs.count != 0) {
+                loadNextPage = YES;
+            }
+            
+            [self.tableV reloadData];
+            
+        }
+    }];
+}
+
 -(void)getTimeline:(NSString *)userID option:(int)option{
+    
+    loadNextPage = YES;
     
     if (option != 0 && option != 1) {
         option = segmentIndex;
@@ -72,7 +104,7 @@
             
             loading = NO;
             
-            [self.tableV reloadData];
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
         }
     }];
@@ -440,10 +472,23 @@
     return beeeps.count+1;
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier;
     UITableViewCell *cell;
+    
+    if (loadNextPage && indexPath.row == beeeps.count) {
+        
+        CellIdentifier = @"LoadMoreCell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        [self nextPage];
+        
+        return cell;
+        
+    }
     
     if (indexPath.row == 0) {
 
@@ -588,6 +633,9 @@
     
     if (indexPath.row == 0) {
         return 40;
+    }
+    else if (indexPath.row == beeeps.count && loadNextPage){
+        return 51;
     }
     else{
         return 113;

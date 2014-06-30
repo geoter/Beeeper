@@ -916,8 +916,17 @@
     NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [pendingImagesDict removeObjectForKey:imageName];
+       
+        @try {
+            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+            [pendingImagesDict removeObjectForKey:imageName];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
     });
     
 }

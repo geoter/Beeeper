@@ -30,7 +30,7 @@ static BPHomeFeed *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         page = 0;
-        pageLimit = 50;
+        pageLimit = 10;
         order = @"DATE";
         length = 0;
         operationQueue = [[NSOperationQueue alloc] init];

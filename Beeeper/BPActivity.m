@@ -29,7 +29,7 @@ static BPActivity *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         page = 0;
-        pageLimit = 20;
+        pageLimit = 10;
         operationQueue = [[NSOperationQueue alloc] init];
         requestFailedCounter = 0;
     }
@@ -62,7 +62,58 @@ static BPActivity *thisWebServices = nil;
 
 }
 
+-(void)nextPageActivityWithCompletionBlock:(completed)compbloc{
+    
+    page ++;
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.activity_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(activityFinished:)];
+    
+    [request setDidFailSelector:@selector(activityFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
 -(void)getActivityWithCompletionBlock:(completed)compbloc{
+    
+    page = 0;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show?"];

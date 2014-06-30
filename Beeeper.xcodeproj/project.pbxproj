@@ -22,6 +22,24 @@
 		5E09B58719261AFF00AF5DE8 /* EventWS.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E09B58619261AFF00AF5DE8 /* EventWS.m */; };
 		5E1D5645192F316000962F94 /* MyDateTimePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1D5644192F316000962F94 /* MyDateTimePicker.m */; };
 		5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1D5646192F616300962F94 /* AddressBook.framework */; };
+		5E51B8731960759400DB2E6F /* SPGooglePlacesAutocompletePlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B86C1960759400DB2E6F /* SPGooglePlacesAutocompletePlace.m */; };
+		5E51B8741960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B86E1960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.m */; };
+		5E51B8751960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8701960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.m */; };
+		5E51B8761960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8721960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m */; };
+		5E51B87A1960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8781960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.m */; };
+		5E51B87B1960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51B8791960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.xib */; };
+		5E51B87F1960980300DB2E6F /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5E51B87E1960980300DB2E6F /* GoogleMaps.bundle */; };
+		5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8801960981C00DB2E6F /* CoreData.framework */; };
+		5E51B8831960982300DB2E6F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8821960982300DB2E6F /* CoreLocation.framework */; };
+		5E51B8851960982A00DB2E6F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8841960982A00DB2E6F /* CoreText.framework */; };
+		5E51B8871960983700DB2E6F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8861960983700DB2E6F /* ImageIO.framework */; };
+		5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8881960984600DB2E6F /* libc++.dylib */; };
+		5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B88A1960985400DB2E6F /* libicucore.dylib */; };
+		5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B88C1960986500DB2E6F /* OpenGLES.framework */; };
+		5E51B88F196098DC00DB2E6F /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B88E196098DC00DB2E6F /* GoogleMaps.framework */; };
+		5E51B89519609A7000DB2E6F /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89219609A7000DB2E6F /* SVGeocoder.m */; };
+		5E51B89619609A7000DB2E6F /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89419609A7000DB2E6F /* SVPlacemark.m */; };
+		5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B89719609A9200DB2E6F /* MapKit.framework */; };
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
@@ -508,6 +526,32 @@
 		5E1D5644192F316000962F94 /* MyDateTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDateTimePicker.m; sourceTree = "<group>"; };
 		5E1D5646192F616300962F94 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		5E1D5648192F616900962F94 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		5E51B86A1960759400DB2E6F /* SPGooglePlacesAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesAutocomplete.h; sourceTree = "<group>"; };
+		5E51B86B1960759400DB2E6F /* SPGooglePlacesAutocompletePlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesAutocompletePlace.h; sourceTree = "<group>"; };
+		5E51B86C1960759400DB2E6F /* SPGooglePlacesAutocompletePlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesAutocompletePlace.m; sourceTree = "<group>"; };
+		5E51B86D1960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesAutocompleteQuery.h; sourceTree = "<group>"; };
+		5E51B86E1960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesAutocompleteQuery.m; sourceTree = "<group>"; };
+		5E51B86F1960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesAutocompleteUtilities.h; sourceTree = "<group>"; };
+		5E51B8701960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesAutocompleteUtilities.m; sourceTree = "<group>"; };
+		5E51B8711960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesPlaceDetailQuery.h; sourceTree = "<group>"; };
+		5E51B8721960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesPlaceDetailQuery.m; sourceTree = "<group>"; };
+		5E51B8771960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesAutocompleteDemoViewController.h; sourceTree = "<group>"; };
+		5E51B8781960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesAutocompleteDemoViewController.m; sourceTree = "<group>"; };
+		5E51B8791960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SPGooglePlacesAutocompleteDemoViewController.xib; sourceTree = "<group>"; };
+		5E51B87E1960980300DB2E6F /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = "../../Frameworks/GoogleMaps-iOS-1.8.1/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle"; sourceTree = "<group>"; };
+		5E51B8801960981C00DB2E6F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5E51B8821960982300DB2E6F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		5E51B8841960982A00DB2E6F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5E51B8861960983700DB2E6F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		5E51B8881960984600DB2E6F /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		5E51B88A1960985400DB2E6F /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		5E51B88C1960986500DB2E6F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		5E51B88E196098DC00DB2E6F /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		5E51B89119609A7000DB2E6F /* SVGeocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGeocoder.h; sourceTree = "<group>"; };
+		5E51B89219609A7000DB2E6F /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
+		5E51B89319609A7000DB2E6F /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
+		5E51B89419609A7000DB2E6F /* SVPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPlacemark.m; sourceTree = "<group>"; };
+		5E51B89719609A9200DB2E6F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		5E9D2DA2192DDCF700A765C9 /* BPCreate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPCreate.h; sourceTree = "<group>"; };
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPCreate.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
@@ -1108,17 +1152,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */,
+				5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */,
 				9638F88218D47E8B007394AC /* QuartzCore.framework in Frameworks */,
+				5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */,
 				9637AA6018C0E8E000651BD8 /* libz.dylib in Frameworks */,
+				5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */,
+				5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */,
+				5E51B8871960983700DB2E6F /* ImageIO.framework in Frameworks */,
 				9638F87818D47E4B007394AC /* GLKit.framework in Frameworks */,
+				5E51B8851960982A00DB2E6F /* CoreText.framework in Frameworks */,
+				5E51B8831960982300DB2E6F /* CoreLocation.framework in Frameworks */,
+				5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */,
 				9638F87018D47E33007394AC /* AVFoundation.framework in Frameworks */,
+				5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */,
 				9637AA6618C0E90C00651BD8 /* CFNetwork.framework in Frameworks */,
 				9637AA6418C0E90400651BD8 /* SystemConfiguration.framework in Frameworks */,
 				9637AA6218C0E8F900651BD8 /* MobileCoreServices.framework in Frameworks */,
 				CEA64F4D18B3B7EA00B7ECF5 /* Accounts.framework in Frameworks */,
 				9640E502192A4A67008675BA /* FacebookSDK.framework in Frameworks */,
 				CEA64F4B18B3AFB800B7ECF5 /* Social.framework in Frameworks */,
+				5E51B88F196098DC00DB2E6F /* GoogleMaps.framework in Frameworks */,
 				CEA64F1318B39F4F00B7ECF5 /* CoreGraphics.framework in Frameworks */,
 				CEA64F1518B39F4F00B7ECF5 /* UIKit.framework in Frameworks */,
 				CEA64F1118B39F4F00B7ECF5 /* Foundation.framework in Frameworks */,
@@ -1180,6 +1233,38 @@
 				5E09B58619261AFF00AF5DE8 /* EventWS.m */,
 			);
 			name = Event;
+			sourceTree = "<group>";
+		};
+		5E51B8691960759400DB2E6F /* SPGooglePlacesAutocomplete */ = {
+			isa = PBXGroup;
+			children = (
+				5E51B8771960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.h */,
+				5E51B8781960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.m */,
+				5E51B8791960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.xib */,
+				5E51B86A1960759400DB2E6F /* SPGooglePlacesAutocomplete.h */,
+				5E51B86B1960759400DB2E6F /* SPGooglePlacesAutocompletePlace.h */,
+				5E51B86C1960759400DB2E6F /* SPGooglePlacesAutocompletePlace.m */,
+				5E51B86D1960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.h */,
+				5E51B86E1960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.m */,
+				5E51B86F1960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.h */,
+				5E51B8701960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.m */,
+				5E51B8711960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.h */,
+				5E51B8721960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m */,
+			);
+			name = SPGooglePlacesAutocomplete;
+			path = "../../../Frameworks/SPGooglePlacesAutocomplete-master/SPGooglePlacesAutocomplete";
+			sourceTree = "<group>";
+		};
+		5E51B89019609A7000DB2E6F /* SVGeocoder */ = {
+			isa = PBXGroup;
+			children = (
+				5E51B89119609A7000DB2E6F /* SVGeocoder.h */,
+				5E51B89219609A7000DB2E6F /* SVGeocoder.m */,
+				5E51B89319609A7000DB2E6F /* SVPlacemark.h */,
+				5E51B89419609A7000DB2E6F /* SVPlacemark.m */,
+			);
+			name = SVGeocoder;
+			path = "../../../Frameworks/SVGeocoder-master/SVGeocoder";
 			sourceTree = "<group>";
 		};
 		5EA7FAEB19594E860033C061 /* Suggest R */ = {
@@ -1616,6 +1701,8 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5E51B89019609A7000DB2E6F /* SVGeocoder */,
+				5E51B8691960759400DB2E6F /* SPGooglePlacesAutocomplete */,
 				962E3D8F194C613600A0DD87 /* GHContextMenuView */,
 				96D08A1019463AA3005F8419 /* MONActivityIndicatorView.h */,
 				96D08A1119463AA3005F8419 /* MONActivityIndicatorView.m */,
@@ -2039,6 +2126,16 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5E51B89719609A9200DB2E6F /* MapKit.framework */,
+				5E51B88E196098DC00DB2E6F /* GoogleMaps.framework */,
+				5E51B88C1960986500DB2E6F /* OpenGLES.framework */,
+				5E51B88A1960985400DB2E6F /* libicucore.dylib */,
+				5E51B8881960984600DB2E6F /* libc++.dylib */,
+				5E51B8861960983700DB2E6F /* ImageIO.framework */,
+				5E51B8841960982A00DB2E6F /* CoreText.framework */,
+				5E51B8821960982300DB2E6F /* CoreLocation.framework */,
+				5E51B8801960981C00DB2E6F /* CoreData.framework */,
+				5E51B87E1960980300DB2E6F /* GoogleMaps.bundle */,
 				5E1D5648192F616900962F94 /* AddressBookUI.framework */,
 				5E1D5646192F616300962F94 /* AddressBook.framework */,
 				9640E501192A4A67008675BA /* FacebookSDK.framework */,
@@ -2628,6 +2725,7 @@
 				CE2BA446193E23C3004D63C3 /* empty-selection0cirlce-suggestit.png in Resources */,
 				CE0C881318D0BD2300BA548F /* option_3@2x.png in Resources */,
 				CE35D1ED18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard in Resources */,
+				5E51B87F1960980300DB2E6F /* GoogleMaps.bundle in Resources */,
 				CE529C5D18DB0FEE00900EB6 /* picture_5@2x.png in Resources */,
 				CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */,
 				CE042A0A1938D4B700E3167A /* selection0cirlce-suggestit@2x.png in Resources */,
@@ -2656,6 +2754,7 @@
 				CEF263BE18DC7F080047510D /* event_image@2x.png in Resources */,
 				CEA113241952ED77003C8D7B /* Like_popup_unpressed.png in Resources */,
 				CE529C6118DB1BD900900EB6 /* add_photo@2x.png in Resources */,
+				5E51B87B1960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.xib in Resources */,
 				CE529C5B18DB0FEE00900EB6 /* picture_4@2x.png in Resources */,
 				9615E8D2192DB7870099B3E0 /* suggestionsBtn@2x.png in Resources */,
 				CE25F9F318B6761300D8B858 /* NotificationBackgroundSuccessIcon.png in Resources */,
@@ -2756,6 +2855,7 @@
 				CE02EC3318EC64D800B5674C /* AFURLConnectionOperation.m in Sources */,
 				CE02EC3118EC64D800B5674C /* AFNetworkActivityIndicatorManager.m in Sources */,
 				CE25F9FD18B6761300D8B858 /* TSMessageView.m in Sources */,
+				5E51B89619609A7000DB2E6F /* SVPlacemark.m in Sources */,
 				CE02EBCB18EC624D00B5674C /* DZNPhotoServiceFactory.m in Sources */,
 				CEEE3F0118CA10D900665C21 /* SignUp_Email_VC.m in Sources */,
 				969591E51948A8A900526AA0 /* BeeepFfo.m in Sources */,
@@ -2768,6 +2868,7 @@
 				CE29EDFA18D9BA3E0001EC43 /* HomeFeedVC.m in Sources */,
 				969591E81948A8A900526AA0 /* EventFfo.m in Sources */,
 				9637AA5818C0E7B800651BD8 /* ASIDataCompressor.m in Sources */,
+				5E51B87A1960773800DB2E6F /* SPGooglePlacesAutocompleteDemoViewController.m in Sources */,
 				CEA64F2118B39F4F00B7ECF5 /* AppDelegate.m in Sources */,
 				CEEE3ED418C9E26900665C21 /* WelcomeVC.m in Sources */,
 				CE02EB9918EC24CC00B5674C /* CHTCollectionViewWaterfallHeader.m in Sources */,
@@ -2790,6 +2891,7 @@
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
 				CEA64F4918B3A71400B7ECF5 /* LoginVC.m in Sources */,
 				CE02EC3218EC64D800B5674C /* AFPropertyListRequestOperation.m in Sources */,
+				5E51B8761960759400DB2E6F /* SPGooglePlacesPlaceDetailQuery.m in Sources */,
 				9637AA3A18C0E73200651BD8 /* Base64Transcoder.c in Sources */,
 				CEF263AA18DC68390047510D /* BeeepTimeVC.m in Sources */,
 				CE25F9C618B66A1100D8B858 /* SettingsVC.m in Sources */,
@@ -2841,6 +2943,7 @@
 				CE02EB9C18EC258500B5674C /* CHTCollectionViewWaterfallFooter.m in Sources */,
 				CE02EB9318EC1D2000B5674C /* CHTCollectionViewWaterfallLayout.m in Sources */,
 				9637AA5C18C0E7B800651BD8 /* ASINetworkQueue.m in Sources */,
+				5E51B8751960759400DB2E6F /* SPGooglePlacesAutocompleteUtilities.m in Sources */,
 				CE080C9818B65CF2007E2066 /* NotificationsPrefsVC.m in Sources */,
 				CEA64F1D18B39F4F00B7ECF5 /* main.m in Sources */,
 				CE02EC3418EC64D800B5674C /* AFXMLRequestOperation.m in Sources */,
@@ -2862,8 +2965,11 @@
 				CE36F7B518D2035F00A9E917 /* PHFComposeBarView.m in Sources */,
 				CE02EB9618EC1F5400B5674C /* EventCellWaterfall.m in Sources */,
 				CEF2638418DC46680047510D /* SVProgressHUD.m in Sources */,
+				5E51B8741960759400DB2E6F /* SPGooglePlacesAutocompleteQuery.m in Sources */,
+				5E51B89519609A7000DB2E6F /* SVGeocoder.m in Sources */,
 				CEA64F5218B3C2A000B7ECF5 /* LoginEmailVC.m in Sources */,
 				CE7CFAD118B78A590044C9AC /* FollowListVC.m in Sources */,
+				5E51B8731960759400DB2E6F /* SPGooglePlacesAutocompletePlace.m in Sources */,
 				967331EF194735F100A58217 /* BPActivity.m in Sources */,
 				CE02EBF418EC63CC00B5674C /* SDWebImageDownloaderOperation.m in Sources */,
 				9673323A1948865500A58217 /* Event_Show_Object.m in Sources */,
@@ -3044,7 +3150,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3067,7 +3173,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

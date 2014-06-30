@@ -237,6 +237,8 @@
     NSString *jsonString;
     
     self.titleLabel.text = [suggestion.what.title capitalizedString];
+    self.titleLabel.center = CGPointMake(self.titleLabel.superview.center.x, self.titleLabel.center.y);
+    
     jsonString = suggestion.what.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
@@ -244,6 +246,13 @@
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
     venueLbl.text = loc.venueStation;
+    
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+20);
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -410,6 +419,14 @@
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
     venueLbl.text = loc.venueStation;
     
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
     UILabel *beeepsLbl = (id)[headerV viewWithTag:-5];
@@ -574,6 +591,15 @@
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
     venueLbl.text = loc.venueStation;
     
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
+    
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
     UILabel *beeepsLbl = (id)[headerV viewWithTag:-5];
@@ -736,6 +762,15 @@
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
         venueLbl.text = loc.venueStation;
+        
+        CGPoint oldCenter = self.titleLabel.center;
+        [self.titleLabel sizeToFit];
+        self.titleLabel.center = oldCenter;
+        [venueLbl sizeToFit];
+        venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+        self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     }
     
     UIView *headerV = self.tableV.tableHeaderView;

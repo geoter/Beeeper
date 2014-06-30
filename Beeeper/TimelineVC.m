@@ -197,7 +197,7 @@
     
     [self createMenuButtons:NO];
 
-    self.venueLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+    self.userCityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     self.usernameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
 }
 
@@ -229,6 +229,10 @@
     else{
         [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
+        self.userCityLabel.text = [user objectForKey:@"city"];
+        [self.userCityLabel sizeToFit];
+        self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
+        self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
     }
 }
 
@@ -520,6 +524,10 @@
         monthLbl.text = [month uppercaseString];
         monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
+       float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
+        
+        NSString *alert_time = [self dailyLanguage:timestamp];
+        reminderLabel.text = alert_time;
         //Venue name
         
         UILabel *venueLbl = (id)[cell viewWithTag:5];
@@ -898,6 +906,35 @@
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
 
+-(NSString*)dailyLanguage:(NSTimeInterval) overdueTimeInterval{
+    
+    if (overdueTimeInterval<0)
+        overdueTimeInterval*=-1;
+    
+    NSInteger minutes = round(overdueTimeInterval)/60;
+    NSInteger hours   = minutes/60;
+    NSInteger days    = hours/24;
+    NSInteger months  = days/30;
+    NSInteger years   = months/12;
+    
+    NSString* overdueMessage;
+    
+    if (years>0){
+        overdueMessage = [NSString stringWithFormat:@"%dy", (years)];
+    }else if (months>0){
+        overdueMessage = [NSString stringWithFormat:@"%dmo", (months)];
+    }else if (days>0){
+        overdueMessage = [NSString stringWithFormat:@"%dd", (days)];
+    }else if (hours>0){
+        overdueMessage = [NSString stringWithFormat:@"%dh", (hours)];
+    }else if (minutes>0){
+        overdueMessage = [NSString stringWithFormat:@"%dm", (minutes)];
+    }else if (overdueTimeInterval<60){
+        overdueMessage = [NSString stringWithFormat:@"On Time"];
+    }
+    
+    return overdueMessage;
+}
 
 
 @end

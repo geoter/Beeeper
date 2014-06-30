@@ -472,7 +472,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No venue available" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KKx-mL-ZJX">
-                                            <rect key="frame" x="102" y="326" width="188" height="20"/>
+                                            <rect key="frame" x="102" y="328" width="188" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.67450982329999998" green="0.74901962280000001" blue="0.80000007149999997" alpha="1" colorSpace="deviceRGB"/>
@@ -619,6 +619,7 @@
                         <outlet property="tableV" destination="7RR-wq-ge2" id="0oL-C4-DNh"/>
                         <outlet property="tagsLabel" destination="78K-iZ-fIS" id="cFM-TY-KqP"/>
                         <outlet property="titleLabel" destination="zQS-KN-Vaf" id="d5D-SF-6Ux"/>
+                        <outlet property="venueIcon" destination="4yY-w1-1GQ" id="etD-rF-ShK"/>
                         <outlet property="venueLabel" destination="KKx-mL-ZJX" id="U5P-DC-m3s"/>
                         <outlet property="websiteLabel" destination="H1z-ov-REC" id="E0s-s9-AKl"/>
                     </connections>
@@ -2075,7 +2076,7 @@
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
                                                     </button>
-                                                    <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="George" textAlignment="right" minimumFontSize="17" id="iEg-rY-Ybo">
+                                                    <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" id="iEg-rY-Ybo">
                                                         <rect key="frame" x="94" y="0.0" width="187" height="40"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
@@ -2106,7 +2107,7 @@
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
                                                     </button>
-                                                    <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Termentzoglou" textAlignment="right" minimumFontSize="17" id="DZ3-3e-RkB">
+                                                    <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" id="DZ3-3e-RkB">
                                                         <rect key="frame" x="94" y="0.0" width="187" height="40"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
@@ -2137,7 +2138,7 @@
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
                                                     </button>
-                                                    <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="termitis" textAlignment="right" minimumFontSize="17" id="TDJ-gB-jj7">
+                                                    <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" id="TDJ-gB-jj7">
                                                         <rect key="frame" x="94" y="0.0" width="187" height="40"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
@@ -2168,7 +2169,7 @@
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
                                                     </button>
-                                                    <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Athens,Greece" textAlignment="right" minimumFontSize="17" id="j12-BX-ayb">
+                                                    <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" id="j12-BX-ayb">
                                                         <rect key="frame" x="94" y="0.0" width="187" height="40"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
@@ -2207,6 +2208,9 @@
                                                             <segment title="Female"/>
                                                         </segments>
                                                         <color key="tintColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <connections>
+                                                            <action selector="changedGender:" destination="s2Z-gV-BIl" eventType="valueChanged" id="DhF-sJ-OX5"/>
+                                                        </connections>
                                                     </segmentedControl>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -2237,8 +2241,13 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
+                        <outlet property="firstNameTextfield" destination="iEg-rY-Ybo" id="YFk-rq-WQC"/>
+                        <outlet property="lastNameTextfield" destination="DZ3-3e-RkB" id="Pt9-7h-X0M"/>
+                        <outlet property="locationTxtF" destination="j12-BX-ayb" id="1Rd-fL-kEq"/>
                         <outlet property="profileImage" destination="CTu-0G-2Ng" id="h8e-VN-9T2"/>
                         <outlet property="scrollV" destination="KT6-UC-zTB" id="5DN-Bn-qvh"/>
+                        <outlet property="segmentControl" destination="2fg-uV-4yA" id="Ofx-F3-67S"/>
+                        <outlet property="usernameTextfield" destination="TDJ-gB-jj7" id="nKH-GC-a2Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qmk-Jm-Vli" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2778,7 +2787,7 @@
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Spiros G. Halivelakis" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oQf-ce-99s">
                                                     <rect key="frame" x="16" y="320" width="288" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="20"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -2834,13 +2843,13 @@
                                                     </connections>
                                                 </button>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="pin-black.png" id="2zE-lG-FdC">
-                                                    <rect key="frame" x="121" y="349" width="7" height="11"/>
+                                                    <rect key="frame" x="121" y="350" width="7" height="11"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Athens, GR" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="S8y-sB-67d">
-                                                    <rect key="frame" x="134" y="345" width="88" height="21"/>
+                                                    <rect key="frame" x="134" y="348" width="153" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                                     <color key="textColor" red="0.3294117647" green="0.35294117650000001" blue="0.40000000000000002" alpha="1" colorSpace="deviceRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -3027,9 +3036,9 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </imageView>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-6" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2h" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="stv-ma-j46">
-                                                            <rect key="frame" x="252" y="80" width="28" height="22"/>
+                                                            <rect key="frame" x="207" y="80" width="73" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
                                                             <color key="textColor" red="0.97254901959999995" green="0.87843137250000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -3069,13 +3078,14 @@
                         <outlet property="followersButton" destination="190-Lr-dH9" id="5yY-Gy-3mD"/>
                         <outlet property="followingButton" destination="MpW-EM-iR4" id="krQ-EW-jrR"/>
                         <outlet property="importIcon" destination="YX1-5N-nBu" id="PV3-vA-coS"/>
+                        <outlet property="pinIcon" destination="2zE-lG-FdC" id="mR1-TA-YKH"/>
                         <outlet property="profileImage" destination="FWz-V2-aUA" id="CI2-IF-RaR"/>
                         <outlet property="profileImageBorderV" destination="NMV-RM-1dD" id="XdG-GP-Kkl"/>
                         <outlet property="settingsIcon" destination="S5d-gQ-BPi" id="pLl-TY-NrU"/>
                         <outlet property="tableV" destination="AM0-DC-lTp" id="Px2-M7-kYt"/>
                         <outlet property="topV" destination="8TV-rn-oLs" id="xTq-Gi-VZv"/>
+                        <outlet property="userCityLabel" destination="S8y-sB-67d" id="xA7-Bf-cHW"/>
                         <outlet property="usernameLabel" destination="oQf-ce-99s" id="jg9-S0-RhB"/>
-                        <outlet property="venueLabel" destination="S8y-sB-67d" id="n5w-sb-Pdm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FsN-QD-TJp" userLabel="First Responder" sceneMemberID="firstResponder"/>

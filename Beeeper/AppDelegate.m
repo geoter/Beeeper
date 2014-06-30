@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 @implementation AppDelegate
 
@@ -22,6 +23,7 @@
 
     [FBSettings setDefaultAppID: @"253616411483666"];
 
+    [GMSServices provideAPIKey:@"AIzaSyDw_2s-d_HFlsMnFyz-30czOPBckYdrtE8"];
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
 //    

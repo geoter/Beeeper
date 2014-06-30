@@ -23,7 +23,9 @@
 @property (weak, nonatomic) IBOutlet UIView *topV;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
-@property (weak, nonatomic) IBOutlet UILabel *venueLabel;
+@property (weak, nonatomic) IBOutlet UILabel *userCityLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *pinIcon;
+
 @property (weak, nonatomic) IBOutlet UIButton *settingsIcon;
 @property (weak, nonatomic) IBOutlet UIButton *importIcon;
 

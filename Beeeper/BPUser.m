@@ -166,49 +166,67 @@ static BPUser *thisWebServices = nil;
 
 -(void)setUserSettings:(NSDictionary *)settings WithCompletionBlock:(completed)compbloc{
     
-    NSURL *requestURL = [NSURL URLWithString:@"https://resources.beeeper.com/signup/"];
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/update_profile"];
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
     
-    [request addRequestHeader:@"Referer" value:@"t6FDJXLQnVKLYgZjaqhuiDIO7CxeK+bF+FGJorEBRB55k89C+qAxIyUKYrnTlLLJeEkHYwakO/ZYWVi8m370wQ=="];
     
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
-    self.completed = compbloc;
+    self.setUserSettingsCompleted = compbloc;
     
     [request setRequestMethod:@"POST"];
     
-    [request addPostValue:[settings objectForKey:@"username"] forKey:@"email"];
+    NSMutableArray *postValues = [NSMutableArray array];
     
-    [request addPostValue:[settings objectForKey:@"name"] forKey:@"name"];
+    for (NSString *key in settings.allKeys) {
+       @try {
+           id object = [settings objectForKey:key];
+           [request addPostValue:object forKey:key];
+           [postValues addObject:[NSDictionary dictionaryWithObject:object forKey:key]];
+  
+        }
+        @catch (NSException *exception) {
+            NSLog(@"error-> %@",key);
+        }
+        @finally {
+            
+        }
+    }
     
-    [request addPostValue:[settings objectForKey:@"lastname"] forKey:@"lastname"];
-    
-    [request addPostValue:[settings objectForKey:@"timezone"] forKey:@"timezone"];
-    
-    [request addPostValue:[settings objectForKey:@"password"] forKey:@"password"];
-    
-    [request addPostValue:[settings objectForKey:@"city"] forKey:@"city"];
-    
-    [request addPostValue:[settings objectForKey:@"state"] forKey:@"state"];
-    
-    [request addPostValue:[settings objectForKey:@"country"] forKey:@"country"];
-    
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
     
     [request setTimeOutSeconds:7.0];
     
     [request setDelegate:self];
     
-    [[request UserInfo]setObject:settings forKey:@"info"];
+    [request setDidFinishSelector:@selector(setUserSettingsFinished:)];
     
-    [request setDidFinishSelector:@selector(signupFinished:)];
-    
-    [request setDidFailSelector:@selector(signupFailed:)];
+    [request setDidFailSelector:@selector(setUserSettingsFailed:)];
     
     [request startAsynchronous];
 
+}
+
+-(void)setUserSettingsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    if ([responseString isEqualToString:@"[success]"]) {
+        self.setUserSettingsCompleted(YES,nil);
+        [self updateUser];
+    }
+    else{
+        self.setUserSettingsCompleted(NO,nil);
+    }
+
+}
+
+-(void)setUserSettingsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.setUserSettingsCompleted(NO,nil);
 }
 
 #pragma mark - FB Signup
@@ -326,6 +344,47 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - USER
 
+-(void)updateUser{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/verify"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:requestURL.absoluteString values:nil]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(updateUserReceived:)];
+    
+    [request setDidFailSelector:@selector(updateUserFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)updateUserReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [[request responseString] stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    
+    if (responseString.length == 0) {
+               return;
+    }
+    responseString = [[responseString substringToIndex:[responseString length]-1]substringFromIndex:1];
+    
+    NSArray *responseArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    self.user = responseArray.firstObject;
+
+}
+
+-(void)updateUserFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+}
+
+
 -(void)getUser{
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/verify"];
@@ -366,6 +425,7 @@ static BPUser *thisWebServices = nil;
 
 -(void)userInfoFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    self.completed(NO,nil);
 }
 
 #pragma mark - Follow

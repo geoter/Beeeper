@@ -10,13 +10,19 @@
 #import "DZNPhotoPickerController.h"
 #import "UIImagePickerController+Edit.h"
 #import "UIImagePickerController+Block.h"
+#import "SPGooglePlacesAutocompleteDemoViewController.h"
+#import "SPGooglePlacesAutocomplete.h"
 
 @interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     UIImagePickerController *mediaPicker;
     NSString *base64Image;
     NSDictionary *user;
+    NSString *gender;
+    BOOL changedImage;
+
 }
+@property(nonatomic,strong) SVPlacemark *place;
 @end
 
 @implementation ProfilePrefsVC
@@ -35,12 +41,75 @@
     [super viewDidLayoutSubviews];
 }
 
+-(void)savePressed{
+    
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
+    [dict setObject:self.usernameTextfield.text forKey:@"username"];
+    [dict setObject:self.firstNameTextfield.text forKey:@"name"];
+    [dict setObject:self.lastNameTextfield.text forKey:@"lastname"];
+    [dict setObject:[user objectForKey:@"timezone"] forKey:@"timezone"];
+    [dict setObject:[user objectForKey:@"email"] forKey:@"email"];
+//    [dict setObject:[user objectForKey:@"password"] forKey:@"password"];
+    
+    switch (self.segmentControl.selectedSegmentIndex)
+    {
+        case 0:
+            gender = @"1";
+            break;
+        case 1:
+            gender = @"0";
+            break;
+        default:
+            break;
+    }
+    
+    [dict setObject:gender forKey:@"sex"];
+    
+    if (self.place != nil) {
+            [dict setObject:self.place.locality forKey:@"city"];
+            [dict setObject:self.place.subAdministrativeArea forKey:@"state"];
+            [dict setObject:self.place.country forKey:@"country"];
+        
+            NSString *lat = [[NSString alloc] initWithFormat:@"%g", self.place.coordinate.latitude];
+            NSString *longitude = [[NSString alloc] initWithFormat:@"%g", self.place.coordinate.longitude];
+        
+            [dict setObject:lat forKey:@"lat"];
+            [dict setObject:longitude forKey:@"long"];
+    }
+    else{
+        [dict setObject:[user objectForKey:@"city"] forKey:@"city"];
+        [dict setObject:[user objectForKey:@"state"] forKey:@"state"];
+        [dict setObject:[user objectForKey:@"country"] forKey:@"country"];
+        [dict setObject:[user objectForKey:@"lat"] forKey:@"lat"];
+        [dict setObject:[user objectForKey:@"long"] forKey:@"long"];
+
+    }
+    
+    if (base64Image != nil) {
+       // [dict setObject:base64Image forKey:@"base64_image"];
+    }
+    
+    [[BPUser sharedBP]setUserSettings:dict WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        if (completed) {
+            [SVProgressHUD showSuccessWithStatus:@"Successfully \nupdated"];
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    }];
+    
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self adjustFonts];
     [self setUserInfo];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(placeSelected:) name:@"LocationSettingsSelected" object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -53,8 +122,14 @@
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 }
 
+
 -(void)goBack{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void)placeSelected:(NSNotification *)notif{
+    self.place = [notif.userInfo objectForKey:@"LocationObject"];
+   self.locationTxtF.text = self.place.formattedAddress;
 }
 
 -(void)adjustFonts{
@@ -80,6 +155,15 @@
     
     [self downloadUserImageIfNecessery];
     
+    self.firstNameTextfield.text = [[user objectForKey:@"name"] capitalizedString];
+    self.lastNameTextfield.text = [[user objectForKey:@"lastname"] capitalizedString];
+    self.usernameTextfield.text = [[user objectForKey:@"username"] capitalizedString];
+    self.segmentControl.selectedSegmentIndex = ([[user objectForKey:@"sex"] intValue] == 1)?0:1;
+    
+    NSString *city = [[user objectForKey:@"city"] capitalizedString];
+    NSString *country = [[user objectForKey:@"country"] capitalizedString];
+    
+    self.locationTxtF.text = [NSString stringWithFormat:@"%@, %@",city,country];
     
 }
 
@@ -129,11 +213,27 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     
+
+    if (textField.tag == 4) {
+         SPGooglePlacesAutocompleteDemoViewController *viewController = [[SPGooglePlacesAutocompleteDemoViewController alloc] init];
+        [self.navigationController pushViewController:viewController animated:YES];
+        return NO;
+    }
     
     if (textField.superview.frame.origin.y > 200) {
          [self.scrollV setContentOffset:CGPointMake(0, textField.superview.frame.origin.y - 200) animated:YES];
     }
     
+    
+    return YES;
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+    
+    self.navigationItem.rightBarButtonItem = rightButton;
+
     return YES;
 }
 
@@ -166,7 +266,13 @@
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
+        return YES;
     }
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+    
+    self.navigationItem.rightBarButtonItem = rightButton;
     
     return YES;
 }
@@ -190,13 +296,33 @@
 - (IBAction)changeProfilePicture:(id)sender {
     
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Take Photo",@"Choose Existing",@"Search Web", nil];
+        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Take Photo",@"Choose Existing", nil];
         [popup showInView:self.view];
     }
     else{
-        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Choose Existing",@"Search Web", nil];
+        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Choose Existing", nil];
         [popup showInView:self.view];
     }
+}
+
+- (IBAction)changedGender:(UISegmentedControl *)sender
+{
+    switch (sender.selectedSegmentIndex)
+    {
+        case 0:
+            gender = @"Male";
+            break;
+        case 1:
+            gender = @"Female";
+            break;
+        default: 
+            break; 
+    }
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                    style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+    
+    self.navigationItem.rightBarButtonItem = rightButton;
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -223,30 +349,7 @@
                 [self presentViewController:mediaPicker animated:YES completion:NULL];
             }
                 break;
-            case 2://search web
-            {
-                
-                DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
-                picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
-                picker.allowsEditing = YES;
-                picker.delegate = self;
-                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
-                picker.enablePhotoDownload = YES;
-                picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
-                
-                picker.finalizationBlock = ^(DZNPhotoPickerController *picker, NSDictionary *info) {
-                    [self userPickedPhoto:info];
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                };
-                
-                picker.cancellationBlock = ^(DZNPhotoPickerController *picker) {
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                };
-                
-                [self presentViewController:picker animated:YES completion:NO];
-            }
-                break;
-            default:
+                        default:
                 break;
         }
     }
@@ -259,32 +362,11 @@
         switch (buttonIndex) {
             case 0: //Choose existing
             {
-                mediaPicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+                mediaPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
                 [self presentViewController:mediaPicker animated:YES completion:NULL];
             }
                 break;
-            case 1://search web
-            {
-                DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
-                picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
-                picker.allowsEditing = YES;
-                picker.delegate = self;
-                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
-                picker.enablePhotoDownload = YES;
-                picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
-                
-                picker.finalizationBlock = ^(DZNPhotoPickerController *picker, NSDictionary *info) {
-                    [self userPickedPhoto:info];
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                };
-                
-                picker.cancellationBlock = ^(DZNPhotoPickerController *picker) {
-                    [picker dismissViewControllerAnimated:YES completion:NULL];
-                };
-                
-                [self presentViewController:picker animated:YES completion:NO];            }
-                break;
-            default:
+                      default:
                 break;
         }
         
@@ -311,6 +393,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     @try {
         NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
         NSURL *image_url = [info_values objectForKey:@"source_url"];
+
         
       //  [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
         
@@ -326,6 +409,16 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         
         NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
         base64Image = [self base64forData:imageData];
+        
+        if (base64Image != nil) {
+            UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                            style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+            
+            self.navigationItem.rightBarButtonItem = rightButton;
+        }
+        
+        changedImage = YES;
+        self.profileImage.image = img;
         
     }
     @catch (NSException *exception) {
@@ -422,3 +515,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 
 @end
+/*   UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+ style:UIBarButtonItemStyleDone target:self action:@selector(donePressed) ];
+ 
+ self.navigationItem.rightBarButtonItem = rightButton;
+ */

@@ -189,7 +189,7 @@
             //4
 
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             return;
         }
         //5

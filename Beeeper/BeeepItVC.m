@@ -25,6 +25,7 @@
     int beepTimeSeconds;
     NSMutableString *shareText;
     NSString *imageURL;
+    NSString *website;
 }
 @end
 
@@ -90,21 +91,23 @@
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
             Friendsfeed_Object *ffo = tml;
             title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
-            
+            website = ffo.eventFfo.eventDetailsFfo.url;
         }
         else if ([tml isKindOfClass:[Event_Show_Object class]]){
             Event_Show_Object *activity = tml;
             
             title = [activity.eventInfo.title capitalizedString];
-            
+            website = activity.eventInfo.url;
         }
         else if ([tml isKindOfClass:[Suggestion_Object class]]){
             Suggestion_Object *sgo = tml;
             title = [sgo.what.title capitalizedString];
+            website = sgo.what.url;
         }
         else if ([tml isKindOfClass:[Timeline_Object class]]){
             Timeline_Object *tmlO = tml;
             title = [tmlO.event.title capitalizedString];
+            website = tmlO.event.url;
         }
         else if ([tml isKindOfClass:[Activity_Object class]]){
             Activity_Object *activity = tml;
@@ -125,6 +128,7 @@
         else if ([tml isKindOfClass:[Event_Search class]]){
             Event_Search *eventS = tml;
             title = [eventS.title capitalizedString];
+            website = eventS.url;
         }
         
         [shareText appendString:title];
@@ -412,7 +416,7 @@
        [composeController addImage:img];
     }
 
-    [composeController addURL: [NSURL URLWithString:@"http://www.beeeper.com"]];
+    [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
     
     [self presentViewController:composeController animated:YES completion:nil];
     
@@ -461,7 +465,7 @@
         [composeController addImage:img];
     }
     
-    [composeController addURL: [NSURL URLWithString:@"http://www.beeeper.com"]];
+    [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
 
     
     [self presentViewController:composeController

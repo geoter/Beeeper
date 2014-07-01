@@ -60,8 +60,6 @@
         }
     }];
     
-    [self getNotifications];
-    
 }
 
 -(void)getNotifications{
@@ -80,16 +78,25 @@
             notifications = [NSMutableArray arrayWithArray:newNotifs];
             [notifications addObjectsFromArray:oldNotifs];
             
+
+            self.noNotifsFound.hidden = notifications.count != 0;
+
+            
             newNotifications = [NSArray arrayWithArray:newNotifs];
             oldNotifications = [NSArray arrayWithArray:oldNotifs];
             
-            [self.tableV reloadData];
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
         }
     }];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [self getNotifications];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
@@ -379,7 +386,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {
-                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableV reloadData];
                 [rowsToReload removeAllObjects];
             }
             @catch (NSException *exception) {

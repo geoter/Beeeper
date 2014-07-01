@@ -124,6 +124,25 @@
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(showFindFriends)];
     self.navigationItem.rightBarButtonItem = rightItem;
+    
+    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            
+            if (objs.count > 0) {
+                
+                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                [refreshControl endRefreshing];
+                
+                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                events = nil;
+                beeeps = [NSMutableArray arrayWithArray:objs];
+                [self.collectionV reloadData];
+                
+            }
+        }
+    }];
+
 }
 
 -(void)refresh{
@@ -139,24 +158,6 @@
     
     loadNextPage = NO;
     
-    [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            
-            if (objs.count > 0) {
-                
-                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-                [refreshControl endRefreshing];
-                
-                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                events = nil;
-                beeeps = [NSMutableArray arrayWithArray:objs];
-                [self.collectionV reloadData];
-
-            }            
-        }
-    }];
-
     [[BPHomeFeed sharedBP]getFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
         [self hideLoading];
@@ -1133,6 +1134,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     selectedIndex = index;
     
     if (index == 0) {
+        
         [self getFriendsFeed];
     }
     else{

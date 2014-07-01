@@ -264,10 +264,41 @@
     else{
         [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
-        self.userCityLabel.text = [user objectForKey:@"city"];
-        [self.userCityLabel sizeToFit];
-        self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
-        self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
+        
+        if ([user objectForKey:@"city"] == nil) {
+          
+            [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+                
+                [self hideLoading];
+                if (completed && objs.count >0) {
+                    NSDictionary *userDict = [objs firstObject];
+                    self.user = userDict;
+                    [self setUserInfo];
+                }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No user found" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                }
+            }];
+        }
+        else{
+            
+            [UIView animateWithDuration:0.3f
+                     animations:^
+             {
+                 self.userCityLabel.alpha = 1;
+                 self.pinIcon.alpha = 1;
+             }
+                     completion:^(BOOL finished)
+             {
+             }
+             ];
+            
+            self.userCityLabel.text = [user objectForKey:@"city"];
+            [self.userCityLabel sizeToFit];
+            self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
+            self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
+        }
     }
 }
 

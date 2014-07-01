@@ -254,7 +254,10 @@
     self.titleLabel.center = oldCenter;
 
     [venueLbl sizeToFit];
-    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+20);
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -425,7 +428,7 @@
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
     [venueLbl sizeToFit];
-    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
     self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
@@ -597,7 +600,7 @@
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
     [venueLbl sizeToFit];
-    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
     self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
@@ -769,7 +772,8 @@
         [self.titleLabel sizeToFit];
         self.titleLabel.center = oldCenter;
         [venueLbl sizeToFit];
-        venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+15);
+        venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
+                                      +(int)(venueLbl.frame.size.height/2));
         self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
         self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 

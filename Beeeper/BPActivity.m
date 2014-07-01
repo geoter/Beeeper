@@ -423,7 +423,8 @@ static BPActivity *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -452,7 +453,7 @@ static BPActivity *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -483,7 +484,7 @@ static BPActivity *thisWebServices = nil;
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:path]]];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -506,7 +507,7 @@ static BPActivity *thisWebServices = nil;
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:path]]];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }

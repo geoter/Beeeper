@@ -82,6 +82,7 @@
         
         Activity_Object *activity = tml;
 
+        
         if (activity.beeepInfoActivity.beeepActivity.count > 0) {
             
             fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
@@ -89,6 +90,7 @@
             [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
                 if (completed) {
                     beeep_Objct = beeep;
+                    comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
                         [self showEventForActivityWithBeeep];
@@ -793,7 +795,6 @@
         likesLbl.text = [NSString stringWithFormat:@"%d",beeep.likes.count];
         commentsLbl.text = [NSString stringWithFormat:@"%d",beeep.comments.count];
         //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
-
         
         likers =[NSMutableArray arrayWithArray:beeep.likes];
         

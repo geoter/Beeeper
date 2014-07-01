@@ -36,16 +36,10 @@
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
-    
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
 
     pendingImagesDict = [NSMutableDictionary dictionary];
-    
-    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
-    
-    UIView *container = [self container];
-    [container addSubview:[self composeBarView]];
-    [self.view addSubview:container];
+
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillToggle:)
@@ -62,6 +56,13 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationController.navigationBar.backItem.title = @"";
+
+    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
+    
+    UIView *container = [self container];
+    [container addSubview:[self composeBarView]];
+    [self.view addSubview:container];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -70,6 +71,7 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
     [self.tableV reloadData];
    // self.tableV.alpha = 1;
 }
@@ -95,6 +97,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    
+    self.noCommentsLabel.hidden = comments.count != 0;
+
     return comments.count;
 }
 
@@ -116,15 +121,108 @@
     
     Comments *objct = [comments objectAtIndex:indexPath.row];
     
-    if (objct.userCommentDict == nil) {
+    if ([objct isKindOfClass:[Comments class]]) {
+    
+        if (objct.userCommentDict == nil) {
+            
+            double timestamp = objct.comment.timestamp;
+            double now_timestamp = [[NSDate date] timeIntervalSince1970];
+            
+            date.text = [self dailyLanguage:now_timestamp-timestamp];
+            
+            Comments *commentObj = (Comments *)objct;
+            NSString *comment = commentObj.comment.comment;
+            txtV.text = comment;
+            
+            name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
+            
+            CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+            
+            txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+            
+            NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[commentObj.commenter.imagePath MD5],extension];
+            
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            
+            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+            
+            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                image.image = nil;
+                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+                image.image = img;
+            }
+            else{
+                image.image = nil;
+                [pendingImagesDict setObject:indexPath forKey:imageName];
+                [[DTO sharedDTO]downloadImageFromURL:commentObj.commenter.imagePath];
+                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+            }
+
+        }
+        else{
+            
+            date.text= @"Just Now";
+            
+            NSDictionary *user =  [BPUser sharedBP].user;
+            
+            NSString *nameStr=[objct.userCommentDict objectForKey:@"name"];
+            NSString *comment=[objct.userCommentDict objectForKey:@"comment"];
+            txtV.text = comment;
+            name.text = nameStr;
+            
+            CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+            
+            txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+            
+            NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+            
+            NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+            
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            
+            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+            
+            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+                image.image = img;
+            }
+            else{
+                
+                dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+                dispatch_async(q, ^{
+                    /* Fetch the image from the server... */
+                    NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
+                    UIImage *img = [[UIImage alloc] initWithData:data];
+                    
+                    [self saveImage:img withFileName:imageName inDirectory:localPath];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        /* This is the main thread again, where we set the tableView's image to
+                         be what we just fetched. */
+                        image.image = img;
+                    });
+                });
+            }
+
+        }
         
-        double timestamp = objct.comment.timestamp;
+    }
+    else if([objct isKindOfClass:[NSDictionary class]]){
+       /*
+        NSDictionary *dict = (NSDictionary *)objct;
+        
+        double timestamp = [[dict objectForKey:@"timestamp"] doubleValue];
         double now_timestamp = [[NSDate date] timeIntervalSince1970];
         
         date.text = [self dailyLanguage:now_timestamp-timestamp];
         
-        Comments *commentObj = (Comments *)objct;
-        NSString *comment = commentObj.comment.comment;
+        NSString *comment = [dict objectForKey:@"comment"];
         txtV.text = comment;
         
         name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
@@ -152,57 +250,7 @@
             [[DTO sharedDTO]downloadImageFromURL:commentObj.commenter.imagePath];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
         }
-
-    }
-    else{
-        
-        date.text= @"Just Now";
-        
-        NSDictionary *user =  [BPUser sharedBP].user;
-        
-        NSString *nameStr=[objct.userCommentDict objectForKey:@"name"];
-        NSString *comment=[objct.userCommentDict objectForKey:@"comment"];
-        txtV.text = comment;
-        name.text = nameStr;
-        
-        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
-        
-        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
-        
-        NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-        
-        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            image.image = img;
-        }
-        else{
-            
-            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-            dispatch_async(q, ^{
-                /* Fetch the image from the server... */
-                NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
-                UIImage *img = [[UIImage alloc] initWithData:data];
-                
-                [self saveImage:img withFileName:imageName inDirectory:localPath];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    /* This is the main thread again, where we set the tableView's image to
-                     be what we just fetched. */
-                    image.image = img;
-                });
-            });
-        }
-
+*/
     }
     
     

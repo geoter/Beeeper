@@ -717,7 +717,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {
-                [self.collectionV reloadItemsAtIndexPaths:rowsToReload];
+                [self.collectionV reloadData];
                 [rowsToReload removeAllObjects];
             }
             @catch (NSException *exception) {

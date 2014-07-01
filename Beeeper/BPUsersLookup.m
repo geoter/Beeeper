@@ -127,7 +127,7 @@ static BPUsersLookup *thisWebServices = nil;
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }

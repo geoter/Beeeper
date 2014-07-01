@@ -40,7 +40,7 @@ NSString *const kCommentsCommenter = @"commenter";
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
             self.comment = [Comment modelObjectWithDictionary:[dict objectForKey:kCommentsComment]];
             self.commenter = [Commenter modelObjectWithDictionary:[dict objectForKey:kCommentsCommenter]];
-
+        
     }
     
     return self;

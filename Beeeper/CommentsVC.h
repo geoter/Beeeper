@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface CommentsVC : UIViewController
+
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
+@property (weak, nonatomic) IBOutlet UILabel *noCommentsLabel;
+
 @property (nonatomic,strong)  NSMutableArray *comments;
 @property (nonatomic,strong) id event_beeep_object;
 @end

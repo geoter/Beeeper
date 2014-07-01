@@ -59,7 +59,8 @@
 }
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
-    
+
+    loading = YES;
     loadNextPage = YES;
     
     if (option != 0 && option != 1) {
@@ -159,10 +160,15 @@
          user = [BPUser sharedBP].user;
     }
     
+    UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
+    [self.tableV addSubview:refreshView];
+    
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
     [refreshControl addTarget:self action:@selector(getTimeline:option:) forControlEvents:UIControlEventValueChanged];
+    [refreshView addSubview:refreshControl];
+
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     
@@ -289,9 +295,7 @@
             dispatch_async(q, ^{
                 /* Fetch the image from the server... */
                 NSString *imagePath = [user objectForKey:@"image_path"];
-                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"//" withString:@"http://"];
-                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
                 UIImage *img = [[UIImage alloc] initWithData:data];
                 
                 [self saveImage:img withFileName:imageName inDirectory:localPath];

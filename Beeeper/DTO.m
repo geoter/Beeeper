@@ -61,7 +61,7 @@ static DTO *thisDTO = nil;
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:url]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }
@@ -84,6 +84,16 @@ static DTO *thisDTO = nil;
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:[imageName MD5] object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+- (NSString *)fixLink:(NSString *)link{
+    link = [link stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    
+    if ([[link substringToIndex:2]isEqualToString:@"//"]) {
+       NSString *fixedLink = [NSString stringWithFormat:@"http://%@",[link substringFromIndex:2]];
+        return fixedLink;
+    }
+    return link;
 }
 
 

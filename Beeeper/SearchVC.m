@@ -22,16 +22,38 @@
 
 @interface SearchVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate>
 {
-    NSArray *filteredResults;
+    NSMutableArray *filteredResults;
     NSArray *suggestionValues;
     NSArray *events;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
+    BOOL loadNextPage;
 }
 @end
 
 @implementation SearchVC
 
+
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *keywords){
+        
+        if (keywords.count > 0) {
+            loadNextPage = YES;
+            [filteredResults addObjectsFromArray:keywords];
+        }
+        
+        [self.tableV reloadData];
+        
+    }];
+    
+}
 
 - (void)viewDidLoad
 {
@@ -82,13 +104,15 @@
     [super viewWillDisappear:animated];
 }
 
+
+
 -(void)resetSearch{
     
     self.tapG.enabled = NO;
     
     suggestionValues = [NSArray arrayWithObjects:@"popular",@"sports",@"cinema",@"music",@"TV",@"nightlife",@"radio",@"deals", nil];
     
-    filteredResults = suggestionValues;
+    filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
     UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
     numberOfCommentsV.backgroundColor = [UIColor clearColor];
@@ -152,11 +176,17 @@
     NSString *tag = [filteredResults objectAtIndex:indexPath.row];
     
     self.searchTextField.text = tag;
+
+    [self.collectionV setContentOffset:CGPointZero];
     
     [[EventWS sharedBP]searchEvent:tag WithCompletionBlock:^(BOOL completed,NSArray *evnts){
         if (completed) {
             events = [NSArray arrayWithArray:evnts];
 
+            if (events.count > 0) {
+               loadNextPage = YES;   
+            }
+            
             self.collectionV.hidden = NO;
             [self.collectionV reloadData];
             
@@ -235,16 +265,16 @@
             
             self.tableV.tableHeaderView = numberOfCommentsV;
             
-            filteredResults = keywords;
+            filteredResults = [NSMutableArray arrayWithArray:keywords];
 
         }
         else{
-            filteredResults = [NSArray array];
+            filteredResults = [NSMutableArray array];
         }
         
         if (filteredResults.count == 0) {
             self.tapG.enabled = YES;
-            filteredResults = [NSArray arrayWithObject:@"No results found"];
+            filteredResults = [NSMutableArray arrayWithObject:@"No results found"];
         }
         else{
             self.tapG.enabled = NO;
@@ -488,6 +518,20 @@
     
     if ([kind isEqualToString:CHTCollectionElementKindSectionFooter]) {
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionFooter withReuseIdentifier : @ "FooterView" forIndexPath : indexPath] ;
+        
+        UIActivityIndicatorView *actv = (id)[headerView viewWithTag:12];
+        actv.hidden = YES;
+        [actv removeFromSuperview];
+        
+        if (loadNextPage) {
+            UIActivityIndicatorView *activIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 25)];
+            activIndicator.tag = 12;
+            [headerView addSubview:activIndicator];
+            [activIndicator startAnimating];
+            
+            [self nextPage];
+        }
+
         
         reusableview = headerView;
         

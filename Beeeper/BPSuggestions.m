@@ -246,7 +246,7 @@ static BPSuggestions *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -273,7 +273,7 @@ static BPSuggestions *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:what.imageUrl]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }

@@ -26,8 +26,22 @@
 {
     [super viewDidLoad];
     
-    self.tableV.decelerationRate = 0.6;
+    if (self.mode == 1) {
+        self.title = @"Followers";
+    }
+    else if (self.mode == 2){
+        self.title = @"Following";
+    }
+    else if (self.mode == 3){
+        self.title = @"Likes";
+    }
+    else if (self.mode == 4){
+        self.title = @"Beeepers";
+    }
     
+    self.tableV.decelerationRate = 0.6;
+
+    pendingImagesDict = [NSMutableDictionary dictionary];
     rowsToReload = [NSMutableArray array];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -41,6 +55,7 @@
     [self showLoading];
     
      if (self.mode == FollowersMode) {
+         
         [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed) {
@@ -179,20 +194,6 @@
          }];
      }
 
-    pendingImagesDict = [NSMutableDictionary dictionary];
-
-    if (self.mode == 1) {
-        self.title = @"Followers";
-    }
-    else if (self.mode == 2){
-        self.title = @"Following";
-    }
-    else if (self.mode == 3){
-        self.title = @"Likes";
-    }
-    else if (self.mode == 4){
-        self.title = @"Beeepers";
-    }
 }
 
 -(void)updateUsersCount{

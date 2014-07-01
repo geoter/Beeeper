@@ -237,7 +237,8 @@ static BPHomeFeed *thisWebServices = nil;
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:ffo.eventFfo.eventDetailsFfo.imageUrl]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:ffo.eventFfo.eventDetailsFfo.imageUrl]]];
+        
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }
@@ -250,7 +251,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:beeepedBy_localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:ffo.whoFfo.imagePath]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:ffo.whoFfo.imagePath]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:beeepedBy_imageName inDirectory:beeepedBy_localPath];
     }

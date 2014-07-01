@@ -28,6 +28,8 @@
 {
     [super viewDidLoad];
 
+    self.title = @"Notifications";
+    
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
 //        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
 //    }

@@ -170,7 +170,6 @@ static BPUser *thisWebServices = nil;
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
     
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
@@ -1071,8 +1070,7 @@ static BPUser *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSString *path = [w.imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -1101,8 +1099,7 @@ static BPUser *thisWebServices = nil;
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSString *path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -1134,7 +1131,7 @@ static BPUser *thisWebServices = nil;
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
             path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-            NSURL *URL = [NSURL URLWithString:path];
+            NSURL *URL = [NSURL URLWithString:[[DTO sharedDTO]fixLink:path]];
             NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
@@ -1158,8 +1155,7 @@ static BPUser *thisWebServices = nil;
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-            NSURL *URL = [NSURL URLWithString:path];
+            NSURL *URL = [NSURL URLWithString:[[DTO sharedDTO]fixLink:path]];
             NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];

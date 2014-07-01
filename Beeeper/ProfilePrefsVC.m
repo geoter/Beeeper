@@ -54,17 +54,19 @@
     
     switch (self.segmentControl.selectedSegmentIndex)
     {
-        case 0:
-            gender = @"1";
+        case 0:{
+
+            [dict setObject:@"1" forKey:@"sex"];
             break;
-        case 1:
-            gender = @"0";
+        }
+        case 1:{
+
+            [dict setObject:@"0" forKey:@"sex"];
+        }
             break;
         default:
             break;
     }
-    
-    [dict setObject:gender forKey:@"sex"];
     
     if (self.place != nil) {
             [dict setObject:self.place.locality forKey:@"city"];
@@ -205,7 +207,7 @@
             /* Fetch the image from the server... */
             NSString *imagePath = [user objectForKey:@"image_path"];
             imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
             UIImage *img = [[UIImage alloc] initWithData:data];
             
             [self saveImage:img withFileName:imageName inDirectory:localPath];

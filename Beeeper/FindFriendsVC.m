@@ -730,7 +730,7 @@
     self.search_completed = compbloc;
     searchStr = searchString;
     
-    pageLimit = 15;
+    pageLimit = 20;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search?"];

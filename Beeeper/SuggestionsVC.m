@@ -17,6 +17,8 @@
     NSMutableArray *suggestions;
     NSMutableArray *sections;
     NSMutableDictionary *pendingImagesDict;
+    BOOL loadNextPage;
+    NSMutableDictionary *suggestionsPerSection;
 
 }
 @end
@@ -47,7 +49,30 @@
 
 }
 
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            if (objcts>0) {
+                [suggestions addObjectsFromArray:objcts];
+                [self groupSuggestionsByMonth];
+                loadNextPage = YES;
+            }
+        }
+    }];
+
+}
+
 -(void)getSuggestions{
+    
+    loadNextPage = YES;
     
     [self showLoading];
     
@@ -60,11 +85,6 @@
         if (completed) {
             suggestions = [NSMutableArray arrayWithArray:objcts];
             [self groupSuggestionsByMonth];
-            
-            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 30)];
-            numberLbl.text = [NSString stringWithFormat:@"%d",suggestions.count];
-            numberLbl.textColor = [UIColor whiteColor];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
         }
     }];
 
@@ -138,78 +158,119 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return sections.count;
+   return (sections.count>0 && loadNextPage)?(sections.count+1):sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    
+    if (section == sections.count) {
+        return 1;
+    }
+    
     NSMutableArray *filtered_activities = [self suggestionsForSection:section];
     return filtered_activities.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
     
-    Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];
-    Who *w = suggestion.who;
-    What_Suggest *what = suggestion.what;
-
-    double now_time = [[NSDate date]timeIntervalSince1970];
-    double event_timestamp = what.timestamp;
-    
-    BOOL futureEvent = (now_time < event_timestamp);
-    UIButton *beeepBtn = (id)[cell viewWithTag:67];
-    beeepBtn.enabled = futureEvent;
-    
-    UIImageView *imageV = (id)[cell viewWithTag:1];
-    UILabel *nameLbl = (id)[cell viewWithTag:2];
-    UILabel *venueLbl = (id)[cell viewWithTag:3];
-    UILabel *beeepedBy = (id)[cell viewWithTag:4];
-    
-    nameLbl.text = [what.title capitalizedString];
-    
-    NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
-    
-    if (data != nil) {
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if(indexPath.section == sections.count) {
         
-        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = loc.venueStation;
+        static NSString *CellIdentifier = @"LoadMoreCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+        
+        [self nextPage];
+        
+        return cell;
+        
+    }
+    
+    @try {
+        static NSString *CellIdentifier = @"Cell";
+        UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
+        
+        Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];
+        Who *w = suggestion.who;
+        What_Suggest *what = suggestion.what;
 
+        double now_time = [[NSDate date]timeIntervalSince1970];
+        double event_timestamp = what.timestamp;
+        
+        BOOL futureEvent = (now_time < event_timestamp);
+        UIButton *beeepBtn = (id)[cell viewWithTag:67];
+        beeepBtn.enabled = futureEvent;
+        
+        UIImageView *imageV = (id)[cell viewWithTag:1];
+        UILabel *nameLbl = (id)[cell viewWithTag:2];
+        UILabel *venueLbl = (id)[cell viewWithTag:3];
+        UILabel *beeepedBy = (id)[cell viewWithTag:4];
+        
+        nameLbl.text = [what.title capitalizedString];
+        
+        NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
+        
+        if (data != nil) {
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            
+            EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+            venueLbl.text = loc.venueStation;
+
+        }
+        
+        beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
+        
+        //Image
+        NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[what.imageUrl MD5],extension];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            imageV.backgroundColor = [UIColor clearColor];
+            imageV.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            imageV.image = img;
+        }
+        else{
+            imageV.backgroundColor = [UIColor lightGrayColor];
+            imageV.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        }
+        
+            return cell;
     }
-    
-    beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
-    
-    //Image
-    NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[what.imageUrl MD5],extension];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imageV.backgroundColor = [UIColor clearColor];
-        imageV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imageV.image = img;
+    @catch (NSException *exception) {
+        static NSString *CellIdentifier = @"Cell";
+        UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        return cell;
     }
-    else{
-        imageV.backgroundColor = [UIColor lightGrayColor];
-        imageV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+    @finally {
+        
     }
 
-    return cell;
+
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 47;
+    
+    if(section == sections.count) {
+        return 1;
+    }
+    else{
+        return 47;
+    }
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -217,6 +278,13 @@
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    
+    if(section == sections.count) {
+        
+        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
+        header.backgroundColor = [UIColor clearColor];
+        return header;
+    }
     
     NSString *signature = [sections objectAtIndex:section];
     NSArray *components = [signature componentsSeparatedByString:@"#"];
@@ -300,34 +368,41 @@
 
 -(NSMutableArray *)suggestionsForSection:(int)section{
     
-    NSString *section_signature = [sections objectAtIndex:section];
-    NSMutableArray *filtered_activities = [NSMutableArray array];
-    
-    for (Suggestion_Object *suggestion in suggestions) {
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
-        
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-        
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
-        
-        if ([section_signature isEqualToString:signature]) {
-            [filtered_activities addObject:suggestion];
-        }
+    if ([suggestionsPerSection objectForKey:[NSString stringWithFormat:@"%d",section]]) {
+        return [suggestionsPerSection objectForKey:[NSString stringWithFormat:@"%d",section]];
     }
-    
-    return filtered_activities;
+    else{
+
+        NSString *section_signature = [sections objectAtIndex:section];
+        NSMutableArray *filtered_activities = [NSMutableArray array];
+        
+        for (Suggestion_Object *suggestion in suggestions) {
+            //EVENT DATE
+            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            [formatter setLocale:usLocale];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
+            NSString *dateStr = [formatter stringFromDate:date];
+            NSArray *components = [dateStr componentsSeparatedByString:@","];
+            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+            
+            NSString *month = [day_month objectAtIndex:1];
+            NSString *daynumber = [day_month objectAtIndex:2];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+            
+            NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+            
+            if ([section_signature isEqualToString:signature]) {
+                [filtered_activities addObject:suggestion];
+            }
+        }
+
+        [suggestionsPerSection setObject:filtered_activities forKey:[NSString stringWithFormat:@"%d",section]];
+        return filtered_activities;
+    }
 }
 
 -(void)showLoading{

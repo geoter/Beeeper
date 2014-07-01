@@ -36,5 +36,6 @@ typedef void(^completed)(BOOL,id);
 -(void)searchKeyword:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
 -(void)searchEvent:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
 -(void)getAllEventsWithCompletionBlock:(completed)compbloc;
+-(void)nextAllEventsWithCompletionBlock:(completed)compbloc;
 -(void)getAllLocalEvents:(completed)compbloc;
 @end

@@ -25,6 +25,7 @@
     UISearchDisplayController *searchDisplayController;
     UIView *headerView;
     NSIndexPath *actionSheetIndexPath;
+    NSMutableDictionary *pendingImagesDict;
     
     int page;
     int pageLimit;
@@ -34,6 +35,8 @@
     
     NSMutableArray *selectedPeople;
     NSArray *adressBookPeople;
+    NSString *searchStr;
+    BOOL loadNextPage;
 
 }
 @end
@@ -44,6 +47,8 @@
 {
     [super viewDidLoad];
 
+    pendingImagesDict = [NSMutableDictionary dictionary];
+    
     selectedPeople = [NSMutableArray array];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -104,15 +109,22 @@
     headerView = headerV;
 
     self.tableView.tableHeaderView = headerView;
-    
+
+    page = 0;
+    loadNextPage = YES;
+
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
-            searchedPeople = [NSMutableArray arrayWithArray:objcts];
-            NSRange range = NSMakeRange(0, 1);
-            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+            
+            if (objcts.count > 0) {
+                loadNextPage = YES;
+                searchedPeople = [NSMutableArray arrayWithArray:objcts];
+            }
         }
+        NSRange range = NSMakeRange(0, 1);
+        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
     }];
 }
 
@@ -122,14 +134,23 @@
 
 -(void)getBeeeperUsers{
     
+    page = 0;
+    loadNextPage = YES;
+    
     [self getPeople:searchBar.text WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
-            searchedPeople = [NSMutableArray arrayWithArray:objcts];
-            NSRange range = NSMakeRange(0, 1);
-            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+         
+            if (objcts > 0) {
+                loadNextPage = YES;
+                searchedPeople = [NSMutableArray arrayWithArray:objcts];
+            }
         }
+        
+        NSRange range = NSMakeRange(0, 1);
+        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+
     }];
 }
 
@@ -340,13 +361,31 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-   return [searchedPeople count];
+   return (searchedPeople.count>0 && loadNextPage)?(searchedPeople.count+1):searchedPeople.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    
+    static NSString *CellIdentifier;
     UITableViewCell *cell;
+    
+    if (indexPath.row == searchedPeople.count) {
+        
+        CellIdentifier = @"LoadMoreCell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+
+        [self nextPage];
+        
+        return cell;
+        
+    }
+    
+    CellIdentifier = @"Cell";
     cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     UITextField *txtF = (id)[cell viewWithTag:1];
@@ -443,15 +482,10 @@
                 userImage.image = img;
             }
             else{
+                userImage.backgroundColor = [UIColor lightGrayColor];
                 userImage.image = nil;
-                userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
-                NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-                
-                NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
-                
-                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
-                
-                
+                [pendingImagesDict setObject:indexPath forKey:imageName];
+                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
             }
             
         }
@@ -537,7 +571,35 @@
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 61;
+    if (indexPath.row == searchedPeople.count) {
+        return 40;
+    }
+    else{
+        return 61;
+    }
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
+    header.backgroundColor = [UIColor clearColor];
+    return header;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 1;
+}
+
+-(void)imageDownloadFinished:(NSNotification *)notif{
+    
+    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
+    
+    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+        [pendingImagesDict removeObjectForKey:imageName];
+    });
+    
 }
 
 #pragma mark - UISearchDisplayController
@@ -572,15 +634,22 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar{
     
     if (selectedOption == BeeeperButton) {
-          
+
+        page = 0;
+        loadNextPage = YES;
+
         [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
             
             if (completed) {
-                searchedPeople = [NSMutableArray arrayWithArray:objcts];
-                NSRange range = NSMakeRange(0, 1);
-                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-            }
+                if (objcts > 0) {
+                    loadNextPage = YES;
+                    searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                }
+             }
+
+            NSRange range = NSMakeRange(0, 1);
+            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
         }];
     }
     else if (selectedOption == MailButton){
@@ -601,15 +670,22 @@
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
      if (selectedOption == BeeeperButton) {
+        
+         page = 0;
          
         [self getPeople:searchText WithCompletionBlock:^(BOOL completed,NSArray *objcts){
             
             if (completed) {
-                searchedPeople = [NSMutableArray arrayWithArray:objcts];
-                NSRange range = NSMakeRange(0, 1);
-                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+                
+                if (objcts.count > 0) {
+                    searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                }
             }
+            
+            NSRange range = NSMakeRange(0, 1);
+            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+    
         }];
      }
      else if (selectedOption == MailButton){
@@ -625,16 +701,39 @@
      }
 }
 
+-(void)nextPage{
+
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    page++;
+    
+    [self getPeople:searchStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            
+            if (objcts.count > 0) {
+                loadNextPage = YES;
+                [searchedPeople addObjectsFromArray:objcts];
+            }
+        }
+        
+        [self.tableView reloadData];
+
+    }];
+}
+
 -(void)getPeople:(NSString *)searchString WithCompletionBlock:(completed)compbloc{
     
     self.search_completed = compbloc;
+    searchStr = searchString;
     
-    pageLimit = 20;
-    page = 0;
+    pageLimit = 15;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search?"];
-    
     
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"count=%d",pageLimit]];

@@ -27,7 +27,6 @@
     NSArray *events;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
-    
 }
 @end
 

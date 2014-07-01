@@ -12,6 +12,8 @@
 typedef void(^completed)(BOOL,id);
 
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc;
+-(void)nextFriendsFeedWithCompletionBlock:(completed)compbloc;
+
 -(void)getLocalFriendsFeed:(completed)compbloc;
 
 @property (copy) void(^completed)(BOOL,id);

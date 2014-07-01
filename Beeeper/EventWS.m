@@ -15,7 +15,8 @@ static EventWS *thisWebServices = nil;
 @interface EventWS ()
 {
     int pageLimit;
-    int page;
+    int all_events_page;
+    int search_events_page;
     NSString *order;
     NSOperationQueue *operationQueue;
 }
@@ -27,8 +28,8 @@ static EventWS *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        pageLimit = 10;
-        page = 0;
+        pageLimit = 15;
+        all_events_page = 0;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
@@ -439,7 +440,7 @@ static EventWS *thisWebServices = nil;
     [array addObject:[NSString stringWithFormat:@"query=%@",keyword]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"order=%@",order]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",search_events_page]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -511,7 +512,9 @@ static EventWS *thisWebServices = nil;
     self.searchEvent_completed(NO,nil);
 }
 
--(void)getAllEventsWithCompletionBlock:(completed)compbloc{
+-(void)nextAllEventsWithCompletionBlock:(completed)compbloc{
+    
+    all_events_page ++;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
@@ -523,7 +526,60 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"order=%@",order]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",all_events_page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.get_All_Events_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(getAllEventsFinished:)];
+    
+    [request setDidFailSelector:@selector(getAllEventsFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getAllEventsWithCompletionBlock:(completed)compbloc{
+    
+    all_events_page = 0;
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
+    
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",all_events_page]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];

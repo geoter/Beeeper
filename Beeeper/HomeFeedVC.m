@@ -35,6 +35,7 @@
     
     NSMutableArray *rowsToReload;
     int selectedIndex;
+    BOOL loadNextPage;
 }
 @end
 
@@ -48,6 +49,24 @@
     }
     return self;
 }
+
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    if (selectedIndex == 0) {
+        [self getNextFriendsFeed];
+    }
+    else{
+        [self nextHomeFeed];
+    }
+    
+}
+
 
 - (void)viewDidLoad
 {
@@ -84,7 +103,7 @@
     
     layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
     layout.headerHeight = 40;
-    layout.footerHeight = 10;
+    layout.footerHeight = 50;
     layout.minimumColumnSpacing = 6;
     layout.minimumInteritemSpacing = 6;
 
@@ -118,12 +137,17 @@
 
 -(void)getFriendsFeed{
     
+    loadNextPage = NO;
     
     [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
         
         if (completed) {
             
             if (objs.count > 0) {
+                
+                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                [refreshControl endRefreshing];
+                
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
                 events = nil;
                 beeeps = [NSMutableArray arrayWithArray:objs];
@@ -133,15 +157,19 @@
         }
     }];
 
-    
-    UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-    [refreshControl endRefreshing];
-    
     [[BPHomeFeed sharedBP]getFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
         [self hideLoading];
         
         if (completed) {
+            
+            UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+            [refreshControl endRefreshing];
+            
+            if (objs.count > 0) {
+                loadNextPage = YES;
+            }
+            
             events = nil;
             beeeps = [NSMutableArray arrayWithArray:objs];
             
@@ -151,7 +179,48 @@
 
 }
 
+-(void)getNextFriendsFeed{
+
+    [[BPHomeFeed sharedBP]nextFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed && objs.count >0) {
+            events = nil;
+            [beeeps addObjectsFromArray:objs];
+            loadNextPage = YES;
+        }
+        
+       [self.collectionV reloadData];
+    }];
+}
+
+-(void)nextHomeFeed{
+    
+    [[EventWS sharedBP]nextAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            
+            if (objs.count != 0) {
+                
+                beeeps = nil;
+                [events addObjectsFromArray:objs];
+                
+                loadNextPage = YES;
+                
+                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                [refreshControl endRefreshing];
+                
+                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+            }
+            
+        }
+        
+        [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    }];
+}
+
 -(void)getHomefeed{
+    
+    loadNextPage = NO;
     
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     [pendingImagesDict removeAllObjects];
@@ -165,15 +234,16 @@
                 beeeps = nil;
                 events = [NSMutableArray arrayWithArray:objs];
                 
+                loadNextPage = YES;
+                
                 UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
-
         }
         
+        [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     }];
 
     
@@ -247,7 +317,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     if (events != nil) {
         
         UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
@@ -574,6 +644,19 @@
     if ([kind isEqualToString:CHTCollectionElementKindSectionFooter]) {
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionFooter withReuseIdentifier : @ "FooterView" forIndexPath : indexPath] ;
         
+        UIActivityIndicatorView *actv = (id)[headerView viewWithTag:12];
+        actv.hidden = YES;
+        [actv removeFromSuperview];
+
+        if (loadNextPage) {
+            UIActivityIndicatorView *activIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 25)];
+            activIndicator.tag = 12;
+            [headerView addSubview:activIndicator];
+            [activIndicator startAnimating];
+            
+            [self nextPage];
+        }
+
         reusableview = headerView;
 
     }
@@ -600,7 +683,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, (selectedIndex == 0)?298:278);
+    return CGSizeMake(148, (selectedIndex == 0)?298:270);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //

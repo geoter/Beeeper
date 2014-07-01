@@ -49,14 +49,11 @@
             
             loading = NO;
             
-            [beeeps addObjectsFromArray:objs];
-            
             if (objs.count != 0) {
+                 [beeeps addObjectsFromArray:objs];
                 loadNextPage = YES;
             }
-            
             [self.tableV reloadData];
-            
         }
     }];
 }
@@ -269,40 +266,50 @@
 }
 
 -(void)downloadUserImageIfNecessery{
-    
-    NSString *imagePath = [user objectForKey:@"image_path"];
-    
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        self.profileImage.image = img;
-    }
-    else{
 
-    dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-    dispatch_async(q, ^{
-        /* Fetch the image from the server... */
+    @try {
+        
         NSString *imagePath = [user objectForKey:@"image_path"];
-        imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-        imagePath = [imagePath stringByReplacingOccurrencesOfString:@"//" withString:@"http://"];
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
-        UIImage *img = [[UIImage alloc] initWithData:data];
         
-        [self saveImage:img withFileName:imageName inDirectory:localPath];
+        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            /* This is the main thread again, where we set the tableView's image to
-             be what we just fetched. */
+        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
             self.profileImage.image = img;
-        });
-    });
+        }
+        else{
+            
+            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+            dispatch_async(q, ^{
+                /* Fetch the image from the server... */
+                NSString *imagePath = [user objectForKey:@"image_path"];
+                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                imagePath = [imagePath stringByReplacingOccurrencesOfString:@"//" withString:@"http://"];
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+                UIImage *img = [[UIImage alloc] initWithData:data];
+                
+                [self saveImage:img withFileName:imageName inDirectory:localPath];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    /* This is the main thread again, where we set the tableView's image to
+                     be what we just fetched. */
+                    self.profileImage.image = img;
+                });
+            });
+        }
+    
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
     }
 }
 
@@ -484,6 +491,9 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+
         [self nextPage];
         
         return cell;

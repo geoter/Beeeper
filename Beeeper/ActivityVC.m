@@ -29,6 +29,24 @@
     [super viewDidLoad];
     
     
+    [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            activities = [NSMutableArray arrayWithArray:objs];
+            [self groupActivitiesByMonth];
+            
+            //            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+            //            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+            //            numberLbl.textColor = [UIColor whiteColor];
+            //            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+            
+        }
+        else{
+            [self showLoading];
+        }
+    }];
+
+    
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
@@ -75,23 +93,6 @@
 -(void)getActivity{
     
     loadNextPage = YES;
-    
-    [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            activities = [NSMutableArray arrayWithArray:objs];
-            [self groupActivitiesByMonth];
-            
-//            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
-//            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
-//            numberLbl.textColor = [UIColor whiteColor];
-//            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
-
-        }
-        else{
-            [self showLoading];
-        }
-    }];
     
     [[BPActivity sharedBP]getActivityWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 
@@ -238,7 +239,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return sections.count+1;
+    return (sections.count>0 && loadNextPage)?(sections.count+1):sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -255,7 +256,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(loadNextPage && (indexPath.section == sections.count)) {
+    if(indexPath.section == sections.count) {
 
         static NSString *CellIdentifier = @"LoadMoreCell";
         
@@ -417,8 +418,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
-    if(loadNextPage && (section == sections.count)) {
-        return 0;
+    if(section == sections.count) {
+        return 1;
     }
     else{
         return 47;
@@ -426,13 +427,18 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 7;
+    if(section == sections.count) {
+        return 1;
+    }
+    else{
+        return 7;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    if(loadNextPage && (section == sections.count)) {
-        
+    if(section == sections.count) {
+
         UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
         header.backgroundColor = [UIColor clearColor];
         return header;

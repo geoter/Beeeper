@@ -61,8 +61,59 @@ static BPSuggestions *thisWebServices = nil;
     [self parseResponseString:json WithCompletionBlock:compbloc];
 }
 
+-(void)nextSuggestionsWithCompletionBlock:(completed)compbloc{
+    
+    page++;
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(suggestionsFinished:)];
+    
+    [request setDidFailSelector:@selector(suggestionsFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc{
   
+    page = 0;
+    
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions?"];
     
@@ -121,7 +172,6 @@ static BPSuggestions *thisWebServices = nil;
     
     BOOL succeed = [responseString writeToFile:filePath
                                     atomically:YES encoding:NSUTF8StringEncoding error:&error];
-
     
     [self parseResponseString:responseString WithCompletionBlock:self.completed];
     

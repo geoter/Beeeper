@@ -56,6 +56,7 @@ typedef void(^notifications_completed)(BOOL,id,id);
 -(void)getLocalNotifications:(completed)compbloc;
 -(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc;
 -(void)getNewNotificationsWithCompletionBlock:(completed)compbloc;
+-(void)nextNotificationsWithCompletionBlock:(notifications_completed)compbloc;
 
 -(void)getEmailSettingsWithCompletionBlock:(completed)compbloc;
 -(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc;

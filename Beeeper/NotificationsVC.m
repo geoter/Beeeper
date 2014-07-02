@@ -19,10 +19,40 @@
     NSArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
+    BOOL loadNextPage;
 }
 @end
 
 @implementation NotificationsVC
+
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+        
+        if (completed) {
+            [notifications addObjectsFromArray:newNotifs];
+            [notifications addObjectsFromArray:oldNotifs];
+            
+            self.noNotifsFound.hidden = notifications.count != 0;
+            
+            
+            newNotifications = [NSArray arrayWithArray:newNotifs];
+            oldNotifications = [NSArray arrayWithArray:oldNotifs];
+            
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    }];
+}
+
 
 - (void)viewDidLoad
 {
@@ -66,6 +96,8 @@
     
      self.tableV.decelerationRate = 0.6;
     
+    loadNextPage = NO;
+    
     newNotifications = nil;
     oldNotifications = nil;
     
@@ -75,20 +107,17 @@
         [refreshControl endRefreshing];
         [self hideLoading];
         if (completed) {
-            notifications = [NSMutableArray arrayWithArray:newNotifs];
+            [notifications addObjectsFromArray:newNotifs];
             [notifications addObjectsFromArray:oldNotifs];
             
-
-            self.noNotifsFound.hidden = notifications.count != 0;
-
+            if (newNotifs>0 || oldNotifs > 0) {
+                loadNextPage = YES;
+            }
             
             newNotifications = [NSArray arrayWithArray:newNotifs];
             oldNotifications = [NSArray arrayWithArray:oldNotifs];
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-        }else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
         }
     }];
 }
@@ -119,14 +148,34 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return notifications.count;
+    int returnValue = (notifications.count>0 && loadNextPage)?(notifications.count+1):notifications.count;
+    return returnValue;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier;
+    UITableViewCell *cell;
+    
+    if (loadNextPage && indexPath.row == notifications.count) {
+        
+        CellIdentifier = @"LoadMoreCell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+        
+        [self nextPage];
+        
+        return cell;
+        
+    }
+
+    CellIdentifier = @"Cell";
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil) {
         NSLog(@"EMPTY CELL");
@@ -352,16 +401,20 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
-    
-    CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-    
-    float height = 60.0;((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
-    
-    NSLog(@"H: %f",height);
-    
-    return height;
-    
+    if (indexPath.row == notifications.count) {
+        return 40;
+    }
+    else{
+        NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+
+        CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+
+        float height = 60.0;((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+
+        NSLog(@"H: %f",height);
+
+        return height;
+    }
 }
 
 -(CGSize)frameForText:(NSAttributedString*)text constrainedToSize:(CGSize)size{

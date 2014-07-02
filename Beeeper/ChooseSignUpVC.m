@@ -94,6 +94,8 @@
 
 - (IBAction)fbLoginPressed:(id)sender {
 
+    [locManager startTracking];
+    
     signupMethod = @"FB";
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
@@ -264,7 +266,7 @@
                                      [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
                                  }
                                  else{
-                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Registration Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                                      [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                                  }
                              }];
@@ -285,6 +287,9 @@
              {
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
+                     
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please make sure Beeeper is allowed to use your Facebook accounts." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+                     [alert show];
                  }
                  else
                  {
@@ -296,46 +301,200 @@
     else
     {
         NSLog(@"Not Configured in Settings......"); // show user an alert view that Fcebook is not configured in settings.
-        
-        if (FBSession.activeSession.state == FBSessionStateOpen
-            || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
-            
-            //[self loginFBuser];
-            
-            // Close the session and remove the access token from the cache
-            // The session state handler (in the app delegate) will be called automatically
-            // [FBSession.activeSession closeAndClearTokenInformation];
-            
-            //AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-            // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
-            //[appDelegate sessionStateChanged:FBSession.activeSession state:FBSession.activeSession.state error:NULL];
-            
-            // If the session state is not any of the two "open" states when the button is clicked
-        } else {
-            // Open a session showing the user the login UI
-            // You must ALWAYS ask for basic_info permissions when opening a session
-            [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"user_friends",@"user_events"]
-                                               allowLoginUI:YES
-                                          completionHandler:
-             ^(FBSession *session, FBSessionState state, NSError *error) {
-                 
-                 // Retrieve the app delegate
-                 AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-                 // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
-                 [appDelegate sessionStateChanged:session state:state error:error];
-                 
-                 if (FBSessionStateOpen == state) {
-                 //    [self loginFBuser];
-                 }
-             }];
-        }
-        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Facebook account" message:@"There are no Facebook accounts configured.You can add or create a Facebook account in Settings." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+        [alert show];
     }
 
 }
 
 - (IBAction)twitterLoginPressed:(id)sender {
-        signupMethod = @"TW";
+    [locManager startTracking];
+     signupMethod = @"TW";
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Facebook is configured in Settings or not
+    {
+        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+        
+        ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+        
+        [accountStore requestAccessToAccountsWithType:twitterAcc options:nil completion:^(BOOL granted, NSError *error)
+         {
+             if (granted)
+             {
+                 ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+                 NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
+                     
+                   /*
+                    
+                    hasUsername = (twitterAccount.username != nil);
+                    hasFirstName = (twitterAccount.userFullName != nil);
+                    hasLastName = (twitterAccount.userFullName != nil);
+                    
+                     if (hasUsername) {
+                         [dict setObject:twitterAccount.username forKey:@"username"];
+                         
+                         NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [fbDict objectForKey:@"username"]];
+                         [dict setObject:userImageURL forKey:@"image_path"];
+                     }
+                     
+                     if (hasEmail) {
+                         [dict setObject:[fbDict objectForKey:@"email"] forKey:@"email"];
+                     }
+                     
+                     if (hasFirstName) {
+                         [dict setObject:[fbDict objectForKey:@"first_name"] forKey:@"name"];
+                     }
+                     
+                     if (hasLastName) {
+                         [dict setObject:[fbDict objectForKey:@"last_name"] forKey:@"lastname"];
+                     }
+                     
+                     if (hasSex) {
+                         [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
+                     }
+                     
+                     
+                     [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
+                     
+                     float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
+                     
+                     [dict setObject:[NSString stringWithFormat:@"%.1f",timezoneoffset] forKey:@"timezone"];
+                     [dict setObject:@"" forKey:@"password"];
+                     [dict setObject:@"0" forKey:@"locked"];
+                     
+                     
+                     CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
+                     CLLocation *userloc = [DTO sharedDTO].userLocation;
+                     
+                     if (userPlace != nil && userloc != nil) {
+                         
+                         NSString *city = userPlace.locality;
+                         NSString *state = userPlace.administrativeArea;
+                         NSString *country = userPlace.country;
+                         
+                         hasCity = (city != nil);
+                         hasState = (state != nil);
+                         hasCountry = (country != nil);
+                         
+                         if (hasCity) {
+                             [dict setObject:city forKey:@"city"];
+                         }
+                         if (hasState) {
+                             [dict setObject:state forKey:@"state"];
+                         }
+                         if (hasCountry) {
+                             [dict setObject:country forKey:@"country"];
+                         }
+                         
+                         NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
+                         
+                         NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
+                         
+                         [dict setObject:lat forKey:@"long"];
+                         [dict setObject:lon forKey:@"lat"];
+                         
+                         
+                         
+                         weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry);
+                         
+                         if (!weHaveAllInfoNeeded) {
+                             
+                             if (missingInfo == nil) {
+                                 
+                                 missingInfo = [NSMutableDictionary dictionary];
+                                 
+                                 if (!hasUsername) {
+                                     [missingInfo setObject:@"Username" forKey:@"username"];
+                                 }
+                                 if (!hasEmail) {
+                                     [missingInfo setObject:@"Email" forKey:@"email"];
+                                 }
+                                 if (!hasFirstName) {
+                                     [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                                 }
+                                 if (!hasLastName) {
+                                     [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                                 }
+                                 
+                                 if (!hasCity) {
+                                     [missingInfo setObject:@"City" forKey:@"city"];
+                                 }
+                                 if (!hasState) {
+                                     [missingInfo setObject:@"State" forKey:@"state"];
+                                 }
+                                 if (!hasCountry) {
+                                     [missingInfo setObject:@"Country" forKey:@"country"];
+                                 }
+                                 
+                             }
+                             
+                         }
+                         
+                         
+                         
+                         if (missingInfo.allKeys.count != 0) {
+                             
+                             MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                             mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
+                             mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
+                             mf.delegate = self;
+                             
+                             missingInfo = nil;
+                             
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self.navigationController pushViewController:mf animated:YES];
+                             });
+                             
+                             return;
+                         }
+                         else{
+                             
+                             [[BPUser sharedBP]signUpFacebookUser:dict completionBlock:^(BOOL completed,NSString *response){
+                                 
+                                 if (completed) {
+                                     [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                                 }
+                                 else{
+                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                                 }
+                             }];
+                             
+                         }
+                         
+                     }
+                     else{
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                     }
+                     
+                     
+                 }];
+                 */
+             }
+             else
+             {
+                 if (error == nil) {
+                     NSLog(@"User Has disabled your app from settings...");
+                     
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please make sure Beeeper is allowed to use your Twitter accounts." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+                     [alert show];
+                 }
+                 else
+                 {
+                     NSLog(@"Error in Login: %@", error);
+                 }
+             }
+         }];
+    }
+    else
+    {
+        NSLog(@"Not Configured in Settings......"); // show user an alert view that Fcebook is not configured in settings.
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Twitter account" message:@"There are no Twitter accounts configured.You can add or create a Twitter account in Settings." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+        [alert show];
+    }
+    
+
 }
 
 - (IBAction)loginPressed:(id)sender {

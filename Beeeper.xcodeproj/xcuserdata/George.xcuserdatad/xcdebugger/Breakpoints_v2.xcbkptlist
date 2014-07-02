@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "425913118.915367"
+            timestampString = "425978769.267035"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "995"
-            endingLineNumber = "995"
+            startingLineNumber = "1128"
+            endingLineNumber = "1128"
             landmarkName = "-getOldNotificationsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "425934480.430388"
+            timestampString = "425978769.267035"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1107"
-            endingLineNumber = "1107"
+            startingLineNumber = "1245"
+            endingLineNumber = "1245"
             landmarkName = "-downloadImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "425934480.430388"
+            timestampString = "425978769.267035"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1084"
-            endingLineNumber = "1084"
+            startingLineNumber = "1222"
+            endingLineNumber = "1222"
             landmarkName = "-downloadImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "425934809.97979"
+            timestampString = "425978769.267035"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1220"
-            endingLineNumber = "1220"
+            startingLineNumber = "1358"
+            endingLineNumber = "1358"
             landmarkName = "@implementation BPUser"
             landmarkType = "3">
          </BreakpointContent>

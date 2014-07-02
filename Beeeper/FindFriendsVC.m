@@ -467,11 +467,11 @@
     
     @try {
     
-        if (imagePath != nil) {
+        if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
             
-            NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             

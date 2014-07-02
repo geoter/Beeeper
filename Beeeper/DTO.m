@@ -51,9 +51,9 @@ static DTO *thisDTO = nil;
 
 -(void)downloadImageInBackgroundFromURL:(NSString *)url{
 
-    NSString *extension = [[url.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+   // NSString *extension = [[url.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[url MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[url MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -83,7 +83,7 @@ static DTO *thisDTO = nil;
         NSLog(@"Saved Image: %@ - %d",directoryPath,write);
     }
     
-    [[NSNotificationCenter defaultCenter]postNotificationName:[imageName MD5] object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
 
 - (NSString *)fixLink:(NSString *)link{

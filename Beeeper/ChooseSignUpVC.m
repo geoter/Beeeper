@@ -259,18 +259,7 @@
                              return;
                          }
                          else{
-                             
-                             [[BPUser sharedBP]signUpFacebookUser:dict completionBlock:^(BOOL completed,NSString *response){
-                                 
-                                 if (completed) {
-                                     [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-                                 }
-                                 else{
-                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-                                 }
-                             }];
-                             
+                             [self signUpSocialUser:dict];
                          }
 
                      }
@@ -288,8 +277,8 @@
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
                      
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please make sure Beeeper is allowed to use your Facebook accounts." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
-                     [alert show];
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please enable Beeeper in your Settings->Facebook." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                  }
                  else
                  {
@@ -323,155 +312,157 @@
              {
                  ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                  NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
-                     
-                   /*
+                 
+                 NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/show.json"];
+                 NSMutableDictionary *params = [NSMutableDictionary new];
+                 [params setObject:user_id forKey:@"user_id"];
+                 
+                 SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:url parameters:params];
+                 //  Attach an account to the request
+                 [request setAccount:twitterAccount]; // this can be any Twitter account obtained from the Account store
+                 
+                 [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
                     
-                    hasUsername = (twitterAccount.username != nil);
-                    hasFirstName = (twitterAccount.userFullName != nil);
-                    hasLastName = (twitterAccount.userFullName != nil);
-                    
-                     if (hasUsername) {
-                         [dict setObject:twitterAccount.username forKey:@"username"];
+                     if (responseData) {
+                         NSDictionary *twitterData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:NULL];
+                         NSLog(@"received Twitter data: %@", twitterData);
                          
-                         NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [fbDict objectForKey:@"username"]];
-                         [dict setObject:userImageURL forKey:@"image_path"];
-                     }
-                     
-                     if (hasEmail) {
-                         [dict setObject:[fbDict objectForKey:@"email"] forKey:@"email"];
-                     }
-                     
-                     if (hasFirstName) {
-                         [dict setObject:[fbDict objectForKey:@"first_name"] forKey:@"name"];
-                     }
-                     
-                     if (hasLastName) {
-                         [dict setObject:[fbDict objectForKey:@"last_name"] forKey:@"lastname"];
-                     }
-                     
-                     if (hasSex) {
-                         [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
-                     }
-                     
-                     
-                     [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
-                     
-                     float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
-                     
-                     [dict setObject:[NSString stringWithFormat:@"%.1f",timezoneoffset] forKey:@"timezone"];
-                     [dict setObject:@"" forKey:@"password"];
-                     [dict setObject:@"0" forKey:@"locked"];
-                     
-                     
-                     CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
-                     CLLocation *userloc = [DTO sharedDTO].userLocation;
-                     
-                     if (userPlace != nil && userloc != nil) {
+                         // to do something useful with this data:
+                         NSString *name_fullName = [twitterData objectForKey:@"name"]; // the screen name you were after
+                         NSArray *name_components = [name_fullName componentsSeparatedByString:@" "];
+                         NSString *name = [name_components firstObject];
+                         NSString *surname = [name_components lastObject];
                          
-                         NSString *city = userPlace.locality;
-                         NSString *state = userPlace.administrativeArea;
-                         NSString *country = userPlace.country;
+                         NSString *profileImageUrl = [twitterData objectForKey:@"profile_image_url"];
                          
-                         hasCity = (city != nil);
-                         hasState = (state != nil);
-                         hasCountry = (country != nil);
+                         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
                          
-                         if (hasCity) {
-                             [dict setObject:city forKey:@"city"];
-                         }
-                         if (hasState) {
-                             [dict setObject:state forKey:@"state"];
-                         }
-                         if (hasCountry) {
-                             [dict setObject:country forKey:@"country"];
+                         hasUsername = (twitterAccount.username != nil);
+                         hasFirstName = (name.length > 0);
+                         hasLastName = (surname.length > 0);
+                         
+                         if (hasUsername) {
+                             [dict setObject:twitterAccount.username forKey:@"username"];
+                             [dict setObject:profileImageUrl forKey:@"image_path"];
                          }
                          
-                         NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
+                         if (hasFirstName) {
+                             [dict setObject:name forKey:@"name"];
+                         }
                          
-                         NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
-                         
-                         [dict setObject:lat forKey:@"long"];
-                         [dict setObject:lon forKey:@"lat"];
-                         
+                         if (hasLastName) {
+                             [dict setObject:surname forKey:@"lastname"];
+                         }
                          
                          
-                         weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry);
+                         [dict setObject:[twitterData objectForKey:@"id_str"] forKey:@"twid"];
                          
-                         if (!weHaveAllInfoNeeded) {
+                         float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
+                         
+                         [dict setObject:[NSString stringWithFormat:@"%.1f",timezoneoffset] forKey:@"timezone"];
+                         [dict setObject:@"" forKey:@"password"];
+                         [dict setObject:@"0" forKey:@"locked"];
+                         
+                         
+                         CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
+                         CLLocation *userloc = [DTO sharedDTO].userLocation;
+                         
+                         if (userPlace != nil && userloc != nil) {
                              
-                             if (missingInfo == nil) {
+                             NSString *city = userPlace.locality;
+                             NSString *state = userPlace.administrativeArea;
+                             NSString *country = userPlace.country;
+                             
+                             hasCity = (city != nil);
+                             hasState = (state != nil);
+                             hasCountry = (country != nil);
+                             
+                             if (hasCity) {
+                                 [dict setObject:city forKey:@"city"];
+                             }
+                             if (hasState) {
+                                 [dict setObject:state forKey:@"state"];
+                             }
+                             if (hasCountry) {
+                                 [dict setObject:country forKey:@"country"];
+                             }
+                             
+                             NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
+                             
+                             NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
+                             
+                             [dict setObject:lat forKey:@"long"];
+                             [dict setObject:lon forKey:@"lat"];
+                             
+                             
+                             
+                             weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry);
+                             
+                             if (!weHaveAllInfoNeeded) {
                                  
-                                 missingInfo = [NSMutableDictionary dictionary];
-                                 
-                                 if (!hasUsername) {
-                                     [missingInfo setObject:@"Username" forKey:@"username"];
-                                 }
-                                 if (!hasEmail) {
-                                     [missingInfo setObject:@"Email" forKey:@"email"];
-                                 }
-                                 if (!hasFirstName) {
-                                     [missingInfo setObject:@"First Name" forKey:@"first_name"];
-                                 }
-                                 if (!hasLastName) {
-                                     [missingInfo setObject:@"Last Name" forKey:@"last_name"];
-                                 }
-                                 
-                                 if (!hasCity) {
-                                     [missingInfo setObject:@"City" forKey:@"city"];
-                                 }
-                                 if (!hasState) {
-                                     [missingInfo setObject:@"State" forKey:@"state"];
-                                 }
-                                 if (!hasCountry) {
-                                     [missingInfo setObject:@"Country" forKey:@"country"];
+                                 if (missingInfo == nil) {
+                                     
+                                     missingInfo = [NSMutableDictionary dictionary];
+                                     
+                                     if (!hasUsername) {
+                                         [missingInfo setObject:@"Username" forKey:@"username"];
+                                     }
+                                     if (!hasEmail) {
+                                         [missingInfo setObject:@"Email" forKey:@"email"];
+                                     }
+                                     if (!hasFirstName) {
+                                         [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                                     }
+                                     if (!hasLastName) {
+                                         [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                                     }
+                                     
+                                     if (!hasCity) {
+                                         [missingInfo setObject:@"City" forKey:@"city"];
+                                     }
+                                     if (!hasState) {
+                                         [missingInfo setObject:@"State" forKey:@"state"];
+                                     }
+                                     if (!hasCountry) {
+                                         [missingInfo setObject:@"Country" forKey:@"country"];
+                                     }
+                                     
                                  }
                                  
                              }
                              
-                         }
-                         
-                         
-                         
-                         if (missingInfo.allKeys.count != 0) {
                              
-                             MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
-                             mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
-                             mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
-                             mf.delegate = self;
+                             if (missingInfo.allKeys.count != 0) {
+                                 
+                                 MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                                 mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
+                                 mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
+                                 mf.delegate = self;
+                                 
+                                 missingInfo = nil;
+                                 
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     [self.navigationController pushViewController:mf animated:YES];
+                                 });
+                                 
+                                 return;
+                             }
+                             else{
+                                 [self signUpSocialUser:dict];
+                            }
                              
-                             missingInfo = nil;
-                             
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 [self.navigationController pushViewController:mf animated:YES];
-                             });
-                             
-                             return;
                          }
                          else{
-                             
-                             [[BPUser sharedBP]signUpFacebookUser:dict completionBlock:^(BOOL completed,NSString *response){
-                                 
-                                 if (completed) {
-                                     [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-                                 }
-                                 else{
-                                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-                                 }
-                             }];
-                             
+                             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                          }
                          
                      }
                      else{
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                         NSLog(@"Error while downloading Twitter user data: %@", error);
                      }
-                     
-                     
                  }];
-                 */
-             }
+                              }
              else
              {
                  if (error == nil) {
@@ -494,6 +485,21 @@
         [alert show];
     }
     
+
+}
+
+-(void)signUpSocialUser:(NSDictionary *)dict{
+    
+    [[BPUser sharedBP]signUpSocialUser:dict completionBlock:^(BOOL completed,NSString *response){
+        
+        if (completed) {
+            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Failed" message:response delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        }
+    }];
 
 }
 

@@ -101,7 +101,16 @@
         [self hideLoading];
         
         if (completed) {
+            
             activities = [NSMutableArray arrayWithArray:objcts];
+            
+            if (activities.count > 0) {
+                self.noActivityFound.hidden = YES;
+            }
+            else{
+                self.noActivityFound.hidden = NO;
+            }
+            
             [self groupActivitiesByMonth];
             
 //            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
@@ -358,28 +367,28 @@
         
         UIImageView *imgV = (id)[cell viewWithTag:1];
         
-        NSString *extension;
+       // NSString *extension;
         NSString *imageName;
         
         if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-            extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@.%@",[wm.imagePath MD5],extension];
+          //  extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
         }
         else if (activity.eventActivity.count > 0){
             EventActivity *event = [activity.eventActivity firstObject];
             NSString *path = event.imageUrl;
-            extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+           // extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[path MD5]];
             
         }
         else if(activity.beeepInfoActivity.eventActivity != nil){
             EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-            extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
+        //    extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
         }
         else if ([wm.name isEqualToString:@"You"]){
-            extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+         //   extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
         }
         
         

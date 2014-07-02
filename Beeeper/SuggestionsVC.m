@@ -82,6 +82,13 @@
         [refreshControl endRefreshing];
         [self hideLoading];
         
+        if (objcts.count > 0) {
+            self.noSuggestionsLabel.hidden = YES;
+        }
+        else{
+            self.noSuggestionsLabel.hidden = NO;
+        }
+        
         if (completed) {
             suggestions = [NSMutableArray arrayWithArray:objcts];
             [self groupSuggestionsByMonth];
@@ -227,8 +234,8 @@
         beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
         
         //Image
-        NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[what.imageUrl MD5],extension];
+       // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[what.imageUrl MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         

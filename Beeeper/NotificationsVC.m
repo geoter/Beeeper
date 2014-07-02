@@ -113,9 +113,16 @@
             if (newNotifs>0 || oldNotifs > 0) {
                 loadNextPage = YES;
             }
-            
+
             newNotifications = [NSArray arrayWithArray:newNotifs];
             oldNotifications = [NSArray arrayWithArray:oldNotifs];
+
+            if (notifications.count == 0) {
+                self.noNotifsFound.hidden = NO;
+            }
+            else{
+                self.noNotifsFound.hidden = YES;
+            }
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }
@@ -221,29 +228,29 @@
     NSAttributedString *notification_text = [self textForNotification:activity];
     txtV.attributedText = notification_text;
 
-    NSString *extension;
+   //NSString *extension;
     NSString *imageName;
 
     
     if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-        extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[wm.imagePath MD5],extension];
+    //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
     }
     else if (activity.eventActivity.count > 0){
         EventActivity *event = [activity.eventActivity firstObject];
         NSString *path = event.imageUrl;
-        extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+     //   extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
     }
     else if(activity.beeepInfoActivity.eventActivity != nil){
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
+      //  extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
     }
     else if ([wm.name isEqualToString:@"You"]){
-        extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+      //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
     }
     
     
@@ -409,7 +416,7 @@
 
         CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
 
-        float height = 60.0;((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+        float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
 
         NSLog(@"H: %f",height);
 

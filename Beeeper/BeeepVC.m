@@ -626,7 +626,7 @@
         [self validTextfield:self.venueTxtF];
     }
     
-    if(values.allKeys.count < 14 || mpike)    return NO;
+    if(values.allKeys.count < 13 || mpike)    return NO;
     else return YES;
 }
 

@@ -397,9 +397,9 @@
 
 -(void)sendFacebook{
     
-    NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+ //   NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imageURL MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -446,9 +446,9 @@
 
 -(void)sendTwitter {
     
-    NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    //NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imageURL MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -587,7 +587,45 @@
 
 - (IBAction)suggestItPressed:(id)sender {
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    [self presentViewController:viewController animated:YES completion:NULL];
+    
+    NSString  *fingerPrint;
+
+    
+    Timeline_Object *t = tml; //one of those two will be used
+    Friendsfeed_Object *ffo = tml;
+    Suggestion_Object *sgo = tml;
+    
+    if ([tml isKindOfClass:[Timeline_Object class]]) {
+        fingerPrint = t.beeep.beeepInfo.fingerprint;
+    }
+    else if ([tml isKindOfClass:[Event_Show_Object class]]){
+        Event_Show_Object *activity = tml;
+        
+        fingerPrint = activity.eventInfo.fingerprint;
+        
+    }
+    else if([tml isKindOfClass:[Suggestion_Object class]]){
+        fingerPrint = sgo.what.fingerprint;
+    }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        Event_Search *eventS = tml;
+        fingerPrint = eventS.fingerprint;
+    }
+    
+    else{
+        fingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+    }
+    
+    viewController.fingerprint = fingerPrint;
+    
+    if (viewController.fingerprint != nil) {
+        [self presentViewController:viewController animated:YES completion:nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+
 
 }
 

@@ -308,9 +308,9 @@
         
         NSString *imagePath = [user objectForKey:@"image_path"];
         
-        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+       // NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -543,7 +543,7 @@
         
         UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
         
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1]];
 
         segment.delegate = self;
         [headerView addSubview:segment];
@@ -647,9 +647,9 @@
         
         UIImageView *imgV = (id)[cell viewWithTag:3];
         
-        NSString *extension = [[b.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[b.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[b.event.imageUrl MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[b.event.imageUrl MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         

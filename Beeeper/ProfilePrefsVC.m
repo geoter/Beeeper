@@ -79,14 +79,6 @@
             [dict setObject:lat forKey:@"lat"];
             [dict setObject:longitude forKey:@"long"];
     }
-    else{
-        [dict setObject:[user objectForKey:@"city"] forKey:@"city"];
-        [dict setObject:[user objectForKey:@"state"] forKey:@"state"];
-        [dict setObject:[user objectForKey:@"country"] forKey:@"country"];
-       // [dict setObject:[user objectForKey:@"lat"] forKey:@"lat"];
-       // [dict setObject:[user objectForKey:@"long"] forKey:@"long"];
-
-    }
     
     if (base64Image != nil) {
         [dict setObject:base64Image forKey:@"base64_image"];
@@ -98,7 +90,7 @@
             self.navigationItem.rightBarButtonItem = nil;
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
     }];
@@ -188,9 +180,9 @@
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+  //  NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

@@ -236,9 +236,9 @@ static BPSuggestions *thisWebServices = nil;
     @try {
             Who *w = object.who;
         
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+       //     NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -263,9 +263,9 @@ static BPSuggestions *thisWebServices = nil;
     
     @try {
             What_Suggest *what = object.what;
-            NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[what.imageUrl MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[what.imageUrl MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             

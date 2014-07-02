@@ -45,7 +45,7 @@
 
         [self.fields addEntriesFromDictionary:dict];
         
-        [[BPUser sharedBP]signUpFacebookUser:self.fields completionBlock:^(BOOL completed,NSString *response){
+        [[BPUser sharedBP]signUpSocialUser:self.fields completionBlock:^(BOOL completed,NSString *response){
 
             [self hideLoading];
             
@@ -58,7 +58,6 @@
             }
         }];
 
-        [self.navigationController popViewControllerAnimated:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing Fields" message:@"Please make sure you field all missing information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];

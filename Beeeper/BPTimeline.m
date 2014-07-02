@@ -226,9 +226,9 @@ static BPTimeline *thisWebServices = nil;
 
 -(void)downloadImage:(Timeline_Object *)tml{
     
-    NSString *extension = [[tml.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+   // NSString *extension = [[tml.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[tml.event.imageUrl MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[tml.event.imageUrl MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

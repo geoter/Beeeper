@@ -41,7 +41,7 @@ typedef void(^notifications_completed)(BOOL,id,id);
 -(void)loginTwitterUser:(NSString *)twitterid completionBlock:(completed)compbloc;
 
 -(void)signUpUser:(NSDictionary *)info completionBlock:(completed)compbloc;
--(void)signUpFacebookUser:(NSDictionary *)info completionBlock:(completed)compbloc;
+-(void)signUpSocialUser:(NSDictionary *)info completionBlock:(completed)compbloc;
 
 -(void)getFollowersWithCompletionBlock:(completed)compbloc;
 -(void)getFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;

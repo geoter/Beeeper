@@ -140,9 +140,9 @@
             
             txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
             
-            NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[commentObj.commenter.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[commentObj.commenter.imagePath MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -178,9 +178,9 @@
             
             NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
             
-            NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             

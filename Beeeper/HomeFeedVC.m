@@ -102,7 +102,7 @@
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
     layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 40;
+    layout.headerHeight = 45;
     layout.footerHeight = 50;
     layout.minimumColumnSpacing = 6;
     layout.minimumInteritemSpacing = 6;
@@ -169,6 +169,10 @@
             
             if (objs.count > 0) {
                 loadNextPage = YES;
+                self.noBeeepsLabel.hidden = YES;
+            }
+            else{
+                self.noBeeepsLabel.hidden = NO;
             }
             
             events = nil;
@@ -202,6 +206,8 @@
             
             if (objs.count != 0) {
                 
+                self.noBeeepsLabel.hidden = YES;
+                
                 beeeps = nil;
                 [events addObjectsFromArray:objs];
                 
@@ -211,6 +217,9 @@
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+            }
+            else{
+                self.noBeeepsLabel.hidden = NO;
             }
             
         }
@@ -232,6 +241,8 @@
           
             if (objs.count != 0) {
           
+                self.noBeeepsLabel.hidden = YES;
+                
                 beeeps = nil;
                 events = [NSMutableArray arrayWithArray:objs];
                 
@@ -241,6 +252,9 @@
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+            }
+            else{
+                 self.noBeeepsLabel.hidden = YES;
             }
         }
         
@@ -422,9 +436,9 @@
         beeeps.hidden = (beeeps.text.intValue == 0);
         
         
-        NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+      //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -556,9 +570,9 @@
             beeeps.hidden = (beeeps.text.intValue == 0);
 
             
-            NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+           // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[event.eventFfo.eventDetailsFfo.imageUrl MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[event.eventFfo.eventDetailsFfo.imageUrl MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -590,9 +604,9 @@
             
             beeepedByNameLabel.text = [event.whoFfo.name capitalizedString];
             
-            NSString *who_extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+           // NSString *who_extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *who_imageName = [NSString stringWithFormat:@"%@.%@",[event.whoFfo.imagePath MD5],extension];
+            NSString *who_imageName = [NSString stringWithFormat:@"%@",[event.whoFfo.imagePath MD5]];
             
             NSString *who_localPath = [documentsDirectoryPath stringByAppendingPathComponent:who_imageName];
             
@@ -635,7 +649,7 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
 
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Friends",@"All", nil] size:CGSizeMake(185, 25) selectedIndex:selectedIndex];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Friends'",@"All", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
         segment.delegate = self;
         [headerView addSubview:segment];
         segment.center = headerView.center;

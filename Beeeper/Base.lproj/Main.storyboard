@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rkg-sx-gen">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -65,21 +65,20 @@
                                     <outlet property="delegate" destination="Xbb-ty-Fke" id="oA4-f7-OyK"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFS-rI-Tgh">
-                                <rect key="frame" x="0.0" y="274" width="320" height="21"/>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFS-rI-Tgh">
+                                <rect key="frame" x="0.0" y="210" width="320" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727617263794" green="0.68235296010971069" blue="0.70980393886566162" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="xFD-0i-BJV" firstAttribute="centerY" secondItem="VFS-rI-Tgh" secondAttribute="centerY" id="0sb-yy-7c2"/>
                             <constraint firstAttribute="trailing" secondItem="xFD-0i-BJV" secondAttribute="trailing" id="7oh-RN-P7Q"/>
                             <constraint firstItem="xFD-0i-BJV" firstAttribute="top" secondItem="X1k-ET-KWa" secondAttribute="top" id="AkV-NU-Iff"/>
-                            <constraint firstItem="xFD-0i-BJV" firstAttribute="centerX" secondItem="VFS-rI-Tgh" secondAttribute="centerX" id="WKC-fJ-UI6"/>
                             <constraint firstItem="xFD-0i-BJV" firstAttribute="leading" secondItem="X1k-ET-KWa" secondAttribute="leading" id="Xi0-L4-9dP"/>
+                            <constraint firstItem="VFS-rI-Tgh" firstAttribute="top" secondItem="4Hm-Pl-bVl" secondAttribute="bottom" constant="146" id="dcj-Sy-uZd"/>
                             <constraint firstItem="JKG-Tm-fJ6" firstAttribute="top" secondItem="xFD-0i-BJV" secondAttribute="bottom" id="u8O-xS-oU2"/>
                         </constraints>
                     </view>
@@ -160,19 +159,29 @@
                                     <outlet property="delegate" destination="ssa-7w-8SZ" id="Ds0-6x-W0Z"/>
                                 </connections>
                             </tableView>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="No Activity found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xXk-L8-2Wc">
+                                <rect key="frame" x="7" y="210" width="306" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
+                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.83874117943548387" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="fPI-ma-JBg" firstAttribute="leading" secondItem="QVf-H5-g82" secondAttribute="leading" constant="7" id="3gm-Ud-glL"/>
+                            <constraint firstAttribute="centerY" secondItem="fPI-ma-JBg" secondAttribute="centerY" id="BkX-R4-pio"/>
                             <constraint firstItem="fPI-ma-JBg" firstAttribute="top" secondItem="QVf-H5-g82" secondAttribute="top" id="LOG-za-88K"/>
+                            <constraint firstItem="xXk-L8-2Wc" firstAttribute="top" secondItem="uj5-zO-bFK" secondAttribute="bottom" constant="190" id="PZL-LZ-tDi"/>
                             <constraint firstAttribute="trailing" secondItem="fPI-ma-JBg" secondAttribute="trailing" constant="7" id="VaW-Mw-OGq"/>
                             <constraint firstItem="98V-Iu-nNb" firstAttribute="top" secondItem="fPI-ma-JBg" secondAttribute="bottom" id="bqy-5G-l6H"/>
+                            <constraint firstAttribute="centerX" secondItem="fPI-ma-JBg" secondAttribute="centerX" id="ddT-z4-TP1"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Activity" id="AaK-ym-REy">
                         <barButtonItem key="backBarButtonItem" title=" " id="e5i-I5-zZv"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="noActivityFound" destination="xXk-L8-2Wc" id="ySe-RI-a2s"/>
                         <outlet property="tableV" destination="fPI-ma-JBg" id="9tM-f7-Zgy"/>
                     </connections>
                 </viewController>
@@ -204,7 +213,7 @@
                                     <constraint firstAttribute="height" constant="45" id="DEI-Ew-qcZ"/>
                                     <constraint firstAttribute="width" constant="133" id="m5u-gZ-7tH"/>
                                 </constraints>
-                                <state key="normal" title="Join Beeeper">
+                                <state key="normal" title="Sign Up">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -220,7 +229,7 @@
                                 <rect key="frame" x="167" y="506" width="133" height="47"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.97999999999999998" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Login">
+                                <state key="normal" title="Log In">
                                     <color key="titleColor" red="0.23137256503105164" green="0.27450981736183167" blue="0.3333333432674408" alpha="1" colorSpace="deviceRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -462,13 +471,22 @@ LA Lackers</string>
                                     <outlet property="delegate" destination="TXV-Bf-CiS" id="duI-je-KNW"/>
                                 </connections>
                             </tableView>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="No Suggestions found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Pz-NZ-UoI">
+                                <rect key="frame" x="7" y="210" width="306" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
+                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.85490196078431369" green="0.87450980392156863" blue="0.8901960784313725" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
+                            <constraint firstAttribute="centerY" secondItem="Grz-Ad-3wd" secondAttribute="centerY" id="97q-J8-tb5"/>
                             <constraint firstItem="Grz-Ad-3wd" firstAttribute="leading" secondItem="AiE-Tx-Hqf" secondAttribute="leading" constant="7" id="Bm5-WR-DOF"/>
                             <constraint firstAttribute="trailing" secondItem="Grz-Ad-3wd" secondAttribute="trailing" constant="7" id="C82-gO-qaJ"/>
                             <constraint firstItem="gy4-Tt-YT4" firstAttribute="top" secondItem="Grz-Ad-3wd" secondAttribute="bottom" id="T1B-sG-s6p"/>
                             <constraint firstItem="Grz-Ad-3wd" firstAttribute="top" secondItem="AiE-Tx-Hqf" secondAttribute="top" id="TtQ-rb-ddR"/>
+                            <constraint firstItem="6Pz-NZ-UoI" firstAttribute="top" secondItem="em1-Z9-pJ2" secondAttribute="bottom" constant="146" id="r24-8g-OZ4"/>
+                            <constraint firstAttribute="centerX" secondItem="Grz-Ad-3wd" secondAttribute="centerX" id="ww5-Fs-FV9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Suggestions" id="Aw7-FM-KfY">
@@ -476,6 +494,7 @@ LA Lackers</string>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="noSuggestionsLabel" destination="6Pz-NZ-UoI" id="Q7W-s3-Cwl"/>
                         <outlet property="tableV" destination="Grz-Ad-3wd" id="Fuv-XO-Vxw"/>
                     </connections>
                 </viewController>
@@ -499,7 +518,7 @@ LA Lackers</string>
                                 <rect key="frame" x="0.0" y="-2" width="320" height="570"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Join Beeeper" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bjg-xu-Ng5">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bjg-xu-Ng5">
                                         <rect key="frame" x="64" y="71" width="192" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -531,7 +550,7 @@ LA Lackers</string>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                        <state key="normal" title="Join">
+                                        <state key="normal" title="Sign Up">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -785,7 +804,7 @@ LA Lackers</string>
                                             <action selector="twitterLoginPressed:" destination="SAg-9i-iFi" eventType="touchUpInside" id="v7L-7h-j6b"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Join Beeeper" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xyb-SN-icg">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xyb-SN-icg">
                                         <rect key="frame" x="64" y="107" width="192" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>

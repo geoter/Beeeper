@@ -22,8 +22,10 @@
 #import "Beeep_Object.h"
 #import "CommentsVC.h"
 #import "Event_Search.h"
+#import <Social/Social.h>
+#import <MessageUI/MessageUI.h>
 
-@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>{
+@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate>{
 
     NSMutableArray *comments;
     NSMutableArray *beeepers;
@@ -39,6 +41,8 @@
     Event_Show_Object *event_show_Objct; //-(void)showEventForActivityWithBeeep
     
     NSString *fingerprint;
+    NSString *websiteURL;
+    NSMutableString *shareText;
 }
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -226,10 +230,12 @@
     monthLbl.text = [month uppercaseString];
     dayLbl.text = [[components firstObject] uppercaseString];
     
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     //Website
     
     NSString *website = suggestion.what.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -334,8 +340,8 @@
     
     @try {
         
-        extension  = [[suggestion.what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[suggestion.what.imageUrl MD5],extension];
+     //   extension  = [[suggestion.what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[suggestion.what.imageUrl MD5]];
         
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -403,10 +409,14 @@
     monthLbl.text = [month uppercaseString];
     dayLbl.text = [[components firstObject] uppercaseString];
     
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+    
     //Website
     
     NSString *website = ffo.eventFfo.eventDetailsFfo.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -509,8 +519,8 @@
     
     @try {
         
-        extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5],extension];
+       // extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5]];
 
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -573,12 +583,15 @@
     monthLbl.text = [month uppercaseString];
     dayLbl.text = [[components firstObject] uppercaseString];
     
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     //Website
     
     NSString *website;
 
     website = t.event.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -679,8 +692,8 @@
     
     @try {
         
-        extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[t.event.imageUrl MD5],extension];
+        //extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[t.event.imageUrl MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -745,10 +758,14 @@
     monthLbl.text = [month uppercaseString];
     dayLbl.text = [[components firstObject] uppercaseString];
     
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+    
     //Website
     
     NSString *website = event.eventInfo.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -859,9 +876,9 @@
     
     @try {
         
-        extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[event.eventInfo.imageUrl MD5],extension];
+       // extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
+        imageName  = [NSString stringWithFormat:@"%@",[event.eventInfo.imageUrl MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -876,6 +893,8 @@
         else{
             imgV.backgroundColor = [UIColor lightGrayColor];
             imgV.image = nil;
+            
+            [[DTO sharedDTO]downloadImageFromURL:event.eventInfo.imageUrl];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
         }
         
@@ -1092,9 +1111,49 @@
 
 
 -(void)showMore{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"More" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", @"Share via Email", @"Copy Link", nil];
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", nil];
     
-    actionSheet.actionSheetStyle = UIActionSheetStyleDefault; [actionSheet showInView:self.view];
+    if ([MFMailComposeViewController canSendMail]) {
+        [actionSheet addButtonWithTitle:@"Share via Email"];
+    }
+    
+    if (websiteURL != nil) {
+        [actionSheet addButtonWithTitle:@"Copy Link"];
+    }
+    
+    [actionSheet showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0:
+            
+            break;
+        case 1:
+            [self sendFacebook];
+            break;
+        case 2:
+            [self sendTwitter];
+            break;
+        case 3:
+            if ([MFMailComposeViewController canSendMail]) {
+                [self sendEmail];
+            }
+            else{
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = websiteURL;
+            }
+            break;
+        case 4:
+        {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = websiteURL;
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 -(void)beeepIt:(NSNotification *)notif{
@@ -1153,6 +1212,105 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+-(void)sendFacebook{
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+    
+    [composeController setInitialText:shareText];
+    
+    if (self.eventImageV.image != nil) {
+        
+        [composeController addImage:self.eventImageV.image];
+        
+    }
+    
+    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultCancelled) {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Error posting on Facebook!"];
+        } else
+            
+        {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+    
+    
+}
+
+-(void)sendTwitter {
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    
+    [composeController setInitialText:shareText];
+    
+    if (self.eventImageV.image != nil) {
+        
+        [composeController addImage:self.eventImageV.image];
+        
+    }
+    
+    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultCancelled) {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Error posting on Twitter!"];
+        } else
+            
+        {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+}
+
+-(void)sendEmail{
+    
+        MFMailComposeViewController *mailComposer =
+        [[MFMailComposeViewController alloc] init];
+        [mailComposer setSubject:@"Check out this Event I found on Beeeper for iOS"];
+        NSString *message = shareText;
+        [mailComposer setMessageBody:message
+                              isHTML:YES];
+        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
+        [mailComposer addAttachmentData:imageData mimeType:@"image/jpeg" fileName:[NSString stringWithFormat:@"%@.jpg",self.titleLabel.text]];
+        mailComposer.mailComposeDelegate = self;
+        [self presentViewController:mailComposer animated:YES completion:nil];
+}
+
+#pragma mark MFMailComposeViewControllerDelegate
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller
+         didFinishWithResult:(MFMailComposeResult)result
+                       error:(NSError *)error{
+    if (result == MFMailComposeResultSent) {
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Email Sent!"];
+    }
+    else if(result == MFMailComposeResultFailed){
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Error sendig email"];
+
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - COMMENTS
 
 #pragma mark - Table view data source
@@ -1203,9 +1361,9 @@
         }
     }
     
-    NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+  // NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[cmnts.commenter.imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[cmnts.commenter.imagePath MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

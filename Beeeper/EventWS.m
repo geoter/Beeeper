@@ -757,9 +757,9 @@ static EventWS *thisWebServices = nil;
 
 -(void)downloadImage:(Event_Search *)tml{
     
-    NSString *extension = [[tml.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+   // NSString *extension = [[tml.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[tml.imageUrl MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[tml.imageUrl MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

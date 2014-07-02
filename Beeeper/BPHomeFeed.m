@@ -227,9 +227,9 @@ static BPHomeFeed *thisWebServices = nil;
 
 -(void)downloadImage:(Friendsfeed_Object *)ffo{
     
-    NSString *extension = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+  //  NSString *extension = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -245,7 +245,7 @@ static BPHomeFeed *thisWebServices = nil;
 
     //for Beeeped By user
     
-    NSString *beeepedBy_imageName = [NSString stringWithFormat:@"%@.%@",[ffo.whoFfo.imagePath MD5],extension];
+    NSString *beeepedBy_imageName = [NSString stringWithFormat:@"%@",[ffo.whoFfo.imagePath MD5]];
     
     NSString *beeepedBy_localPath = [documentsDirectoryPath stringByAppendingPathComponent:beeepedBy_imageName];
     

@@ -19,7 +19,7 @@
     return self;
 }
 
-+(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index{
++(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index selectionColor:(UIColor *)color{
    
     GTSegmentedControl *customView = [[[NSBundle mainBundle] loadNibNamed:@"GTSegmentedControl" owner:nil options:nil] lastObject];
     
@@ -30,7 +30,7 @@
     //    customView.layer.borderColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1].CGColor;
         customView.frame = CGRectMake(0, 0, s.width, s.height);
         
-        CGFloat width = s.width/o.count;
+        CGFloat width = s.width/o.count ;
         CGPoint selectionCenter;
         
         for (NSString *option in o) {
@@ -52,8 +52,8 @@
             }
         }
         
-        UIView *selectionV = [[UIView alloc]initWithFrame:CGRectMake(0, 2, width-4, s.height-4)];
-        selectionV.backgroundColor = [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
+        UIView *selectionV = [[UIView alloc]initWithFrame:CGRectMake(0, 1, width-2, s.height-2)];
+        selectionV.backgroundColor = color;
         selectionV.center = selectionCenter;
         [customView addSubview:selectionV];
         selectionV.tag = 99;

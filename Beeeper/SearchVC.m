@@ -203,7 +203,7 @@
 
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Upcoming Beeeps Found" message:@"Please search for another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No upcoming Beeeps Found" message:@"Please search for another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
         }
     }];
@@ -433,9 +433,9 @@
     beeeps.hidden = (beeeps.text.intValue == 0);
     
     
-    NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+  //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     

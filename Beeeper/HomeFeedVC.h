@@ -10,6 +10,7 @@
 
 @interface HomeFeedVC : UIViewController
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
+@property (weak, nonatomic) IBOutlet UILabel *noBeeepsLabel;
 
 - (IBAction)beeepPressed:(id)sender;
 - (IBAction)eventBeeepPressed:(id)sender;

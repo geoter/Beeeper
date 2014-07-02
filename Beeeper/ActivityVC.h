@@ -10,5 +10,6 @@
 
 @interface ActivityVC : UIViewController
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
+@property (weak, nonatomic) IBOutlet UILabel *noActivityFound;
 
 @end

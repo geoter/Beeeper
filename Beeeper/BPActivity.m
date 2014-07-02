@@ -413,9 +413,9 @@ static BPActivity *thisWebServices = nil;
     @try {
         for (Who *w in actv.who) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+     //       NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -443,9 +443,9 @@ static BPActivity *thisWebServices = nil;
     @try {
         for (Whom *w in actv.whom) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -474,9 +474,9 @@ static BPActivity *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -497,9 +497,9 @@ static BPActivity *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+       // NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         

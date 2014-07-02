@@ -213,7 +213,10 @@
     else
     {
         NSLog(@"Not Configured in Settings......"); // show user an alert view that Twitter is not configured in settings.
-        
+       
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Facebook account" message:@"There are no Facebook accounts configured.You can add or create a Facebook account in Settings." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+        [alert show];
+       /*
         if (FBSession.activeSession.state == FBSessionStateOpen
             || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
             
@@ -253,7 +256,7 @@
                  
              }];
         }
-
+*/
     }
 
     

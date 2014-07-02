@@ -22,6 +22,6 @@
 
 -(void)buttonClicked:(UIButton *)btn;
 
-+(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index;
++(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index selectionColor:(UIColor *)color;
 
 @end

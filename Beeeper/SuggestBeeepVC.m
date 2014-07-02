@@ -208,9 +208,9 @@
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
@@ -224,9 +224,9 @@
         userImage.image = nil;
         [pendingImagesDict setObject:indexPath forKey:imageName];
         
-        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+      //  NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
     }

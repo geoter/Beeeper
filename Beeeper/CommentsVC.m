@@ -57,12 +57,6 @@
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationController.navigationBar.backItem.title = @"";
 
-    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
-    
-    UIView *container = [self container];
-    [container addSubview:[self composeBarView]];
-    [self.view addSubview:container];
-
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -71,6 +65,12 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
+    
+    UIView *container = [self container];
+    [container addSubview:[self composeBarView]];
+    [self.view addSubview:container];
     
     [self.tableV reloadData];
    // self.tableV.alpha = 1;
@@ -372,6 +372,7 @@
                         options:(animationCurve << 16)|UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
                          [[self container] setFrame:newContainerFrame];
+                         self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, newContainerFrame.origin.y);
                      }
                      completion:NULL];
 }

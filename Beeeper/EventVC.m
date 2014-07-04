@@ -1127,16 +1127,16 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     switch (buttonIndex) {
-        case 0:
+        case 1:
             
             break;
-        case 1:
+        case 2:
             [self sendFacebook];
             break;
-        case 2:
+        case 3:
             [self sendTwitter];
             break;
-        case 3:
+        case 4:
             if ([MFMailComposeViewController canSendMail]) {
                 [self sendEmail];
             }
@@ -1145,7 +1145,7 @@
                 pasteboard.string = websiteURL;
             }
             break;
-        case 4:
+        case 5:
         {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = websiteURL;
@@ -1230,12 +1230,7 @@
     
     
     SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
-        if (result == SLComposeViewControllerResultCancelled) {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Error posting on Facebook!"];
-        } else
-            
-        {
+        if (result == SLComposeViewControllerResultDone){
             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
             [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
         }
@@ -1265,12 +1260,7 @@
     
     
     SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
-        if (result == SLComposeViewControllerResultCancelled) {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Error posting on Twitter!"];
-        } else
-            
-        {
+        if (result == SLComposeViewControllerResultDone) {
             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
             [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
         }

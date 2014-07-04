@@ -351,7 +351,7 @@
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[event.title capitalizedString]];
+        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[NSString stringWithUTF8String:[[event.title capitalizedString] cStringUsingEncoding:[NSString defaultCStringEncoding]]]];
     }
     else{
         formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];

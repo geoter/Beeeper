@@ -100,6 +100,7 @@
 -(void)groupSuggestionsByMonth{
     
     sections = [NSMutableArray array];
+    suggestionsPerSection = [NSMutableDictionary dictionary];
     
     [suggestions sortUsingComparator:^NSComparisonResult(Suggestion_Object *obj1, Suggestion_Object *obj2) {
         
@@ -269,6 +270,11 @@
 
 }
 
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 7;
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     if(section == sections.count) {
@@ -277,11 +283,7 @@
     else{
         return 47;
     }
-
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 7;
+    
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{

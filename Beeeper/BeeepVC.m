@@ -407,7 +407,7 @@
     textView.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     if ([textView.text isEqualToString:@"HASHTAGS (OPTIONAL)"]) {
-        textView.text = @"";
+        textView.text = @"#";
     }
     
     return YES;
@@ -429,6 +429,8 @@
     else{
         //save value
         
+         [values setObject:typedStr forKey:@"keywords"];
+        
         if ([text isEqualToString:@"\n"]) {
             
             [self.containerScrollV setContentOffset:CGPointZero animated:YES];
@@ -436,8 +438,13 @@
             // Return FALSE so that the final '\n' character doesn't get added
             return NO;
         }
+        else if ([text isEqualToString:@","]){
+            textView.text = [typedStr stringByReplacingOccurrencesOfString:@"," withString:@"#"];
+            return NO;
+        }
+      
         
-        [values setObject:typedStr forKey:@"keywords"];
+
     }
 
     
@@ -496,6 +503,10 @@
             UITextField *txtF = (UITextField *)v;
             [self textFieldShouldReturn:txtF];
         }
+        else if ([v isKindOfClass:[UITextView class]]){
+            UITextView *txtV = (id)v;
+            [txtV resignFirstResponder];
+        }
     }
 
 }
@@ -528,12 +539,14 @@
         NSString *keywords_comma  = [values objectForKey:@"keywords"];
         
         if (keywords_comma) {
-            NSArray *words = [keywords_comma componentsSeparatedByString:@","];
+            NSArray *words = [keywords_comma componentsSeparatedByString:@"#"];
             
             for (NSString *word in words)  {
-                [keywords appendFormat:@"%@,",word];
+                NSString *formatted_word = [word stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                [keywords appendFormat:@"%@,",formatted_word];
             }
             [keywords deleteCharactersInRange:NSMakeRange([keywords length]-1, 1)];
+            [keywords deleteCharactersInRange:NSMakeRange(0, 1)];
         }
         
         [values setObject:keywords forKey:@"keywords"];

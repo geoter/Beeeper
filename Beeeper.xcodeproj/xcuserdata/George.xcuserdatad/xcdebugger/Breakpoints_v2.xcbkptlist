@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "426420073.526189"
+            timestampString = "426424507.916705"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1193"
-            endingLineNumber = "1193"
+            startingLineNumber = "1202"
+            endingLineNumber = "1202"
             landmarkName = "-getOldNotificationsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "426420073.526189"
+            timestampString = "426424507.916705"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1310"
-            endingLineNumber = "1310"
+            startingLineNumber = "1319"
+            endingLineNumber = "1319"
             landmarkName = "-downloadImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "426420073.526189"
+            timestampString = "426424507.916705"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1287"
-            endingLineNumber = "1287"
+            startingLineNumber = "1296"
+            endingLineNumber = "1296"
             landmarkName = "-downloadImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPUser.m"
-            timestampString = "426420073.526189"
+            timestampString = "426424507.916705"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1423"
-            endingLineNumber = "1423"
+            startingLineNumber = "1432"
+            endingLineNumber = "1432"
             landmarkName = "@implementation BPUser"
             landmarkType = "3">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/TimelineVC.m"
-            timestampString = "426417700.558205"
+            timestampString = "426424611.450995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "590"
-            endingLineNumber = "590"
+            startingLineNumber = "593"
+            endingLineNumber = "593"
             landmarkName = "-tableView:numberOfRowsInSection:"
             landmarkType = "5">
          </BreakpointContent>
@@ -410,12 +410,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/TimelineVC.m"
-            timestampString = "426417700.558205"
+            timestampString = "426424611.450995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "600"
-            endingLineNumber = "600"
+            startingLineNumber = "603"
+            endingLineNumber = "603"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/BPUser.m"
+            timestampString = "426423559.783814"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "272"
+            endingLineNumber = "272"
+            landmarkName = "-fbSignupReceived:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/TimelineVC.m"
+            timestampString = "426424751.773668"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "382"
+            endingLineNumber = "382"
+            landmarkName = "-downloadUserImageIfNecessery"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

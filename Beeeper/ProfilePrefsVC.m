@@ -44,6 +44,11 @@
 
 -(void)savePressed{
     
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    UIBarButtonItem * barButton = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
+    [self navigationItem].rightBarButtonItem = barButton;
+    [activityIndicator startAnimating];
+    
     NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
     [dict setObject:self.usernameTextfield.text forKey:@"username"];
     [dict setObject:self.firstNameTextfield.text forKey:@"name"];
@@ -85,13 +90,18 @@
     }
     
     [[BPUser sharedBP]setUserSettings:dict WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        if (completed) {
+        if (completed) { 
+            
             [SVProgressHUD showSuccessWithStatus:@"Successfully \nupdated"];
             self.navigationItem.rightBarButtonItem = nil;
         }
         else{
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
+            
+            UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+                                                                            style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
+            self.navigationItem.rightBarButtonItem = rightButton;
         }
     }];
     
@@ -413,7 +423,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
-        NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
+        NSData *imageData = UIImageJPEGRepresentation(img, 0.6);
         base64Image = [self base64forData:imageData];
         
         if (base64Image != nil) {
@@ -531,7 +541,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.6);
     base64Image = [self base64forData:imageData];
     
     if (base64Image != nil) {
@@ -565,7 +575,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.6);
     base64Image = [self base64forData:imageData];
     
     if (base64Image != nil) {

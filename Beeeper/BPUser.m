@@ -201,7 +201,7 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:30.0];
     
     [request setDelegate:self];
     
@@ -268,7 +268,9 @@ static BPUser *thisWebServices = nil;
 
 -(void)fbSignupReceived:(ASIHTTPRequest *)request{
  
-    NSString *responseString = [request responseString];
+  //  NSString *responseString = [request responseString];
+
+    NSString *responseString = @"{\"id\":\"1404730445.521045345363001\",\"username\":\"maromm\",\"email\":\"maria.maraki.mario.maro@hotmail.com\",\"name\":\"maria\",\"lastname\":\"\",\"timezone\":\"180\",\"password\":\"8cb2237d0679ca88db6464eac60da96345513964\",\"locked\":\"0\",\"city\":\"cholargos\",\"state\":\"athens\",\"country\":\"greece\",\"long\":\"37.9978\",\"lat\":\"23.7926\",\"last_login\":\"\",\"sex\":\"\",\"fbid\":\"\",\"twid\":\"\",\"fbtoken\":"",\"twtoken\":"",\"active\":\"0\",\"image_path\":\"\",\"about\":\"\",\"website\":\"\",\"se_on\":\"1\"}";
     
     NSDictionary * response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
    
@@ -277,34 +279,29 @@ static BPUser *thisWebServices = nil;
         
       NSDictionary *error = [errors firstObject];
         
-      self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
+        if (error != nil) {
+            self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
+        }
+        else{
+            NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
+            [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    self.fbSignUpCompleted(completed,user);
+                }
+                else{
+                    self.fbSignUpCompleted(NO,nil);
+                }
+            }];
+        }
         
-     return;
-        
-    }
-    @catch (NSException *exception) {
-
-    }
-    @finally {
-
-    }
-    
-    @try {
-        NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
-        [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
-            if (completed) {
-                self.fbSignUpCompleted(completed,user);
-            }
-        }];
     }
     @catch (NSException *exception) {
         self.fbSignUpCompleted(NO,nil);
+
     }
     @finally {
-        
-    }
 
-    
+    }
     
 }
 
@@ -381,6 +378,18 @@ static BPUser *thisWebServices = nil;
     
     NSArray *responseArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     self.user = responseArray.firstObject;
+    
+    //if user added new image erase the old one
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@",[[[BPUser sharedBP].user objectForKey:@"image_path"] MD5]];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        [[NSFileManager defaultManager]removeItemAtPath:localPath error:NULL];
+    }
 
 }
 

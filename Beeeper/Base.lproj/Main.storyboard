@@ -540,7 +540,7 @@ LA Lackers</string>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="next" secureTextEntry="YES"/>
                                         <connections>
                                             <outlet property="delegate" destination="Jo9-jy-Jm9" id="tZK-th-dsE"/>
                                         </connections>

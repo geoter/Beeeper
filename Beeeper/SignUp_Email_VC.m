@@ -26,6 +26,7 @@
     BOOL hasSex;
     BOOL hasPassword;
    UITapGestureRecognizer *tapG;
+    BOOL agreeTerms;
 }
 @end
 
@@ -72,6 +73,12 @@
 
 - (IBAction)registerPressed:(id)sender {
    
+    if (!agreeTerms) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Terms of Use" message:@"To Sign Up,please agree with our Terms of Use and Privacy Policy." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
+    
     for (UIView *sub in [self.scrollV subviews]) {
         if ([sub isKindOfClass:[UITextField class]]) {
             switch (sub.tag) {
@@ -104,8 +111,8 @@
     
     hasUsername = ([values objectForKey:@"username"] != nil);
     hasEmail = ([values objectForKey:@"email"] != nil);
-    hasFirstName = ([values objectForKey:@"first_name"] != nil);
-    hasLastName = ([values objectForKey:@"last_name"] != nil);
+    hasFirstName = ([values objectForKey:@"name"] != nil);
+    hasLastName = ([values objectForKey:@"lastname"] != nil);
     hasSex = ([values objectForKey:@"gender"] != nil);
     hasPassword = ([values objectForKey:@"password"] != nil);
 
@@ -158,10 +165,10 @@
                     [missingInfo setObject:@"Email" forKey:@"email"];
                 }
                 if (!hasFirstName) {
-                    [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                    [missingInfo setObject:@"First Name" forKey:@"name"];
                 }
                 if (!hasLastName) {
-                    [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                    [missingInfo setObject:@"Last Name" forKey:@"lastname"];
                 }
                 
                 if (!hasCity) {
@@ -279,10 +286,12 @@
     if (sender.tag == 0) {
         [sender setImage:[UIImage imageNamed:@"checkbox_check"] forState:UIControlStateNormal];
         sender.tag = 1;
+        agreeTerms = YES;
     }
     else{
         [sender setImage:[UIImage imageNamed:@"checkbox_empty"] forState:UIControlStateNormal];
         sender.tag = 0;
+        agreeTerms = NO;
     }
 }
 

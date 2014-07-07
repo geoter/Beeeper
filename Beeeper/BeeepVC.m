@@ -835,7 +835,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
-        NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
+        NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
         base64Image = [self base64forData:imageData];
         
         [self imageSelected:chosenPhotoBtn];
@@ -925,7 +925,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
     base64Image = [self base64forData:imageData];
     
     [self imageSelected:chosenPhotoBtn];
@@ -952,7 +952,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    NSData *imageData = UIImageJPEGRepresentation(image, .8);
     base64Image = [self base64forData:imageData];
     
     [self imageSelected:chosenPhotoBtn];

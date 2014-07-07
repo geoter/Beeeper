@@ -330,10 +330,10 @@
                             [missingInfo setObject:@"Email" forKey:@"email"];
                         }
                         if (!hasFirstName) {
-                            [missingInfo setObject:@"First Name" forKey:@"first_name"];
+                            [missingInfo setObject:@"First Name" forKey:@"name"];
                         }
                         if (!hasLastName) {
-                            [missingInfo setObject:@"Last Name" forKey:@"last_name"];
+                            [missingInfo setObject:@"Last Name" forKey:@"lastname"];
                         }
                         
                         if (!hasCity) {

@@ -68,6 +68,9 @@
     @try {
     
         NSLog(@"Mpike");
+        
+        [self setUserInfo];
+        
         loading = YES;
         loadNextPage = YES;
         

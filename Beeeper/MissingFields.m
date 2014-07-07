@@ -40,9 +40,11 @@
 
 -(void)save{
     
-    [self showLoading];
-    if (dict.allKeys.count == self.misssingfields.allKeys.count) {
 
+    if (dict.allKeys.count == self.misssingfields.allKeys.count) {
+        
+        [self showLoading];
+        
         [self.fields addEntriesFromDictionary:dict];
         
         [[BPUser sharedBP]signUpSocialUser:self.fields completionBlock:^(BOOL completed,NSString *response){

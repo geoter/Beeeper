@@ -43,6 +43,7 @@
     NSString *fingerprint;
     NSString *websiteURL;
     NSMutableString *shareText;
+    NSMutableArray* rowsToReload;
 }
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -68,6 +69,8 @@
     [super viewDidLoad];
     
     [self showLoading];
+    
+    rowsToReload = [NSMutableArray array];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
@@ -100,6 +103,10 @@
                         [self showEventForActivityWithBeeep];
                     }
                 }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                }
             }];
 
         }
@@ -115,6 +122,10 @@
                           [self showEventForActivityWithBeeep];
                     }
                 }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                }
             }];
         }
 
@@ -128,6 +139,10 @@
             if (completed) {
                 event_show_Objct = event;
                 [self showEventForActivityWithBeeep];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
             }
         }];
 
@@ -933,25 +948,32 @@
     
 }
 
--(void)imageDownloadFinished:(NSNotification *)notif{ //comments
+-(void)imageDownloadFinished:(NSNotification *)notif{
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-       
-        @try {
-            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-            [pendingImagesDict removeObjectForKey:imageName];
-        }
-        @catch (NSException *exception) {
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-        }
-        @finally {
-            
-        }
-    });
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
 

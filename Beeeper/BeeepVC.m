@@ -530,7 +530,7 @@
      ];
 }
 
-- (IBAction)nextPressed:(id)sender {
+- (IBAction)nextPressed:(UIButton *)sender {
  
     //adjust format of keywords
     @try {
@@ -560,6 +560,13 @@
         BOOL proceed = [self areAllDataAvailable:values];
         
         if (proceed) {
+            
+            UIActivityIndicatorView *activityInd = [[UIActivityIndicatorView alloc]initWithFrame:sender.bounds];
+            activityInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+            [sender setTitle:@"" forState:UIControlStateNormal];
+            [sender addSubview:activityInd];
+            [activityInd startAnimating];
+            
             [[BPCreate sharedBP]eventCreate:values completionBlock:^(BOOL completed,id objs){
                 
                 if (completed) {
@@ -593,6 +600,13 @@
     //                 ];;
                     
                     [self.navigationController presentViewController:viewController animated:YES completion:NULL];
+                }
+                else{
+                    [sender setTitle:@"NEXT" forState:UIControlStateNormal];
+                    [activityInd removeFromSuperview];
+                    
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event could not be created. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
                 }
             }];
         }
@@ -946,6 +960,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self hideImagePicker];
 
 }
+
 
 
 

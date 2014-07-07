@@ -48,6 +48,8 @@
     BOOL oldNotificationsFinished;
     int page_new;
     int page_old;
+    
+    NSString *_userID;
 }
 
 @end
@@ -432,11 +434,53 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - Follow
 
+-(void)getLocalFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+
+    self.localFollowersCompleted= compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",user_id]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
+    self.localFollowersCompleted(YES,users);
+
+
+}
+
+-(void)getLocalFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+    
+    self.localFollowingCompleted= compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",user_id]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
+    self.localFollowingCompleted(YES,users);
+
+}
+
 -(void)getFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
   
     if (user_id == nil) {
         user_id = [[BPUser sharedBP].user objectForKey:@"id"];
     }
+    _userID = user_id;
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/followers/show"];
     
@@ -487,6 +531,8 @@ static BPUser *thisWebServices = nil;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"user=%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
     
+    _userID = [[BPUser sharedBP].user objectForKey:@"id"];
+    
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
         
@@ -518,8 +564,16 @@ static BPUser *thisWebServices = nil;
 }
 
 -(void)followersReceived:(ASIHTTPRequest *)request{
+
     
     NSString *responseString = [request responseString];
+
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",_userID]];
+    NSError *error;
+    BOOL success  = [responseString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -548,6 +602,7 @@ static BPUser *thisWebServices = nil;
     if (user_id == nil) {
         user_id = [[BPUser sharedBP].user objectForKey:@"id"];
     }
+    _userID = user_id;
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/following/show"];
     
@@ -593,10 +648,10 @@ static BPUser *thisWebServices = nil;
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/following/show"];
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/following/show?"];
-    
+
     NSDictionary *dict = [BPUser sharedBP].user;
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"user=%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    [array addObject:[NSString stringWithFormat:@"user=%@",_userID]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -631,6 +686,16 @@ static BPUser *thisWebServices = nil;
 -(void)followingReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",_userID]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     

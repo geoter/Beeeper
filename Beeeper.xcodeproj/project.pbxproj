@@ -43,6 +43,8 @@
 		5E51DF091965A5840061AE2A /* SPGooglePlacesAutocompleteQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51DF011965A5840061AE2A /* SPGooglePlacesAutocompleteQuery.m */; };
 		5E51DF0A1965A5840061AE2A /* SPGooglePlacesAutocompleteUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51DF031965A5840061AE2A /* SPGooglePlacesAutocompleteUtilities.m */; };
 		5E51DF0B1965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51DF051965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m */; };
+		5E51DF0E196A9ABB0061AE2A /* timeline-time-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E51DF0C196A9ABB0061AE2A /* timeline-time-frame.png */; };
+		5E51DF0F196A9ABB0061AE2A /* timeline-time-frame@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E51DF0D196A9ABB0061AE2A /* timeline-time-frame@2x.png */; };
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
@@ -568,6 +570,8 @@
 		5E51DF031965A5840061AE2A /* SPGooglePlacesAutocompleteUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesAutocompleteUtilities.m; sourceTree = "<group>"; };
 		5E51DF041965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGooglePlacesPlaceDetailQuery.h; sourceTree = "<group>"; };
 		5E51DF051965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesPlaceDetailQuery.m; sourceTree = "<group>"; };
+		5E51DF0C196A9ABB0061AE2A /* timeline-time-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "timeline-time-frame.png"; sourceTree = "<group>"; };
+		5E51DF0D196A9ABB0061AE2A /* timeline-time-frame@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "timeline-time-frame@2x.png"; sourceTree = "<group>"; };
 		5E9D2DA2192DDCF700A765C9 /* BPCreate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPCreate.h; sourceTree = "<group>"; };
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPCreate.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
@@ -1385,6 +1389,8 @@
 		9615E8BE192DB77A0099B3E0 /* new */ = {
 			isa = PBXGroup;
 			children = (
+				5E51DF0C196A9ABB0061AE2A /* timeline-time-frame.png */,
+				5E51DF0D196A9ABB0061AE2A /* timeline-time-frame@2x.png */,
 				CEA1132819530D00003C8D7B /* import-icon-timeline@2x.png */,
 				CEA1132919530D00003C8D7B /* import-icon-timeline.png */,
 				CEA1132A19530D00003C8D7B /* settings-icon-timeline.png */,
@@ -2733,6 +2739,7 @@
 				CE042A021938BF6700E3167A /* pin-black@2x.png in Resources */,
 				9615E8CE192DB7870099B3E0 /* activityBtn@2x.png in Resources */,
 				CEF263C018DC7F080047510D /* likes_icon_event@2x.png in Resources */,
+				5E51DF0F196A9ABB0061AE2A /* timeline-time-frame@2x.png in Resources */,
 				CEF263A418DC59A10047510D /* 15.png in Resources */,
 				CE29EE4718D9CADB0001EC43 /* pin_icon@2x.png in Resources */,
 				CEF2639D18DC59A10047510D /* 8.png in Resources */,
@@ -2774,6 +2781,7 @@
 				CE35D1ED18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard in Resources */,
 				CE529C5D18DB0FEE00900EB6 /* picture_5@2x.png in Resources */,
 				CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */,
+				5E51DF0E196A9ABB0061AE2A /* timeline-time-frame.png in Resources */,
 				CE042A0A1938D4B700E3167A /* selection0cirlce-suggestit@2x.png in Resources */,
 				CE29EE3118D9CADB0001EC43 /* beeeper_logo@2x.png in Resources */,
 				CE0C882318D0BE5A00BA548F /* option_2_gray@2x.png in Resources */,
@@ -3202,7 +3210,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3225,7 +3233,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

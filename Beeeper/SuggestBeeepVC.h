@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *searchTxtF;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (nonatomic,strong) NSString *fingerprint;
+@property (weak, nonatomic) IBOutlet UILabel *noBeeepersFoundLbl;
 
 - (IBAction)closePressed:(id)sender;
 - (IBAction)donePressed:(id)sender;

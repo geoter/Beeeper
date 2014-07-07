@@ -18,6 +18,7 @@
     NSMutableDictionary *pendingImagesDict;
     BOOL loadNextPage;
     NSMutableDictionary *activitiesPerSection;
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -27,7 +28,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    rowsToReload = [NSMutableArray array];
     
     [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
@@ -425,6 +426,16 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == sections.count+1 && loadNextPage){
+        return 51;
+    }
+    else{
+        return 60;
+    }
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
     if(section == sections.count) {
@@ -458,26 +469,37 @@
     NSString *month = [components objectAtIndex:0];
     NSString *daynumber = [components objectAtIndex:1];
     
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 44)];
-    header.backgroundColor = [UIColor whiteColor];
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
+    header.backgroundColor = [UIColor clearColor];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 46)];
+    [backV setBackgroundColor:[UIColor whiteColor]];
+    [header addSubview:backV];
     
-    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 303, 18)];
+    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
     mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     mlbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
     mlbl.text = [month uppercaseString];
     mlbl.textAlignment = NSTextAlignmentCenter;
-    [header addSubview:mlbl];
+    [backV addSubview:mlbl];
     
-    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 303, 18)];
+    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
     dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
-    [header addSubview:dlbl];
-    
+    [backV addSubview:dlbl];
     
     return header;
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    
+    
+      UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
+      footer.backgroundColor = [UIColor clearColor];
+      return footer;
+}
+
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -525,24 +547,31 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        @try {
-            [pendingImagesDict removeObjectForKey:imageName];
-            if (pendingImagesDict.count == 0) {
-                  NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-                  [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
             }
-        }
-        @catch (NSException *exception) {
-            
-        }
-        @finally {
-            
-        }
-    });
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
+
 
 
 #pragma mark - Navigation

@@ -15,6 +15,7 @@
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *selectedPeople;
     NSArray *filteredPeople;
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -39,6 +40,7 @@
     // Do any additional setup after loading the view.
     [self adjustFonts];
     
+    rowsToReload = [NSMutableArray array];
     selectedPeople = [NSMutableArray array];
     pendingImagesDict = [NSMutableDictionary dictionary];
     
@@ -47,6 +49,12 @@
     
     [[BPUser sharedBP]getFollowersForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
         
+        if (objs == 0) {
+            self.noBeeepersFoundLbl.hidden = NO;
+        }
+        else{
+            self.noBeeepersFoundLbl.hidden = YES;
+        }
         if (completed) {
             people = [NSMutableArray arrayWithArray:objs];
             NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
@@ -228,7 +236,7 @@
         
         NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
     }
     
     if ([selectedPeople indexOfObject:user] != NSNotFound) {
@@ -311,12 +319,28 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [pendingImagesDict removeObjectForKey:imageName];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
 

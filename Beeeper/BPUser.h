@@ -28,6 +28,8 @@ typedef void(^notifications_completed)(BOOL,id,id);
 @property (copy) completed getEmailSettingsCompleted;
 @property (copy) completed setEmailSettingsCompleted;
 @property (copy) completed setUserSettingsCompleted;
+@property (copy) completed localFollowersCompleted;
+@property (copy) completed localFollowingCompleted;
 
 @property (nonatomic,strong) NSDictionary *user;
 
@@ -46,8 +48,12 @@ typedef void(^notifications_completed)(BOOL,id,id);
 -(void)getFollowersWithCompletionBlock:(completed)compbloc;
 -(void)getFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
 
+-(void)getLocalFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+-(void)getLocalFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+
 -(void)getFollowingWithCompletionBlock:(completed)compbloc;
 -(void)getFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
+
 
 -(void)checkIfFollowing:(NSString *)other_user_id WithCompletionBlock:(completed)compbloc;
 -(void)follow:(NSString *)userID WithCompletionBlock:(completed)compbloc;

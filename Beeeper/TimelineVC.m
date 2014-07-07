@@ -28,6 +28,7 @@
     BOOL loadNextPage;
     NSMutableArray *sections;
     NSMutableDictionary *suggestionsPerSection;
+        NSMutableArray *rowsToReload;
 }
 @end
 
@@ -63,104 +64,109 @@
 }
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
-
-    loading = YES;
-    loadNextPage = YES;
     
-    if (option != 0 && option != 1) {
-        option = segmentIndex;
-    }
+    @try {
     
-    if (![userID isKindOfClass:[NSString class]]) {
-        userID = [self.user objectForKey:@"id"];
-    }
-    
-    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-    if ([userID isEqualToString:my_id]) {
-        self.mode = Timeline_My;
-    }
-    else{
+        NSLog(@"Mpike");
+        loading = YES;
+        loadNextPage = YES;
         
-        [[BPUser sharedBP]checkIfFollowing:userID WithCompletionBlock:^(BOOL completed,NSString *following){
+        if (option != 0 && option != 1) {
+            option = segmentIndex;
+        }
+        
+        if (![userID isKindOfClass:[NSString class]]) {
+            userID = [self.user objectForKey:@"id"];
+        }
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        if ([userID isEqualToString:my_id]) {
+            self.mode = Timeline_My;
+        }
+        else{
+            
+            [[BPUser sharedBP]checkIfFollowing:userID WithCompletionBlock:^(BOOL completed,NSString *following){
+                
+                if (completed) {
+                    if ([[following lowercaseString]rangeOfString:@"false"].location != NSNotFound) {
+                        isFollowing = NO;
+                        mode = Timeline_Not_Following;
+                    }
+                    else{
+                        isFollowing = YES;
+                        mode = Timeline_Following;
+                    }
+                    
+                    [self createMenuButtons:YES];
+                }
+            }];
+            
+
+        }
+        
+
+        @try {
+            
+            [[BPTimeline sharedBP]getTimelineForUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                
+                UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+                [refreshControl endRefreshing];
+                
+                if (completed) {
+                    
+                    loading = NO;
+                    
+                    beeeps = [NSMutableArray arrayWithArray:objs];
+                    
+                    loadNextPage = YES;
+                    suggestionsPerSection = [NSMutableDictionary dictionary];
+                    sections = [NSMutableArray array];
+         
+                    [self groupBeeepsByMonth];
+                }
+            }];
+            
+        }
+        @catch (NSException *exception) {
+            NSLog(@"ELA!");
+        }
+        @finally {
+            
+        }
+            
+        
+        [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed) {
-                if ([[following lowercaseString]rangeOfString:@"false"].location != NSNotFound) {
-                    isFollowing = NO;
-                    mode = Timeline_Not_Following;
+                followers = objs.count;
+                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
+                if (followersLbl != nil) {
+                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
+                    followersLbl.text = mtext;
                 }
-                else{
-                    isFollowing = YES;
-                    mode = Timeline_Following;
-                }
-                
-                [self createMenuButtons:YES];
             }
         }];
         
+        [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                following = objs.count;
+                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
+                if (followingLbl != nil) {
+                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
+                    followingLbl.text = mtext;
+                }
+                
+            }
+        }];
 
     }
-    
-    [[BPTimeline sharedBP]getLocalTimelineUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        if (completed) {
-            beeeps = [NSMutableArray arrayWithArray:objs];
-            
-            loading = NO;
-         
-            suggestionsPerSection = [NSMutableDictionary dictionary];
-            sections = [NSMutableArray array];
-            
-            
-            [self groupBeeepsByMonth];
-
-        }
-    }];
-
-    
-    [[BPTimeline sharedBP]getTimelineForUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
-
-        UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
-        [refreshControl endRefreshing];
+    @catch (NSException *exception) {
+        NSLog(@"ELAKI!");
+    }
+    @finally {
         
-        if (completed) {
-            
-            loading = NO;
-            
-            beeeps = [NSMutableArray arrayWithArray:objs];
-            loadNextPage = YES;
-            suggestionsPerSection = [NSMutableDictionary dictionary];
-            sections = [NSMutableArray array];
-            
-            [self groupBeeepsByMonth];
-        }
-    }];
-    
-    
-    [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            followers = objs.count;
-            UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-            if (followersLbl != nil) {
-                NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                followersLbl.text = mtext;
-            }
-        }
-    }];
-    
-    [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-        if (completed) {
-            following = objs.count;
-            UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-            if (followingLbl != nil) {
-                NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                followingLbl.text = mtext;
-            }
-            
-        }
-    }];
-
-   
+    }
 }
 
 - (void)viewDidLoad
@@ -171,6 +177,8 @@
          user = [BPUser sharedBP].user;
     }
     
+    rowsToReload = [NSMutableArray array];
+
     UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
     [self.tableV addSubview:refreshView];
     
@@ -183,6 +191,56 @@
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     
+    @try {
+        
+        
+        [[BPTimeline sharedBP]getLocalTimelineUserID:[self.user objectForKey:@"id"] option:Upcoming WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                beeeps = [NSMutableArray arrayWithArray:objs];
+                
+                loading = NO;
+                
+                suggestionsPerSection = [NSMutableDictionary dictionary];
+                sections = [NSMutableArray array];
+                
+                
+                [self groupBeeepsByMonth];
+                
+            }
+        }];
+        
+        [[BPUser sharedBP]getLocalFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+            if (completed) {
+                followers = objs.count;
+                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
+                if (followersLbl != nil) {
+                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
+                    followersLbl.text = mtext;
+                }
+            }
+        }];
+        
+        [[BPUser sharedBP]getLocalFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                following = objs.count;
+                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
+                if (followingLbl != nil) {
+                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
+                    followingLbl.text = mtext;
+                }
+                
+            }
+        }];
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"ELA!");
+    }
+    @finally {
+        
+    }
     
     [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
@@ -203,7 +261,7 @@
     }
     else{
         self.settingsIcon.hidden = NO;
-        self.importIcon.hidden = NO;
+//        self.importIcon.hidden = NO;
     }
     
 //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
@@ -529,7 +587,7 @@
     if (section == 0) {
         return 1;
     }
-    
+  
     NSMutableArray *filtered_activities = [self timelineForSection:section];
     return filtered_activities.count;
 }
@@ -695,7 +753,6 @@
 
     }
     
-    
     return cell;
 }
 
@@ -708,7 +765,7 @@
         return 51;
     }
     else{
-        return 109;
+        return 91;
     }
 }
 
@@ -850,12 +907,28 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-        [pendingImagesDict removeObjectForKey:imageName];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+
 
 }
 
@@ -1150,46 +1223,56 @@
 #pragma mark - Group by date
 
 -(void)groupBeeepsByMonth{
-    
-    [beeeps sortUsingComparator:^NSComparisonResult(Timeline_Object *obj1, Timeline_Object *obj2) {
+    @try {
+
+        [beeeps sortUsingComparator:^NSComparisonResult(Timeline_Object *obj1, Timeline_Object *obj2) {
+            
+            //1401749430
+            //1401749422
+            if (obj1.event.timestamp > obj2.event.timestamp) {
+                return (NSComparisonResult)NSOrderedAscending;
+            }
+            
+            if (obj1.event.timestamp < obj2.event.timestamp) {
+                return (NSComparisonResult)NSOrderedDescending;
+            }
+            return (NSComparisonResult)NSOrderedSame;
+        }];
         
-        //1401749430
-        //1401749422
-        if (obj1.event.timestamp > obj2.event.timestamp) {
-            return (NSComparisonResult)NSOrderedAscending;
+        for (Timeline_Object *activity in beeeps) {
+            //EVENT DATE
+            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            [formatter setLocale:usLocale];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.event.timestamp];
+            NSString *dateStr = [formatter stringFromDate:date];
+            NSArray *components = [dateStr componentsSeparatedByString:@","];
+            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+            
+            NSString *month = [day_month objectAtIndex:1];
+            NSString *daynumber = [day_month objectAtIndex:2];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+            
+            NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+            
+            if ([sections indexOfObject:signature] == NSNotFound) {
+                [sections addObject:signature];
+            }
         }
+
+        [self.tableV reloadData];
         
-        if (obj1.event.timestamp < obj2.event.timestamp) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-    
-    for (Timeline_Object *activity in beeeps) {
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.event.timestamp];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-        
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
-        
-        if ([sections indexOfObject:signature] == NSNotFound) {
-            [sections addObject:signature];
-        }
     }
-    
-    [self.tableV reloadData];
+    @catch (NSException *exception) {
+        NSLog(@"ELAA");
+    }
+    @finally {
+        
+    }
 }
 
 -(NSMutableArray *)timelineForSection:(int)section{

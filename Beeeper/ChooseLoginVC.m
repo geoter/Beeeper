@@ -161,7 +161,7 @@
 
 - (IBAction)fbLoginPressed:(id)sender {
    
-    [self showLoading];
+   
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
@@ -189,10 +189,16 @@
                          [popup addButtonWithTitle:name];
                      }
                      
-                     [popup showInView:self.view];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+
+
                  }
                  else{
                  
+                      [self showLoading];
+                     
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
                      id email = [fbAccount valueForKeyPath:@"properties.uid"];
                      NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
@@ -283,7 +289,7 @@
 
 - (IBAction)twitterLoginPressed:(id)sender {
     
-    [self showLoading];
+
 
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
@@ -307,9 +313,14 @@
                          [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
                      }
                      
-                     [popup showInView:self.view];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+
                  }
                  else{
+                     
+                     [self showLoading];
                      
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
@@ -364,11 +375,18 @@
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+
+    if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        return;
+    }
+    
     if (actionSheet.tag == 77) { // twitter
         
-        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex];
+        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex-1];
         NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
         NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
+        
+        [self showLoading];
         
         [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
@@ -384,10 +402,10 @@
     }
     else{
         
-        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex];
+        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex-1];
         id email = [fbAccount valueForKeyPath:@"properties.uid"];
         NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
-        
+        [self showLoading];
         [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
                 [self setSelectedLoginMethod:@"FB"];

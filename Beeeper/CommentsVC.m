@@ -17,6 +17,7 @@
 {
     NSMutableDictionary *pendingImagesDict;
     UITapGestureRecognizer *tapG;
+        NSMutableArray *rowsToReload;
 }
 
 @property (readonly, nonatomic) UIView *container;
@@ -31,6 +32,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    rowsToReload = [NSMutableArray array];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
@@ -307,21 +310,28 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-       
-        @try {
-            [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-            [pendingImagesDict removeObjectForKey:imageName];
-        }
-        @catch (NSException *exception) {
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-        }
-        @finally {
-            
-        }
-    });
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
 

@@ -325,7 +325,7 @@
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
                      NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
-                     
+
                      [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
                          if (completed) {
                              [self setSelectedLoginMethod:@"TW"];

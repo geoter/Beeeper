@@ -1232,12 +1232,12 @@
             
             //1401749430
             //1401749422
-            if (obj1.event.timestamp > obj2.event.timestamp) {
-                return (NSComparisonResult)NSOrderedAscending;
+            if (obj1.event.timestamp < obj2.event.timestamp) {
+                return (NSComparisonResult)(segmentIndex == 0)?NSOrderedAscending:NSOrderedDescending;
             }
             
-            if (obj1.event.timestamp < obj2.event.timestamp) {
-                return (NSComparisonResult)NSOrderedDescending;
+            if (obj1.event.timestamp > obj2.event.timestamp) {
+                return (NSComparisonResult)(segmentIndex == 0)?NSOrderedDescending:NSOrderedAscending;
             }
             return (NSComparisonResult)NSOrderedSame;
         }];

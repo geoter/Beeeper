@@ -87,13 +87,24 @@ static DTO *thisDTO = nil;
 }
 
 - (NSString *)fixLink:(NSString *)link{
-    link = [link stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-    
-    if ([[link substringToIndex:2]isEqualToString:@"//"]) {
-       NSString *fixedLink = [NSString stringWithFormat:@"http://%@",[link substringFromIndex:2]];
-        return fixedLink;
+   
+    @try {
+        
+        link = [link stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        
+        if ([[link substringToIndex:2]isEqualToString:@"//"]) {
+            NSString *fixedLink = [NSString stringWithFormat:@"http://%@",[link substringFromIndex:2]];
+            return fixedLink;
+        }
+        return link;
+
     }
-    return link;
+    @catch (NSException *exception) {
+         return link;
+    }
+    @finally {
+        
+    }
 }
 
 

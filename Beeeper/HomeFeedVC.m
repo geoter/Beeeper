@@ -240,8 +240,6 @@
         if (completed) {
           
             if (objs.count != 0) {
-          
-                self.noBeeepsLabel.hidden = YES;
                 
                 beeeps = nil;
                 events = [NSMutableArray arrayWithArray:objs];
@@ -252,9 +250,6 @@
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-            }
-            else{
-                 self.noBeeepsLabel.hidden = YES;
             }
         }
         
@@ -273,6 +268,13 @@
         if (completed) {
             beeeps = nil;
             events = [NSMutableArray arrayWithArray:objs];
+            
+            if (objs.count != 0) {
+                self.noBeeepsLabel.hidden = YES;
+            }
+            else{
+                self.noBeeepsLabel.hidden = NO;
+            }
             
             [self.collectionV reloadData];
         }

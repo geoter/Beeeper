@@ -86,9 +86,11 @@
         
         if (objcts.count > 0) {
             self.noSuggestionsLabel.hidden = YES;
+            self.tableV.hidden = NO;
         }
         else{
             self.noSuggestionsLabel.hidden = NO;
+            self.tableV.hidden = YES;
         }
         
         if (completed) {

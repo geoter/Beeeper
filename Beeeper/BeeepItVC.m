@@ -238,7 +238,7 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            venue = loc.venueStation;
+            venue = [loc.venueStation uppercaseString];
             [shareText appendFormat:@"@%@",venue];
         }
         

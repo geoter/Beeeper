@@ -183,11 +183,15 @@
                  
                  if (usernames.count > 1) {
                      
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:nil];
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
                      
                      for (NSString *name in usernames) {
                          [popup addButtonWithTitle:name];
                      }
+                     
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
                      
                      dispatch_async(dispatch_get_main_queue(), ^{
                          [popup showInView:self.view];
@@ -203,16 +207,7 @@
                      id email = [fbAccount valueForKeyPath:@"properties.uid"];
                      NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
                      
-                     [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
-                         if (completed) {
-                             [self setSelectedLoginMethod:@"FB"];
-                             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-                         }
-                         else{
-                             [self hideLoading];
-                         }
-                         
-                     }];
+                     [self attemptFBLogin:email];
                 
                  }
              }
@@ -287,6 +282,54 @@
     
 }
 
+-(void)attemptTwitterLogin:(NSString *)uid{
+
+    static int number_of_attempts = 0;
+    
+    [[BPUser sharedBP]loginTwitterUser:uid completionBlock:^(BOOL completed,NSString *user){
+        if (completed) {
+            [self setSelectedLoginMethod:@"TW"];
+            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+        }
+        else{
+            if (uid != nil && number_of_attempts < 10) {
+                [self attemptTwitterLogin:uid];
+                number_of_attempts ++;
+            }
+            else{
+                number_of_attempts = 0;
+                [self hideLoading];
+            }
+        }
+    }];
+    
+
+
+}
+
+-(void)attemptFBLogin:(NSString *)uid{
+    
+    static int number_of_attempts = 0;
+    
+    [[BPUser sharedBP]loginFacebookUser:uid completionBlock:^(BOOL completed,NSString *user){
+        if (completed) {
+            [self setSelectedLoginMethod:@"FB"];
+            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+        }
+        else{
+            if (uid != nil && number_of_attempts < 10) {
+                [self attemptFBLogin:uid];
+                number_of_attempts ++;
+            }
+            else{
+                number_of_attempts = 0;
+                [self hideLoading];
+            }
+        }
+        
+    }];
+}
+
 - (IBAction)twitterLoginPressed:(id)sender {
     
 
@@ -306,12 +349,16 @@
                  
                  if (usernames.count > 1) {
                      
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:nil];
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                      popup.tag = 77;
                      
                      for (NSString *name in usernames) {
                          [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
                      }
+                     
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
                      
                      dispatch_async(dispatch_get_main_queue(), ^{
                          [popup showInView:self.view];
@@ -326,16 +373,7 @@
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
                      NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
 
-                     [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
-                         if (completed) {
-                             [self setSelectedLoginMethod:@"TW"];
-                             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-                         }
-                         else{
-                             [self hideLoading];
-                         }
-                     }];
-
+                     [self attemptTwitterLogin:user_id];
                  }
             }
              else
@@ -376,13 +414,13 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 
-    if (buttonIndex == actionSheet.destructiveButtonIndex) {
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
         return;
     }
     
     if (actionSheet.tag == 77) { // twitter
         
-        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex-1];
+        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex];
         NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
         NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
         
@@ -402,7 +440,7 @@
     }
     else{
         
-        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex-1];
+        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex];
         id email = [fbAccount valueForKeyPath:@"properties.uid"];
         NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
         [self showLoading];

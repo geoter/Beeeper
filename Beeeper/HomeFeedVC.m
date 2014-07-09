@@ -426,9 +426,10 @@
         UILabel *favorites = (id)[containerV viewWithTag:-3];
         UILabel *comments = (id)[containerV viewWithTag:-4];
         UILabel *beeeps = (id)[containerV viewWithTag:-5];
-        favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-        comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-        beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+        favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+        comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+        beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+
         
         beeeps.text = [NSString stringWithFormat:@"%d",(int)event.beeepedBy.count];
         favorites.text = [NSString stringWithFormat:@"%d",(int)event.likes.count];
@@ -454,7 +455,7 @@
         }
         else{
             imageV.backgroundColor = [UIColor lightGrayColor];
-            imageV.image = nil;
+            imageV.image = [UIImage imageNamed:@"user_icon_180x180"];
             [pendingImagesDict setObject:indexPath forKey:imageName];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
         }
@@ -557,9 +558,9 @@
             UILabel *favorites = (id)[containerV viewWithTag:-3];
             UILabel *comments = (id)[containerV viewWithTag:-4];
             UILabel *beeeps = (id)[containerV viewWithTag:-5];
-            favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-            comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-            beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+            favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+            comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+            beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
             
             Beeeps *b = [event.beeepFfo.beeeps firstObject];
             

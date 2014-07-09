@@ -278,7 +278,7 @@
         userImage.image = img;
     }
     else{
-        userImage.image = nil;
+        userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
         [pendingImagesDict setObject:indexPath forKey:imageName];
         
         //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];

@@ -268,7 +268,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -447,7 +447,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -622,7 +622,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -798,7 +798,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = loc.venueStation;
+        venueLbl.text = [loc.venueStation uppercaseString];
         
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
@@ -1134,7 +1134,7 @@
 
 -(void)showMore{
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", nil];
     
     if ([MFMailComposeViewController canSendMail]) {
         [actionSheet addButtonWithTitle:@"Share via Email"];
@@ -1143,22 +1143,32 @@
     if (websiteURL != nil) {
         [actionSheet addButtonWithTitle:@"Copy Link"];
     }
+
+    [actionSheet addButtonWithTitle:@"Cancel"];
     
+    
+    actionSheet.cancelButtonIndex = actionSheet.numberOfButtons -1;
+
     [actionSheet showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
     switch (buttonIndex) {
-        case 1:
+        case 0:
             
             break;
-        case 2:
+        case 1:
             [self sendFacebook];
             break;
-        case 3:
+        case 2:
             [self sendTwitter];
             break;
-        case 4:
+        case 3:
             if ([MFMailComposeViewController canSendMail]) {
                 [self sendEmail];
             }
@@ -1167,7 +1177,7 @@
                 pasteboard.string = websiteURL;
             }
             break;
-        case 5:
+        case 4:
         {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = websiteURL;

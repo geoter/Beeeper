@@ -478,13 +478,13 @@
             
             if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 userImage.backgroundColor = [UIColor clearColor];
-                userImage.image = nil;
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
                 UIImage *img = [UIImage imageWithContentsOfFile:localPath];
                 userImage.image = img;
             }
             else{
                 userImage.backgroundColor = [UIColor lightGrayColor];
-                userImage.image = nil;
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
                 [pendingImagesDict setObject:indexPath forKey:imageName];
                 [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
             }
@@ -500,7 +500,7 @@
                 userImage.backgroundColor = [UIColor clearColor];
             }
             else{
-                userImage.backgroundColor = [UIColor colorWithRed:201/255.0 green:201/255.0 blue:201/255.0 alpha:1];
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
             }
             
         }

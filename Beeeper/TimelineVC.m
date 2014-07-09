@@ -496,7 +496,7 @@
         [self.followButton addSubview:lbl];
         self.followButton.hidden = NO;
         
-        UIImageView *imgV = [[UIImageView alloc]initWithFrame:CGRectMake(lbl.center.x+50, lbl.center.y-7, 16, 12)];
+        UIImageView *imgV = [[UIImageView alloc]initWithFrame:CGRectMake(lbl.center.x+38, lbl.center.y-5, 14, 10)];
         imgV.image = [UIImage imageNamed:@"tick_following"];
         [self.followButton addSubview:imgV];
        
@@ -511,6 +511,7 @@
         lbl.textAlignment = NSTextAlignmentCenter;
         lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
         [self.followButton addSubview:lbl];
+        
         self.followButton.hidden = NO;
         
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
@@ -667,7 +668,7 @@
             reminderLabel.hidden = NO;
         }
         
-        reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+        //reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
         
         
         NSMutableArray *filtered_activities = [self timelineForSection:indexPath.section];
@@ -714,12 +715,16 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = loc.venueStation;
+        venueLbl.text = [loc.venueStation uppercaseString];
         
         //Likes,Beeeps,Comments
         UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
         UILabel *likesLbl = (id)[cell viewWithTag:-3];
         UILabel *commentsLbl = (id)[cell viewWithTag:-4];
+        
+        likesLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+        commentsLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+        beeepsLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
         
         likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
         commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
@@ -768,7 +773,7 @@
         return 51;
     }
     else{
-        return 91;
+        return 102;
     }
 }
 
@@ -804,7 +809,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
     if(sections.count > 0 && !loading){
-        return 5;
+        return 7;
     }
     else if (section == 0){
         return 1;
@@ -818,7 +823,7 @@
     
     
     if(sections.count > 0 && !loading){
-        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 5)];
+        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
         footer.backgroundColor = [UIColor clearColor];
         return footer;
     }
@@ -1081,7 +1086,7 @@
 }
 
 - (IBAction)showSuggestions:(id)sender {
-    UIViewController *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestionsVC"];
+    UIViewController *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestionsVC"];
     [self.navigationController pushViewController:vC animated:YES];
 }
 

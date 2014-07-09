@@ -232,17 +232,38 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            venueLbl.text = loc.venueStation;
+            venueLbl.text = [loc.venueStation uppercaseString];
 
         }
         
         beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
         
+        NSString *who_imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *who_localPath = [documentsDirectoryPath stringByAppendingPathComponent:who_imageName];
+        UIImageView *beeepedByImageV = (id)[cell viewWithTag:34];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:who_localPath]) {
+            beeepedByImageV.backgroundColor = [UIColor clearColor];
+            beeepedByImageV.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:who_localPath];
+            beeepedByImageV.image = img;
+        }
+        else{
+            beeepedByImageV.backgroundColor = [UIColor lightGrayColor];
+            beeepedByImageV.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:who_imageName];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:who_imageName object:nil];
+        }
+        
+
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         NSString *imageName = [NSString stringWithFormat:@"%@",[what.imageUrl MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+      
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -280,7 +301,7 @@
         return 51;
     }
     else{
-        return 70;
+        return 102;
     }
 }
 
@@ -316,7 +337,7 @@
     
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
     header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 46)];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, 306, 46)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     

@@ -114,15 +114,15 @@
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
-    UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
+    UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 30)];
     numberOfCommentsV.backgroundColor = [UIColor clearColor];
     
-    UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 0, self.tableV.frame.size.width, 40)];
+    UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 8, self.tableV.frame.size.width, 25)];
     numberOfComments.text = [NSString stringWithFormat:@"SUGGESTIONS"];
-    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
+    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
     numberOfComments.textAlignment = NSTextAlignmentLeft;
     [numberOfCommentsV addSubview:numberOfComments];
-    
+    numberOfCommentsV.backgroundColor = [UIColor clearColor];
     self.tableV.tableHeaderView = numberOfCommentsV;
 
     [self.tableV reloadData];

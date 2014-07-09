@@ -368,6 +368,8 @@
 		CE7CFAF118B79BD70044C9AC /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7CFAF018B79BD70044C9AC /* DAKeyboardControl.m */; };
 		CE7CFAF518B7AA910044C9AC /* NotificationsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7CFAF418B7AA910044C9AC /* NotificationsVC.m */; };
 		CE94932D18DB5E8100B99800 /* CRToast.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94932C18DB5E8100B99800 /* CRToast.m */; };
+		CE9C7319196D909E004AE8C6 /* user_icon_180x180.png in Resources */ = {isa = PBXBuildFile; fileRef = CE9C7317196D909E004AE8C6 /* user_icon_180x180.png */; };
+		CE9C731A196D909E004AE8C6 /* user_icon_180x180@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE9C7318196D909E004AE8C6 /* user_icon_180x180@2x.png */; };
 		CEA113221952ED77003C8D7B /* Beeep_popup_unpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA1131C1952ED77003C8D7B /* Beeep_popup_unpressed.png */; };
 		CEA113231952ED77003C8D7B /* Beeep_popup_unpressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA1131D1952ED77003C8D7B /* Beeep_popup_unpressed@2x.png */; };
 		CEA113241952ED77003C8D7B /* Like_popup_unpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA1131E1952ED77003C8D7B /* Like_popup_unpressed.png */; };
@@ -1022,6 +1024,8 @@
 		CE7CFAF418B7AA910044C9AC /* NotificationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NotificationsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE94932B18DB5E8100B99800 /* CRToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRToast.h; sourceTree = "<group>"; };
 		CE94932C18DB5E8100B99800 /* CRToast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRToast.m; sourceTree = "<group>"; };
+		CE9C7317196D909E004AE8C6 /* user_icon_180x180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_icon_180x180.png; sourceTree = "<group>"; };
+		CE9C7318196D909E004AE8C6 /* user_icon_180x180@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_icon_180x180@2x.png"; sourceTree = "<group>"; };
 		CEA1131C1952ED77003C8D7B /* Beeep_popup_unpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Beeep_popup_unpressed.png; sourceTree = "<group>"; };
 		CEA1131D1952ED77003C8D7B /* Beeep_popup_unpressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Beeep_popup_unpressed@2x.png"; sourceTree = "<group>"; };
 		CEA1131E1952ED77003C8D7B /* Like_popup_unpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Like_popup_unpressed.png; sourceTree = "<group>"; };
@@ -2036,6 +2040,8 @@
 		CE77BA4318E5A98600D4051A /* R */ = {
 			isa = PBXGroup;
 			children = (
+				CE9C7317196D909E004AE8C6 /* user_icon_180x180.png */,
+				CE9C7318196D909E004AE8C6 /* user_icon_180x180@2x.png */,
 				9615E8BE192DB77A0099B3E0 /* new */,
 				CEFDE83318ED8B1B00E500A9 /* clock-icon.png */,
 				CEFDE83418ED8B1B00E500A9 /* clock-icon@2x.png */,
@@ -2688,6 +2694,7 @@
 				CEFDE82D18ED77BD00E500A9 /* Home_feed_icon2.png in Resources */,
 				CE0C883F18D0C7B300BA548F /* plus_btn@2x.png in Resources */,
 				CE29EE3A18D9CADB0001EC43 /* container_image_2.png in Resources */,
+				CE9C731A196D909E004AE8C6 /* user_icon_180x180@2x.png in Resources */,
 				CE529C5C18DB0FEE00900EB6 /* picture_5.png in Resources */,
 				CEF263C418DC7F080047510D /* more_btn_event@2x.png in Resources */,
 				9615E8B9192DB57C0099B3E0 /* tabbar-timeline.png in Resources */,
@@ -2703,6 +2710,7 @@
 				CE79423518DB261B00748EDD /* facebook_icon_gray.png in Resources */,
 				CEEE3ECF18C9E02C00665C21 /* Roboto-Medium.ttf in Resources */,
 				CE29EE4018D9CADB0001EC43 /* like_icon.png in Resources */,
+				CE9C7319196D909E004AE8C6 /* user_icon_180x180.png in Resources */,
 				CE08DD1A19379A0700B090BE /* yellow-tabbar-home.png in Resources */,
 				9615E8CD192DB7870099B3E0 /* activityBtn.png in Resources */,
 				CE29EE3618D9CADB0001EC43 /* comments_icon.png in Resources */,
@@ -3197,8 +3205,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3210,7 +3218,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "345DEEE4-3A72-44FF-80DE-7D0FECEE313E";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3220,8 +3228,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3233,7 +3241,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "345DEEE4-3A72-44FF-80DE-7D0FECEE313E";
+				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

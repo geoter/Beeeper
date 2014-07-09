@@ -400,6 +400,12 @@
     return YES;
 }
 
+
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
     
     [self.containerScrollV setContentOffset:CGPointMake(0, 200) animated:YES];
@@ -410,10 +416,6 @@
         textView.text = @"#";
     }
     
-    return YES;
-}
-
-- (BOOL)prefersStatusBarHidden {
     return YES;
 }
 
@@ -438,8 +440,8 @@
             // Return FALSE so that the final '\n' character doesn't get added
             return NO;
         }
-        else if ([text isEqualToString:@","]){
-            textView.text = [typedStr stringByReplacingOccurrencesOfString:@"," withString:@"#"];
+        else if ([text isEqualToString:@" "]){
+            textView.text =  [textView.text stringByReplacingCharactersInRange:range withString:@" #"];
             return NO;
         }
       
@@ -456,10 +458,10 @@
         [values removeObjectForKey:@"keywords"];
 
         textView.text = @"HASHTAGS (OPTIONAL)";
+        
+        textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
     }
     
-    textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
-    textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
 }
 
 -(void)hideDatePicker{
@@ -605,13 +607,13 @@
                     [sender setTitle:@"NEXT" forState:UIControlStateNormal];
                     [activityInd removeFromSuperview];
                     
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event could not be created. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                     [alert show];
                 }
             }];
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you have entered all required information and location information are available to Beeeper." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you entered all required information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
 
@@ -622,8 +624,6 @@
     @finally {
     
     }
-    
-   
 }
 
 -(BOOL)areAllDataAvailable:(NSDictionary *)values{

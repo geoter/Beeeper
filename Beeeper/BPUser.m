@@ -1071,12 +1071,6 @@ static BPUser *thisWebServices = nil;
     
     NSMutableArray *bs = [NSMutableArray array];
     
-    if (notificationsArray.count < 10) {
-        newNotificationsFinished = YES;
-        [self getOldNotificationsWithCompletionBlock:self.notifications_completed];
-        return;
-    }
-    
     for (id b in notificationsArray) {
         
         NSDictionary *activity_item;
@@ -1098,6 +1092,11 @@ static BPUser *thisWebServices = nil;
     
     newNotificationsFinished = YES;
     [newNotifications addObjectsFromArray:bs];
+    
+    if (notificationsArray.count < 10) {
+        [self getOldNotificationsWithCompletionBlock:self.notifications_completed];
+        return;
+    }
     
     if (newNotificationsFinished && oldNotificationsFinished) {
         self.notifications_completed(YES,newNotifications,oldNotifications);    
@@ -1396,10 +1395,6 @@ static BPUser *thisWebServices = nil;
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
-
-
-
-
 
 
 #pragma mark - Settings

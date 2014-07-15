@@ -12,6 +12,21 @@
 #import "BPSuggestions.h"
 #import "MONActivityIndicatorView.h"
 
+@interface UILabel (Resize)
+- (void)sizeToFitHeight;
+@end
+
+//  UILabel+Resize.m
+@implementation UILabel (Resize)
+- (void)sizeToFitHeight {
+    CGSize size = [self sizeThatFits:CGSizeMake(self.frame.size.width, CGFLOAT_MAX)];
+    CGRect frame = self.frame;
+    frame.size.height = size.height;
+    self.frame = frame;
+}
+@end
+
+
 @interface SuggestionsVC ()<UITableViewDataSource,UITableViewDelegate,MONActivityIndicatorViewDelegate>
 {
     NSMutableArray *suggestions;
@@ -225,6 +240,10 @@
         UILabel *beeepedBy = (id)[cell viewWithTag:4];
         
         nameLbl.text = [what.title capitalizedString];
+        [nameLbl sizeToFitHeight];
+
+        UIView *bottomV = (id)[cell viewWithTag:666];
+        bottomV.frame = CGRectMake(110, nameLbl.frame.origin.y+nameLbl.frame.size.height, 196, 51);
         
         NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -354,6 +373,10 @@
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
     [backV addSubview:dlbl];
+    
+    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
+    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:227/255.0 alpha:1];
+    [header addSubview:headerBottomLine];
     
     return header;
 }

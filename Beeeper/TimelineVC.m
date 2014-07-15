@@ -16,6 +16,21 @@
 #import "GTSegmentedControl.h"
 #import <FacebookSDK/FacebookSDK.h>
 
+
+@interface UILabel (Resize)
+- (void)sizeToFitHeight;
+@end
+
+//  UILabel+Resize.m
+@implementation UILabel (Resize)
+- (void)sizeToFitHeight {
+    CGSize size = [self sizeThatFits:CGSizeMake(self.frame.size.width, CGFLOAT_MAX)];
+    CGRect frame = self.frame;
+    frame.size.height = size.height;
+    self.frame = frame;
+}
+@end
+
 @interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate>
 {
     NSMutableArray *beeeps;
@@ -676,7 +691,10 @@
         Timeline_Object *b = [filtered_activities objectAtIndex:indexPath.row];
 
         titleLbl.text = [b.event.title capitalizedString];
-    
+        [titleLbl sizeToFitHeight];
+        
+        UIView *bottomV = (id)[cell viewWithTag:666];
+        bottomV.frame = CGRectMake(106, titleLbl.frame.origin.y+titleLbl.frame.size.height, 145, 51);
         
         //EVENT DATE
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -887,7 +905,8 @@
     
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
     header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, 306, 46)];
+    
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, 306, 47)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     
@@ -905,6 +924,9 @@
     dlbl.textAlignment = NSTextAlignmentCenter;
     [backV addSubview:dlbl];
     
+    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
+    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
+    [header addSubview:headerBottomLine];
     
     return header;
 }

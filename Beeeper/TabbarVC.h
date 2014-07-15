@@ -15,6 +15,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *notificationLabel;
 @property (nonatomic,assign)  int notifications;
 @property (nonatomic,assign) BOOL showsSplashOnLoad;
+@property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
 
 - (IBAction)addBeeepPressed:(id)sender;
 - (IBAction)tabbarButtonTapped:(id)sender;

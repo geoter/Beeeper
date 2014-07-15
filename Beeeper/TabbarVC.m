@@ -8,6 +8,8 @@
 
 #import "TabbarVC.h"
 #import "TimelineVC.h"
+#import "JSBadgeView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface TabbarVC ()
 {
@@ -62,7 +64,6 @@
             
             _notifications = objcts.count;
             
-            self.notificationLabel.text = [NSString stringWithFormat:@"%d",self.notifications];
             
             if (_notifications <= 0) {
                 
@@ -78,6 +79,9 @@
                  ];
             }
             else{
+                
+                JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
+                badgeView.badgeText = [NSString stringWithFormat:@"%d",self.notifications];
                 
                 [UIView animateWithDuration:0.2f
                                  animations:^

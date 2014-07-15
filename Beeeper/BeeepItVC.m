@@ -18,6 +18,8 @@
 #import "Event_Search.h"
 #import <Twitter/Twitter.h>
 #import <Social/Social.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import "BPActivity.h"
 
 @interface BeeepItVC ()
 {
@@ -26,6 +28,10 @@
     NSMutableString *shareText;
     NSString *imageURL;
     NSString *website;
+    NSString *beeepTitle;
+    NSString *beeepDate;
+    NSString *tinyURL;
+    NSString *fingerprint;
 }
 @end
 
@@ -49,6 +55,10 @@
 {
     [super viewDidLoad];
 
+    self.suggestButton.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1].CGColor;
+    self.suggestButton.layer.borderWidth = 1;
+    self.suggestButton.layer.cornerRadius = 5;
+    
     self.fbShareV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
     self.fbShareV.layer.borderWidth = 1;
     self.fbShareV.layer.masksToBounds = YES;
@@ -70,6 +80,7 @@
     
     shareText = [[NSMutableString alloc]init];
     
+    
     @try {
         
         if (tml == nil && self.values != nil) { //Coming from Create event screen
@@ -82,6 +93,7 @@
             
             ff.eventFfo.eventDetailsFfo.location = locationObjc;
             ff.eventFfo.eventDetailsFfo.fingerprint = [values objectForKey:@"fingerprint"];
+            fingerprint = [values objectForKey:@"fingerprint"];
             tml = ff;
         }
         
@@ -92,22 +104,26 @@
             Friendsfeed_Object *ffo = tml;
             title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
             website = ffo.eventFfo.eventDetailsFfo.url;
+            fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
         }
         else if ([tml isKindOfClass:[Event_Show_Object class]]){
             Event_Show_Object *activity = tml;
             
             title = [activity.eventInfo.title capitalizedString];
             website = activity.eventInfo.url;
+            fingerprint = activity.eventInfo.fingerprint;
         }
         else if ([tml isKindOfClass:[Suggestion_Object class]]){
             Suggestion_Object *sgo = tml;
             title = [sgo.what.title capitalizedString];
             website = sgo.what.url;
+            fingerprint = sgo.what.fingerprint;
         }
         else if ([tml isKindOfClass:[Timeline_Object class]]){
             Timeline_Object *tmlO = tml;
             title = [tmlO.event.title capitalizedString];
             website = tmlO.event.url;
+            fingerprint = tmlO.event.fingerprint;
         }
         else if ([tml isKindOfClass:[Activity_Object class]]){
             Activity_Object *activity = tml;
@@ -116,12 +132,14 @@
                 
                 EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
                 title = [event.title capitalizedString];
+                fingerprint = event.fingerprint;
             }
             else if(activity.eventActivity.count > 0){
                 
                 EventActivity *event = [activity.eventActivity firstObject];
                 NSString *event_title = [event.title capitalizedString];
                 title = [event_title capitalizedString];
+                fingerprint = event.fingerprint;
             }
 
         }
@@ -129,9 +147,27 @@
             Event_Search *eventS = tml;
             title = [eventS.title capitalizedString];
             website = eventS.url;
+            fingerprint = eventS.fingerprint;
         }
         
-        [shareText appendString:title];
+        [[BPActivity sharedBP]getEventFromFingerprint:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                tinyURL = [NSString stringWithFormat:@"http://beeep.it/%@",event.tinyUrl];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+
+        
+        if (website == nil) {
+            website = @"http://www.beeeper.com";
+        }
+        
+        beeepTitle = title;
+        //[shareText appendString:title];
+        
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -187,13 +223,11 @@
         UILabel *dayNumberLbl = (id)[self.scrollV viewWithTag:-2];
         UILabel *monthLbl = (id)[self.scrollV viewWithTag:-1];
         
-        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
-        dayNumberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
         
         dayNumberLbl.text = daynumber;
         monthLbl.text = [month uppercaseString];
         
-        [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+        [shareText appendFormat:@"%@ %@",daynumber,[month uppercaseString]];
         
         NSString *venue;
         NSString *jsonString;
@@ -254,7 +288,10 @@
                         break;
                     case 3:
                     {
-                        txtV.text = (venue)?venue:@"n/a";;
+                        txtV.text = (venue)?venue:@"n/a";
+                        [txtV sizeToFit];
+                        txtV.center = CGPointMake(self.view.center.x, txtV.center.y);
+                        self.venueIcon.frame = CGRectMake(txtV.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
                     }
                         break;
                     default:
@@ -283,7 +320,9 @@
         else{
             imageUrl = ffo.eventFfo.eventDetailsFfo.imageUrl;
         }
-        imageURL = imageUrl;
+
+        
+        imageURL = [[DTO sharedDTO]fixLink:imageUrl];
 
     }
     @catch (NSException *exception) {
@@ -311,31 +350,6 @@
 }
 
 -(void)adjustFonts{
-    for (UIView *v in self.scrollV.subviews) {
-        if ([v isKindOfClass:[UITextView class]]) {
-            UITextView *txtV = (UITextView *)v;
-            
-            switch (txtV.tag) {
-                case 1:
-                {
-                    txtV.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:24];
-                }
-                    break;
-                case 2:
-                case 3:
-                {
-                    txtV.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
-                }
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if ([v isKindOfClass:[UIButton class]]){
-            UIButton *btn = (UIButton *)v;
-            btn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-        }
-    }
     
     UILabel *fbLbl = (id)[self.fbShareV viewWithTag:2];
     fbLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
@@ -425,8 +439,6 @@
         }
     }
     
- 
-    
     [composeController setInitialText:shareText];
 
     [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
@@ -457,6 +469,152 @@
     
 }
 
+-(void)testSendFacebook2{
+    
+    [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
+                                       allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+                                                      FBSessionState state,
+                                                      NSError *error) {
+                                      if (error) {
+                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                              message:error.localizedDescription
+                                                                                             delegate:nil
+                                                                                    cancelButtonTitle:@"OK"
+                                                                                    otherButtonTitles:nil];
+                                          [alertView show];
+                                          
+                                      }
+                                      else if (session.isOpen) {
+                                          
+
+
+                                              // instantiate a Facebook Open Graph object
+                                              NSMutableDictionary<FBOpenGraphObject> *object = [FBGraphObject openGraphObjectForPost];
+                                              
+                                              // specify that this Open Graph object will be posted to Facebook
+                                              object.provisionedForPost = YES;
+                                              
+                                              // for og:title
+                                              object[@"title"] = beeepTitle;
+                                              
+                                              // for og:type, this corresponds to the Namespace you've set for your app and the object type name
+                                              object[@"type"] = @"beeeperappios:Beeep";
+                                              
+                                              // for og:description
+                                              object[@"description"] = shareText;
+                                              
+                                              // for og:url, we cover how this is used in the "Deep Linking" section below
+                                              object[@"url"] = website;
+                                              
+                                              // for og:image we assign the image that we just staged, using the uri we got as a response
+                                              // the image has to be packed in a dictionary like this:
+                                              object[@"image"] = @[@{@"url": imageURL, @"user_generated" : @"false"}];
+                                              
+                                              
+                                              // Post custom object
+                                              [FBRequestConnection startForPostOpenGraphObject:object completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                                  if(!error) {
+                                                      // get the object ID for the Open Graph object that is now stored in the Object API
+                                                      NSString *objectId = [result objectForKey:@"id"];
+                                                      
+                                                      // Further code to post the OG story goes here 
+                                                      
+                                                  } else {
+                                                      // An error occurred
+                                                      NSLog(@"Error posting the Open Graph object to the Object API: %@", error);
+                                                  }
+                                              }];
+                                              
+                                              
+                                          
+                                          }
+                                          
+                                          //run your user info request here
+                                      }
+     ];
+
+  
+}
+
+-(void)testSendFacebookFail{
+
+
+    [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
+                                       allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+                                                      FBSessionState state,
+                                                      NSError *error) {
+          if (error) {
+              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                  message:error.localizedDescription
+                                                                 delegate:nil
+                                                        cancelButtonTitle:@"OK"
+                                                        otherButtonTitles:nil];
+              [alertView show];
+              
+          } else if (session.isOpen) {
+              
+            
+            UIImage *img;
+            
+            if(imageURL == nil){
+                NSString *base64Image = [self.values objectForKey:@"base64_image"];
+                NSData *base64Data = [self base64DataFromString:base64Image];
+                
+                if (base64Data != nil) {
+                    img = [UIImage imageWithData:base64Data];
+                }
+            }
+            else{
+                NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
+                
+                NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                
+                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+                
+                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                    
+                    img = [UIImage imageWithContentsOfFile:localPath];
+                }
+            }
+
+            
+              // Check if the Facebook app is installed and we can present the share dialog
+              FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
+              params.link = [NSURL URLWithString:website];
+              params.caption = @"a dot game";
+              params.linkDescription = @"this is link description";
+              params.name = @"Fuck event";
+              NSURL *url = [NSURL URLWithString:imageURL];
+              params.picture = url;
+              
+              
+              // If the Facebook app is installed and we can present the share dialog
+              if ([FBDialogs canPresentShareDialogWithParams:params]) {
+                  // Present share dialog
+                  [FBDialogs presentShareDialogWithLink:params.link
+                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                    if(error) {
+                                                        // An error occurred, we need to handle the error
+                                                        // See: https://developers.facebook.com/docs/ios/errors
+                                                        NSLog(@"Error publishing story: %@", error.description);
+                                                    } else {
+                                                        // Success
+                                                        NSLog(@"result %@", results);
+                                                    }
+                                                }];
+              } else {
+                  // Present the feed dialog
+                  NSLog(@"fdfd");
+              }
+
+    
+          //run your user info request here
+      }
+  }];
+}
+
 -(void)sendTwitter {
     
     //NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
@@ -478,7 +636,8 @@
         [composeController addImage:img];
     }
     
-    [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
+    NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+    [composeController addURL: url];
 
     
     [self presentViewController:composeController

@@ -549,14 +549,11 @@
             }
             [keywords deleteCharactersInRange:NSMakeRange([keywords length]-1, 1)];
             [keywords deleteCharactersInRange:NSMakeRange(0, 1)];
+        
+            [values setObject:keywords forKey:@"keywords"];
         }
         
-        [values setObject:keywords forKey:@"keywords"];
       
-        if (base64Image) {
-            [values setObject:base64Image forKey:@"base64_image"];
-        }
-
         [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"src"];
         
         BOOL proceed = [self areAllDataAvailable:values];
@@ -626,7 +623,7 @@
     }
 }
 
--(BOOL)areAllDataAvailable:(NSDictionary *)values{
+-(BOOL)areAllDataAvailable:(NSMutableDictionary *)values{
     
     BOOL mpike = NO;
     
@@ -653,7 +650,34 @@
         [self validTextfield:self.venueTxtF];
     }
     
-    if(values.allKeys.count < 13 || mpike)    return NO;
+    if (![values objectForKey:@"base64_image"] && ![values objectForKey:@"image_url"]) {
+        [self invalidTextfield:self.titleTxtF];
+        mpike = YES;
+    }
+    else{
+        [self validTextfield:self.titleTxtF];
+    }
+    
+    if (base64Image) {
+        [values setObject:base64Image forKey:@"base64_image"];
+    }
+    else if (![values objectForKey:@"image_url"]){
+        UIButton *choosePhotoBtn = (id)[self.scrollV viewWithTag:7];
+        choosePhotoBtn.layer.borderColor = [UIColor redColor].CGColor;
+        choosePhotoBtn.layer.borderWidth = 1.0f;
+    }
+    else{
+        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+        chosenPhotoBtn.layer.borderColor = [UIColor clearColor].CGColor;
+        chosenPhotoBtn.layer.borderWidth = 0.0f;
+        mpike = YES;
+    }
+    
+
+    
+    BOOL haskeywords = ([values objectForKey:@"keywords"] != nil);
+    
+    if(values.allKeys.count <= (haskeywords)?13:12 || mpike)    return NO;
     else return YES;
 }
 
@@ -835,8 +859,13 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
-        NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
-        base64Image = [self base64forData:imageData];
+        if (!image_url) {
+            NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
+            base64Image = [self base64forData:imageData];
+        }
+        else{
+            base64Image = nil;
+        }
         
         [self imageSelected:chosenPhotoBtn];
     }
@@ -924,6 +953,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    [values removeObjectForKey:@"image_url"];
     
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
     base64Image = [self base64forData:imageData];

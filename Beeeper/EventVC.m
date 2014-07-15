@@ -1035,6 +1035,8 @@
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                 }
+                
+                
             }];
 
         }
@@ -1072,12 +1074,26 @@
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
             Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
             
-            [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
                 if (completed) {
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                }
+                else{
+                    
+                    NSArray *errorArray = [response objectForKey:@"errors"];
+                    NSDictionary *errorDict = [errorArray firstObject];
+                    
+                    NSString *info = [errorDict objectForKey:@"info"];
+                    if ([info isEqualToString:@"You have already liked this event"]) {
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                    }
                 }
             }];
         }
@@ -1091,6 +1107,7 @@
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                 }
+                
             }];
             
         }

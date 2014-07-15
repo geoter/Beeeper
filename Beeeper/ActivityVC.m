@@ -471,7 +471,7 @@
     
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
     header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 46)];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 47)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     
@@ -488,6 +488,10 @@
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
     [backV addSubview:dlbl];
+    
+    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, header.frame.size.height-1, 306, 1)];
+    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
+    [header addSubview:headerBottomLine];
     
     return header;
 }

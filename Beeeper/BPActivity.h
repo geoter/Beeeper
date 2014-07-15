@@ -18,6 +18,7 @@ typedef void(^completed)(BOOL,id);
 -(void)getEvent:(Activity_Object *)activityObj WithCompletionBlock:(completed)compbloc;
 -(void)getLocalActivityWithCompletionBlock:(completed)compbloc;
 -(void)nextPageActivityWithCompletionBlock:(completed)compbloc;
+-(void)getEventFromFingerprint:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;
 
 @property (copy) completed beeep_completed;
 @property (copy) completed event_completed;

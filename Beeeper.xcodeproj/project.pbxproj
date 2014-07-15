@@ -45,6 +45,13 @@
 		5E51DF0B1965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51DF051965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m */; };
 		5E51DF0E196A9ABB0061AE2A /* timeline-time-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E51DF0C196A9ABB0061AE2A /* timeline-time-frame.png */; };
 		5E51DF0F196A9ABB0061AE2A /* timeline-time-frame@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E51DF0D196A9ABB0061AE2A /* timeline-time-frame@2x.png */; };
+		5E58956119756BEF00FDA837 /* buttonsHighlightBG.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5E58956019756BEF00FDA837 /* buttonsHighlightBG.jpg */; };
+		5E5895641975700D00FDA837 /* venue-icon-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E5895621975700D00FDA837 /* venue-icon-black@2x.png */; };
+		5E5895651975700D00FDA837 /* venue-icon-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E5895631975700D00FDA837 /* venue-icon-black.png */; };
+		5E5895681975775B00FDA837 /* checkbox_check_noborder.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E5895661975775B00FDA837 /* checkbox_check_noborder.png */; };
+		5E5895691975775B00FDA837 /* checkbox_check_noborder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E5895671975775B00FDA837 /* checkbox_check_noborder@2x.png */; };
+		5E58956B1975794900FDA837 /* yellowBackV.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5E58956A1975794900FDA837 /* yellowBackV.jpg */; };
+		5E58956E1975950200FDA837 /* JSBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E58956D1975950100FDA837 /* JSBadgeView.m */; };
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
@@ -53,8 +60,6 @@
 		5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAED19594E910033C061 /* suggest_selected@2x.png */; };
 		5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */; };
 		5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEF19594E910033C061 /* suggest_selected.png */; };
-		5EA7FAFB19595B060033C061 /* sugget_it_beeep@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */; };
-		5EA7FAFC19595B060033C061 /* sugget_it_beeep.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */; };
 		5EE13A1A1950202900540C04 /* BPSuggestions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A191950202900540C04 /* BPSuggestions.m */; };
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
@@ -574,6 +579,14 @@
 		5E51DF051965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGooglePlacesPlaceDetailQuery.m; sourceTree = "<group>"; };
 		5E51DF0C196A9ABB0061AE2A /* timeline-time-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "timeline-time-frame.png"; sourceTree = "<group>"; };
 		5E51DF0D196A9ABB0061AE2A /* timeline-time-frame@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "timeline-time-frame@2x.png"; sourceTree = "<group>"; };
+		5E58956019756BEF00FDA837 /* buttonsHighlightBG.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = buttonsHighlightBG.jpg; sourceTree = "<group>"; };
+		5E5895621975700D00FDA837 /* venue-icon-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "venue-icon-black@2x.png"; sourceTree = "<group>"; };
+		5E5895631975700D00FDA837 /* venue-icon-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "venue-icon-black.png"; sourceTree = "<group>"; };
+		5E5895661975775B00FDA837 /* checkbox_check_noborder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_check_noborder.png; sourceTree = "<group>"; };
+		5E5895671975775B00FDA837 /* checkbox_check_noborder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox_check_noborder@2x.png"; sourceTree = "<group>"; };
+		5E58956A1975794900FDA837 /* yellowBackV.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = yellowBackV.jpg; sourceTree = "<group>"; };
+		5E58956C1975950100FDA837 /* JSBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBadgeView.h; sourceTree = "<group>"; };
+		5E58956D1975950100FDA837 /* JSBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSBadgeView.m; sourceTree = "<group>"; };
 		5E9D2DA2192DDCF700A765C9 /* BPCreate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPCreate.h; sourceTree = "<group>"; };
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPCreate.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
@@ -584,8 +597,6 @@
 		5EA7FAED19594E910033C061 /* suggest_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_selected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
-		5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sugget_it_beeep@2x.png"; sourceTree = "<group>"; };
-		5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugget_it_beeep.png; sourceTree = "<group>"; };
 		5EE13A181950202900540C04 /* BPSuggestions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSuggestions.h; sourceTree = "<group>"; };
 		5EE13A191950202900540C04 /* BPSuggestions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPSuggestions.m; sourceTree = "<group>"; };
 		5EE13A1C1951604F00540C04 /* Suggestion_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Suggestion_Object.m; sourceTree = "<group>"; };
@@ -1319,8 +1330,12 @@
 		5EA7FAF419595A9E0033C061 /* R */ = {
 			isa = PBXGroup;
 			children = (
-				5EA7FAF919595B060033C061 /* sugget_it_beeep@2x.png */,
-				5EA7FAFA19595B060033C061 /* sugget_it_beeep.png */,
+				5E58956A1975794900FDA837 /* yellowBackV.jpg */,
+				5E5895661975775B00FDA837 /* checkbox_check_noborder.png */,
+				5E5895671975775B00FDA837 /* checkbox_check_noborder@2x.png */,
+				5E5895621975700D00FDA837 /* venue-icon-black@2x.png */,
+				5E5895631975700D00FDA837 /* venue-icon-black.png */,
+				5E58956019756BEF00FDA837 /* buttonsHighlightBG.jpg */,
 			);
 			name = R;
 			sourceTree = "<group>";
@@ -1741,6 +1756,8 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5E58956C1975950100FDA837 /* JSBadgeView.h */,
+				5E58956D1975950100FDA837 /* JSBadgeView.m */,
 				5E51DEF91965A5840061AE2A /* SPGooglePlacesAutocomplete */,
 				CE0B5BAC196411960075B13B /* SVGeocoder */,
 				5E51B8B519614C7900DB2E6F /* GKClasses */,
@@ -2602,6 +2619,7 @@
 				962E3D9F194C614900A0DD87 /* facebook-white.png in Resources */,
 				CEFDE82A18ED77BD00E500A9 /* friends_feed_icon@2x.png in Resources */,
 				CE29EE3218D9CADB0001EC43 /* beeepit_btn.png in Resources */,
+				5E5895691975775B00FDA837 /* checkbox_check_noborder@2x.png in Resources */,
 				CE29EE4618D9CADB0001EC43 /* pin_icon.png in Resources */,
 				CE77BA4718E5A98F00D4051A /* check_btn@2x.png in Resources */,
 				CEFDE84518EDC3E700E500A9 /* activity_container_image_2@2x.png in Resources */,
@@ -2632,6 +2650,7 @@
 				962E3D9A194C614900A0DD87 /* facebook-white@2x.png in Resources */,
 				CE29EE3318D9CADB0001EC43 /* beeepit_btn@2x.png in Resources */,
 				CE7CFAE818B797C10044C9AC /* MessageEntrySendButtonPressed.png in Resources */,
+				5E5895641975700D00FDA837 /* venue-icon-black@2x.png in Resources */,
 				CEA64F2918B39F4F00B7ECF5 /* Images.xcassets in Resources */,
 				9615E8CA192DB7870099B3E0 /* following-icon@2x.png in Resources */,
 				CE79423918DB261B00748EDD /* twitter_icon_gray.png in Resources */,
@@ -2682,9 +2701,11 @@
 				CE29EE3018D9CADB0001EC43 /* beeeper_logo.png in Resources */,
 				CE29EE4418D9CADB0001EC43 /* notifications_icon.png in Resources */,
 				CEF2639B18DC59A10047510D /* 6.png in Resources */,
+				5E5895651975700D00FDA837 /* venue-icon-black.png in Resources */,
 				9615E8B3192DB57C0099B3E0 /* tabbar-home.png in Resources */,
 				CEF2639818DC59A10047510D /* 3.png in Resources */,
 				CEA1132F19530D00003C8D7B /* settings-icon-timeline@2x.png in Resources */,
+				5E58956B1975794900FDA837 /* yellowBackV.jpg in Resources */,
 				CEF263BC18DC7F080047510D /* beeeps_icon_event@2x.png in Resources */,
 				CEFDE83118ED77BD00E500A9 /* walkthrough_icon.png in Resources */,
 				962E3DA1194C614900A0DD87 /* linkedin-white.png in Resources */,
@@ -2740,7 +2761,6 @@
 				CEFDE83518ED8B1B00E500A9 /* clock-icon.png in Resources */,
 				CE25F9F918B6761300D8B858 /* NotificationButtonBackground.png in Resources */,
 				CEA113221952ED77003C8D7B /* Beeep_popup_unpressed.png in Resources */,
-				5EA7FAFB19595B060033C061 /* sugget_it_beeep@2x.png in Resources */,
 				CEF2639918DC59A10047510D /* 4.png in Resources */,
 				CE25F9EC18B6761300D8B858 /* NotificationBackgroundError@2x.png in Resources */,
 				CE0C882B18D0C55800BA548F /* Beeeper_logo_small@2x.png in Resources */,
@@ -2758,6 +2778,7 @@
 				CE25F9F118B6761300D8B858 /* NotificationBackgroundSuccess.png in Resources */,
 				CE2BA447193E23C3004D63C3 /* empty-selection0cirlce-suggestit@2x.png in Resources */,
 				CE042A061938D1F600E3167A /* search_icon_white.png in Resources */,
+				5E58956119756BEF00FDA837 /* buttonsHighlightBG.jpg in Resources */,
 				CE79424418DB329E00748EDD /* close_btn@2x.png in Resources */,
 				CE25F9ED18B6761300D8B858 /* NotificationBackgroundErrorIcon.png in Resources */,
 				CEEE3EFE18CA102700665C21 /* checkbox_empty@2x.png in Resources */,
@@ -2791,6 +2812,7 @@
 				CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */,
 				5E51DF0E196A9ABB0061AE2A /* timeline-time-frame.png in Resources */,
 				CE042A0A1938D4B700E3167A /* selection0cirlce-suggestit@2x.png in Resources */,
+				5E5895681975775B00FDA837 /* checkbox_check_noborder.png in Resources */,
 				CE29EE3118D9CADB0001EC43 /* beeeper_logo@2x.png in Resources */,
 				CE0C882318D0BE5A00BA548F /* option_2_gray@2x.png in Resources */,
 				CE0C881E18D0BE3200BA548F /* option_1_gray.png in Resources */,
@@ -2854,7 +2876,6 @@
 				CE79423718DB261B00748EDD /* facebook_icon.png in Resources */,
 				CE2A6EB618E2F6B900175A9C /* arrow-cell.png in Resources */,
 				CEF2639618DC59A10047510D /* 1.png in Resources */,
-				5EA7FAFC19595B060033C061 /* sugget_it_beeep.png in Resources */,
 				CE0C880F18D0BCD300BA548F /* option_1@2x.png in Resources */,
 				CE0C880E18D0BCD300BA548F /* option_1.png in Resources */,
 				CEF1E5A718E452F300DF7539 /* searchBarEvents@2x.png in Resources */,
@@ -2969,6 +2990,7 @@
 				5E09B55F192216D800AF5DE8 /* EventLocation.m in Sources */,
 				5EE13A261951AE7200540C04 /* Beeep_Object.m in Sources */,
 				5E51B8C219614C7900DB2E6F /* GKCropBorderView.m in Sources */,
+				5E58956E1975950200FDA837 /* JSBadgeView.m in Sources */,
 				969591E71948A8A900526AA0 /* EventDetailsFfo.m in Sources */,
 				CE7CFAF118B79BD70044C9AC /* DAKeyboardControl.m in Sources */,
 				CE02EBF918EC63CC00B5674C /* UIImage+MultiFormat.m in Sources */,
@@ -3218,7 +3240,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3241,7 +3263,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "A4008918-DADD-4A6B-B57C-7C56D7DCE8FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

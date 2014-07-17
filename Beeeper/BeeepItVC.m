@@ -409,7 +409,7 @@
     }
 }
 
--(void)sendFacebook{
+-(void)sendFacebookOld{
     
     
     SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
@@ -469,7 +469,7 @@
     
 }
 
--(void)testSendFacebook2{
+-(void)sendFacebook{
     
     [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
                                        allowLoginUI:YES

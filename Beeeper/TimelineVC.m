@@ -520,11 +520,21 @@
         
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
-        lbl.text = @"Follow +";
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+        
+        NSMutableAttributedString *txt = [[NSMutableAttributedString alloc] initWithString:@"Follow +"];
+        NSRange r = [txt.string rangeOfString:@"+"];
+      
+        [txt addAttribute:NSFontAttributeName
+                      value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:20]
+                      range:r];
+        lbl.attributedText = txt;
+        
         lbl.backgroundColor = [UIColor whiteColor];
         lbl.textColor = [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+
+        
         [self.followButton addSubview:lbl];
         
         self.followButton.hidden = NO;

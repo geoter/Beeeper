@@ -679,6 +679,11 @@
         //    [cell viewWithTag:66].layer.borderWidth = 0.5;
         
         UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+        
+        reminderLabel.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1].CGColor;
+        reminderLabel.layer.borderWidth = 1;
+        reminderLabel.layer.cornerRadius  = 2;
+        
         UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
         UIButton *beepItbutton = (id)[cell viewWithTag:-8];
         
@@ -733,7 +738,8 @@
        float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
         
         NSString *alert_time = [self dailyLanguage:timestamp];
-        reminderLabel.text = alert_time;
+        reminderLabel.text = [alert_time stringByAppendingString:@""];
+    
         //Venue name
         
         UILabel *venueLbl = (id)[cell viewWithTag:5];
@@ -999,9 +1005,26 @@
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
+-(IBAction)beeepItPressed:(UIButton *)sender{
+    
+    UITableViewCell *cell = (id)sender.superview.superview.superview.superview.superview;
+    NSIndexPath *path = [self.tableV indexPathForCell:cell];
+    
+    NSMutableArray *filtered_activities = [self timelineForSection:path.section];
+    
+    Timeline_Object *b = [filtered_activities objectAtIndex:path.row];
+    
+    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    viewController.tml = b;
+    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
+    
+    [self presentViewController:viewController animated:YES completion:nil];    
+
+}
+
 - (IBAction)showLikes:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     NSMutableArray *filtered_activities = [self timelineForSection:path.section];
@@ -1026,7 +1049,8 @@
 }
 
 - (IBAction)showComments:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+   
+    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     NSMutableArray *filtered_activities = [self timelineForSection:path.section];
@@ -1040,7 +1064,8 @@
 }
 
 - (IBAction)showBeeepers:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+   
+    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     NSMutableArray *filtered_activities = [self timelineForSection:path.section];

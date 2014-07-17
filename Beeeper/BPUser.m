@@ -1252,6 +1252,7 @@ static BPUser *thisWebServices = nil;
 }
 
 -(void)oldNotificationsFailed:(ASIHTTPRequest *)request{
+    
     NSString *responseString = [request responseString];
     oldNotificationsFinished = YES;
     

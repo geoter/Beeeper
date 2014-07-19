@@ -107,6 +107,7 @@
         [refreshControl endRefreshing];
         [self hideLoading];
         if (completed) {
+            notifications = [NSMutableArray array];
             [notifications addObjectsFromArray:newNotifs];
             [notifications addObjectsFromArray:oldNotifs];
             

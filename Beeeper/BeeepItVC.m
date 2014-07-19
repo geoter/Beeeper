@@ -471,12 +471,10 @@
 
 -(void)sendFacebook{
     
-    [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
-                                       allowLoginUI:YES
-                                  completionHandler:^(FBSession *session,
-                                                      FBSessionState state,
-                                                      NSError *error) {
-                                      if (error) {
+    [FBSession openActiveSessionWithPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
+                                      defaultAudience:FBSessionDefaultAudienceOnlyMe
+                                         allowLoginUI:YES
+                                    completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {                                      if (error) {
                                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
                                                                                               message:error.localizedDescription
                                                                                              delegate:nil
@@ -580,34 +578,34 @@
             }
 
             
-              // Check if the Facebook app is installed and we can present the share dialog
-              FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
-              params.link = [NSURL URLWithString:website];
-              params.caption = @"a dot game";
-              params.linkDescription = @"this is link description";
-              params.name = @"Fuck event";
-              NSURL *url = [NSURL URLWithString:imageURL];
-              params.picture = url;
-              
-              
-              // If the Facebook app is installed and we can present the share dialog
-              if ([FBDialogs canPresentShareDialogWithParams:params]) {
-                  // Present share dialog
-                  [FBDialogs presentShareDialogWithLink:params.link
-                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-                                                    if(error) {
-                                                        // An error occurred, we need to handle the error
-                                                        // See: https://developers.facebook.com/docs/ios/errors
-                                                        NSLog(@"Error publishing story: %@", error.description);
-                                                    } else {
-                                                        // Success
-                                                        NSLog(@"result %@", results);
-                                                    }
-                                                }];
-              } else {
-                  // Present the feed dialog
-                  NSLog(@"fdfd");
-              }
+//              // Check if the Facebook app is installed and we can present the share dialog
+//              FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
+//              params.link = [NSURL URLWithString:website];
+//              params.caption = @"a dot game";
+//              params.linkDescription = @"this is link description";
+//              params.name = @"Fuck event";
+//              NSURL *url = [NSURL URLWithString:imageURL];
+//              params.picture = url;
+//              
+//              
+//              // If the Facebook app is installed and we can present the share dialog
+//              if ([FBDialogs canPresentShareDialogWithParams:params]) {
+//                  // Present share dialog
+//                  [FBDialogs presentShareDialogWithLink:params.link
+//                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+//                                                    if(error) {
+//                                                        // An error occurred, we need to handle the error
+//                                                        // See: https://developers.facebook.com/docs/ios/errors
+//                                                        NSLog(@"Error publishing story: %@", error.description);
+//                                                    } else {
+//                                                        // Success
+//                                                        NSLog(@"result %@", results);
+//                                                    }
+//                                                }];
+//              } else {
+//                  // Present the feed dialog
+//                  NSLog(@"fdfd");
+//              }
 
     
           //run your user info request here

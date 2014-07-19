@@ -21,6 +21,8 @@
 
     [self adjustFonts];
     
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
@@ -38,8 +40,17 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 }
+
+-(void)goBack{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 
 -(void)adjustFonts{
@@ -49,17 +60,17 @@
         if([v isKindOfClass:[UILabel class]])
         {
    
-               ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+               ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
     
             
         }
         else if ([v isKindOfClass:[UIButton class]]){
-                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
         }
         else if ([v isKindOfClass:[UIView class]]){
             
             UIButton *btn = (UIButton *)[v viewWithTag:1];
-            btn.titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:13];
+            btn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
         }
     }
     
@@ -67,7 +78,7 @@
     {
         if([v isKindOfClass:[UILabel class]] && v.tag == 4)
         {
-            ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Bold" size:10];
+            ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
         }
     }
     

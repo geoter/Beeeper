@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) Comment *comment;
 @property (nonatomic, strong) Commenter *commenter;
+@property (nonatomic,strong) NSDictionary *userCommentDict;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

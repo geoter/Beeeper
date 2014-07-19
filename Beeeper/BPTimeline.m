@@ -13,9 +13,9 @@ static BPTimeline *thisWebServices = nil;
 
 @interface BPTimeline ()
 {
-    int page;
+    int timeline_page;
     int pageLimit;
-
+    NSString *userID;
     NSString *order;
     NSOperationQueue *operationQueue;
 
@@ -28,10 +28,11 @@ static BPTimeline *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        page = 0;
-        pageLimit = 50;
+        timeline_page = 0;
+        pageLimit = 10;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }
@@ -48,8 +49,84 @@ static BPTimeline *thisWebServices = nil;
     return nil;
 }
 
+-(void)getLocalTimelineUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+    
+    self.localCompleted = compbloc;
+    userID = user_id;
+    order = (option == Upcoming)?@"ASC":@"DESC";
 
--(void)getTimelineForUserID:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",user_id,order]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+
+}
+
+-(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+ 
+    order = (option == Upcoming)?@"ASC":@"DESC";
+    userID = user_id;
+    
+    timeline_page++;
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",timeline_page]];
+    [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(timelineFinished:)];
+    
+    [request setDidFailSelector:@selector(timelineFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+    
+    timeline_page = 0;
+    
+    order = (option == Upcoming)?@"ASC":@"DESC";
+    userID = user_id;
     
     NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
     
@@ -61,7 +138,7 @@ static BPTimeline *thisWebServices = nil;
     [array addObject:[NSString stringWithFormat:@"from=%f",timeStamp]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"order=%@",order]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",timeline_page]];
     [array addObject:[NSString stringWithFormat:@"user=%@",user_id]];
     
     for (NSString *str in array) {
@@ -105,7 +182,23 @@ static BPTimeline *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.completed];
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+   
+    if (responseString == nil) {
+        compbloc(NO,nil);
+        timeline_page--;
+    }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
@@ -113,36 +206,37 @@ static BPTimeline *thisWebServices = nil;
     
     for (NSDictionary *b in beeeps) {
         Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
-
+        
         NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:beeep];
         [operationQueue addOperation:invocationOperation];
         
         [bs addObject:beeep];
     }
     
-    self.completed(YES,bs);
+    compbloc(YES,bs);
 }
 
 -(void)timelineFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
 
+    timeline_page--;
     self.completed(NO,nil);
 }
 
 -(void)downloadImage:(Timeline_Object *)tml{
     
-    NSString *extension = [[tml.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+   // NSString *extension = [[tml.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[tml.event.imageUrl MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[tml.event.imageUrl MD5]];
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:tml.event.imageUrl]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:tml.event.imageUrl]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }

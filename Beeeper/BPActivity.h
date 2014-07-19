@@ -16,10 +16,14 @@ typedef void(^completed)(BOOL,id);
 -(void)getActivityWithCompletionBlock:(completed)compbloc;
 -(void)getBeeepInfoFromActivity:(Activity_Object *)actObj WithCompletionBlock:(completed)compbloc;
 -(void)getEvent:(Activity_Object *)activityObj WithCompletionBlock:(completed)compbloc;
+-(void)getLocalActivityWithCompletionBlock:(completed)compbloc;
+-(void)nextPageActivityWithCompletionBlock:(completed)compbloc;
+-(void)getEventFromFingerprint:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;
 
 @property (copy) completed beeep_completed;
 @property (copy) completed event_completed;
 @property (copy) completed activity_completed;
+@property (copy) completed local_activity_completed;
 
 - (id)init;
 + (BPActivity *)sharedBP;

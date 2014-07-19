@@ -10,6 +10,12 @@
 
 static DTO *thisDTO = nil;
 
+@interface DTO ()
+{
+    NSOperationQueue *operationQueue;
+}
+@end
+
 @implementation DTO
 
 
@@ -17,6 +23,8 @@ static DTO *thisDTO = nil;
     self = [super init];
     if(self) {
         thisDTO = self;
+        operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
     
@@ -37,20 +45,27 @@ static DTO *thisDTO = nil;
 
 - (void)downloadImageFromURL:(NSString *)url{
     
-    NSString *extension = [[url.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImageInBackgroundFromURL:) object:url];
+    [operationQueue addOperation:invocationOperation];
+}
+
+-(void)downloadImageInBackgroundFromURL:(NSString *)url{
+
+   // NSString *extension = [[url.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[url MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[url MD5]];
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:url]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }
+
 }
 
 -(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
@@ -68,7 +83,28 @@ static DTO *thisDTO = nil;
         NSLog(@"Saved Image: %@ - %d",directoryPath,write);
     }
     
-    [[NSNotificationCenter defaultCenter]postNotificationName:[imageName MD5] object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+    [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+- (NSString *)fixLink:(NSString *)link{
+   
+    @try {
+        
+        link = [link stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        
+        if ([[link substringToIndex:2]isEqualToString:@"//"]) {
+            NSString *fixedLink = [NSString stringWithFormat:@"http://%@",[link substringFromIndex:2]];
+            return fixedLink;
+        }
+        return link;
+
+    }
+    @catch (NSException *exception) {
+         return link;
+    }
+    @finally {
+        
+    }
 }
 
 

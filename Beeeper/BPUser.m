@@ -1,4 +1,4 @@
-//
+ //
 //  BPUser.m
 //  Beeeper
 //
@@ -41,7 +41,15 @@
     NSString *accessTokenSecret;
     
     NSOperationQueue *operationQueue;
-
+    
+    NSMutableArray *newNotifications;
+    NSMutableArray *oldNotifications;
+    BOOL newNotificationsFinished;
+    BOOL oldNotificationsFinished;
+    int page_new;
+    int page_old;
+    
+    NSString *_userID;
 }
 
 @end
@@ -65,6 +73,7 @@ static BPUser *thisWebServices = nil;
         xoauth_displayname = @"RandomName";
         oauth_timestamp = [NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]];
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
     
@@ -135,9 +144,6 @@ static BPUser *thisWebServices = nil;
 -(void)signupFinished:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-
-    NSData *data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
    
     @try {
         NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
@@ -160,9 +166,76 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = [request responseString];
 }
 
+#pragma mark - User settings
+
+-(void)setUserSettings:(NSDictionary *)settings WithCompletionBlock:(completed)compbloc{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/update_profile"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.setUserSettingsCompleted = compbloc;
+    
+    [request setRequestMethod:@"POST"];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    for (NSString *key in settings.allKeys) {
+       @try {
+           id object = [settings objectForKey:key];
+           [request addPostValue:object forKey:key];
+           [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:object] forKey:key]];
+  
+        }
+        @catch (NSException *exception) {
+            [request addPostValue:@"0" forKey:key];
+            [postValues addObject:[NSDictionary dictionaryWithObject:@"0" forKey:key]];
+        }
+        @finally {
+            
+        }
+    }
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+    
+    [request setTimeOutSeconds:30.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(setUserSettingsFinished:)];
+    
+    [request setDidFailSelector:@selector(setUserSettingsFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)setUserSettingsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    if ([responseString isEqualToString:@"[success]"]) {
+        self.setUserSettingsCompleted(YES,nil);
+        [self updateUser];
+    }
+    else{
+        self.setUserSettingsCompleted(NO,nil);
+    }
+
+}
+
+-(void)setUserSettingsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.setUserSettingsCompleted(NO,nil);
+}
+
 #pragma mark - FB Signup
 
--(void)signUpFacebookUser:(NSDictionary *)info completionBlock:(completed)compbloc{
+-(void)signUpSocialUser:(NSDictionary *)info completionBlock:(completed)compbloc{
     
     NSURL *requestURL = [NSURL URLWithString:@"https://resources.beeeper.com/signup/"];
     
@@ -174,6 +247,8 @@ static BPUser *thisWebServices = nil;
         NSString *value = [info objectForKey:key];
         [request addPostValue:value forKey:key];
     }
+    
+    self.fbSignUpCompleted = compbloc;
     
     [request setRequestMethod:@"POST"];
 
@@ -193,10 +268,48 @@ static BPUser *thisWebServices = nil;
 
 -(void)fbSignupReceived:(ASIHTTPRequest *)request{
  
+  //  NSString *responseString = [request responseString];
+
+    NSString *responseString = @"{\"id\":\"1404730445.521045345363001\",\"username\":\"maromm\",\"email\":\"maria.maraki.mario.maro@hotmail.com\",\"name\":\"maria\",\"lastname\":\"\",\"timezone\":\"180\",\"password\":\"8cb2237d0679ca88db6464eac60da96345513964\",\"locked\":\"0\",\"city\":\"cholargos\",\"state\":\"athens\",\"country\":\"greece\",\"long\":\"37.9978\",\"lat\":\"23.7926\",\"last_login\":\"\",\"sex\":\"\",\"fbid\":\"\",\"twid\":\"\",\"fbtoken\":"",\"twtoken\":"",\"active\":\"0\",\"image_path\":\"\",\"about\":\"\",\"website\":\"\",\"se_on\":\"1\"}";
+    
+    NSDictionary * response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+   
+    @try {
+       NSArray *errors = [response objectForKey:@"errors"];
+        
+      NSDictionary *error = [errors firstObject];
+        
+        if (error != nil) {
+            self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
+        }
+        else{
+            NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
+            [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    self.fbSignUpCompleted(completed,user);
+                }
+                else{
+                    self.fbSignUpCompleted(NO,nil);
+                }
+            }];
+        }
+        
+    }
+    @catch (NSException *exception) {
+        self.fbSignUpCompleted(NO,nil);
+
+    }
+    @finally {
+
+    }
+    
+}
+
+-(void)fbSignupFailed:(ASIHTTPRequest *)request{
+    
     NSString *responseString = [request responseString];
     
-    NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
+    self.fbSignUpCompleted(NO,nil);
     
 }
 
@@ -231,6 +344,59 @@ static BPUser *thisWebServices = nil;
 }
 
 #pragma mark - USER
+
+-(void)updateUser{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/verify"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:requestURL.absoluteString values:nil]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(updateUserReceived:)];
+    
+    [request setDidFailSelector:@selector(updateUserFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)updateUserReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [[request responseString] stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    
+    if (responseString.length == 0) {
+               return;
+    }
+    responseString = [[responseString substringToIndex:[responseString length]-1]substringFromIndex:1];
+    
+    NSArray *responseArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    self.user = responseArray.firstObject;
+    
+    //if user added new image erase the old one
+    
+    NSString *imageName = [NSString stringWithFormat:@"%@",[[[BPUser sharedBP].user objectForKey:@"image_path"] MD5]];
+    
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    
+    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+        [[NSFileManager defaultManager]removeItemAtPath:localPath error:NULL];
+    }
+
+}
+
+-(void)updateUserFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+}
+
 
 -(void)getUser{
     
@@ -272,15 +438,58 @@ static BPUser *thisWebServices = nil;
 
 -(void)userInfoFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    self.completed(NO,nil);
 }
 
 #pragma mark - Follow
+
+-(void)getLocalFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+
+    self.localFollowersCompleted= compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",user_id]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
+    self.localFollowersCompleted(YES,users);
+
+
+}
+
+-(void)getLocalFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
+    
+    self.localFollowingCompleted= compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",user_id]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
+    self.localFollowingCompleted(YES,users);
+
+}
 
 -(void)getFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
   
     if (user_id == nil) {
         user_id = [[BPUser sharedBP].user objectForKey:@"id"];
     }
+    _userID = user_id;
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/followers/show"];
     
@@ -331,6 +540,8 @@ static BPUser *thisWebServices = nil;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"user=%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
     
+    _userID = [[BPUser sharedBP].user objectForKey:@"id"];
+    
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
         
@@ -362,12 +573,26 @@ static BPUser *thisWebServices = nil;
 }
 
 -(void)followersReceived:(ASIHTTPRequest *)request{
+
     
     NSString *responseString = [request responseString];
+
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",_userID]];
+    NSError *error;
+    BOOL success  = [responseString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    for (NSDictionary *user in users) {
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    }
+    
     self.followers_completed(YES,users);
 
 }
@@ -386,6 +611,7 @@ static BPUser *thisWebServices = nil;
     if (user_id == nil) {
         user_id = [[BPUser sharedBP].user objectForKey:@"id"];
     }
+    _userID = user_id;
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/following/show"];
     
@@ -431,10 +657,10 @@ static BPUser *thisWebServices = nil;
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/following/show"];
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/following/show?"];
-    
+
     NSDictionary *dict = [BPUser sharedBP].user;
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"user=%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    [array addObject:[NSString stringWithFormat:@"user=%@",_userID]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -469,6 +695,16 @@ static BPUser *thisWebServices = nil;
 -(void)followingReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",_userID]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -639,15 +875,125 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - Notifications
 
--(void)getNotificationsWithCompletionBlock:(completed)compbloc{
-   
+-(void)getLocalNotifications:(completed)compbloc{
+    
+    self.localNotificationsCompleted= compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+}
+
+-(void)getNewNotificationsWithCompletionBlock:(completed)compbloc{
+    
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/show"];
     
-    self.notifications_completed = compbloc;
+    self.newNotificationsCompleted = compbloc;
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
     
     [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:nil]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(getNewNotificationsFinished:)];
+    
+    [request setDidFailSelector:@selector(getNewNotificationsFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getNewNotificationsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.newNotificationsCompleted];
+}
+
+-(void)getNewNotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    self.newNotificationsCompleted(NO,nil);
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+          activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    
+    compbloc(YES,bs);
+}
+
+-(void)nextNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    page_new ++;
+    
+    newNotifications = [NSMutableArray array];
+    oldNotifications = [NSMutableArray array];
+    newNotificationsFinished = NO;
+    oldNotificationsFinished = NO;
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    self.notifications_completed = compbloc;
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
     
     [request setRequestMethod:@"GET"];
     
@@ -660,22 +1006,81 @@ static BPUser *thisWebServices = nil;
     [request setDidFailSelector:@selector(notificationsFailed:)];
     
     [request startAsynchronous];
+    
+    [self nextOldNotificationsWithCompletionBlock:compbloc];
+    
+}
+
+
+-(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+   
+    page_new = 0;
+    
+    newNotifications = [NSMutableArray array];
+    oldNotifications = [NSMutableArray array];
+    newNotificationsFinished = NO;
+    oldNotificationsFinished = NO;
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+
+    self.notifications_completed = compbloc;
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(notificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(notificationsFailed:)];
+    
+    [request startAsynchronous];
+    
 }
 
 -(void)notificationsReceived:(ASIHTTPRequest *)request{
    
     NSString *responseString = [request responseString];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-//    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
-    NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     NSMutableArray *bs = [NSMutableArray array];
     
-    for (NSString *b in notifications) {
+    for (id b in notificationsArray) {
         
-        NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
@@ -685,9 +1090,181 @@ static BPUser *thisWebServices = nil;
         [bs addObject:notification];
     }
     
-    self.notifications_completed(YES,bs);
-
+    newNotificationsFinished = YES;
+    [newNotifications addObjectsFromArray:bs];
+    
+    if (notificationsArray.count < 10) {
+        [self getOldNotificationsWithCompletionBlock:self.notifications_completed];
+        return;
+    }
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);    
+    }
 }
+
+-(void)notificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    newNotificationsFinished = YES;
+    
+    if (page_new>0) {
+        page_new--;
+    }
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+#pragma mark - Old Notifications
+
+-(void)nextOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    page_old ++;
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
+
+-(void)getOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+
+    page_old = 0;
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)oldNotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    oldNotificationsFinished = YES;
+    [oldNotifications addObjectsFromArray:bs];
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
+-(void)oldNotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    oldNotificationsFinished = YES;
+    
+    if (page_old>0) {
+        page_old--;
+    }
+    
+    if (newNotificationsFinished && oldNotificationsFinished) {
+       self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
 
 
 -(void)downloadImage:(Activity_Object *)actv{
@@ -695,17 +1272,17 @@ static BPUser *thisWebServices = nil;
     @try {
         for (Who *w in actv.who) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+     //       NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -724,17 +1301,17 @@ static BPUser *thisWebServices = nil;
     @try {
         for (Whom *w in actv.whom) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+          //  NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -755,17 +1332,19 @@ static BPUser *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            path = [path stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+            NSURL *URL = [NSURL URLWithString:[[DTO sharedDTO]fixLink:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -778,17 +1357,18 @@ static BPUser *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            NSURL *URL = [NSURL URLWithString:[[DTO sharedDTO]fixLink:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:URL];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -818,16 +1398,129 @@ static BPUser *thisWebServices = nil;
 }
 
 
+#pragma mark - Settings
+
+-(void)getEmailSettingsWithCompletionBlock:(completed)compbloc{
+   
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/notificationsettings"];
+    
+    self.getEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(getEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(getEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)getEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.count >0) {
+            self.getEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+           self.getEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+
+}
 
 
--(void)notificationsFailed:(ASIHTTPRequest *)request{
+-(void)getEmailSettings_Failed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
-    self.notifications_completed(NO,nil);
+    self.getEmailSettingsCompleted(NO,nil);
 }
+
+-(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/setnotificationsettings"];
+    
+    self.setEmailSettingsCompleted = compbloc;
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [postValues addObject:[NSDictionary dictionaryWithObject:value forKey:key]];
+    }
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+    
+    for (NSString *key in settingsDict.allKeys) {
+        NSString *value = [settingsDict objectForKey:key];
+        [request addPostValue:value forKey:key];
+    }
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+
+    
+    [request setDidFinishSelector:@selector(setEmailSettings_Received:)];
+    
+    [request setDidFailSelector:@selector(setEmailSettings_Failed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)setEmailSettings_Received:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    @try {
+        NSDictionary *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        if (notifications.allKeys.count > 1) {
+            self.setEmailSettingsCompleted(YES,notifications);
+        }
+    }
+    @catch (NSException *exception) {
+        self.setEmailSettingsCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+
+-(void)setEmailSettings_Failed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.setEmailSettingsCompleted(NO,nil);
+}
+
 
 #pragma mark - GET POST requests
 

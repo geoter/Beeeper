@@ -15,19 +15,56 @@
 @interface NotificationsVC ()
 {
     NSMutableArray *notifications;
+    NSArray *newNotifications;
+    NSArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
+    NSMutableArray *rowsToReload;
+    BOOL loadNextPage;
 }
 @end
 
 @implementation NotificationsVC
 
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+        
+        if (completed) {
+            [notifications addObjectsFromArray:newNotifs];
+            [notifications addObjectsFromArray:oldNotifs];
+            
+            self.noNotifsFound.hidden = notifications.count != 0;
+            
+            
+            newNotifications = [NSArray arrayWithArray:newNotifs];
+            oldNotifications = [NSArray arrayWithArray:oldNotifs];
+            
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    }];
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
+    self.title = @"Notifications";
+    
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
 //        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
 //    }
+    
+    rowsToReload = [NSMutableArray array];
 
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
@@ -37,19 +74,58 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self getNotifications];
+    [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
+        
+        UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+        [refreshControl endRefreshing];
+        [self hideLoading];
+        
+        if (completed && objcts.count > 0) {
+            notifications = [NSMutableArray arrayWithArray:objcts];
+            
+            [self.tableV reloadData];
+        }
+        else{
+            [self showLoading];
+        }
+    }];
+    
 }
 
 -(void)getNotifications{
     
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+     self.tableV.decelerationRate = 0.6;
+    
+    loadNextPage = NO;
+    
+    newNotifications = nil;
+    oldNotifications = nil;
+    
+    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
-        
+        [self hideLoading];
         if (completed) {
-            notifications = [NSMutableArray arrayWithArray:objcts];
-            [self.tableV reloadData];
+            notifications = [NSMutableArray array];
+            [notifications addObjectsFromArray:newNotifs];
+            [notifications addObjectsFromArray:oldNotifs];
+            
+            if (newNotifs>0 || oldNotifs > 0) {
+                loadNextPage = YES;
+            }
+
+            newNotifications = [NSArray arrayWithArray:newNotifs];
+            oldNotifications = [NSArray arrayWithArray:oldNotifs];
+
+            if (notifications.count == 0) {
+                self.noNotifsFound.hidden = NO;
+            }
+            else{
+                self.noNotifsFound.hidden = YES;
+            }
+            
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }
     }];
 }
@@ -57,7 +133,9 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self getNotifications];
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
 
@@ -78,14 +156,34 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return notifications.count;
+    int returnValue = (notifications.count>0 && loadNextPage)?(notifications.count+1):notifications.count;
+    return returnValue;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier;
+    UITableViewCell *cell;
+    
+    if (loadNextPage && indexPath.row == notifications.count) {
+        
+        CellIdentifier = @"LoadMoreCell";
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+        
+        [self nextPage];
+        
+        return cell;
+        
+    }
+
+    CellIdentifier = @"Cell";
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil) {
         NSLog(@"EMPTY CELL");
@@ -94,12 +192,20 @@
     UIImageView *imgV = (UIImageView *)[cell viewWithTag:1];
     
     UILabel *time = (UILabel *)[cell viewWithTag:2];
-    time.font =  [UIFont fontWithName:@"Roboto-Regular" size:10];
+    time.font =  [UIFont fontWithName:@"HelveticaNeue" size:10];
     
     UILabel *txtV = (id)[cell viewWithTag:3];
-    txtV.font =  [UIFont fontWithName:@"Roboto-Regular" size:13];
+    txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
 
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+    
+    if(newNotifications != nil && [newNotifications indexOfObject:activity] != NSNotFound){
+        cell.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
+    }
+    else{
+        cell.backgroundColor = [UIColor whiteColor];
+    }
+    
     Who *w = [[activity.who firstObject] copy];
     Whom *wm = [[activity.whom firstObject] copy];
     
@@ -123,33 +229,33 @@
     NSAttributedString *notification_text = [self textForNotification:activity];
     txtV.attributedText = notification_text;
 
-    NSString *extension;
+   //NSString *extension;
     NSString *imageName;
 
     
     if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-        extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[wm.imagePath MD5],extension];
+    //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
     }
     else if (activity.eventActivity.count > 0){
         EventActivity *event = [activity.eventActivity firstObject];
         NSString *path = event.imageUrl;
-        extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+     //   extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
     }
     else if(activity.beeepInfoActivity.eventActivity != nil){
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
+      //  extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
     }
     else if ([wm.name isEqualToString:@"You"]){
-        extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+      //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
     }
     
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
@@ -167,7 +273,7 @@
     }
     
     
-    CGSize textViewSize = [self frameForText:txtV.attributedText sizeWithFont:txtV.font constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
     
     txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 212, textViewSize.height);
     
@@ -178,8 +284,6 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    return;
     
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
     
@@ -193,8 +297,9 @@
     }
     else{
         
-        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         vC.mode = Timeline_Not_Following;
+        vC.showBackButton = YES;
         
         Who *w = [activity.who firstObject];
         Whom *wm = [activity.whom firstObject];
@@ -247,7 +352,7 @@
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[event.title capitalizedString]];
+        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[NSString stringWithUTF8String:[[event.title capitalizedString] cStringUsingEncoding:[NSString defaultCStringEncoding]]]];
     }
     else{
         formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
@@ -256,18 +361,18 @@
     NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
     
     [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Light" size:12]
+                    value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
                     range:NSMakeRange(0,formattedString.length)];
     
     if (w != nil && ![w.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[w.name capitalizedString]]];
     }
     
     if (wm != nil && ![wm.name isEqualToString:@"You"]) {
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[wm.name capitalizedString]]];
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
@@ -275,7 +380,7 @@
         EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
         
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:[event.title capitalizedString]]];
         
     }
@@ -284,12 +389,12 @@
         EventActivity *event = [activity.eventActivity firstObject];
         NSString *event_title = [event.title capitalizedString];
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:event_title]];
     }
     else{
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:activity.what]];
     }
     
@@ -302,17 +407,25 @@
 }
 
 
--(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
-    
-    CGSize textViewSize = [self frameForText:str sizeWithFont:[UIFont fontWithName:@"Roboto-Regular" size:13] constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-    
-    return ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
-    
+    if (indexPath.row == notifications.count) {
+        return 40;
+    }
+    else{
+        NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+
+        CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+
+        float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+
+        NSLog(@"H: %f",height);
+
+        return height;
+    }
 }
 
--(CGSize)frameForText:(NSAttributedString*)text sizeWithFont:(UIFont*)font constrainedToSize:(CGSize)size{
+-(CGSize)frameForText:(NSAttributedString*)text constrainedToSize:(CGSize)size{
     
     CGRect frame =  [text boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin) context:nil];
     
@@ -324,11 +437,30 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+
+        });
+        
+    }
+    
     
 }
 
@@ -346,21 +478,79 @@
     NSString* overdueMessage;
     
     if (years>0){
-        overdueMessage = [NSString stringWithFormat:@"%d %@", (years), (years==1?@"year":@"years")];
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (years), (years==1?@"y":@"y")];
     }else if (months>0){
-        overdueMessage = [NSString stringWithFormat:@"%d %@", (months), (months==1?@"month":@"months")];
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (months), (months==1?@"mo":@"mo")];
     }else if (days>0){
-        overdueMessage = [NSString stringWithFormat:@"%d %@", (days), (days==1?@"day":@"days")];
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (days), (days==1?@"d":@"d")];
     }else if (hours>0){
-        overdueMessage = [NSString stringWithFormat:@"%d %@", (hours), (hours==1?@"hour":@"hours")];
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (hours), (hours==1?@"h":@"h")];
     }else if (minutes>0){
-        overdueMessage = [NSString stringWithFormat:@"%d %@", (minutes), (minutes==1?@"minute":@"minutes")];
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (minutes), (minutes==1?@"m":@"m")];
     }else if (overdueTimeInterval<60){
         overdueMessage = [NSString stringWithFormat:@"a few seconds"];
     }
     
-    return [overdueMessage stringByAppendingString:@" ago"];
+    return overdueMessage;
 }
+
+-(void)showLoading{
+    
+    self.tableV.alpha = 0;
+    
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    loadingBGV.backgroundColor = self.view.backgroundColor;
+    
+    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+    indicatorView.delegate = self;
+    indicatorView.numberOfCircles = 3;
+    indicatorView.radius = 8;
+    indicatorView.internalSpacing = 1;
+    indicatorView.center = self.view.center;
+    indicatorView.tag = -565;
+    
+    [loadingBGV addSubview:indicatorView];
+    loadingBGV.tag = -434;
+    [self.view addSubview:loadingBGV];
+    [self.view bringSubviewToFront:loadingBGV];
+    
+    [indicatorView startAnimating];
+    
+}
+
+-(void)hideLoading{
+    
+    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+    [indicatorView stopAnimating];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         loadingBGV.alpha = 0;
+         self.tableV.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         [loadingBGV removeFromSuperview];
+         
+     }
+     ];
+}
+
+
+#pragma mark - MONActivityIndicatorViewDelegate Methods
+
+- (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
+      circleBackgroundColorAtIndex:(NSUInteger)index {
+    
+    CGFloat red   = 250/255.0;
+    CGFloat green = 217/255.0;
+    CGFloat blue  = 0/255.0;
+    CGFloat alpha = 1.0f;
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
 
 
 

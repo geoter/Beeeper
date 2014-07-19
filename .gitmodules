@@ -1,0 +1,3 @@
+[submodule "thirdparty/TRAutocompleteView"]
+	path = thirdparty/TRAutocompleteView
+	url = git://github.com/TarasRoshko/TRAutocompleteView.git

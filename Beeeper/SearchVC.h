@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapG;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
 
 - (IBAction)cancelPressed:(id)sender;
 - (IBAction)releaseSearch:(id)sender;

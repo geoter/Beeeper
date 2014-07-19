@@ -14,6 +14,7 @@
 @property (nonatomic, strong) EventDetailsFfo *eventDetailsFfo;
 @property (nonatomic, strong) NSString *hashTags;
 
+- (id) init;
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (NSDictionary *)dictionaryRepresentation;

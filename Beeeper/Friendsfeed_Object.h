@@ -17,6 +17,7 @@
 @property (nonatomic, assign) double when;
 @property (nonatomic, strong) BeeepFfo *beeepFfo;
 
+- (id) init;
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (NSDictionary *)dictionaryRepresentation;

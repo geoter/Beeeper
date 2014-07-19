@@ -16,6 +16,7 @@
     NSMutableArray *people;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *following; //used for finding which users are followed by our user
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -24,6 +25,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (self.mode == 1) {
+        self.title = @"Followers";
+    }
+    else if (self.mode == 2){
+        self.title = @"Following";
+    }
+    else if (self.mode == 3){
+        self.title = @"Likes";
+    }
+    else if (self.mode == 4){
+        self.title = @"Beeepers";
+    }
+    
+    self.tableV.decelerationRate = 0.6;
+
+    pendingImagesDict = [NSMutableDictionary dictionary];
+    rowsToReload = [NSMutableArray array];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
@@ -36,10 +55,18 @@
     [self showLoading];
     
      if (self.mode == FollowersMode) {
+         
         [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
+                
+                for (NSDictionary *user in people) {
+                    NSArray *keys = user.allKeys;
+                    NSString *imagePath = [user objectForKey:@"image_path"];
+                    [[DTO sharedDTO]downloadImageFromURL:imagePath];
+                }
+                
                 [self updateUsersCount];
                 
                 NSMutableArray *true_following = [NSMutableArray array];
@@ -92,6 +119,10 @@
                  people = [NSMutableArray arrayWithArray:objs];
                  following = [NSMutableArray arrayWithArray:people];
                  
+                 for (NSDictionary *user in people) {
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
+                 }
+                 
                  [self updateUsersCount];
                  [self.tableV reloadData];
                  [self hideLoading];
@@ -112,6 +143,11 @@
          [[BPUsersLookup sharedBP]usersLookup:self.ids completionBlock:^(BOOL completed,NSArray *objs){
              if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
+                 
+                 for (NSDictionary *user in people) {
+                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
+                 }
+                 
                  [self updateUsersCount];
                  
                  NSMutableArray *true_following = [NSMutableArray array];
@@ -158,20 +194,6 @@
          }];
      }
 
-    pendingImagesDict = [NSMutableDictionary dictionary];
-
-    if (self.mode == 1) {
-        self.title = @"Followers";
-    }
-    else if (self.mode == 2){
-        self.title = @"Following";
-    }
-    else if (self.mode == 3){
-        self.title = @"Likes";
-    }
-    else if (self.mode == 4){
-        self.title = @"Beeepers";
-    }
 }
 
 -(void)updateUsersCount{
@@ -187,7 +209,7 @@
     numberLbl.textAlignment = NSTextAlignmentRight;
     numberLbl.text = [NSString stringWithFormat:@"%d",people.count];
     numberLbl.textColor = [UIColor whiteColor];
-    numberLbl.font = [UIFont fontWithName:@"Roboto-Medium" size:16];
+    numberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
 
 }
@@ -226,7 +248,7 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    ((UILabel *)[cell viewWithTag:2]).font = [UIFont fontWithName:@"Roboto-Bold" size:13];
+    ((UILabel *)[cell viewWithTag:2]).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
     UIButton *btn = (id)[cell viewWithTag:3];
     UILabel *nameLbl = (id)[cell viewWithTag:2];
@@ -239,13 +261,13 @@
     nameLbl.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
     
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+   // NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
@@ -256,23 +278,21 @@
         userImage.image = img;
     }
     else{
-        userImage.image = nil;
+        userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
         [pendingImagesDict setObject:indexPath forKey:imageName];
         
-        NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:[imageName MD5] object:nil];
-        
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+
     }
 
     if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
         btn.hidden = YES;
     }
     else{
-        
+    
         btn.hidden = NO;
         
         if ([following indexOfObject:user] != NSNotFound) {
@@ -290,7 +310,7 @@
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
     timelineVC.mode = Timeline_Not_Following;
     timelineVC.showBackButton = YES; //in case of My_Timeline
     NSDictionary *user = [people objectAtIndex:indexPath.row];
@@ -312,12 +332,31 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-    });
+    [rowsToReload addObjectsFromArray:rows];
     
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 2 || pendingImagesDict.count < 2) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+         
+            
+            @try {
+                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+
+        });
+        
+    }
+
 }
 
 - (IBAction)rightButtonPressed:(UIButton *)sender {

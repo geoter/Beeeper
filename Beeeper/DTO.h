@@ -19,6 +19,7 @@
 @property(nonatomic,strong) CLLocation *userLocation;
 @property(nonatomic,strong) CLPlacemark *userPlace;
 
+- (NSString *)fixLink:(NSString *)link;
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
 

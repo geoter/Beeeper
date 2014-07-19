@@ -31,8 +31,18 @@
         self.originalFrame = frame;
         self.backgroundColor = [UIColor clearColor];
         
+        UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 1)];
+        line.backgroundColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1];
+        [self addSubview:line];
+        
         CGFloat width = self.bounds.size.width;
+        
+        NSDateFormatter* df = [[NSDateFormatter alloc]init];
+        [df setDateFormat:@"MM/dd/yyyy"];
+        
         UIDatePicker *picker = [[UIDatePicker alloc] initWithFrame: CGRectMake(0, 0, width, MyDateTimePickerPickerHeight)];
+        NSString *str = [df stringFromDate:[NSDate date]];
+        [picker setDate:[df dateFromString:str]];
         [self addSubview: picker];
         
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];

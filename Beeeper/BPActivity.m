@@ -29,7 +29,7 @@ static BPActivity *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         page = 0;
-        pageLimit = 20;
+        pageLimit = 10;
         operationQueue = [[NSOperationQueue alloc] init];
         requestFailedCounter = 0;
     }
@@ -50,7 +50,70 @@ static BPActivity *thisWebServices = nil;
 
 #pragma mark - Activity
 
+-(void)getLocalActivityWithCompletionBlock:(completed)compbloc{
+    self.local_activity_completed = compbloc;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    [self parseResponseString:json WithCompletionBlock:compbloc];
+
+}
+
+-(void)nextPageActivityWithCompletionBlock:(completed)compbloc{
+    
+    page ++;
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.activity_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(activityFinished:)];
+    
+    [request setDidFailSelector:@selector(activityFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
 -(void)getActivityWithCompletionBlock:(completed)compbloc{
+    
+    page = 0;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/activity/show?"];
@@ -103,6 +166,42 @@ static BPActivity *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+    
+    [self parseResponseString:responseString WithCompletionBlock:self.activity_completed];
+}
+
+-(void)activityFailed:(ASIHTTPRequest *)request{
+    
+    NSLog(@"FAILES REQUEST->ACTIVITY");
+    
+    requestFailedCounter++;
+    
+    NSString *responseString = [request responseString];
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
+    
+    if (requestFailedCounter < 5) {
+        [self getActivityWithCompletionBlock:self.activity_completed];
+    }
+    else{
+        self.activity_completed(NO,nil);
+    }
+    
+}
+
+-(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+    }
+
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     if (responseString.length == 0 || beeeps == nil) { //something went wrong
@@ -128,36 +227,65 @@ static BPActivity *thisWebServices = nil;
         [bs addObject:activity];
     }
     
-    self.activity_completed(YES,bs);
+    compbloc(YES,bs);
 }
-
--(void)activityFailed:(ASIHTTPRequest *)request{
-    
-    NSLog(@"FAILES REQUEST->ACTIVITY");
-    
-    requestFailedCounter++;
-    
-    NSString *responseString = [request responseString];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
-    
-    if (requestFailedCounter < 5) {
-        [self getActivityWithCompletionBlock:self.activity_completed];
-    }
-    else{
-        self.activity_completed(NO,nil);
-    }
-    
-}
-
 #pragma mark - Event
+
+-(void)getEventFromFingerprint:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
+     
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.event_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(eventReceived:)];
+    
+    [request setDidFailSelector:@selector(eventFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
 
 -(void)getEvent:(Activity_Object *)activityObj WithCompletionBlock:(completed)compbloc{
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
     NSString *fingerprint = [[activityObj.eventActivity firstObject]valueForKeyPath:@"fingerprint"];
     
+    if (fingerprint == nil) {
+        EventActivity *event = [activityObj.beeepInfoActivity.eventActivity firstObject];
+        fingerprint = event.fingerprint;
+    }
+   
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",fingerprint]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -197,10 +325,31 @@ static BPActivity *thisWebServices = nil;
 -(void)eventReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    NSDictionary *eventDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    NSArray *eventArray;
     
-    Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventDict];
-    self.event_completed(YES,event);
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+
+         Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventObject];
+        self.event_completed(YES,event);
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        
+        if (eventArray.count > 0 ) {
+            Event_Show_Object *event = [Event_Show_Object modelObjectWithDictionary:eventArray.firstObject];
+            self.event_completed(YES,event);
+        }
+        else{
+            self.event_completed(NO,nil);
+        }
+    }
+    else{
+        self.event_completed(NO,nil);
+    }
+    
+   
+    
 }
 
 -(void)eventFailed:(ASIHTTPRequest *)request{
@@ -272,10 +421,24 @@ static BPActivity *thisWebServices = nil;
 -(void)beeepFromActivityFinished:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    NSDictionary *eventDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventDict];
-    self.beeep_completed(YES,beeep);
+    NSArray *eventArray;
+    
+    if ([eventObject isKindOfClass:[NSDictionary class]]) {
+        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventObject];
+        self.beeep_completed(YES,beeep);
+
+    }
+    else if ([eventObject isKindOfClass:[NSArray class]]){
+        eventArray = eventObject;
+        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:[eventArray firstObject]];
+        self.beeep_completed(YES,beeep);
+    }
+    else{
+        self.beeep_completed(NO,nil);
+    }
+   
 }
 
 -(void)beeepFromActivityFailed:(ASIHTTPRequest *)request{
@@ -293,17 +456,18 @@ static BPActivity *thisWebServices = nil;
     @try {
         for (Who *w in actv.who) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+     //       NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -322,17 +486,17 @@ static BPActivity *thisWebServices = nil;
     @try {
         for (Whom *w in actv.whom) {
             
-            NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            //NSString *extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
-            NSString *imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
             NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
             
             if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
                 UIImage * result;
-                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:w.imagePath]];
+                NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:w.imagePath]]];
                 result = [UIImage imageWithData:localData];
                 [self saveImage:result withFileName:imageName inDirectory:localPath];
             }
@@ -353,17 +517,17 @@ static BPActivity *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        //NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:path]]];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -376,17 +540,17 @@ static BPActivity *thisWebServices = nil;
         
         NSString *path = event.imageUrl;
         
-        NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+       // NSString *extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        NSString *imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
+        NSString *imageName = [NSString stringWithFormat:@"%@",[path MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
         if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
             UIImage * result;
-            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:path]];
+            NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:path]]];
             result = [UIImage imageWithData:localData];
             [self saveImage:result withFileName:imageName inDirectory:localPath];
         }
@@ -413,6 +577,16 @@ static BPActivity *thisWebServices = nil;
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
+}
+
+- (NSString *)urlencode:(NSString *)str {
+    CFStringRef safeString =
+    CFURLCreateStringByAddingPercentEscapes(NULL,
+                                            (CFStringRef)str,
+                                            NULL,
+                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
+                                            kCFStringEncodingUTF8);
+    return [NSString stringWithFormat:@"%@", safeString];
 }
 
 

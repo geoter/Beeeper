@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 @implementation AppDelegate
 
@@ -16,11 +17,13 @@
 
    // [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x4B678B)];
     
-   
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 
     [FBSettings setDefaultAppID: @"253616411483666"];
 
+    [GMSServices provideAPIKey:@"AIzaSyDw_2s-d_HFlsMnFyz-30czOPBckYdrtE8"];
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
 //    

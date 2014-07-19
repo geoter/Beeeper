@@ -14,8 +14,13 @@ typedef void(^completed)(BOOL,id);
 @interface BPSuggestions : NSObject
 
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc;
+-(void)nextSuggestionsWithCompletionBlock:(completed)compbloc;
+-(void)getLocalSuggestions:(completed)compbloc;
+-(void)suggestEvent:(NSString *)fingerprint toUsers:(NSArray *)user_ids withCompletionBlock:(completed)compbloc;
 
 @property (copy) void(^completed)(BOOL,id);
+@property (copy) completed localCompleted;
+@property (copy) completed suggestEventCompleted;
 
 - (id)init;
 + (BPSuggestions *)sharedBP;

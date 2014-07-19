@@ -13,6 +13,12 @@ typedef void(^completed)(BOOL,id);
 
 @property (copy) completed like_event_completed;
 @property (copy) completed comment_completed;
+@property (copy) completed searchKeyword_completed;
+@property (copy) completed searchEvent_completed;
+@property (copy) completed getEvent_completed;
+@property (copy) completed get_All_Events_completed;
+@property (copy) completed get_All_Local_Events_completed;
+
 @property (copy) void(^like_beeep_completed)(BOOL,id);
 
 - (id)init;
@@ -23,4 +29,14 @@ typedef void(^completed)(BOOL,id);
 -(void)unlikeEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;
 -(void)likeBeeep:(NSString *)beeepID user:(NSString *)userID WithCompletionBlock:(completed)compbloc;
 -(void)unlikeBeeep:(NSString *)beeepID user:(NSString *)userID WithCompletionBlock:(completed)compbloc;
+-(void)getEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;
+
+#pragma mark - Search
+
+-(void)searchKeyword:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
+-(void)searchEvent:(NSString *)keyword WithCompletionBlock:(completed)compbloc;
+-(void)nextSearchEventsWithCompletionBlock:(completed)compbloc;
+-(void)getAllEventsWithCompletionBlock:(completed)compbloc;
+-(void)nextAllEventsWithCompletionBlock:(completed)compbloc;
+-(void)getAllLocalEvents:(completed)compbloc;
 @end

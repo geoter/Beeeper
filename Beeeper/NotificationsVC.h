@@ -10,5 +10,6 @@
 
 @interface NotificationsVC : UIViewController
 @property (strong, nonatomic) IBOutlet UITableView *tableV;
+@property (weak, nonatomic) IBOutlet UILabel *noNotifsFound;
 
 @end

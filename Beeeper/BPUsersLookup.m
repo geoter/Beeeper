@@ -16,6 +16,7 @@ static BPUsersLookup *thisWebServices = nil;
     if(self) {
         thisWebServices = self;
         operationQueue = [[NSOperationQueue alloc] init];
+        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }
@@ -114,19 +115,19 @@ static BPUsersLookup *thisWebServices = nil;
 
 -(void)downloadImage:(NSDictionary *)user{
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
-    NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
     if (![[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
         UIImage * result;
-        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+        NSData * localData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
         result = [UIImage imageWithData:localData];
         [self saveImage:result withFileName:imageName inDirectory:localPath];
     }

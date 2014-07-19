@@ -16,6 +16,9 @@
     NSMutableArray *activities;
     NSMutableArray *sections;
     NSMutableDictionary *pendingImagesDict;
+    BOOL loadNextPage;
+    NSMutableDictionary *activitiesPerSection;
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -25,6 +28,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    rowsToReload = [NSMutableArray array];
+    
+    [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            activities = [NSMutableArray arrayWithArray:objs];
+            [self groupActivitiesByMonth];
+            
+            //            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+            //            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+            //            numberLbl.textColor = [UIColor whiteColor];
+            //            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+            
+        }
+        else{
+            [self showLoading];
+        }
+    }];
+
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
@@ -32,7 +54,7 @@
     [refreshControl addTarget:self action:@selector(getActivity) forControlEvents:UIControlEventValueChanged];
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
-    
+    self.tableV.decelerationRate = 0.6;
     pendingImagesDict = [NSMutableDictionary dictionary];
     
     [self getActivity];
@@ -44,9 +66,35 @@
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 }
 
+
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPActivity sharedBP]nextPageActivityWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            
+            if (objcts.count != 0) {
+                
+                [activities addObjectsFromArray:objcts];
+                loadNextPage = YES;
+                [self groupActivitiesByMonth];
+            }
+        }
+    }];
+
+    
+}
+
 -(void)getActivity{
     
-    [self showLoading];
+    loadNextPage = YES;
+    
     [[BPActivity sharedBP]getActivityWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
@@ -54,91 +102,124 @@
         [self hideLoading];
         
         if (completed) {
+            
             activities = [NSMutableArray arrayWithArray:objcts];
+            
+            if (activities.count > 0) {
+                self.noActivityFound.hidden = YES;
+            }
+            else{
+                self.noActivityFound.hidden = NO;
+            }
+            
             [self groupActivitiesByMonth];
             
-            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
-            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
-            numberLbl.textColor = [UIColor whiteColor];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+//            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
+//            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
+//            numberLbl.textColor = [UIColor whiteColor];
+//            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
         }
     }];
 
 }
 
 -(NSMutableArray *)activitiesForSection:(int)section{
-   
-    NSString *section_signature = [sections objectAtIndex:section];
-    NSMutableArray *filtered_activities = [NSMutableArray array];
-    
-    for (Activity_Object *activity in activities) {
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
+
+    if ([activitiesPerSection objectForKey:[NSString stringWithFormat:@"%d",section]]) {
+        return [activitiesPerSection objectForKey:[NSString stringWithFormat:@"%d",section]];
+    }
+    else{
+        NSString *section_signature = [sections objectAtIndex:section];
+        NSMutableArray *filtered_activities = [NSMutableArray array];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-        
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
-        
-        if ([section_signature isEqualToString:signature]) {
-            [filtered_activities addObject:activity];
+        for (Activity_Object *activity in activities) {
+            //EVENT DATE
+            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            [formatter setLocale:usLocale];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
+            NSString *dateStr = [formatter stringFromDate:date];
+            NSArray *components = [dateStr componentsSeparatedByString:@","];
+            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+            
+            NSString *month = [day_month objectAtIndex:1];
+            NSString *daynumber = [day_month objectAtIndex:2];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+            
+            NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+            
+            if ([section_signature isEqualToString:signature]) {
+                [filtered_activities addObject:activity];
+            }
         }
+        
+        [activitiesPerSection setObject:filtered_activities forKey:[NSString stringWithFormat:@"%d",section]];
+        
+        return filtered_activities;
     }
     
-    return filtered_activities;
+    return nil;
 }
 
 
 -(void)groupActivitiesByMonth{
-    
-    sections = [NSMutableArray array];
-    
-    [activities sortUsingComparator:^NSComparisonResult(Activity_Object *obj1, Activity_Object *obj2) {
-        if (obj1.when > obj2.when) {
-            return (NSComparisonResult)NSOrderedAscending;
+   
+    @try {
+        activitiesPerSection = [NSMutableDictionary dictionary];
+        
+        NSMutableArray *sectionsArr = [NSMutableArray array];
+        
+        [activities sortUsingComparator:^NSComparisonResult(Activity_Object *obj1, Activity_Object *obj2) {
+            if (obj1.when > obj2.when) {
+                return (NSComparisonResult)NSOrderedAscending;
+            }
+            
+            if (obj1.when < obj2.when) {
+                return (NSComparisonResult)NSOrderedDescending;
+            }
+            return (NSComparisonResult)NSOrderedSame;
+        }];
+        
+        for (Activity_Object *activity in activities) {
+            //EVENT DATE
+            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            [formatter setLocale:usLocale];
+            
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
+            NSString *dateStr = [formatter stringFromDate:date];
+            NSArray *components = [dateStr componentsSeparatedByString:@","];
+            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+            
+            NSString *month = [day_month objectAtIndex:1];
+            NSString *daynumber = [day_month objectAtIndex:2];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+            
+            NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+            
+            if ([sectionsArr indexOfObject:signature] == NSNotFound) {
+                [sectionsArr addObject:signature];
+            }
         }
         
-        if (obj1.when < obj2.when) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-    
-    for (Activity_Object *activity in activities) {
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:activity.when];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        sections = sectionsArr;
         
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
-        
-        if ([sections indexOfObject:signature] == NSNotFound) {
-            [sections addObject:signature];
-        }
+        [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+
     }
-    
-    [self.tableV reloadData];
+    @catch (NSException *exception) {
+        NSLog(@"ESKASE");
+    }
+    @finally {
+
+    }
+   
 }
 
 - (void)didReceiveMemoryWarning
@@ -164,192 +245,265 @@
 
 #pragma mark - Table view data source
 
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return sections.count;
+    return (sections.count>0 && loadNextPage)?(sections.count+1):sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-     NSMutableArray *filtered_activities = [self activitiesForSection:section];
+    if (section == sections.count) {
+        return 1;
+    }
+    
+    NSMutableArray *filtered_activities = [self activitiesForSection:section];
     return filtered_activities.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    NSMutableArray *filtered_activities = [self activitiesForSection:indexPath.section];
-    Activity_Object *activity = [filtered_activities objectAtIndex:indexPath.row];
-    Who *w = [[activity.who firstObject] copy];
-    Whom *wm = [[activity.whom firstObject] copy];
-    
-    //see if who or whom is You
-    
-    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-    
-    if ([my_id isEqualToString:w.whoIdentifier]) {
-        w.name = @"You";
-    }
-    
-    if ([my_id isEqualToString:wm.whomIdentifier]) {
-        wm.name= @"You";
-    }
-    
-    
-    UIFont *font = [UIFont fontWithName:@"Roboto-Bold" size:12.0];
-    
-    UILabel *lbl = (id)[cell viewWithTag:2];
-    lbl.font = [UIFont fontWithName:@"Roboto-Light" size:12.0];
+    if(indexPath.section == sections.count) {
 
-    NSString *formattedString;
-    
-    if (wm != nil) {
-      formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[wm.name capitalizedString]];
-    }
-    else if(activity.eventActivity.count > 0){
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [event.title capitalizedString];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
-    }
-    else if(activity.beeepInfoActivity.eventActivity.count >0){
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[event.title capitalizedString]];
-    }
-    else{
-         formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
+        static NSString *CellIdentifier = @"LoadMoreCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
+        [indicator startAnimating];
+        
+        [self nextPage];
+        
+        return cell;
+        
     }
     
-    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
-    
-    [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Light" size:12]
-                    range:NSMakeRange(0,formattedString.length)];
-   
-    if (w != nil && ![w.name isEqualToString:@"You"]) {
-        [attText addAttribute:NSFontAttributeName
-                  value:[UIFont fontWithName:@"Roboto-Bold" size:12]
-                  range:[formattedString rangeOfString:[w.name capitalizedString]]];
-    }
-    
-    if (wm != nil && ![wm.name isEqualToString:@"You"]) {
-        [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"Roboto-Bold" size:12]
-                    range:[formattedString rangeOfString:[wm.name capitalizedString]]];
-    }
-    else if(activity.beeepInfoActivity.eventActivity.count >0){
-      
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+    @try {
+        static NSString *CellIdentifier = @"Cell";
+        UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        NSMutableArray *filtered_activities = [self activitiesForSection:indexPath.section];
+        Activity_Object *activity = [filtered_activities objectAtIndex:indexPath.row];
+        Who *w = [[activity.who firstObject] copy];
+        Whom *wm = [[activity.whom firstObject] copy];
+        
+        //see if who or whom is You
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        if ([my_id isEqualToString:w.whoIdentifier]) {
+            w.name = @"You";
+        }
+        
+        if ([my_id isEqualToString:wm.whomIdentifier]) {
+            wm.name= @"You";
+        }
+        
+        UILabel *lbl = (id)[cell viewWithTag:2];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0];
+        
+        NSString *formattedString;
+        
+        if (wm != nil) {
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[wm.name capitalizedString]];
+        }
+        else if(activity.eventActivity.count > 0){
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *event_title = [event.title capitalizedString];
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
+        }
+        else if(activity.beeepInfoActivity.eventActivity.count >0){
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[event.title capitalizedString]];
+        }
+        else{
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
+        }
+        
+        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
         
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
-                        range:[formattedString rangeOfString:[event.title capitalizedString]]];
+                        value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
+                        range:NSMakeRange(0,formattedString.length)];
+        
+        if (w != nil && ![w.name isEqualToString:@"You"]) {
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:[w.name capitalizedString]]];
+        }
+        
+        if (wm != nil && ![wm.name isEqualToString:@"You"]) {
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:[wm.name capitalizedString]]];
+        }
+        else if(activity.beeepInfoActivity.eventActivity.count >0){
+            
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+            
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:[event.title capitalizedString]]];
+            
+        }
+        else if(activity.eventActivity.count > 0){
+            
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *event_title = [event.title capitalizedString];
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:event_title]];
+        }
+        else{
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:activity.what]];
+        }
+        
+        lbl.attributedText = attText;
+        
+        
+        UIImageView *imgV = (id)[cell viewWithTag:1];
+        
+       // NSString *extension;
+        NSString *imageName;
+        
+        if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
+          //  extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
+        }
+        else if (activity.eventActivity.count > 0){
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *path = event.imageUrl;
+           // extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[path MD5]];
+            
+        }
+        else if(activity.beeepInfoActivity.eventActivity != nil){
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+        //    extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
+        }
+        else if ([wm.name isEqualToString:@"You"]){
+         //   extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
+        }
+        
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            imgV.backgroundColor = [UIColor clearColor];
+            imgV.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            imgV.image = img;
+        }
+        else{
+            imgV.backgroundColor = [UIColor lightGrayColor];
+            imgV.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        }
+        
+        
+        
+        return cell;
 
     }
-    else if(activity.eventActivity.count > 0){
+    @catch (NSException *exception) {
+        static NSString *CellIdentifier = @"Cell";
+        UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        return cell;
+    }
+    @finally {
 
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [event.title capitalizedString];
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
-                        range:[formattedString rangeOfString:event_title]];
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == sections.count+1 && loadNextPage){
+        return 51;
     }
     else{
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"Roboto-Bold" size:12]
-                        range:[formattedString rangeOfString:activity.what]];
+        return 60;
     }
-
-    lbl.attributedText = attText;
-    
-    
-    UIImageView *imgV = (id)[cell viewWithTag:1];
-    
-    NSString *extension;
-    NSString *imageName;
-    
-    if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-        extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[wm.imagePath MD5],extension];
-    }
-    else if (activity.eventActivity.count > 0){
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *path = event.imageUrl;
-        extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[path MD5],extension];
-
-    }
-    else if(activity.beeepInfoActivity.eventActivity != nil){
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[event.imageUrl MD5],extension];
-    }
-    else if ([wm.name isEqualToString:@"You"]){
-        extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@.%@",[w.imagePath MD5],extension];
-    }
-  
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imgV.backgroundColor = [UIColor clearColor];
-        imgV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imgV.image = img;
-    }
-    else{
-        imgV.backgroundColor = [UIColor lightGrayColor];
-        imgV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-    }
-    
-
-    
-    return cell;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 47;
+    
+    if(section == sections.count) {
+        return 1;
+    }
+    else{
+        return 47;
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 7;
+    if(section == sections.count) {
+        return 1;
+    }
+    else{
+        return 7;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    
+    if(section == sections.count) {
+
+        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
+        header.backgroundColor = [UIColor clearColor];
+        return header;
+    }
     
     NSString *signature = [sections objectAtIndex:section];
     NSArray *components = [signature componentsSeparatedByString:@"#"];
     NSString *month = [components objectAtIndex:0];
     NSString *daynumber = [components objectAtIndex:1];
     
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 44)];
-    header.backgroundColor = [UIColor whiteColor];
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
+    header.backgroundColor = [UIColor clearColor];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 47)];
+    [backV setBackgroundColor:[UIColor whiteColor]];
+    [header addSubview:backV];
     
-    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 303, 18)];
-    mlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:13];
-    mlbl.textColor = [UIColor colorWithRed:183/255.0 green:72/255.0 blue:53/255.0 alpha:1];
+    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
+    mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+    mlbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
     mlbl.text = [month uppercaseString];
     mlbl.textAlignment = NSTextAlignmentCenter;
-    [header addSubview:mlbl];
+    [backV addSubview:mlbl];
     
-    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 303, 18)];
-    dlbl.font =  [UIFont fontWithName:@"Roboto-Bold" size:20];
+    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
+    dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
     dlbl.text = daynumber;
     dlbl.textAlignment = NSTextAlignmentCenter;
-    [header addSubview:dlbl];
+    [backV addSubview:dlbl];
     
+    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, header.frame.size.height-1, 306, 1)];
+    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
+    [header addSubview:headerBottomLine];
     
     return header;
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    
+    
+      UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
+      footer.backgroundColor = [UIColor clearColor];
+      return footer;
+}
+
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -368,7 +522,7 @@
     }
     else{
     
-        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         vC.mode = Timeline_Not_Following;
 
         Who *w = [activity.who firstObject];
@@ -397,13 +551,31 @@
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
+
 
 
 #pragma mark - Navigation

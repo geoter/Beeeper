@@ -59,16 +59,15 @@
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error
 {
-    [self.delegate locationError:error];
-    
-    [self.locationManager stopUpdatingLocation];
-    
     if ([[error domain] isEqualToString: kCLErrorDomain] && [error code] == kCLErrorDenied) {
         // The user denied your app access to location information.
         [self.delegate locationDisabled];
     }
+    else{
+        [self.delegate locationError:error];
+    }
     
-
+    [self.locationManager stopUpdatingLocation];
 }
 
 -(void)startTracking{

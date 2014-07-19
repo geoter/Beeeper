@@ -52,22 +52,22 @@
         if([v isKindOfClass:[UILabel class]])
         {
             if (v.tag == 1) {
-                ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Light" size:26];
+                ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Light" size:26];
             }
             else{ //2
-                ((UILabel*)v).font = [UIFont fontWithName:@"Roboto-Light" size:16];
+                ((UILabel*)v).font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
             }
         }
         else if ([v isKindOfClass:[UIButton class]]){
             if (v.tag == 4) {
-                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:16];
+                ((UIButton*)v).titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
             }
         }
         else if ([v isKindOfClass:[UITextField class]]){
             UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
             ((UITextField*)v).leftView = paddingView;
             ((UITextField*)v).leftViewMode = UITextFieldViewModeAlways;
-            ((UITextField*)v).font = [UIFont fontWithName:@"Roboto-Regular" size:14];
+            ((UITextField*)v).font = [UIFont fontWithName:@"HelveticaNeue" size:14];
         }
     }
     

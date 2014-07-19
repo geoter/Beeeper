@@ -46,8 +46,8 @@
     [l setMasksToBounds:YES];
     [l setCornerRadius:1.5];
     
-    self.nameLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
-    self.showTimelineButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:10];
+    self.nameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    self.showTimelineButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
 
 }
 
@@ -76,7 +76,7 @@
     UILabel *lbl = (id)[cell viewWithTag:2];
     UIImageView *imageV = (id)[cell viewWithTag:1];
     
-    [lbl setFont:[UIFont fontWithName:@"Roboto-Light" size:20]];
+    [lbl setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
     [lbl setText:[options objectAtIndex:indexPath.row]];
     imageV.image = [UIImage imageNamed:[images objectAtIndex:indexPath.row]];
     
@@ -94,7 +94,7 @@
             vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"HomeFeedVC"];          
             break;
         case 1:
-            vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestionsVC"];
+            vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Storyboard-No-AutoLayout"];
             break;
         case 2:
             vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ActivityVC"];

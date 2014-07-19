@@ -19,7 +19,7 @@
     return self;
 }
 
-+(id)initWithOptions:(NSArray *)o size:(CGSize)s{
++(id)initWithOptions:(NSArray *)o size:(CGSize)s selectedIndex:(int)index selectionColor:(UIColor *)color{
    
     GTSegmentedControl *customView = [[[NSBundle mainBundle] loadNibNamed:@"GTSegmentedControl" owner:nil options:nil] lastObject];
     
@@ -30,7 +30,7 @@
     //    customView.layer.borderColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1].CGColor;
         customView.frame = CGRectMake(0, 0, s.width, s.height);
         
-        CGFloat width = s.width/o.count;
+        CGFloat width = s.width/o.count ;
         CGPoint selectionCenter;
         
         for (NSString *option in o) {
@@ -39,21 +39,21 @@
             UIButton *optionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             optionBtn.frame = CGRectMake(i*width, 1, width, s.height-2);
             optionBtn.backgroundColor = [UIColor clearColor];
-            optionBtn.titleLabel.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
+            optionBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
             [optionBtn setTitle:option forState:UIControlStateNormal];
             [optionBtn setTitleColor:[UIColor colorWithRed:183/255.0 green:199/255.0 blue:214/255.0 alpha:1] forState:UIControlStateNormal];
             [optionBtn setTag:i];
             [optionBtn addTarget:customView action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [customView addSubview:optionBtn];
             
-            if (i == 0) {
+            if (i == index) {
                 selectionCenter = optionBtn.center;
                 [optionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             }
         }
         
-        UIView *selectionV = [[UIView alloc]initWithFrame:CGRectMake(0, 3, width-6, s.height-6)];
-        selectionV.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+        UIView *selectionV = [[UIView alloc]initWithFrame:CGRectMake(0, 1, width-2, s.height-2)];
+        selectionV.backgroundColor = color;
         selectionV.center = selectionCenter;
         [customView addSubview:selectionV];
         selectionV.tag = 99;
@@ -70,15 +70,27 @@
     
     UIView *selectionV = [btn.superview viewWithTag:99];
     
-    [UIView animateWithDuration:0.3f
+    [UIView animateWithDuration:0.1f
                      animations:^
      {
-         selectionV.center = btn.center;
+         selectionV.alpha = 0;
      }
                      completion:^(BOOL finished)
      {
+         selectionV.center = btn.center;
          [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-
+       
+         [UIView animateWithDuration:0.1f
+                          animations:^
+          {
+              selectionV.alpha = 1;
+             
+          }
+                          completion:^(BOOL finished)
+          {
+              
+          }
+          ];
      }
      ];
     
@@ -88,6 +100,8 @@
             [btn setTitleColor:[UIColor colorWithRed:183/255.0 green:199/255.0 blue:214/255.0 alpha:1] forState:UIControlStateNormal];
         }
     }
+    
+    [self.delegate selectedSegmentAtIndex:btn.tag];
 }
 
 // Only override drawRect: if you perform custom drawing.

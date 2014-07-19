@@ -54,7 +54,13 @@ NSString *const kBeeep_ObjectFingerprint = @"fingerprint";
     if ([receivedComments isKindOfClass:[NSArray class]]) {
         for (NSDictionary *item in (NSArray *)receivedComments) {
             if ([item isKindOfClass:[NSDictionary class]]) {
-                [parsedComments addObject:[Comments modelObjectWithDictionary:item]];
+                if ([item objectForKey:@"commenter"]) {
+                    [parsedComments addObject:[Comments modelObjectWithDictionary:item]];                    
+                }
+                else{
+                    [parsedComments addObject:item];
+                }
+
             }
        }
     } else if ([receivedComments isKindOfClass:[NSDictionary class]]) {

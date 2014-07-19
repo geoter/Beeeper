@@ -21,8 +21,11 @@
 #import "Event_Show_Object.h"
 #import "Beeep_Object.h"
 #import "CommentsVC.h"
+#import "Event_Search.h"
+#import <Social/Social.h>
+#import <MessageUI/MessageUI.h>
 
-@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate>{
+@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate>{
 
     NSMutableArray *comments;
     NSMutableArray *beeepers;
@@ -36,6 +39,11 @@
     
     Beeep_Object *beeep_Objct; //-(void)showEventForActivityWithBeeep
     Event_Show_Object *event_show_Objct; //-(void)showEventForActivityWithBeeep
+    
+    NSString *fingerprint;
+    NSString *websiteURL;
+    NSMutableString *shareText;
+    NSMutableArray* rowsToReload;
 }
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -62,6 +70,8 @@
     
     [self showLoading];
     
+    rowsToReload = [NSMutableArray array];
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -72,37 +82,69 @@
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         Timeline_Object *t = tml;
+        fingerprint = t.event.fingerprint;
         comments = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.comments];
     }
     else if ([tml isKindOfClass:[Activity_Object class]]){
         
         Activity_Object *activity = tml;
+
         
         if (activity.beeepInfoActivity.beeepActivity.count > 0) {
-           
+            
+            fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
+            
             [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
                 if (completed) {
                     beeep_Objct = beeep;
+                    comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
                     
-                    if (event_show_Objct || activity.eventActivity.count == 0) {
+                    if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
                         [self showEventForActivityWithBeeep];
                     }
+                }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
                 }
             }];
 
         }
         
-        if(activity.eventActivity.count > 0){
+        if(activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity.count >0){
+            
+            fingerprint = (fingerprint == nil)?[[activity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]:fingerprint;
             
             [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     event_show_Objct = event;
-                    if (beeep_Objct || activity.beeepInfoActivity.beeepActivity.count == 0) {
+                    if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
                           [self showEventForActivityWithBeeep];
                     }
                 }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                }
             }];
         }
+
+    }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        
+        Event_Search *event = tml;
+        fingerprint = event.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventForActivityWithBeeep];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
 
     }
     
@@ -119,6 +161,19 @@
     [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnLike,btnShare, nil]];
     
     self.scrollV.contentSize = CGSizeMake(320, 871);
+    
+//    self.monthLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+//    self.dayNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:41];
+//    self.dayLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
+//    self.hourLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+//    
+//    self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:26];
+//    self.venueLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
+//    
+//    self.codeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:13];
+//    self.codeNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+//    self.websiteLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+//    self.tagsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:12];
     
     
    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
@@ -168,6 +223,7 @@
     NSDate *date;
     Suggestion_Object *suggestion = tml;
     
+    
     date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
     
     NSString *dateStr = [formatter stringFromDate:date];
@@ -187,12 +243,14 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     //Website
     
     NSString *website = suggestion.what.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -202,13 +260,25 @@
     NSString *jsonString;
     
     self.titleLabel.text = [suggestion.what.title capitalizedString];
+    self.titleLabel.center = CGPointMake(self.titleLabel.superview.center.x, self.titleLabel.center.y);
+    
     jsonString = suggestion.what.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
+    
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -224,6 +294,13 @@
     beeepsLbl.text = [NSString stringWithFormat:@"%d",suggestion.beeepersIds.count];
     
     likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
+    
+    
+    self.likesLabel.hidden = (likers.count == 0);
+    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
+    
+    
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
@@ -278,11 +355,11 @@
     
     @try {
         
-        extension  = [[suggestion.what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[suggestion.what.imageUrl MD5],extension];
+     //   extension  = [[suggestion.what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[suggestion.what.imageUrl MD5]];
         
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -324,6 +401,8 @@
     NSDate *date;
     Friendsfeed_Object *ffo = tml;
 
+    fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+    
     date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
     
     NSString *dateStr = [formatter stringFromDate:date];
@@ -343,12 +422,16 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
+    
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     
     //Website
     
     NSString *website = ffo.eventFfo.eventDetailsFfo.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -364,8 +447,16 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
     
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
     UILabel *beeepsLbl = (id)[headerV viewWithTag:-5];
@@ -398,6 +489,11 @@
     else{
         [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
     }
+    
+    
+    self.likesLabel.hidden = (likers.count == 0);
+    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
     
     //Tags
     
@@ -438,11 +534,11 @@
     
     @try {
         
-        extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5],extension];
+       // extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5]];
 
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -500,14 +596,17 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
     
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     //Website
     
     NSString *website;
 
     website = t.event.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -523,7 +622,16 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+    venueLbl.text = [loc.venueStation uppercaseString];
+    
+    CGPoint oldCenter = self.titleLabel.center;
+    [self.titleLabel sizeToFit];
+    self.titleLabel.center = oldCenter;
+    [venueLbl sizeToFit];
+    venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -542,6 +650,11 @@
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
+    
+
+   self.likesLabel.hidden = (likers.count == 0);
+   self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
+   self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
     
     if ([likers indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
@@ -594,10 +707,10 @@
     
     @try {
         
-        extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[t.event.imageUrl MD5],extension];
+        //extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        imageName  = [NSString stringWithFormat:@"%@",[t.event.imageUrl MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -658,12 +771,16 @@
     hourLbl.text = hour;
     dayNumberLbl.text = daynumber;
     monthLbl.text = [month uppercaseString];
-    dayLbl.text = [components firstObject];
+    dayLbl.text = [[components firstObject] uppercaseString];
+    
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     
     //Website
     
     NSString *website = event.eventInfo.url;
-    
+    websiteURL = website;
     self.websiteLabel.text = website;
     
     //Venue name + Title
@@ -676,10 +793,23 @@
     jsonString = event.eventInfo.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = loc.venueStation;
+   
+    if (data != nil) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = [loc.venueStation uppercaseString];
+        
+        CGPoint oldCenter = self.titleLabel.center;
+        [self.titleLabel sizeToFit];
+        self.titleLabel.center = oldCenter;
+        [venueLbl sizeToFit];
+        venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
+                                      +(int)(venueLbl.frame.size.height/2));
+        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+        self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+
+    }
     
     UIView *headerV = self.tableV.tableHeaderView;
     //Likes,Beeeps,Comments
@@ -691,17 +821,35 @@
     
     isLiker = NO;
     
-    likers =[NSMutableArray arrayWithArray:beeep.likes];
-    
-    if ([likers indexOfObject:my_id] != NSNotFound) {
-        isLiker = YES;
-    }
-    
-    if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+    if(beeep == nil){
+        self.likesLabel.hidden = YES;
+        self.beeepsLabel.hidden = YES;
+        self.commentsLabel.hidden = YES;
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        
+        likesLbl.text = [NSString stringWithFormat:@"%d",beeep.likes.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",beeep.comments.count];
+        //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
+        
+        likers =[NSMutableArray arrayWithArray:beeep.likes];
+        
+        if ([likers indexOfObject:my_id] != NSNotFound) {
+            isLiker = YES;
+        }
+        
+        if (isLiker) {
+            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        }
+        else{
+            [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        }
+        
+        
+        self.likesLabel.hidden = (likers.count == 0);
+        self.commentsLabel.hidden = (commentsLbl.text.length == 0);
+        self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
+
     }
     
     //Tags
@@ -743,11 +891,11 @@
     
     @try {
         
-        extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@.%@",[event.eventInfo.imageUrl MD5],extension];
+       // extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
+        imageName  = [NSString stringWithFormat:@"%@",[event.eventInfo.imageUrl MD5]];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -760,6 +908,8 @@
         else{
             imgV.backgroundColor = [UIColor lightGrayColor];
             imgV.image = nil;
+            
+            [[DTO sharedDTO]downloadImageFromURL:event.eventInfo.imageUrl];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
         }
         
@@ -781,7 +931,7 @@
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
@@ -798,15 +948,32 @@
     
 }
 
--(void)imageDownloadFinished:(NSNotification *)notif{ //comments
+-(void)imageDownloadFinished:(NSNotification *)notif{
     
     NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
     
-    NSArray* rowsToReload = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
+    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-    });
+    [rowsToReload addObjectsFromArray:rows];
+    [pendingImagesDict removeObjectForKey:imageName];
+    
+    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            @try {
+                [self.tableV reloadData];
+                [rowsToReload removeAllObjects];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
+        });
+        
+    }
+    
     
 }
 
@@ -825,8 +992,16 @@
 
 -(void)suggestIt{
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    [self.parentViewController addChildViewController:viewController];
-    [viewController showInView:self.view.superview.superview.superview];
+    viewController.fingerprint = fingerprint;
+    
+    if (viewController.fingerprint != nil) {
+        [self presentViewController:viewController animated:YES completion:nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+
 }
 
 -(void)likeIt{
@@ -860,6 +1035,8 @@
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                 }
+                
+                
             }];
 
         }
@@ -897,12 +1074,26 @@
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
             Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
             
-            [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
                 if (completed) {
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                }
+                else{
+                    
+                    NSArray *errorArray = [response objectForKey:@"errors"];
+                    NSDictionary *errorDict = [errorArray firstObject];
+                    
+                    NSString *info = [errorDict objectForKey:@"info"];
+                    if ([info isEqualToString:@"You have already liked this event"]) {
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                    }
                 }
             }];
         }
@@ -916,6 +1107,7 @@
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                 }
+                
             }];
             
         }
@@ -958,7 +1150,59 @@
 
 
 -(void)showMore{
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", nil];
     
+    if ([MFMailComposeViewController canSendMail]) {
+        [actionSheet addButtonWithTitle:@"Share via Email"];
+    }
+    
+    if (websiteURL != nil) {
+        [actionSheet addButtonWithTitle:@"Copy Link"];
+    }
+
+    [actionSheet addButtonWithTitle:@"Cancel"];
+    
+    
+    actionSheet.cancelButtonIndex = actionSheet.numberOfButtons -1;
+
+    [actionSheet showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
+    switch (buttonIndex) {
+        case 0:
+            
+            break;
+        case 1:
+            [self sendFacebook];
+            break;
+        case 2:
+            [self sendTwitter];
+            break;
+        case 3:
+            if ([MFMailComposeViewController canSendMail]) {
+                [self sendEmail];
+            }
+            else{
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = websiteURL;
+            }
+            break;
+        case 4:
+        {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = websiteURL;
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 -(void)beeepIt:(NSNotification *)notif{
@@ -974,26 +1218,16 @@
 - (IBAction)beeepItPressed:(id)sender {
    
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = tml;
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
     
-    NSLog(@"%@",self.parentViewController.parentViewController);
+    if([tml isKindOfClass:[Friendsfeed_Object class]] || [tml isKindOfClass:[Timeline_Object class]] || [tml isKindOfClass:[Suggestion_Object class]]){
+        viewController.tml = self.tml;
+    }
+    else{
+        viewController.tml = event_show_Objct;
+    }
     
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.parentViewController.parentViewController.view addSubview:viewController.view];
-    [self.parentViewController.parentViewController.view bringSubviewToFront:viewController.view];
-    [self.parentViewController.parentViewController addChildViewController:viewController];
     
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 - (IBAction)showLikes:(id)sender {
@@ -1027,6 +1261,95 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+-(void)sendFacebook{
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+    
+    [composeController setInitialText:shareText];
+    
+    if (self.eventImageV.image != nil) {
+        
+        [composeController addImage:self.eventImageV.image];
+        
+    }
+    
+    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultDone){
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+    
+    
+}
+
+-(void)sendTwitter {
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    
+    [composeController setInitialText:shareText];
+    
+    if (self.eventImageV.image != nil) {
+        
+        [composeController addImage:self.eventImageV.image];
+        
+    }
+    
+    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultDone) {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
+}
+
+-(void)sendEmail{
+    
+        MFMailComposeViewController *mailComposer =
+        [[MFMailComposeViewController alloc] init];
+        [mailComposer setSubject:@"Check out this Event I found on Beeeper for iOS"];
+        NSString *message = shareText;
+        [mailComposer setMessageBody:message
+                              isHTML:YES];
+        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
+        [mailComposer addAttachmentData:imageData mimeType:@"image/jpeg" fileName:[NSString stringWithFormat:@"%@.jpg",self.titleLabel.text]];
+        mailComposer.mailComposeDelegate = self;
+        [self presentViewController:mailComposer animated:YES completion:nil];
+}
+
+#pragma mark MFMailComposeViewControllerDelegate
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller
+         didFinishWithResult:(MFMailComposeResult)result
+                       error:(NSError *)error{
+    if (result == MFMailComposeResultSent) {
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Email Sent!"];
+    }
+    else if(result == MFMailComposeResultFailed){
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Error sendig email"];
+
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - COMMENTS
 
 #pragma mark - Table view data source
@@ -1050,7 +1373,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     UILabel *nameLbl = (id)[cell viewWithTag:1];
-    nameLbl.font = [UIFont fontWithName:@"Roboto-Bold" size:13];
+    nameLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     nameLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     Comments *cmnts = [comments objectAtIndex:comments.count-1-indexPath.row];
@@ -1059,13 +1382,13 @@
     nameLbl.text = [[NSString stringWithFormat:@"%@ %@",cmnts.commenter.name,cmnts.commenter.lastname] capitalizedString];
     
     UILabel *txtV = (id)[cell viewWithTag:3];
-    txtV.font = [UIFont fontWithName:@"Roboto-Light" size:13];
+    txtV.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13];
     txtV.text = comment.comment;
 
     UILabel *timeLbl = (id)[cell viewWithTag:4];
-    timeLbl.font = [UIFont fontWithName:@"Roboto-Regular" size:10];
+    timeLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
     
-    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
     
     txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
     
@@ -1077,11 +1400,11 @@
         }
     }
     
-    NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+  // NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@.%@",[cmnts.commenter.imagePath MD5],extension];
+    NSString *imageName = [NSString stringWithFormat:@"%@",[cmnts.commenter.imagePath MD5]];
     
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
     
@@ -1106,7 +1429,7 @@
     Comments *cmnts = [comments objectAtIndex:comments.count-1-indexPath.row];
     Comment *comment = cmnts.comment;
     
-    CGSize textViewSize = [self frameForText:comment.comment sizeWithFont:[UIFont fontWithName:@"Roboto-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+    CGSize textViewSize = [self frameForText:comment.comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
     
     return (textViewSize.height + 36 + 8);
     
@@ -1137,13 +1460,13 @@
     
     UILabel *numberOfComments = [[UILabel alloc]initWithFrame:numberOfCommentsV.bounds];
     numberOfComments.text = [NSString stringWithFormat:@"%d Comments",comments.count];
-    numberOfComments.font = [UIFont fontWithName:@"Roboto-Medium" size:13];
+    numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     numberOfComments.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     numberOfComments.textAlignment = NSTextAlignmentCenter;
     [numberOfCommentsV addSubview:numberOfComments];
     
     UIButton *loadMoreButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    loadMoreButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:10];
+    loadMoreButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
     loadMoreButton.frame = numberOfCommentsV.bounds;
     [loadMoreButton setTitle:@"Load More" forState:UIControlStateNormal];
     [loadMoreButton setTitleColor:[UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1] forState:UIControlStateNormal];

@@ -8,6 +8,26 @@
 
 #import "BeeepTimeVC.h"
 
+@interface HighButton : UIButton
+
+@end
+
+@implementation HighButton
+
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    
+    if (highlighted) {
+        self.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    }
+    
+}
+
+
+@end
+
 @interface BeeepTimeVC ()
 
 @end
@@ -27,6 +47,16 @@
 {
     [super viewDidLoad];
     self.scrollV.contentSize = CGSizeMake(320, 568);
+    
+    for (UIButton *b in self.scrollV.subviews) {
+        if ([b isKindOfClass:[UIButton class]]) {
+            [b setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        }
+    }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,12 +81,13 @@
 }
 
 - (IBAction)buttonClicked:(UIButton *)sender {
-    self.checkMark.frame = CGRectMake(270, sender.frame.origin.y+8, 25, 24);
+    
+    //self.checkMark.frame = CGRectMake(270, sender.frame.origin.y+8, 25, 24);
     
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[sender titleForState:UIControlStateNormal],@"Beeep Time",[NSString stringWithFormat:@"%d",(int)sender.tag],@"Seconds",nil];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"Beeep Time Selected" object:nil userInfo:dict];
-    [self close:nil];
+    [self performSelector:@selector(close:) withObject:nil afterDelay:0.3];
 }
 
 @end

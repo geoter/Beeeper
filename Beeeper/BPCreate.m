@@ -76,6 +76,9 @@ static BPCreate *thisWebServices = nil;
         if ([dict objectForKey:@"beeep"]) {
                 self.completed(YES,nil);
         }
+        else{
+            self.completed(NO,nil);
+        }
     }
     @catch (NSException *exception) {
         self.completed(NO,nil);
@@ -167,6 +170,12 @@ static BPCreate *thisWebServices = nil;
     
     @try {
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if ([[dict allKeys] containsObject:@"errors"]) {
+            self.completed(NO,nil);
+            return;
+        }
+        
         NSString *imgUrl = [dict objectForKey:@"image_url"];
         imgUrl = [self urlencode:imgUrl];
         

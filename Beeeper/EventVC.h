@@ -31,6 +31,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *likesButton;
 @property (weak, nonatomic) IBOutlet UIButton *commentsButton;
 @property (weak, nonatomic) IBOutlet UIButton *beeepsButton;
+@property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 
 
 @property (nonatomic,strong) NSMutableDictionary *values;

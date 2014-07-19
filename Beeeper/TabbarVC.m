@@ -8,6 +8,8 @@
 
 #import "TabbarVC.h"
 #import "TimelineVC.h"
+#import "JSBadgeView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface TabbarVC ()
 {
@@ -36,53 +38,69 @@
 {
     [super viewDidLoad];
     
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
-    
-        if (completed) {
-            self.notifications = objcts.count;
-        }
-    }];
+    if (self.showsSplashOnLoad) {
+        [self showSplashScreen];
+        [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+    }
+
+    [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     btn.tag = 1;
     
     [self tabbarButtonTapped:btn];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
 }
 
 -(void)updateNotificationsBadge{
     
-    self.notificationLabel.text = [NSString stringWithFormat:@"%d",self.notifications];
     
-    if (self.notifications <= 0) {
-
-        [UIView animateWithDuration:0.2f
-                             animations:^
-             {
-                 self.notificationsBadgeV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                
-             }
-             ];
-    }
-    else{
+    [[BPUser sharedBP]getNewNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
-        [UIView animateWithDuration:0.2f
-                         animations:^
-         {
-             self.notificationsBadgeV.alpha = 1;
-         }
-                         completion:^(BOOL finished)
-         {
-             
-         }
-         ];
-    }
-}
+        if (completed) {
+            
+            _notifications = objcts.count;
+            
+            
+            if (_notifications <= 0) {
+                
+                [UIView animateWithDuration:0.2f
+                                 animations:^
+                 {
+                     self.notificationsBadgeV.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+            }
+            else{
+                
+                JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
+                badgeView.badgeText = [NSString stringWithFormat:@"%d",self.notifications];
+                
+                [UIView animateWithDuration:0.2f
+                                 animations:^
+                 {
+                     self.notificationsBadgeV.alpha = 1;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+            }
+            
+            [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:30];
+
+        }
+    }];
+    
+   }
 
 -(void)hideTabbar{
 
@@ -193,7 +211,7 @@
             vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVC"];
             break;
         case 3:{
-                TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+                TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
                 timelineVC.mode = Timeline_My;
                 vC = timelineVC;
             }
@@ -209,8 +227,13 @@
 
     
     UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vC];
-    
+    navVC.navigationBar.translucent = NO;
     navVC.view.frame = self.containerVC.frame;
+    
+    for (UIView *view in [[[navVC.navigationBar subviews] objectAtIndex:0] subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+    }
+
     
     for (UIViewController *child in self.childViewControllers) {
         [child removeFromParentViewController];
@@ -219,6 +242,37 @@
     
     [self addChildViewController:navVC];
     [self.containerVC addSubview:navVC.view];
+}
+
+
+-(void)showSplashScreen{
+    
+    UIView *backV = [[UIView alloc]initWithFrame:self.view.bounds];
+    backV.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+    UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"beeeper-logo-Splash"]];
+    imgV.tag = 454;
+    imgV.center = CGPointMake(backV.center.x, backV.center.y-22);
+    [backV addSubview:imgV];
+    backV.tag = 323;
+    [self.view addSubview:backV];
+    [self.view bringSubviewToFront:backV];
+}
+
+-(void)hideSplashScreen{
+    
+    UIView *backV = (id)[self.view viewWithTag:323];
+    UIImageView *imgV = (id)[backV viewWithTag:454];
+    
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         CGAffineTransform transform = imgV.transform;
+                         imgV.transform = CGAffineTransformScale(transform, 1.5 , 1.5);
+                         backV.alpha = 0;
+                         
+                     } completion:^(BOOL finished){
+                         [backV removeFromSuperview];
+                     }];
+    
 }
 
 @end

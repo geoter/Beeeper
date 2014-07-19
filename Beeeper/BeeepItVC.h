@@ -16,6 +16,10 @@
 @property (nonatomic,strong) NSDictionary *values;
 @property (weak, nonatomic) IBOutlet UIButton *beeepTimeButton;
 @property (nonatomic,strong) id tml;
+@property (weak, nonatomic) IBOutlet UISwitch *fbSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *twitterSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *suggestButton;
+@property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;
@@ -23,5 +27,6 @@
 - (IBAction)hideFromFollowersPressed:(id)sender;
 - (IBAction)beeepIt:(id)sender;
 - (IBAction)beeepTimeSelected:(id)sender;
+- (IBAction)suggestItPressed:(id)sender;
 
 @end

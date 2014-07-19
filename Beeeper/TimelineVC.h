@@ -23,7 +23,11 @@
 @property (weak, nonatomic) IBOutlet UIView *topV;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
-@property (weak, nonatomic) IBOutlet UILabel *venueLabel;
+@property (weak, nonatomic) IBOutlet UILabel *userCityLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *pinIcon;
+
+@property (weak, nonatomic) IBOutlet UIButton *settingsIcon;
+@property (weak, nonatomic) IBOutlet UIButton *importIcon;
 
 @property (nonatomic,assign) BOOL showBackButton;
 @property (nonatomic,assign) int mode;
@@ -38,6 +42,8 @@
 - (IBAction)showBeeepers:(id)sender;
 - (IBAction)followButtonPressed:(id)sender;//- (IBAction)leftButtonPressed:(id)sender;
 - (IBAction)editProfilePressed:(id)sender;
+- (IBAction)settingsPressed:(id)sender;
+- (IBAction)importPressed:(id)sender;
 
 
 - (IBAction)showSuggestions:(id)sender;

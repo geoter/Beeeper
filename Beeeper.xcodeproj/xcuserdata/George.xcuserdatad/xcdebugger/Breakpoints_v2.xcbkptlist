@@ -174,9 +174,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1201"
-            endingLineNumber = "1201"
-            landmarkName = "-getOldNotificationsWithCompletionBlock:"
-            landmarkType = "5">
+            endingLineNumber = "1201">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -190,9 +188,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1318"
-            endingLineNumber = "1318"
-            landmarkName = "-downloadImage:"
-            landmarkType = "5">
+            endingLineNumber = "1318">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -206,9 +202,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1295"
-            endingLineNumber = "1295"
-            landmarkName = "-downloadImage:"
-            landmarkType = "5">
+            endingLineNumber = "1295">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -222,9 +216,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1427"
-            endingLineNumber = "1427"
-            landmarkName = "@implementation BPUser"
-            landmarkType = "3">
+            endingLineNumber = "1427">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -286,9 +278,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "355"
-            endingLineNumber = "355"
-            landmarkName = "-textForNotification:"
-            landmarkType = "5">
+            endingLineNumber = "355">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -334,9 +324,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "272"
-            endingLineNumber = "272"
-            landmarkName = "-fbSignupReceived:"
-            landmarkType = "5">
+            endingLineNumber = "272">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -366,9 +354,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "288"
-            endingLineNumber = "288"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
-            landmarkType = "5">
+            endingLineNumber = "288">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

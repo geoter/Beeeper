@@ -246,6 +246,7 @@
     }
     else{
         //save value
+        [self validTextfield:textField];
         
         switch (textField.tag) {
             case 1:
@@ -396,11 +397,32 @@
         }
 
     }
+    else{
+        //save value
+        
+        switch (textField.tag) {
+            case 1:
+                [values setObject:textField.text forKey:@"title"];
+                break;
+                //            case 2:
+                //                [values setObject:textField.text forKey:@"timestamp"];
+                //                break;
+            case 3:
+                [values setObject:textField.text forKey:@"station"];
+                break;
+            case 4:
+                [values setObject:textField.text forKey:@"keywords"];
+                break;
+            case 5:
+                [values setObject:textField.text forKey:@"description"];
+                break;
+            default:
+                break;
+        }
+    }
     
     return YES;
 }
-
-
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
@@ -486,6 +508,8 @@
             [values setObject:[NSString stringWithFormat:@"%d",(int)timezoneoffset] forKey:@"utcoffset"];
             
             [(UITextField *)v setText:[NSString stringWithFormat:@"%@",[df stringFromDate:picker.date]]];
+            
+            [self validTextfield:v];
         }
     }
     
@@ -650,13 +674,6 @@
         [self validTextfield:self.venueTxtF];
     }
     
-    if (![values objectForKey:@"base64_image"] && ![values objectForKey:@"image_url"]) {
-        [self invalidTextfield:self.titleTxtF];
-        mpike = YES;
-    }
-    else{
-        [self validTextfield:self.titleTxtF];
-    }
     
     if (base64Image) {
         [values setObject:base64Image forKey:@"base64_image"];
@@ -665,20 +682,32 @@
         UIButton *choosePhotoBtn = (id)[self.scrollV viewWithTag:7];
         choosePhotoBtn.layer.borderColor = [UIColor redColor].CGColor;
         choosePhotoBtn.layer.borderWidth = 1.0f;
+        mpike = YES;
     }
     else{
         UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
         chosenPhotoBtn.layer.borderColor = [UIColor clearColor].CGColor;
         chosenPhotoBtn.layer.borderWidth = 0.0f;
-        mpike = YES;
+    
     }
     
 
     
     BOOL haskeywords = ([values objectForKey:@"keywords"] != nil);
     
-    if(values.allKeys.count <= (haskeywords)?13:12 || mpike)    return NO;
-    else return YES;
+    if (haskeywords) {
+        if (values.allKeys.count == 13) {
+            return YES;
+        }
+    }
+    else{
+        if (values.allKeys.count == 12) {
+            return YES;
+        }
+    }
+    
+    return NO;
+
 }
 
 -(void)invalidTextfield:(BorderTextField *)txtF{
@@ -847,8 +876,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
         NSURL *image_url = [info_values objectForKey:@"source_url"];
         
-        [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
-        
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
         UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
         [chosenPhotoBtn setImage:img forState:UIControlStateNormal];
@@ -862,9 +889,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         if (!image_url) {
             NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
             base64Image = [self base64forData:imageData];
+            [values removeObjectForKey:@"image_url"];
         }
         else{
             base64Image = nil;
+             [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
         }
         
         [self imageSelected:chosenPhotoBtn];

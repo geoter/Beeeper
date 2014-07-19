@@ -42,7 +42,10 @@
         [self showSplashScreen];
         [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
     }
-
+    
+    [[BPUser sharedBP]sendDeviceToken];
+    [[BPUser sharedBP]sendDemoPush:10];
+    
     [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];

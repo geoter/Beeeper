@@ -69,6 +69,10 @@ typedef void(^notifications_completed)(BOOL,id,id);
 
 -(void)setUserSettings:(NSDictionary *)settings WithCompletionBlock:(completed)compbloc;
 
+-(void)sendDeviceToken;
+-(void)setDeviceToken:(NSData *)token;
+-(void)sendDemoPush:(int)seconts;
+
 -(void)getUser;
 
 - (id)init;

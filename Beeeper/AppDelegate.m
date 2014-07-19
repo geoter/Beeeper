@@ -24,6 +24,9 @@
     [FBSettings setDefaultAppID: @"253616411483666"];
 
     [GMSServices provideAPIKey:@"AIzaSyDw_2s-d_HFlsMnFyz-30czOPBckYdrtE8"];
+
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
 //    
@@ -197,6 +200,25 @@
     [FBAppCall handleDidBecomeActive];
 }
 
+- (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [[BPUser sharedBP]setDeviceToken:deviceToken];
+}
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    NSDictionary *apsInfo = [userInfo objectForKey:@"aps"];
+    
+    if ( application.applicationState == UIApplicationStateActive)
+    {
+       
+    }
+    else{
+    
+    }
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+}
 
 @end

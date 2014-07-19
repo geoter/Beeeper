@@ -50,6 +50,7 @@
     int page_old;
     
     NSString *_userID;
+    NSString *deviceToken;
 }
 
 @end
@@ -91,6 +92,7 @@ static BPUser *thisWebServices = nil;
     
     return nil;
 }
+
 
 #pragma mark - Signup
 
@@ -344,6 +346,106 @@ static BPUser *thisWebServices = nil;
 }
 
 #pragma mark - USER
+
+-(void)sendDemoPush:(int)seconts{
+
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/send/push"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSString stringWithFormat:@"%d",seconts] forKey:@"seconds"];
+    [dict setObject:[NSString stringWithFormat:@"1412125200.223842"] forKey:@"weight"];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:dict]]];
+    
+    [request setPostValue:[NSString stringWithFormat:@"%d",seconts] forKey:@"seconds"];
+    [request setPostValue:[NSString stringWithFormat:@"1412125200.223842"] forKey:@"weight"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setDidFinishSelector:@selector(demoPushReceived:)];
+    
+    [request setDidFailSelector:@selector(demoPushFailed:)];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)demoPushReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    NSLog(@"%@",responseString);
+}
+
+-(void)demoPushFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+        NSLog(@"%@",responseString);
+}
+
+
+-(void)setDeviceToken:(NSData *)token{
+    
+    NSString *str = [NSString stringWithFormat:@"Device Token=%@",token];
+    
+    //remove spaces from token
+    str = [str stringByReplacingOccurrencesOfString:@" "
+                                         withString:@""];
+    
+    //remove "DeviceToken=<"
+    str = [str stringByReplacingOccurrencesOfString:@"DeviceToken=<"
+                                         withString:@""];
+    
+    //remove ">"
+    str = [str stringByReplacingOccurrencesOfString:@">"
+                                         withString:@""];
+    
+    deviceToken = [NSString stringWithString:str];
+
+}
+
+-(void)sendDeviceToken{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/update/IOS/id"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+   
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:deviceToken forKey:@"deviceToken"];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:dict]]];
+    
+    [request setPostValue:deviceToken forKey:@"deviceToken"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(sendDeviceTokenReceived:)];
+    
+    [request setDidFailSelector:@selector(sendDeviceTokenFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)sendDeviceTokenReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+
+}
+
+-(void)sendDeviceTokenFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+}
 
 -(void)updateUser{
     

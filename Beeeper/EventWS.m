@@ -107,6 +107,60 @@ static EventWS *thisWebServices = nil;
     self.comment_completed(NO,nil);
 }
 
+
+-(void)postComment:(NSString *)commentText Event:(NSString *)fingerprint  WithCompletionBlock:(completed)compbloc{
+    
+    self.comment_completed = compbloc;
+    
+    @try {
+        
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/comment/add"];
+        
+        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+        
+        NSMutableArray *postValues = [NSMutableArray array];
+        
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:fingerprint forKey:@"fingerprint"]];
+        
+        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+        
+        [request addPostValue:commentText forKey:@"comment"];
+        [request addPostValue:fingerprint forKey:@"fingerprint"];
+        
+        [request setRequestMethod:@"POST"];
+        
+        [request setTimeOutSeconds:7.0];
+        
+        [request setDelegate:self];
+        
+        [request setDidFinishSelector:@selector(postEventCommentFinished:)];
+        
+        [request setDidFailSelector:@selector(postEventCommentFailed:)];
+        
+        [request startAsynchronous];
+        
+    }
+    @catch (NSException *exception) {
+        self.comment_completed(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+-(void)postEventCommentFinished:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    self.comment_completed(YES,nil);
+}
+
+-(void)postEventCommentFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    self.comment_completed(NO,nil);
+}
+
+
 #pragma mark - Like
 
 -(void)likeBeeep:(NSString *)beeepID user:(NSString *)userID WithCompletionBlock:(completed)compbloc{
@@ -640,7 +694,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
-    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",@"DATE"]];
     [array addObject:[NSString stringWithFormat:@"page=%d",all_events_page]];
     
     for (NSString *str in array) {
@@ -650,7 +704,7 @@ static EventWS *thisWebServices = nil;
             [URLwithVars appendString:@"&"];
         }
     }
-    
+
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];

@@ -24,6 +24,7 @@ typedef void(^completed)(BOOL,id);
 - (id)init;
 + (EventWS *)sharedBP;
 
+-(void)postComment:(NSString *)commentText Event:(NSString *)fingerprint  WithCompletionBlock:(completed)compbloc;
 -(void)postComment:(NSString *)commentText BeeepId:(NSString *)beeep_id user:(NSString *)user_id WithCompletionBlock:(completed)compbloc;
 -(void)likeEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;
 -(void)unlikeEvent:(NSString *)fingerprint WithCompletionBlock:(completed)compbloc;

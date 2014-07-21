@@ -416,6 +416,11 @@ static BPUser *thisWebServices = nil;
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    if (dict.allKeys.count == 0) {
+        return;
+    }
+    
     [dict setObject:deviceToken forKey:@"deviceToken"];
     
     [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:dict]]];
@@ -546,8 +551,6 @@ static BPUser *thisWebServices = nil;
 #pragma mark - Follow
 
 -(void)getLocalFollowersForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
-
-    self.localFollowersCompleted= compbloc;
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
@@ -561,14 +564,13 @@ static BPUser *thisWebServices = nil;
         [[DTO sharedDTO]downloadImageFromURL:imagePath];
     }
     
-    self.localFollowersCompleted(YES,users);
+    compbloc(YES,users);
 
 
 }
 
 -(void)getLocalFollowingForUser:(NSString *)user_id WithCompletionBlock:(completed)compbloc{
     
-    self.localFollowingCompleted= compbloc;
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
@@ -582,7 +584,7 @@ static BPUser *thisWebServices = nil;
         [[DTO sharedDTO]downloadImageFromURL:imagePath];
     }
     
-    self.localFollowingCompleted(YES,users);
+    compbloc(YES,users);
 
 }
 
@@ -825,6 +827,7 @@ static BPUser *thisWebServices = nil;
 }
 
 
+
 -(void)checkIfFollowing:(NSString *)other_user_id WithCompletionBlock:(completed)compbloc{
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/followers/is"];
@@ -915,6 +918,11 @@ static BPUser *thisWebServices = nil;
     
     self.completed(YES,nil);
     
+    //For timeline
+    
+    
+    [[BPUser sharedBP]getFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){}];
+    
 }
 
 -(void)follow_user_Failed:(ASIHTTPRequest *)request{
@@ -963,6 +971,10 @@ static BPUser *thisWebServices = nil;
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
     self.completed(YES,nil);
+    
+    
+    //For timeline
+    [[BPUser sharedBP]getFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){}];
     
 }
 

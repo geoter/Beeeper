@@ -493,7 +493,20 @@
     double now_time = [[NSDate date]timeIntervalSince1970];
     double event_timestamp = event.timestamp;
     
-    beeepBtn.enabled = (now_time < event_timestamp);
+    if (now_time > event_timestamp) {
+        
+        if (![cell viewWithTag:3455465]) {
+            UIView *v = [[UIView alloc]initWithFrame:cell.bounds];
+            v.backgroundColor = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:244/255.0 alpha:0.4];
+            v.tag = 3455465;
+            [cell addSubview:v];
+        }
+    }
+    else{
+        [[cell viewWithTag:3455465]removeFromSuperview];
+    }
+    
+
     
     return cell;
 }

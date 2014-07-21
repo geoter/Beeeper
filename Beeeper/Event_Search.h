@@ -1,8 +1,8 @@
 //
 //  Event_Search.h
 //
-//  Created by   on 6/25/14
-//  Copyright (c) 2014 __MyCompanyName__. All rights reserved.
+//  Created by George Termentzoglou on 7/21/14
+//  Copyright (c) 2014 georgeterme@gmail.com. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -12,6 +12,7 @@
 @interface Event_Search : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, strong) NSString *internalBaseClassDescription;
+@property (nonatomic, strong) NSArray *comments;
 @property (nonatomic, strong) NSString *fingerprint;
 @property (nonatomic, assign) double timestamp;
 @property (nonatomic, strong) NSString *imageUrl;

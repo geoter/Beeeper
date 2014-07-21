@@ -58,7 +58,7 @@
     
     loadNextPage = NO;
     
-    if (selectedIndex == 0) {
+    if (selectedIndex == 1) {
         [self getNextFriendsFeed];
     }
     else{
@@ -125,6 +125,21 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(showFindFriends)];
     self.navigationItem.rightBarButtonItem = rightItem;
     
+}
+
+-(void)refresh{
+    if (selectedIndex == 1) {
+        [self getFriendsFeed];
+    }
+    else{
+        [self getHomefeed];
+    }
+}
+
+-(void)getFriendsFeed{
+    
+    loadNextPage = NO;
+    
     [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
         
         if (completed) {
@@ -143,20 +158,6 @@
         }
     }];
 
-}
-
--(void)refresh{
-    if (selectedIndex == 0) {
-        [self getFriendsFeed];
-    }
-    else{
-        [self getHomefeed];
-    }
-}
-
--(void)getFriendsFeed{
-    
-    loadNextPage = NO;
     
     [[BPHomeFeed sharedBP]getFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
@@ -292,15 +293,14 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
-    
+   
     [self refresh];
     
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
+     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -330,7 +330,7 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return (selectedIndex == 0)?beeeps.count:events.count;
+    return (selectedIndex == 1)?beeeps.count:events.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -433,6 +433,7 @@
         
         beeeps.text = [NSString stringWithFormat:@"%d",(int)event.beeepedBy.count];
         favorites.text = [NSString stringWithFormat:@"%d",(int)event.likes.count];
+        comments.text = [NSString stringWithFormat:@"%d",(int)event.comments.count];
         
         favorites.hidden = (favorites.text.intValue == 0);
         comments.hidden = (comments.text.intValue == 0);
@@ -468,8 +469,20 @@
         double now_time = [[NSDate date]timeIntervalSince1970];
         double event_timestamp = event.timestamp;
         
-        beeepBtn.enabled = (now_time < event_timestamp);
+        if (now_time > event_timestamp) {
+            
+            if (![cell viewWithTag:3455465]) {
+                UIView *v = [[UIView alloc]initWithFrame:cell.bounds];
+                v.backgroundColor = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:244/255.0 alpha:0.4];
+                v.tag = 3455465;
+                [cell addSubview:v];
+            }
+        }
+        else{
+            [[cell viewWithTag:3455465]removeFromSuperview];
+        }
 
+        
         return cell;
     }
     else{
@@ -633,7 +646,19 @@
             double now_time = [[NSDate date]timeIntervalSince1970];
             double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
             
-            beeepBtn.enabled = (now_time < event_timestamp);
+            if (now_time > event_timestamp) {
+                
+                if (![cell viewWithTag:3455465]) {
+                    UIView *v = [[UIView alloc]initWithFrame:cell.bounds];
+                    v.backgroundColor = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:244/255.0 alpha:0.4];
+                    v.tag = 3455465;
+                    [cell addSubview:v];
+                }
+            }
+            else{
+                [[cell viewWithTag:3455465]removeFromSuperview];
+            }
+
         
             return cell;
     }
@@ -652,7 +677,7 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
 
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Friends'",@"All", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
         segment.delegate = self;
         [headerView addSubview:segment];
         segment.center = headerView.center;
@@ -687,7 +712,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
   
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
-    if (beeeps != nil || selectedIndex == 0) {
+    if (beeeps != nil || selectedIndex == 1) {
         viewController.tml = [beeeps objectAtIndex:indexPath.row];
     }
     else{
@@ -701,7 +726,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, (selectedIndex == 0)?298:270);
+    return CGSizeMake(148, (selectedIndex == 1)?298:270);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //
@@ -875,11 +900,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
-    Event_Search* event = [events objectAtIndex:path.row];
+    Event_Search *event = [events objectAtIndex:path.row];
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
-    viewController.event_beeep_object = [events objectAtIndex:path.row];
-    //    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.event_beeep_object = event;
+    viewController.comments = [NSMutableArray arrayWithArray:event.comments];
+
     [self.navigationController pushViewController:viewController animated:YES];
 
 }
@@ -906,6 +932,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     NSIndexPath* indexPath = [self.collectionV indexPathForItemAtPoint:point];
     UICollectionViewCell* cell = [self.collectionV cellForItemAtIndexPath:indexPath];
+    
+    if ([cell viewWithTag:3455465]) {
+        return NO;
+    }
     
     return cell != nil;
 }
@@ -962,7 +992,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     
-    if (beeeps != nil || selectedIndex == 0) {
+    if (beeeps != nil || selectedIndex == 1) {
          viewController.tml = [beeeps objectAtIndex:indexpath.row];
     }
     else{
@@ -977,60 +1007,114 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)likeEventAtIndexPath:(NSIndexPath *)indexpath{
     
-    if (beeeps != nil || selectedIndex == 0) {
+    if (beeeps != nil || selectedIndex == 1) {
         
         Friendsfeed_Object *ffo = [beeeps objectAtIndex:indexpath.row];
         
         Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
         
-        [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
-            if (completed) {
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                [SVProgressHUD showSuccessWithStatus:@"Liked!"];
-            }
-            else{
-                
-                NSArray *errorArray = [response objectForKey:@"errors"];
-                NSDictionary *errorDict = [errorArray firstObject];
-                
-                NSString *info = [errorDict objectForKey:@"info"];
-                if ([info isEqualToString:@"You have already liked this event"]) {
-                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+        NSMutableArray *likers = [NSMutableArray arrayWithArray:[bps.likes valueForKey:@"likes"]];
+        
+        if ([likers indexOfObject:[[BPUser sharedBP].user objectForKey:@"id"]] == NSNotFound) {
+           
+            [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+                if (completed) {
+                    
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    bps.likes = likers;
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                    
+                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
                 }
-            }
-        }];
+                else{
+                    
+                    NSArray *errorArray = [response objectForKey:@"errors"];
+                    NSDictionary *errorDict = [errorArray firstObject];
+                    
+                    NSString *info = [errorDict objectForKey:@"info"];
+                    if ([info isEqualToString:@"You have already liked this event"]) {
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                    }
+                }
+            }];
+        
+        }
+        else{
+            [[EventWS sharedBP]unlikeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+                if (completed) {
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    bps.likes = likers;
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                    
+                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
+                }
+            }];
+        }
+        
     }
     else{
         
         Event_Search *event = [events objectAtIndex:indexpath.row];
         
-        [[EventWS sharedBP]likeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+        NSMutableArray *likers = [NSMutableArray arrayWithArray:event.likes];
+        
+        if ([likers indexOfObject:[[BPUser sharedBP].user objectForKey:@"id"]] == NSNotFound) {
             
-            if (completed) {
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                [SVProgressHUD showSuccessWithStatus:@"Liked!"];
-            }
-            else{
+            [[EventWS sharedBP]likeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
                 
-                NSArray *errorArray = [response objectForKey:@"errors"];
-                NSDictionary *errorDict = [errorArray firstObject];
-                
-                NSString *info = [errorDict objectForKey:@"info"];
-                if ([info isEqualToString:@"You have already liked this event"]) {
-                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                if (completed) {
+                    
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    event.likes = likers;
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                    
+                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
                 }
-            }
-        }];
+                else{
+                    
+                    NSArray *errorArray = [response objectForKey:@"errors"];
+                    NSDictionary *errorDict = [errorArray firstObject];
+                    
+                    NSString *info = [errorDict objectForKey:@"info"];
+                    if ([info isEqualToString:@"You have already liked this event"]) {
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                    }
+                }
+            }];
 
+        }
+        else{
+            
+            [[EventWS sharedBP]unlikeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+                if (completed) {
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    event.likes = likers;
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+
+                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+                
+            }];
+        }
     }
     
 }
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
-    if (beeeps != nil || selectedIndex == 0) {
+    if (beeeps != nil || selectedIndex == 1) {
             
         Friendsfeed_Object *ffo = [beeeps objectAtIndex:indexpath.row];
         
@@ -1134,7 +1218,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     selectedIndex = index;
     
-    if (index == 0) {
+    if (index == 1) {
         
         [self getFriendsFeed];
     }

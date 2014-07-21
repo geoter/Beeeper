@@ -65,8 +65,6 @@
         
         if (completed) {
             
-            loading = NO;
-            
             if (objs.count != 0) {
                 [beeeps addObjectsFromArray:objs];
                 loadNextPage = YES;
@@ -86,7 +84,6 @@
         
         [self setUserInfo];
         
-        loading = YES;
         loadNextPage = YES;
         
         if (option != 0 && option != 1) {
@@ -191,6 +188,8 @@
 {
     [super viewDidLoad];
 
+    loading = YES;
+    
     if (user == nil) {
          user = [BPUser sharedBP].user;
     }
@@ -216,7 +215,9 @@
             if (completed) {
                 beeeps = [NSMutableArray arrayWithArray:objs];
                 
-                loading = NO;
+                if (beeeps.count > 0) {
+                    loading = NO;
+                }
                 
                 suggestionsPerSection = [NSMutableDictionary dictionary];
                 sections = [NSMutableArray array];
@@ -249,6 +250,19 @@
                     followingLbl.text = mtext;
                 }
                 
+            }
+        }];
+        
+        //Follow + /Following button
+        
+        [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                for (NSDictionary *user in objs) {
+                    if ([[user objectForKey:@"id"] isEqualToString:[self.user objectForKey:@"id"]]) {
+                        self.mode = Timeline_Following;
+                    }
+                }
             }
         }];
         
@@ -842,10 +856,10 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
-    if(sections.count > 0 && !loading){
+    if(sections.count > 0 && section != 0){
         return 7;
     }
-    else if (section == 0){
+    else if (section == 0 && sections.count >0){
         return 1;
     }
     else{
@@ -856,12 +870,12 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     
-    if(sections.count > 0 && !loading){
+    if(sections.count > 0 && section != 0){
         UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
         footer.backgroundColor = [UIColor clearColor];
         return footer;
     }
-    else if (section == 0){
+    else if (section == 0 && sections.count != 0){
         
         UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
         footer.backgroundColor = [UIColor clearColor];

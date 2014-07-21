@@ -12,6 +12,7 @@
 #import "EventWS.h"
 #import "Timeline_Object.h"
 #import "Friendsfeed_Object.h"
+#import "Event_Search.h"
 
 @interface CommentsVC ()<PHFComposeBarViewDelegate,UITableViewDataSource,UITableViewDelegate>
 {
@@ -216,7 +217,9 @@
         }
         
     }
-    else if([objct isKindOfClass:[NSDictionary class]]){
+    else if([objct isKindOfClass:[NSString class]]){
+    
+        
        /*
         NSDictionary *dict = (NSDictionary *)objct;
         
@@ -449,9 +452,35 @@
         }];
        
     }
-    
-    
+    else if ([self.event_beeep_object isKindOfClass:[Event_Search class]]){
+        Event_Search *event = self.event_beeep_object;
+        
+        [[EventWS sharedBP]postComment:text Event:event.fingerprint WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                NSMutableDictionary *commentDict = [NSMutableDictionary dictionary];
+                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                
+                [commentDict setObject:[NSString stringWithFormat:@"%@ %@",name,surname] forKey:@"name"];
+                [commentDict setObject:text forKey:@"comment"];
+                
+                Comments *c = [[Comments alloc]init];
+                c.userCommentDict = commentDict;
+                [comments addObject:c];
+                
+                [self.tableV reloadData];
+                [self prependTextToTextView:text];
+                [composeBarView setText:@"" animated:YES];
+                [composeBarView resignFirstResponder];
+                
+            }
+        }];
+
     }
+    
+    
+}
 
 - (void)composeBarViewDidPressUtilityButton:(PHFComposeBarView *)composeBarView {
     [self prependTextToTextView:@"Utility button pressed"];

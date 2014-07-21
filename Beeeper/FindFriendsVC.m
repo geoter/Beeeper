@@ -282,6 +282,8 @@
 
 -(void)requestFBFriends{
    
+    return;
+    
     if (FBSession.activeSession.state == FBSessionStateOpen
         || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
         
@@ -386,7 +388,13 @@
         
     }
     
-    CellIdentifier = @"Cell";
+    if (selectedOption == MailButton) { //mail
+        CellIdentifier = @"Cell";
+    }
+    else{
+        CellIdentifier = @"Cell2";
+    }
+
     cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     UITextField *txtF = (id)[cell viewWithTag:1];
@@ -797,6 +805,10 @@
     NSString *responseString = [request responseString];
 
     NSArray *people = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (people == nil || (people.count == 0 && searchStr.length == 0)) {
+        [self getPeople:searchStr WithCompletionBlock:self.search_completed];
+    }
     
     for (NSDictionary *user in people) {
         NSArray *keys = user.allKeys;

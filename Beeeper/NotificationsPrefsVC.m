@@ -30,6 +30,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    self.scrollV.contentSize = CGSizeMake(self.scrollV.frame.size.width, self.scrollV.frame.size.height+1);
+    
     [self showLoading];
     
     settings = [NSMutableDictionary dictionary];

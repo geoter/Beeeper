@@ -1,8 +1,8 @@
 //
 //  Event_Search.m
 //
-//  Created by   on 6/25/14
-//  Copyright (c) 2014 __MyCompanyName__. All rights reserved.
+//  Created by George Termentzoglou on 7/21/14
+//  Copyright (c) 2014 georgeterme@gmail.com. All rights reserved.
 //
 
 #import "Event_Search.h"
@@ -10,6 +10,7 @@
 
 
 NSString *const kEvent_SearchDescription = @"description";
+NSString *const kEvent_SearchComments = @"comments";
 NSString *const kEvent_SearchFingerprint = @"fingerprint";
 NSString *const kEvent_SearchTimestamp = @"timestamp";
 NSString *const kEvent_SearchImageUrl = @"image_url";
@@ -34,6 +35,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
 @implementation Event_Search
 
 @synthesize internalBaseClassDescription = _internalBaseClassDescription;
+@synthesize comments = _comments;
 @synthesize fingerprint = _fingerprint;
 @synthesize timestamp = _timestamp;
 @synthesize imageUrl = _imageUrl;
@@ -62,6 +64,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
             self.internalBaseClassDescription = [self objectOrNilForKey:kEvent_SearchDescription fromDictionary:dict];
+            self.comments = [self objectOrNilForKey:kEvent_SearchComments fromDictionary:dict];
             self.fingerprint = [self objectOrNilForKey:kEvent_SearchFingerprint fromDictionary:dict];
             self.timestamp = [[self objectOrNilForKey:kEvent_SearchTimestamp fromDictionary:dict] doubleValue];
             self.imageUrl = [self objectOrNilForKey:kEvent_SearchImageUrl fromDictionary:dict];
@@ -98,6 +101,17 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
     [mutableDict setValue:self.internalBaseClassDescription forKey:kEvent_SearchDescription];
+    NSMutableArray *tempArrayForComments = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.comments) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForComments addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForComments addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForComments] forKey:kEvent_SearchComments];
     [mutableDict setValue:self.fingerprint forKey:kEvent_SearchFingerprint];
     [mutableDict setValue:[NSNumber numberWithDouble:self.timestamp] forKey:kEvent_SearchTimestamp];
     [mutableDict setValue:self.imageUrl forKey:kEvent_SearchImageUrl];
@@ -165,6 +179,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     self = [super init];
 
     self.internalBaseClassDescription = [aDecoder decodeObjectForKey:kEvent_SearchDescription];
+    self.comments = [aDecoder decodeObjectForKey:kEvent_SearchComments];
     self.fingerprint = [aDecoder decodeObjectForKey:kEvent_SearchFingerprint];
     self.timestamp = [aDecoder decodeDoubleForKey:kEvent_SearchTimestamp];
     self.imageUrl = [aDecoder decodeObjectForKey:kEvent_SearchImageUrl];
@@ -185,6 +200,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
 {
 
     [aCoder encodeObject:_internalBaseClassDescription forKey:kEvent_SearchDescription];
+    [aCoder encodeObject:_comments forKey:kEvent_SearchComments];
     [aCoder encodeObject:_fingerprint forKey:kEvent_SearchFingerprint];
     [aCoder encodeDouble:_timestamp forKey:kEvent_SearchTimestamp];
     [aCoder encodeObject:_imageUrl forKey:kEvent_SearchImageUrl];
@@ -207,6 +223,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     if (copy) {
 
         copy.internalBaseClassDescription = [self.internalBaseClassDescription copyWithZone:zone];
+        copy.comments = [self.comments copyWithZone:zone];
         copy.fingerprint = [self.fingerprint copyWithZone:zone];
         copy.timestamp = self.timestamp;
         copy.imageUrl = [self.imageUrl copyWithZone:zone];

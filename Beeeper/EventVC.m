@@ -25,7 +25,7 @@
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
 
-@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate>{
+@interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
     NSMutableArray *comments;
     NSMutableArray *beeepers;
@@ -138,7 +138,7 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
-                [self showEventForActivityWithBeeep];
+                [self showEventForEventLookUpObject];
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -273,8 +273,17 @@
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
+    
+    if (self.titleLabel.frame.origin.x < 257) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    }
 
     [venueLbl sizeToFit];
+    
+    if (venueLbl.frame.size.width > 265) {
+        [venueLbl setFrame:CGRectMake(0, 0, 265, venueLbl.frame.size.height)];
+    }
+    
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
     self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
@@ -294,7 +303,6 @@
     beeepsLbl.text = [NSString stringWithFormat:@"%d",suggestion.beeepersIds.count];
     
     likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
-    
     
     self.likesLabel.hidden = (likers.count == 0);
     self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
@@ -452,7 +460,17 @@
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
+    
+    if (self.titleLabel.frame.origin.x < 257) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    }
+    
     [venueLbl sizeToFit];
+    
+    if (venueLbl.frame.size.width > 265) {
+        [venueLbl setFrame:CGRectMake(0, 0, 265, venueLbl.frame.size.height)];
+    }
+    
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
     self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
@@ -627,7 +645,17 @@
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
+    
+    if (self.titleLabel.frame.origin.x < 257) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    }
+    
     [venueLbl sizeToFit];
+    
+    if (venueLbl.frame.size.width > 265) {
+        [venueLbl setFrame:CGRectMake(0, 0, 265, venueLbl.frame.size.height)];
+    }
+    
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
     self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
@@ -644,6 +672,7 @@
     commentsLbl.text = [NSString stringWithFormat:@"%d",t.beeep.beeepInfo.comments.count];
     beeepsLbl.text = [NSString stringWithFormat:@"%d",t.beeepersIds.count];
    
+    beeepers = [NSMutableArray arrayWithArray:t.beeepersIds];
     
     NSArray *likers = [[t.beeep.beeepInfo.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
     
@@ -738,6 +767,198 @@
     [self hideLoading];
 }
 
+-(void)showEventForEventLookUpObject{
+    
+    //EVENT DATE
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    [formatter setLocale:usLocale];
+    
+    NSDate *date;
+    
+    Event_Show_Object* event = event_show_Objct;
+    
+    Event_Search *eventSearch = tml;
+    
+    date = [NSDate dateWithTimeIntervalSince1970:event.eventInfo.timestamp];
+    
+    NSString *dateStr = [formatter stringFromDate:date];
+    NSArray *components = [dateStr componentsSeparatedByString:@","];
+    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+    
+    NSString *month = [day_month objectAtIndex:1];
+    NSString *daynumber = [day_month objectAtIndex:2];
+    NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+    NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+    
+    UILabel *dayNumberLbl = self.dayNumberLabel;
+    UILabel *monthLbl = self.monthLabel;
+    UILabel *dayLbl = self.dayLabel;
+    UILabel *hourLbl = self.hourLabel;
+    
+    hourLbl.text = hour;
+    dayNumberLbl.text = daynumber;
+    monthLbl.text = [month uppercaseString];
+    dayLbl.text = [[components firstObject] uppercaseString];
+    
+    
+    shareText = [[NSMutableString alloc]init];
+    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+    
+    //Website
+    
+    NSString *website = event.eventInfo.url;
+    websiteURL = website;
+    self.websiteLabel.text = website;
+    
+    //Venue name + Title
+    
+    UILabel *venueLbl = self.venueLabel;
+    
+    NSString *jsonString;
+    
+    self.titleLabel.text = [event.eventInfo.title capitalizedString];
+    jsonString = event.eventInfo.location;
+    
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if (data != nil) {
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = [loc.venueStation uppercaseString];
+        
+        CGPoint oldCenter = self.titleLabel.center;
+        [self.titleLabel sizeToFit];
+        self.titleLabel.center = oldCenter;
+        
+        if (self.titleLabel.frame.origin.x < 257) {
+            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        }
+        
+        [venueLbl sizeToFit];
+        
+        if (venueLbl.frame.size.width > 265) {
+            [venueLbl setFrame:CGRectMake(0, 0, 265, venueLbl.frame.size.height)];
+        }
+        
+        venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
+                                      +(int)(venueLbl.frame.size.height/2));
+        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+        self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
+        
+    }
+    
+    UIView *headerV = self.tableV.tableHeaderView;
+    //Likes,Beeeps,Comments
+    UILabel *beeepsLbl = (id)[headerV viewWithTag:-5];
+    UILabel *likesLbl = (id)[headerV viewWithTag:-3];
+    UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    isLiker = NO;
+
+    likesLbl.text = [NSString stringWithFormat:@"%d",eventSearch.likes.count];
+    commentsLbl.text = [NSString stringWithFormat:@"%d",eventSearch.comments.count];
+    NSArray *beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",beeepers.count];
+    
+    likers =[NSMutableArray arrayWithArray:eventSearch.likes];
+    
+    if ([likers indexOfObject:my_id] != NSNotFound) {
+        isLiker = YES;
+    }
+    
+    if (isLiker) {
+        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+    }
+    else{
+        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+    }
+    
+    
+    self.likesLabel.hidden = (likers.count == 0);
+    self.commentsLabel.hidden = (commentsLbl.text.length == 0);
+    self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
+        
+
+    //Tags
+    
+    NSMutableString *formattedTags = [[NSMutableString alloc]init];
+    NSString *hastags;
+    
+    @try {
+        
+        hastags = [event.hashTags stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        hastags = [hastags stringByReplacingOccurrencesOfString:@"[\"" withString:@""];
+        hastags = [hastags stringByReplacingOccurrencesOfString:@"\"]" withString:@""];
+        hastags = [hastags stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        
+        NSArray *tags = [hastags componentsSeparatedByString:@","];
+        for (NSString *tag in tags) {
+            if (tag.length > 1) {
+                [formattedTags appendFormat:@"#%@ ",tag];
+            }
+        }
+        
+        NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        self.tagsLabel.text = correctString;
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"NO TAGS");
+    }
+    @finally {
+        
+    }
+    
+    //Image
+    
+    UIImageView *imgV = self.eventImageV;
+    
+    NSString *extension;
+    NSString *imageName;
+    
+    @try {
+        
+        // extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        
+        imageName  = [NSString stringWithFormat:@"%@",[event.eventInfo.imageUrl MD5]];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            imgV.backgroundColor = [UIColor clearColor];
+            imgV.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            imgV.image = img;
+        }
+        else{
+            imgV.backgroundColor = [UIColor lightGrayColor];
+            imgV.image = nil;
+            
+            [[DTO sharedDTO]downloadImageFromURL:event.eventInfo.imageUrl];
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
+        }
+        
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"NO IMAGE");
+    }
+    @finally {
+        
+    }
+    
+    [self hideLoading];
+}
+
+
 -(void)showEventForActivityWithBeeep{
     
     //EVENT DATE
@@ -748,7 +969,6 @@
     
     NSDate *date;
     
-    Activity_Object *activity = tml;
     Event_Show_Object* event = event_show_Objct;
     Beeep_Object* beeep = beeep_Objct;
     
@@ -803,7 +1023,17 @@
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
         self.titleLabel.center = oldCenter;
+        
+        if (self.titleLabel.frame.origin.x < 257) {
+            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        }
+        
         [venueLbl sizeToFit];
+        
+        if (venueLbl.frame.size.width > 265) {
+            [venueLbl setFrame:CGRectMake(0, 0, 265, venueLbl.frame.size.height)];
+        }
+        
         venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
                                       +(int)(venueLbl.frame.size.height/2));
         self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
@@ -830,6 +1060,7 @@
         
         likesLbl.text = [NSString stringWithFormat:@"%d",beeep.likes.count];
         commentsLbl.text = [NSString stringWithFormat:@"%d",beeep.comments.count];
+
         //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
         
         likers =[NSMutableArray arrayWithArray:beeep.likes];
@@ -984,6 +1215,8 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+
     NSRange range = NSMakeRange(0, 1);
     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
     [self.tableV reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
@@ -1022,6 +1255,13 @@
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
                 }
             }];
         }
@@ -1034,8 +1274,14 @@
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
                 }
-                
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
                 
             }];
 
@@ -1053,6 +1299,13 @@
                         [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                         likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                         [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                        
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                        [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                    }
+                    else{
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
                     }
                 }];
             }
@@ -1068,6 +1321,29 @@
 //                }];
             }
             
+        }
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            
+            Event_Search *event = tml;
+            
+            [[EventWS sharedBP]unlikeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+                if (completed) {
+                    isLiker = NO;
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                 
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+                
+            }];
+
         }
     }
     else{
@@ -1102,10 +1378,18 @@
             
             [[EventWS sharedBP]likeEvent:suggest.what.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
-                    isLiker = NO;
-                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    isLiker = YES;
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
                 }
                 
             }];
@@ -1120,10 +1404,17 @@
                 
                 [[EventWS sharedBP]likeEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                     if (completed) {
-                        isLiker = NO;
-                        [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                        likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                        isLiker = YES;
+                        [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                        likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                        
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                        [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                    }
+                    else{
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                        [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
                     }
                 }];
             }
@@ -1140,6 +1431,28 @@
             }
             
         }
+        else if ([tml isKindOfClass:[Event_Search class]]){
+            
+            Event_Search *event = tml;
+            
+            [[EventWS sharedBP]likeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+                if (completed) {
+                    isLiker = YES;
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+                
+            }];
+            
+        }
 
         
     }
@@ -1151,7 +1464,13 @@
 
 -(void)showMore{
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Report Beeep", @"Share on Facebook", @"Share on Twitter", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Share on Facebook", @"Share on Twitter", nil];
+    
+    if([MFMessageComposeViewController canSendText])
+    {
+        [actionSheet addButtonWithTitle:@"Share via SMS"];
+    }
+    
     
     if ([MFMailComposeViewController canSendMail]) {
         [actionSheet addButtonWithTitle:@"Share via Email"];
@@ -1185,8 +1504,11 @@
         case 2:
             [self sendTwitter];
             break;
-        case 3:
-            if ([MFMailComposeViewController canSendMail]) {
+        case 3:{
+            if ([MFMessageComposeViewController canSendText]) {
+                [self sendSMS];
+            }
+            else if ([MFMailComposeViewController canSendMail]) {
                 [self sendEmail];
             }
             else{
@@ -1194,12 +1516,23 @@
                 pasteboard.string = websiteURL;
             }
             break;
+        }
         case 4:
         {
-            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-            pasteboard.string = websiteURL;
+            if ([MFMailComposeViewController canSendMail]) {
+                [self sendEmail];
+            }
+            else{
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                pasteboard.string = websiteURL;
+            }
         }
             break;
+        case 5:{
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = websiteURL;
+            break;
+        }
         default:
             break;
     }
@@ -1332,6 +1665,35 @@
         mailComposer.mailComposeDelegate = self;
         [self presentViewController:mailComposer animated:YES completion:nil];
 }
+
+-(void)sendSMS{
+    
+    MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+    if([MFMessageComposeViewController canSendText])
+    {
+        controller.body = @"Check out this Event I found on Beeeper for iOS";
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    
+    [self dismissModalViewControllerAnimated:YES];
+    
+    if (result == MessageComposeResultFailed) {
+        
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Error sendig SMS"];
+        
+    } else if (result == MessageComposeResultSent) {
+        
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"SMS Sent!"];
+    }
+    
+}
+
 
 #pragma mark MFMailComposeViewControllerDelegate
 

@@ -147,6 +147,7 @@ CGFloat const   GHAnimationDelay = GHAnimationDuration/10;
 
 - (void) longPressDetected:(UIGestureRecognizer*) gestureRecognizer
 {
+    
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         self.prevIndex = -1;
         
@@ -154,6 +155,7 @@ CGFloat const   GHAnimationDelay = GHAnimationDuration/10;
         self.longPressLocation = [gestureRecognizer locationInView:self];
         CGPoint pointInView = [gestureRecognizer locationInView:gestureRecognizer.view];
         if (self.dataSource != nil && [self.dataSource respondsToSelector:@selector(shouldShowMenuAtPoint:)] && ![self.dataSource shouldShowMenuAtPoint:pointInView]){
+            [self removeFromSuperview];
             return;
         }
         

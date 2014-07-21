@@ -44,7 +44,7 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    [[BPUser sharedBP]sendDemoPush:10];
+  //  [[BPUser sharedBP]sendDemoPush:10];
     
     [self updateNotificationsBadge];
     
@@ -56,6 +56,11 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
+    
+    //for timeline Follow + / Following Delay
+    
+    [[BPUser sharedBP]getFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){}];
+
 }
 
 -(void)updateNotificationsBadge{
@@ -124,7 +129,7 @@
 
 -(void)showTabbar{
     
-    [UIView animateWithDuration:0.7f
+    [UIView animateWithDuration:0.4f
                      animations:^
      {
          self.tabBar.frame = CGRectMake(0, self.view.frame.size.height-self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
@@ -132,7 +137,7 @@
                      completion:^(BOOL finished)
      {
          
-         [UIView animateWithDuration:0.7f
+         [UIView animateWithDuration:0.4f
                           animations:^
           {
                     self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);

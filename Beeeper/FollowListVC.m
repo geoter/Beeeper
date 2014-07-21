@@ -88,7 +88,7 @@
          
          //to get which of the followers is our user following
          
-         [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+         [[BPUser sharedBP]getFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
              
              if (completed) {
                  following = [NSMutableArray arrayWithArray:objs];
@@ -338,12 +338,12 @@
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 2 || pendingImagesDict.count < 2) {
+    if (rowsToReload.count == 4 || pendingImagesDict.count < 4) {
         dispatch_async(dispatch_get_main_queue(), ^{
          
             
             @try {
-                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableV reloadData];
                 [rowsToReload removeAllObjects];
             }
             @catch (NSException *exception) {

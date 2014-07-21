@@ -60,6 +60,8 @@
 		5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAED19594E910033C061 /* suggest_selected@2x.png */; };
 		5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */; };
 		5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEF19594E910033C061 /* suggest_selected.png */; };
+		5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */; };
+		5ECC9F70197D9E86004748CF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */; };
 		5EE13A1A1950202900540C04 /* BPSuggestions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A191950202900540C04 /* BPSuggestions.m */; };
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
@@ -130,8 +132,6 @@
 		9638F88518D4826B007394AC /* BPUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88418D4826B007394AC /* BPUser.m */; };
 		9638F88818D48370007394AC /* DTO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88718D48370007394AC /* DTO.m */; };
 		9640E505192AB5AE008675BA /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 9640E504192AB5AE008675BA /* NSString+MD5.m */; };
-		9653C927197A7E5F00669EC7 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9653C926197A7E5F00669EC7 /* GoogleMaps.framework */; };
-		9653C929197A7E8000669EC7 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9653C928197A7E8000669EC7 /* GoogleMaps.bundle */; };
 		9653C92B197A80EE00669EC7 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9653C92A197A80EE00669EC7 /* FacebookSDK.framework */; };
 		967331EF194735F100A58217 /* BPActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 967331EE194735F000A58217 /* BPActivity.m */; };
 		9673321B194863AE00A58217 /* BeeepActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9673320C194863AE00A58217 /* BeeepActivity.m */; };
@@ -232,7 +232,6 @@
 		CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE08DD1919379A0700B090BE /* yellow-tabbar-timeline@2x.png */; };
 		CE0B5BB1196411960075B13B /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B5BAE196411960075B13B /* SVGeocoder.m */; };
 		CE0B5BB2196411960075B13B /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B5BB0196411960075B13B /* SVPlacemark.m */; };
-		CE0B5BB6196412450075B13B /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE0B5BB5196412450075B13B /* GoogleMaps.bundle */; };
 		CE0B5BB81964279A0075B13B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE0B5BB71964279A0075B13B /* MessageUI.framework */; };
 		CE0C880A18D0BCBC00BA548F /* option_0.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C880818D0BCBC00BA548F /* option_0.png */; };
 		CE0C880B18D0BCBC00BA548F /* option_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C880918D0BCBC00BA548F /* option_0@2x.png */; };
@@ -598,6 +597,8 @@
 		5EA7FAED19594E910033C061 /* suggest_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_selected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
+		5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		5EE13A181950202900540C04 /* BPSuggestions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSuggestions.h; sourceTree = "<group>"; };
 		5EE13A191950202900540C04 /* BPSuggestions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPSuggestions.m; sourceTree = "<group>"; };
 		5EE13A1C1951604F00540C04 /* Suggestion_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Suggestion_Object.m; sourceTree = "<group>"; };
@@ -693,8 +694,6 @@
 		9638F88718D48370007394AC /* DTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTO.m; sourceTree = "<group>"; };
 		9640E503192AB5AE008675BA /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		9640E504192AB5AE008675BA /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
-		9653C926197A7E5F00669EC7 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
-		9653C928197A7E8000669EC7 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		9653C92A197A80EE00669EC7 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		967331ED194735F000A58217 /* BPActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPActivity.h; sourceTree = "<group>"; };
 		967331EE194735F000A58217 /* BPActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPActivity.m; sourceTree = "<group>"; };
@@ -869,7 +868,6 @@
 		CE0B5BAE196411960075B13B /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
 		CE0B5BAF196411960075B13B /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
 		CE0B5BB0196411960075B13B /* SVPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPlacemark.m; sourceTree = "<group>"; };
-		CE0B5BB5196412450075B13B /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		CE0B5BB71964279A0075B13B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		CE0C880818D0BCBC00BA548F /* option_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_0.png; sourceTree = "<group>"; };
 		CE0C880918D0BCBC00BA548F /* option_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "option_0@2x.png"; sourceTree = "<group>"; };
@@ -1202,8 +1200,8 @@
 				5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */,
 				9637AA6018C0E8E000651BD8 /* libz.dylib in Frameworks */,
 				9653C92B197A80EE00669EC7 /* FacebookSDK.framework in Frameworks */,
+				5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */,
 				5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */,
-				9653C927197A7E5F00669EC7 /* GoogleMaps.framework in Frameworks */,
 				5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */,
 				5E51B8871960983700DB2E6F /* ImageIO.framework in Frameworks */,
 				9638F87818D47E4B007394AC /* GLKit.framework in Frameworks */,
@@ -2199,9 +2197,9 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */,
+				5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */,
 				9653C92A197A80EE00669EC7 /* FacebookSDK.framework */,
-				9653C928197A7E8000669EC7 /* GoogleMaps.bundle */,
-				9653C926197A7E5F00669EC7 /* GoogleMaps.framework */,
 				5E1D5648192F616900962F94 /* AddressBookUI.framework */,
 				5E1D5646192F616300962F94 /* AddressBook.framework */,
 				9638F88118D47E8B007394AC /* QuartzCore.framework */,
@@ -2762,7 +2760,7 @@
 				CEF263C018DC7F080047510D /* likes_icon_event@2x.png in Resources */,
 				5E51DF0F196A9ABB0061AE2A /* timeline-time-frame@2x.png in Resources */,
 				CEF263A418DC59A10047510D /* 15.png in Resources */,
-				9653C929197A7E8000669EC7 /* GoogleMaps.bundle in Resources */,
+				5ECC9F70197D9E86004748CF /* GoogleMaps.bundle in Resources */,
 				CE29EE4718D9CADB0001EC43 /* pin_icon@2x.png in Resources */,
 				CEF2639D18DC59A10047510D /* 8.png in Resources */,
 				CE08DD2019379A0700B090BE /* yellow-tabbar-timeline.png in Resources */,
@@ -2800,7 +2798,6 @@
 				CEFDE82718ED77BD00E500A9 /* find_friends_icon.png in Resources */,
 				CE2BA446193E23C3004D63C3 /* empty-selection0cirlce-suggestit.png in Resources */,
 				CE0C881318D0BD2300BA548F /* option_3@2x.png in Resources */,
-				CE0B5BB6196412450075B13B /* GoogleMaps.bundle in Resources */,
 				CE35D1ED18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard in Resources */,
 				CE529C5D18DB0FEE00900EB6 /* picture_5@2x.png in Resources */,
 				CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */,
@@ -3235,7 +3232,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "AC1AECE1-25B3-4E7F-9C86-0AD0B7F774EF";
+				PROVISIONING_PROFILE = "11536904-759F-4E3F-8DEF-EA57E3E0B627";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3259,7 +3256,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "AC1AECE1-25B3-4E7F-9C86-0AD0B7F774EF";
+				PROVISIONING_PROFILE = "11536904-759F-4E3F-8DEF-EA57E3E0B627";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

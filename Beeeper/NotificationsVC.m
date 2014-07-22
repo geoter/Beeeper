@@ -15,8 +15,8 @@
 @interface NotificationsVC ()
 {
     NSMutableArray *notifications;
-    NSArray *newNotifications;
-    NSArray *oldNotifications;
+    NSMutableArray *newNotifications;
+    NSMutableArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
@@ -25,33 +25,6 @@
 
 @implementation NotificationsVC
 
--(void)nextPage{
-    
-    if (!loadNextPage) {
-        return;
-    }
-    
-    loadNextPage = NO;
-    
-    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
-        
-        if (completed) {
-            [notifications addObjectsFromArray:newNotifs];
-            [notifications addObjectsFromArray:oldNotifs];
-            
-            self.noNotifsFound.hidden = notifications.count != 0;
-            
-            
-            newNotifications = [NSArray arrayWithArray:newNotifs];
-            oldNotifications = [NSArray arrayWithArray:oldNotifs];
-            
-            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-        }else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        }
-    }];
-}
 
 
 - (void)viewDidLoad
@@ -106,17 +79,40 @@
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
         [self hideLoading];
+        
         if (completed) {
             notifications = [NSMutableArray array];
             [notifications addObjectsFromArray:newNotifs];
-            [notifications addObjectsFromArray:oldNotifs];
             
-            if (newNotifs>0 || oldNotifs > 0) {
+            if (newNotifs.count + oldNotifs.count == 10) {
                 loadNextPage = YES;
             }
+            
+            //check for duplicates
+            
+            if (newNotifs.count > 0) {
+                
+                for (Activity_Object *actV in newNotifs) {
+                    NSString *newNotifMD5  = [actV.description MD5];
+                    
+                    for (Activity_Object *oldActV in oldNotifs) {
+                        NSString *oldNotifMD5  = [oldActV.description MD5];
+                        
+                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
+                            [notifications addObject:oldActV];
+                        }
+                    }
+                    
+                }
 
-            newNotifications = [NSArray arrayWithArray:newNotifs];
-            oldNotifications = [NSArray arrayWithArray:oldNotifs];
+            }
+            else{
+                [notifications addObjectsFromArray:oldNotifs];
+            }
+            
+            
+            newNotifications = [NSMutableArray arrayWithArray:newNotifs];
+            oldNotifications = [NSMutableArray arrayWithArray:oldNotifs];
 
             if (notifications.count == 0) {
                 self.noNotifsFound.hidden = NO;
@@ -125,7 +121,66 @@
                 self.noNotifsFound.hidden = YES;
             }
             
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+            NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+            NSError *error;
+            
+            NSData* notificationsData = [NSKeyedArchiver archivedDataWithRootObject:notifications];
+            
+            BOOL succeed = [notificationsData writeToFile:filePath atomically:YES];
+            
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }
+    }];
+}
+
+-(void)nextPage{
+    
+    if (!loadNextPage) {
+        return;
+    }
+    
+    loadNextPage = NO;
+    
+    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+        
+        if (completed) {
+            [notifications addObjectsFromArray:newNotifs];
+            
+            self.noNotifsFound.hidden = notifications.count != 0;
+            
+            if (newNotifs.count + oldNotifs.count == 10) {
+                loadNextPage = YES;
+            }
+            
+            if (newNotifs.count > 0) {
+                
+                for (Activity_Object *actV in newNotifs) {
+                    NSString *newNotifMD5  = [actV.description MD5];
+                    
+                    for (Activity_Object *oldActV in oldNotifs) {
+                        NSString *oldNotifMD5  = [oldActV.description MD5];
+                        
+                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
+                            [notifications addObject:oldActV];
+                        }
+                    }
+                    
+                }
+                
+            }
+            else{
+                [notifications addObjectsFromArray:oldNotifs];
+            }
+            
+            [newNotifications addObjectsFromArray:newNotifs];
+            [oldNotifications addObjectsFromArray:oldNotifs];
+            
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
         }
     }];
 }
@@ -231,9 +286,8 @@
 
    //NSString *extension;
     NSString *imageName;
-
     
-    if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
+   /* if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
     //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
     }
@@ -252,8 +306,9 @@
     else if ([wm.name isEqualToString:@"You"]){
       //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
-    }
+    }*/
     
+    imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
     
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -276,7 +331,6 @@
     CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
     
     txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 212, textViewSize.height);
-    
     
     return cell;
 }

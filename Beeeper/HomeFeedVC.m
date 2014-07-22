@@ -456,7 +456,8 @@
         }
         else{
             imageV.backgroundColor = [UIColor lightGrayColor];
-            imageV.image = [UIImage imageNamed:@"user_icon_180x180"];
+            imageV.image = nil;
+            //imageV.image = [UIImage imageNamed:@"user_icon_180x180"];
             [pendingImagesDict setObject:indexPath forKey:imageName];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
         }

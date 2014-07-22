@@ -76,7 +76,7 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
     badgeViewAppearanceProxy.backgroundColor = UIColor.clearColor;
     badgeViewAppearanceProxy.badgeAlignment = JSBadgeViewAlignmentTopRight;
     badgeViewAppearanceProxy.badgeBackgroundColor = UIColor.redColor;
-    badgeViewAppearanceProxy.badgeTextFont = [UIFont boldSystemFontOfSize:UIFont.systemFontSize];
+    badgeViewAppearanceProxy.badgeTextFont = [UIFont boldSystemFontOfSize:13];
     badgeViewAppearanceProxy.badgeTextColor = UIColor.whiteColor;
 }
 
@@ -411,7 +411,8 @@ static BOOL JSBadgeViewIsUIKitFlatMode(void)
             
             textFrame.size.height = textSize.height;
             textFrame.origin.y = rectToDraw.origin.y + ceilf((rectToDraw.size.height - textFrame.size.height) / 2.0f);
-
+            textFrame.origin.x = textFrame.origin.x +0.5;
+            
             JSBadgeViewSilenceDeprecatedMethodStart();
             [self.badgeText drawInRect:textFrame
                               withFont:self.badgeTextFont

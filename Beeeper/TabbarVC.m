@@ -70,7 +70,7 @@
         
         if (completed) {
             
-            _notifications = objcts.count;
+            _notifications = (int)objcts.count;
             
             
             if (_notifications <= 0) {

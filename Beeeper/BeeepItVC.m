@@ -103,26 +103,21 @@
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
             Friendsfeed_Object *ffo = tml;
             title = [ffo.eventFfo.eventDetailsFfo.title capitalizedString];
-            website = ffo.eventFfo.eventDetailsFfo.url;
             fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
         }
         else if ([tml isKindOfClass:[Event_Show_Object class]]){
             Event_Show_Object *activity = tml;
-            
             title = [activity.eventInfo.title capitalizedString];
-            website = activity.eventInfo.url;
             fingerprint = activity.eventInfo.fingerprint;
         }
         else if ([tml isKindOfClass:[Suggestion_Object class]]){
             Suggestion_Object *sgo = tml;
             title = [sgo.what.title capitalizedString];
-            website = sgo.what.url;
             fingerprint = sgo.what.fingerprint;
         }
         else if ([tml isKindOfClass:[Timeline_Object class]]){
             Timeline_Object *tmlO = tml;
             title = [tmlO.event.title capitalizedString];
-            website = tmlO.event.url;
             fingerprint = tmlO.event.fingerprint;
         }
         else if ([tml isKindOfClass:[Activity_Object class]]){
@@ -146,8 +141,13 @@
         else if ([tml isKindOfClass:[Event_Search class]]){
             Event_Search *eventS = tml;
             title = [eventS.title capitalizedString];
-            website = eventS.url;
             fingerprint = eventS.fingerprint;
+        }
+        
+        website = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",fingerprint];
+        
+        if (website == nil) {
+            website = @"http://www.beeeper.com";
         }
         
         [[BPActivity sharedBP]getEventFromFingerprint:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
@@ -161,9 +161,7 @@
         }];
 
         
-        if (website == nil) {
-            website = @"http://www.beeeper.com";
-        }
+       
         
         beeepTitle = title;
         //[shareText appendString:title];
@@ -469,7 +467,7 @@
     
 }
 
--(void)sendFacebook{
+-(void)sendFacebook2{
     
     [FBSession openActiveSessionWithPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
                                       defaultAudience:FBSessionDefaultAudienceOnlyMe
@@ -535,7 +533,7 @@
   
 }
 
--(void)testSendFacebookFail{
+-(void)sendFacebook{
 
 
     [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
@@ -578,34 +576,34 @@
             }
 
             
-//              // Check if the Facebook app is installed and we can present the share dialog
-//              FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
-//              params.link = [NSURL URLWithString:website];
-//              params.caption = @"a dot game";
-//              params.linkDescription = @"this is link description";
-//              params.name = @"Fuck event";
-//              NSURL *url = [NSURL URLWithString:imageURL];
-//              params.picture = url;
-//              
-//              
-//              // If the Facebook app is installed and we can present the share dialog
-//              if ([FBDialogs canPresentShareDialogWithParams:params]) {
-//                  // Present share dialog
-//                  [FBDialogs presentShareDialogWithLink:params.link
-//                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-//                                                    if(error) {
-//                                                        // An error occurred, we need to handle the error
-//                                                        // See: https://developers.facebook.com/docs/ios/errors
-//                                                        NSLog(@"Error publishing story: %@", error.description);
-//                                                    } else {
-//                                                        // Success
-//                                                        NSLog(@"result %@", results);
-//                                                    }
-//                                                }];
-//              } else {
-//                  // Present the feed dialog
-//                  NSLog(@"fdfd");
-//              }
+              // Check if the Facebook app is installed and we can present the share dialog
+              FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
+              params.link = [NSURL URLWithString:website];
+              params.caption = @"a dot game";
+              params.linkDescription = @"this is link description";
+              params.name = @"Fuck event";
+              NSURL *url = [NSURL URLWithString:imageURL];
+              params.picture = url;
+              
+              
+              // If the Facebook app is installed and we can present the share dialog
+              if ([FBDialogs canPresentShareDialogWithParams:params]) {
+                  // Present share dialog
+                  [FBDialogs presentShareDialogWithLink:params.link
+                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                    if(error) {
+                                                        // An error occurred, we need to handle the error
+                                                        // See: https://developers.facebook.com/docs/ios/errors
+                                                        NSLog(@"Error publishing story: %@", error.description);
+                                                    } else {
+                                                        // Success
+                                                        NSLog(@"result %@", results);
+                                                    }
+                                                }];
+              } else {
+                  // Present the feed dialog
+                  NSLog(@"fdfd");
+              }
 
     
           //run your user info request here

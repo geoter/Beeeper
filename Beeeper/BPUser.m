@@ -44,8 +44,7 @@
     
     NSMutableArray *newNotifications;
     NSMutableArray *oldNotifications;
-    BOOL newNotificationsFinished;
-    BOOL oldNotificationsFinished;
+
     int page_new;
     int page_old;
     
@@ -987,7 +986,7 @@ static BPUser *thisWebServices = nil;
     self.completed(NO,nil);
 }
 
-#pragma mark - Notifications
+#pragma mark - Notifications LOCAL
 
 -(void)getLocalNotifications:(completed)compbloc{
     
@@ -996,10 +995,409 @@ static BPUser *thisWebServices = nil;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
-    
-    [self parseResponseString:json WithCompletionBlock:compbloc];
+    NSMutableArray *notifs =  [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filePath]];
+    compbloc(YES,notifs);
 }
+
+#pragma mark - Notifications FIRST
+
+-(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    page_new = 0;
+    
+    newNotifications = [NSMutableArray array];
+    oldNotifications = [NSMutableArray array];
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    self.notifications_completed = compbloc;
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(newnotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(newnotificationsFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)newnotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    [newNotifications addObjectsFromArray:bs];
+    
+    if (newNotifications.count < 10) {
+        [self getOldNotificationsWithCompletionBlock:self.notifications_completed];
+        return;
+    }
+    else{
+        
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
+-(void)newnotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    if (page_new>0) {
+        page_new--;
+    }
+    
+    self.notifications_completed(NO,newNotifications,oldNotifications);
+    
+}
+
+-(void)getOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    page_old = 0;
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",(int)(10-newNotifications.count)]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)oldNotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    [oldNotifications addObjectsFromArray:bs];
+    
+    self.notifications_completed(YES,newNotifications,oldNotifications);
+}
+
+-(void)oldNotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    if (page_old>0) {
+        page_old--;
+    }
+    
+    self.notifications_completed(NO,newNotifications,oldNotifications);
+    
+}
+
+#pragma mark - Notifications NEXT Pages
+
+-(void)nextNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    if (page_new < 0) { //no new notifications
+        [self nextOldNotificationsWithCompletionBlock:compbloc];
+    }
+    else if (page_old < 0){ // now old notifs
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+    
+    page_new ++;
+    
+    newNotifications = [NSMutableArray array];
+    oldNotifications = [NSMutableArray array];
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    self.notifications_completed = compbloc;
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(nextnewnotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(nextnewnotificationsFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)nextnewnotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    [newNotifications addObjectsFromArray:bs];
+    
+    if (newNotifications.count < 10) {
+        page_new = -1;
+        [self nextOldNotificationsWithCompletionBlock:self.notifications_completed];
+    }
+    else{
+        self.notifications_completed(YES,newNotifications,oldNotifications);
+    }
+}
+
+-(void)nextnewnotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+    
+    if (page_new>0) {
+        page_new--;
+    }
+    
+    self.notifications_completed(NO,newNotifications,oldNotifications);
+    
+}
+
+
+-(void)nextOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
+    
+    page_old ++;
+    
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",(int)(10-newNotifications.count)]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
+    
+    [request setRequestMethod:@"GET"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(nextoldNotificationsReceived:)];
+    
+    [request setDidFailSelector:@selector(nextoldNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)nextoldNotificationsReceived:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    
+    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (id b in notificationsArray) {
+        
+        NSDictionary *activity_item;
+        
+        if ([b isKindOfClass:[NSString class]]) {
+            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        }
+        else{
+            activity_item = b;
+        }
+        
+        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:notification];
+    }
+    
+    [oldNotifications addObjectsFromArray:bs];
+    
+    if (oldNotifications.count < 10) {
+        page_old = -1;
+    }
+    
+    self.notifications_completed(YES,newNotifications,oldNotifications);
+}
+
+-(void)nextoldNotificationsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    if (page_old>0) {
+        page_old--;
+    }
+    
+    self.notifications_completed(NO,newNotifications,oldNotifications);
+    
+}
+
+#pragma mark - Tabbar Notifs
 
 -(void)getNewNotificationsWithCompletionBlock:(completed)compbloc{
     
@@ -1076,310 +1474,9 @@ static BPUser *thisWebServices = nil;
     compbloc(YES,bs);
 }
 
--(void)nextNotificationsWithCompletionBlock:(notifications_completed)compbloc{
-    
-    page_new ++;
-    
-    newNotifications = [NSMutableArray array];
-    oldNotifications = [NSMutableArray array];
-    newNotificationsFinished = NO;
-    oldNotificationsFinished = NO;
-    
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
-    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
-    
-    
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
-    
-    for (NSString *str in array) {
-        [URLwithVars appendFormat:@"%@",str];
-        
-        if (str != array.lastObject) {
-            [URLwithVars appendString:@"&"];
-        }
-    }
-    
-    self.notifications_completed = compbloc;
-    
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
-    
-    [request setRequestMethod:@"GET"];
-    
-    [request setTimeOutSeconds:7.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(notificationsReceived:)];
-    
-    [request setDidFailSelector:@selector(notificationsFailed:)];
-    
-    [request startAsynchronous];
-    
-    [self nextOldNotificationsWithCompletionBlock:compbloc];
-    
-}
 
 
--(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc{
-   
-    page_new = 0;
-    
-    newNotifications = [NSMutableArray array];
-    oldNotifications = [NSMutableArray array];
-    newNotificationsFinished = NO;
-    oldNotificationsFinished = NO;
-    
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
-    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
-    
-    
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page_new]];
-    
-    for (NSString *str in array) {
-        [URLwithVars appendFormat:@"%@",str];
-        
-        if (str != array.lastObject) {
-            [URLwithVars appendString:@"&"];
-        }
-    }
-
-    self.notifications_completed = compbloc;
-    
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
-    
-    [request setRequestMethod:@"GET"];
-    
-    [request setTimeOutSeconds:7.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(notificationsReceived:)];
-    
-    [request setDidFailSelector:@selector(notificationsFailed:)];
-    
-    [request startAsynchronous];
-    
-}
-
--(void)notificationsReceived:(ASIHTTPRequest *)request{
-   
-    NSString *responseString = [request responseString];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-    
-    
-    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
-    NSMutableArray *bs = [NSMutableArray array];
-    
-    for (id b in notificationsArray) {
-        
-        NSDictionary *activity_item;
-        
-        if ([b isKindOfClass:[NSString class]]) {
-            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        }
-        else{
-            activity_item = b;
-        }
-        
-        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
-        
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
-        
-        [bs addObject:notification];
-    }
-    
-    newNotificationsFinished = YES;
-    [newNotifications addObjectsFromArray:bs];
-    
-    if (notificationsArray.count < 10) {
-        [self getOldNotificationsWithCompletionBlock:self.notifications_completed];
-        return;
-    }
-    
-    if (newNotificationsFinished && oldNotificationsFinished) {
-        self.notifications_completed(YES,newNotifications,oldNotifications);    
-    }
-}
-
--(void)notificationsFailed:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    
-    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
-    
-    newNotificationsFinished = YES;
-    
-    if (page_new>0) {
-        page_new--;
-    }
-    
-    if (newNotificationsFinished && oldNotificationsFinished) {
-        self.notifications_completed(YES,newNotifications,oldNotifications);
-    }
-}
-#pragma mark - Old Notifications
-
--(void)nextOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
-    
-    page_old ++;
-    
-    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
-    
-    
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
-    
-    for (NSString *str in array) {
-        [URLwithVars appendFormat:@"%@",str];
-        
-        if (str != array.lastObject) {
-            [URLwithVars appendString:@"&"];
-        }
-    }
-    
-    
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
-    
-    [request setRequestMethod:@"GET"];
-    
-    [request setTimeOutSeconds:7.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
-    
-    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
-    
-    [request startAsynchronous];
-}
-
-
--(void)getOldNotificationsWithCompletionBlock:(notifications_completed)compbloc{
-
-    page_old = 0;
-    
-    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/showold?"];
-    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/showold"];
-    
-    
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"limit=%d",10]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",page_old]];
-    
-    for (NSString *str in array) {
-        [URLwithVars appendFormat:@"%@",str];
-        
-        if (str != array.lastObject) {
-            [URLwithVars appendString:@"&"];
-        }
-    }
-
-    
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
-    
-    [request setRequestMethod:@"GET"];
-    
-    [request setTimeOutSeconds:7.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(oldNotificationsReceived:)];
-    
-    [request setDidFailSelector:@selector(oldNotificationsFailed:)];
-    
-    [request startAsynchronous];
-}
-
--(void)oldNotificationsReceived:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
-    NSMutableArray *bs = [NSMutableArray array];
-    
-    for (id b in notificationsArray) {
-        
-        NSDictionary *activity_item;
-        
-        if ([b isKindOfClass:[NSString class]]) {
-            activity_item  = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        }
-        else{
-            activity_item = b;
-        }
-        
-        Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
-        
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
-        
-        [bs addObject:notification];
-    }
-    
-    oldNotificationsFinished = YES;
-    [oldNotifications addObjectsFromArray:bs];
-    
-    if (newNotificationsFinished && oldNotificationsFinished) {
-        self.notifications_completed(YES,newNotifications,oldNotifications);
-    }
-}
-
--(void)oldNotificationsFailed:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    oldNotificationsFinished = YES;
-    
-    if (page_old>0) {
-        page_old--;
-    }
-    
-    if (newNotificationsFinished && oldNotificationsFinished) {
-       self.notifications_completed(YES,newNotifications,oldNotifications);
-    }
-}
-
-
+#pragma mark - Download images
 
 -(void)downloadImage:(Activity_Object *)actv{
     

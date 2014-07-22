@@ -815,7 +815,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
-        return 35;
+        return 37;
     }
     else if (indexPath.section == sections.count+1 && loadNextPage){
         return 51;

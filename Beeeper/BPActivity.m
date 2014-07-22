@@ -283,6 +283,8 @@ static BPActivity *thisWebServices = nil;
         EventActivity *event = [activityObj.beeepInfoActivity.eventActivity firstObject];
         fingerprint = event.fingerprint;
     }
+    
+    fingerprint = [fingerprint stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
    
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];

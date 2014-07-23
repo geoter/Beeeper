@@ -132,7 +132,6 @@
 		9638F88518D4826B007394AC /* BPUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88418D4826B007394AC /* BPUser.m */; };
 		9638F88818D48370007394AC /* DTO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638F88718D48370007394AC /* DTO.m */; };
 		9640E505192AB5AE008675BA /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 9640E504192AB5AE008675BA /* NSString+MD5.m */; };
-		9653C92B197A80EE00669EC7 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9653C92A197A80EE00669EC7 /* FacebookSDK.framework */; };
 		967331EF194735F100A58217 /* BPActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 967331EE194735F000A58217 /* BPActivity.m */; };
 		9673321B194863AE00A58217 /* BeeepActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9673320C194863AE00A58217 /* BeeepActivity.m */; };
 		9673321C194863AE00A58217 /* BeeepInfoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9673320E194863AE00A58217 /* BeeepInfoActivity.m */; };
@@ -259,6 +258,7 @@
 		CE0C883718D0C6D400BA548F /* twitter_icon_small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883518D0C6D400BA548F /* twitter_icon_small@2x.png */; };
 		CE0C883E18D0C7B300BA548F /* plus_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883C18D0C7B300BA548F /* plus_btn.png */; };
 		CE0C883F18D0C7B300BA548F /* plus_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C883D18D0C7B300BA548F /* plus_btn@2x.png */; };
+		CE109F1E197FC04E009540E5 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE109F1D197FC04E009540E5 /* FacebookSDK.framework */; };
 		CE19FEAE195AF841006FCBC0 /* BeeepedBy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19FEAC195AF841006FCBC0 /* BeeepedBy.m */; };
 		CE19FEB1195B0E3C006FCBC0 /* Event_Search.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19FEB0195B0E3C006FCBC0 /* Event_Search.m */; };
 		CE25F9C618B66A1100D8B858 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = CE25F9C518B66A1100D8B858 /* SettingsVC.m */; };
@@ -694,7 +694,6 @@
 		9638F88718D48370007394AC /* DTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTO.m; sourceTree = "<group>"; };
 		9640E503192AB5AE008675BA /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		9640E504192AB5AE008675BA /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
-		9653C92A197A80EE00669EC7 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		967331ED194735F000A58217 /* BPActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPActivity.h; sourceTree = "<group>"; };
 		967331EE194735F000A58217 /* BPActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPActivity.m; sourceTree = "<group>"; };
 		9673320B194863AE00A58217 /* BeeepActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepActivity.h; sourceTree = "<group>"; };
@@ -895,6 +894,7 @@
 		CE0C883518D0C6D400BA548F /* twitter_icon_small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter_icon_small@2x.png"; sourceTree = "<group>"; };
 		CE0C883C18D0C7B300BA548F /* plus_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus_btn.png; sourceTree = "<group>"; };
 		CE0C883D18D0C7B300BA548F /* plus_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus_btn@2x.png"; sourceTree = "<group>"; };
+		CE109F1D197FC04E009540E5 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		CE19FEAC195AF841006FCBC0 /* BeeepedBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeepedBy.m; sourceTree = "<group>"; };
 		CE19FEAD195AF841006FCBC0 /* BeeepedBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepedBy.h; sourceTree = "<group>"; };
 		CE19FEAF195B0E3C006FCBC0 /* Event_Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event_Search.h; sourceTree = "<group>"; };
@@ -1199,7 +1199,7 @@
 				9638F88218D47E8B007394AC /* QuartzCore.framework in Frameworks */,
 				5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */,
 				9637AA6018C0E8E000651BD8 /* libz.dylib in Frameworks */,
-				9653C92B197A80EE00669EC7 /* FacebookSDK.framework in Frameworks */,
+				CE109F1E197FC04E009540E5 /* FacebookSDK.framework in Frameworks */,
 				5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */,
 				5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */,
 				5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */,
@@ -2197,9 +2197,9 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE109F1D197FC04E009540E5 /* FacebookSDK.framework */,
 				5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */,
 				5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */,
-				9653C92A197A80EE00669EC7 /* FacebookSDK.framework */,
 				5E1D5648192F616900962F94 /* AddressBookUI.framework */,
 				5E1D5646192F616300962F94 /* AddressBook.framework */,
 				9638F88118D47E8B007394AC /* QuartzCore.framework */,

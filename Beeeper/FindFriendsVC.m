@@ -116,17 +116,19 @@
 
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
-        if (completed) {
+        if (completed && selectedOption == BeeeperButton) {
             
             if (objcts.count > 0) {
+                
                 loadNextPage = YES;
                 searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                
+                NSRange range = NSMakeRange(0, 1);
+                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
             }
         }
-        NSRange range = NSMakeRange(0, 1);
-        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-    }];
+         }];
 }
 
 -(void)goBack{
@@ -145,19 +147,21 @@
             if (objcts > 0) {
                 loadNextPage = YES;
                 searchedPeople = [NSMutableArray arrayWithArray:objcts];
+
+                NSRange range = NSMakeRange(0, 1);
+                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+
             }
         }
-        
-        NSRange range = NSMakeRange(0, 1);
-        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-
     }];
 }
 
 -(void)optionSelectedFromHeader:(UIButton *)btn{
     
     [selectedPeople removeAllObjects];
+    
+    self.navigationItem.rightBarButtonItem = nil;
     
     switch (btn.tag) {
         case 0:
@@ -364,7 +368,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-   return (searchedPeople.count>0 && loadNextPage)?(searchedPeople.count+1):searchedPeople.count;
+   return (searchedPeople.count>0 && loadNextPage && selectedOption == BeeeperButton)?(searchedPeople.count+1):searchedPeople.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -564,6 +568,40 @@
              ];
             
         }
+        else{
+           [selectedPeople removeObject:user];
+            
+            [UIView animateWithDuration:0.0f
+                             animations:^
+             {
+                 tickedV.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected.png"]];
+                 
+                 [UIView animateWithDuration:0.0f
+                                  animations:^
+                  {
+                      tickedV.alpha = 1;
+                  }
+                                  completion:^(BOOL finished)
+                  {
+                  }
+                  ];
+             }
+             ];
+
+        }
+        
+        if (selectedPeople.count > 0) {
+            UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Invite"
+                                                                            style:UIBarButtonItemStyleDone target:self action:@selector(invitePressed:)];
+             self.navigationItem.rightBarButtonItem = rightButton;
+        }
+        else{
+            self.navigationItem.rightBarButtonItem = nil;
+        }
     }
     else{
         
@@ -625,6 +663,40 @@
     }
     
     
+}
+
+-(void)invitePressed:(UIBarButtonItem *)inviteButton{
+    
+    NSURL *url = [NSURL URLWithString:@"https://api.elasticemail.com/mailer/send"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
+    [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
+    [request addPostValue:@"georgeterme@gmail.com;geoter@outlook.com;sh@beeeper.com" forKey:@"to"];
+    [request addPostValue:@"Join Beeeper" forKey:@"subject"];
+    [request addPostValue:@"invitefriend" forKey:@"template"];
+    [request addPostValue:[[BPUser sharedBP].user objectForKey:@"name"] forKey:@"merge_firstname"];
+    [request addPostValue:[[BPUser sharedBP].user objectForKey:@"lastname"] forKey:@"merge_lastname"];
+    
+    [request setCompletionBlock:^{
+        NSString *responseString = [request responseString];
+        NSLog(@"Send Response: %@", responseString);
+        
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+
+    }];
+    [request setFailedBlock:^{
+        NSError *error = [request error];
+        NSLog(@"Send Error: %@", error.localizedDescription);
+        
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+        [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+        
+    }];
+    
+    [request startAsynchronous];
 }
 
 #pragma mark - UISearchDisplayController

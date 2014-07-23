@@ -34,6 +34,8 @@
     UIGestureRecognizer* cancelGesture;
     
     NSMutableArray *selectedPeople;
+    NSMutableArray *selectedEmails;
+    
     NSArray *adressBookPeople;
     NSString *searchStr;
     BOOL loadNextPage;
@@ -160,6 +162,7 @@
 -(void)optionSelectedFromHeader:(UIButton *)btn{
     
     [selectedPeople removeAllObjects];
+    selectedEmails = [NSMutableArray array];
     
     self.navigationItem.rightBarButtonItem = nil;
     
@@ -535,14 +538,41 @@
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     UIImageView *tickedV = (id)[cell viewWithTag:5];
-
+    
     if (selectedOption == MailButton) {
 
-    
         NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
         
         if ([selectedPeople indexOfObject:user] == NSNotFound) {
+            
+            NSArray *emailAdresses = [user objectForKey:@"emails"];
+            
+            if (emailAdresses.count > 1) {
+                
+                UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:@"Select email adress" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
+                for (NSString *mail in emailAdresses) {
+                    [popup addButtonWithTitle:mail];
+                }
+                
+                [popup addButtonWithTitle:@"Cancel"];
+                
+                popup.cancelButtonIndex = popup.numberOfButtons -1;
+                
+                popup.tag = 555;
+                
+                [popup.UserInfo setObject:user forKey:@"user_object"];
+                [popup.UserInfo setObject:cell forKey:@"cell"];
+                [popup showInView:self.view];
+                
+                return;
+            }
+            else{
+                [selectedEmails addObject:emailAdresses.firstObject];
+            }
+            
             [selectedPeople addObject:user];
+      
             tickedV.alpha = 0;
             tickedV.hidden = NO;
             
@@ -569,7 +599,14 @@
             
         }
         else{
-           [selectedPeople removeObject:user];
+          
+            [selectedPeople removeObject:user];
+            
+            NSArray *emailAdresses = [user objectForKey:@"emails"];
+            
+            for (NSString *email in emailAdresses) {
+                [selectedEmails removeObject:email];
+            }
             
             [UIView animateWithDuration:0.0f
                              animations:^
@@ -673,7 +710,15 @@
     [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
     [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
     [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
-    [request addPostValue:@"georgeterme@gmail.com;geoter@outlook.com;sh@beeeper.com" forKey:@"to"];
+    
+    NSMutableString *recipients = [[NSMutableString alloc]init];
+    
+    for (NSString *email in selectedEmails) {
+
+        [recipients appendFormat:@"%@;",email];
+    }
+    
+    [request addPostValue:recipients forKey:@"to"];
     [request addPostValue:@"Join Beeeper" forKey:@"subject"];
     [request addPostValue:@"invitefriend" forKey:@"template"];
     [request addPostValue:[[BPUser sharedBP].user objectForKey:@"name"] forKey:@"merge_firstname"];
@@ -692,7 +737,7 @@
         NSLog(@"Send Error: %@", error.localizedDescription);
         
         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-        [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+        [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
         
     }];
     
@@ -938,24 +983,72 @@
     
     if (buttonIndex != actionSheet.cancelButtonIndex) {
         
-        
-        NSDictionary *user = [searchedPeople objectAtIndex:actionSheetIndexPath.row];
-        
-        [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            if (completed) {
-                
-                NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
-                [newUser setObject:@"0" forKey:@"following"];
-                
-                [searchedPeople replaceObjectAtIndex:actionSheetIndexPath.row withObject:newUser];
-                NSArray* rowsToReload = [NSArray arrayWithObjects:actionSheetIndexPath, nil];
-                
-                [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
-                
-            }
+        if (actionSheet.tag == 555) { //Mail button multiple mails selection
+          
+            UITableViewCell *cell = [actionSheet.UserInfo objectForKey:@"cell"];
+            NSDictionary *user = [actionSheet.UserInfo objectForKey:@"user_object"];
+            NSArray *emailAdresses = [user objectForKey:@"emails"];
+            NSString *email = [emailAdresses objectAtIndex:buttonIndex];
+           
+            [selectedPeople addObject:user];
+            [selectedEmails addObject: email];
             
-            actionSheetIndexPath = nil;
-        }];
+            UIImageView *tickedV = (id)[cell viewWithTag:5];
+            
+            tickedV.alpha = 0;
+            tickedV.hidden = NO;
+            
+            [UIView animateWithDuration:0.0f
+                             animations:^
+             {
+                 tickedV.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+                 
+                 [UIView animateWithDuration:0.0f
+                                  animations:^
+                  {
+                      tickedV.alpha = 1;
+                  }
+                                  completion:^(BOOL finished)
+                  {
+                  }
+                  ];
+             }
+             ];
+            
+            if (selectedPeople.count > 0) {
+                UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Invite"
+                                                                                style:UIBarButtonItemStyleDone target:self action:@selector(invitePressed:)];
+                self.navigationItem.rightBarButtonItem = rightButton;
+            }
+            else{
+                self.navigationItem.rightBarButtonItem = nil;
+            }
+
+        }
+        else{
+            
+            NSDictionary *user = [searchedPeople objectAtIndex:actionSheetIndexPath.row];
+            
+            [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                if (completed) {
+                    
+                    NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
+                    [newUser setObject:@"0" forKey:@"following"];
+                    
+                    [searchedPeople replaceObjectAtIndex:actionSheetIndexPath.row withObject:newUser];
+                    NSArray* rowsToReload = [NSArray arrayWithObjects:actionSheetIndexPath, nil];
+                    
+                    [self.tableV reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    
+                }
+                
+                actionSheetIndexPath = nil;
+            }];
+        }
         
     }
 }

@@ -158,7 +158,7 @@
     UIBarButtonItem *btnShare = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"suggest_it_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(suggestIt)];
     UIBarButtonItem *btnMore = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"more_btn_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showMore)];
     
-    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnLike,btnShare, nil]];
+    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnShare,btnLike, nil]];
     
     self.scrollV.contentSize = CGSizeMake(320, 871);
     
@@ -249,9 +249,12 @@
     [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     //Website
     
-    NSString *website = suggestion.what.url;
+    NSString *website = suggestion.what.source;
     websiteURL = website;
-    self.websiteLabel.text = website;
+    
+    NSURL *url = [NSURL URLWithString:websiteURL];
+    
+    self.websiteLabel.text = [url host];
     
     //Venue name + Title
     
@@ -318,10 +321,19 @@
     }
     
     if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+        
+        //[self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+        
+
+//        [self.likesButton setImage:[UIImage imageNamed:@"liked_event"] forState:UIControlStateNormal];
     }
     
     //Tags
@@ -438,9 +450,13 @@
     
     //Website
     
-    NSString *website = ffo.eventFfo.eventDetailsFfo.url;
+    NSString *website = ffo.eventFfo.eventDetailsFfo.source;
     websiteURL = website;
-    self.websiteLabel.text = website;
+    
+    NSURL *url = [NSURL URLWithString:websiteURL];
+    
+    self.websiteLabel.text = [url host];
+
     
     //Venue name + Title
     
@@ -502,10 +518,18 @@
     }
     
     if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+        
+//        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+       likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+        
+       // [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
     }
     
     
@@ -623,9 +647,12 @@
     
     NSString *website;
 
-    website = t.event.url;
+    website = t.event.source;
     websiteURL = website;
-    self.websiteLabel.text = website;
+    
+    NSURL *url = [NSURL URLWithString:websiteURL];
+    
+    self.websiteLabel.text = [url host];
     
     //Venue name + Title
     
@@ -690,10 +717,18 @@
     }
     
     if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+        
+       // [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+        
+//        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
     }
     
     //Tags
@@ -808,9 +843,12 @@
     
     //Website
     
-    NSString *website = event.eventInfo.url;
+    NSString *website = event.eventInfo.source;
     websiteURL = website;
-    self.websiteLabel.text = website;
+    
+    NSURL *url = [NSURL URLWithString:websiteURL];
+    
+    self.websiteLabel.text = [url host];
     
     //Venue name + Title
     
@@ -863,7 +901,7 @@
 
     likesLbl.text = [NSString stringWithFormat:@"%d",eventSearch.likes.count];
     commentsLbl.text = [NSString stringWithFormat:@"%d",eventSearch.comments.count];
-    NSArray *beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     beeepsLbl.text = [NSString stringWithFormat:@"%d",beeepers.count];
     
     likers =[NSMutableArray arrayWithArray:eventSearch.likes];
@@ -873,10 +911,17 @@
     }
     
     if (isLiker) {
-        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+        
+        //[self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
-        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        
+        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+        
+//        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
     }
     
     
@@ -999,9 +1044,12 @@
     
     //Website
     
-    NSString *website = event.eventInfo.url;
+    NSString *website = event.eventInfo.source;
     websiteURL = website;
-    self.websiteLabel.text = website;
+    
+    NSURL *url = [NSURL URLWithString:websiteURL];
+    
+    self.websiteLabel.text = [url host];
     
     //Venue name + Title
     
@@ -1070,10 +1118,14 @@
         }
         
         if (isLiker) {
-            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+            UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+            likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+//            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
         }
         else{
-            [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+            UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+            likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+            //          [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
         }
         
         
@@ -1254,7 +1306,11 @@
                     isLiker = NO;
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+        //            [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Unliked"];
@@ -1273,7 +1329,10 @@
                     isLiker = NO;
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                 //   [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Unliked"];
@@ -1298,7 +1357,10 @@
                         isLiker = NO;
                         [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                         likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                        
+                        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                        likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                         
                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                         [SVProgressHUD showSuccessWithStatus:@"Unliked"];
@@ -1331,8 +1393,11 @@
                     isLiker = NO;
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+//                    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                  
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Unliked"];
 
@@ -1355,7 +1420,10 @@
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+//                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Liked!"];
@@ -1381,8 +1449,10 @@
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+  //                  [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
 
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Liked!"];
@@ -1407,7 +1477,10 @@
                         isLiker = YES;
                         [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                         likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
-                        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                      
+                        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                        likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                         
                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                         [SVProgressHUD showSuccessWithStatus:@"Liked!"];
@@ -1440,7 +1513,10 @@
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
-                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    //[self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Liked!"];

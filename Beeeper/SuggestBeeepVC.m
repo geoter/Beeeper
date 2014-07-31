@@ -87,7 +87,7 @@
         filteredPeople = people;
     }
     else{
-        filteredPeople = [people filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name BEGINSWITH[cd] %@)", typedStr]];
+        filteredPeople = [people filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name CONTAINS[cd] %@) OR (lastname CONTAINS[cd] %@)", typedStr,typedStr]];
     }
     
     

@@ -991,12 +991,21 @@ static BPUser *thisWebServices = nil;
 -(void)getLocalNotifications:(completed)compbloc{
     
     self.localNotificationsCompleted= compbloc;
+   
+    @try {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSMutableArray *notifs =  [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filePath]];
+        compbloc(YES,notifs);
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSMutableArray *notifs =  [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filePath]];
-    compbloc(YES,notifs);
+    }
+    @catch (NSException *exception) {
+        compbloc(NO,nil);
+    }
+        @finally {
+        
+    }
 }
 
 #pragma mark - Notifications FIRST

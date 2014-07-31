@@ -15,4 +15,6 @@
 
 @property (nonatomic,strong)  NSMutableArray *comments;
 @property (nonatomic,strong) id event_beeep_object;
+@property (nonatomic,assign) BOOL showKeyboard;
+
 @end

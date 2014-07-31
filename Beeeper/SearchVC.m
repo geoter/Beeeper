@@ -28,6 +28,7 @@
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
+    UITapGestureRecognizer *tapG;
 }
 @end
 
@@ -171,7 +172,6 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    [self.searchTextField resignFirstResponder];
     
     NSString *tag = [filteredResults objectAtIndex:indexPath.row];
     
@@ -215,6 +215,12 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     
+    if (tapG == nil) {
+        tapG = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(releaseSearch:)];
+    }
+    
+    [self.tableV addGestureRecognizer:tapG];
+    
     [UIView animateWithDuration:0.2f
                      animations:^
      {
@@ -235,6 +241,9 @@
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    [self.tableV removeGestureRecognizer:tapG];
+    
     [textField resignFirstResponder];
     return YES;
 }
@@ -296,6 +305,7 @@
 
 - (IBAction)releaseSearch:(id)sender {
     [self.searchTextField resignFirstResponder];
+    [self.tableV removeGestureRecognizer:tapG];
 }
 
 +(void)showInVC:(UIViewController *)vc{

@@ -77,6 +77,10 @@
     [self.view addSubview:container];
     
     [self.tableV reloadData];
+    
+    if (self.showKeyboard) {
+        [self.composeBarView becomeFirstResponder];
+    }
    // self.tableV.alpha = 1;
 }
 

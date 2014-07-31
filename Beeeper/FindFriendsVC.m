@@ -810,7 +810,7 @@
         ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
-        [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
+        [request addPostValue:@"Beeeper" forKey:@"from"];
         
         NSMutableString *recipients = [[NSMutableString alloc]init];
         
@@ -1011,6 +1011,9 @@
                         if (objcts.count > 0) {
                             searchedPeople = [NSMutableArray arrayWithArray:objcts];
                         }
+                        else{
+                            searchedPeople = [NSMutableArray array];
+                        }
                     }
                     
                     NSRange range = NSMakeRange(0, 1);
@@ -1044,7 +1047,7 @@
      else if (selectedOption == MailButton){
        
          if (searchText.length > 0) {
-             searchedPeople = [NSMutableArray arrayWithArray:[adressBookPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name BEGINSWITH[cd] %@)", searchText]]];
+             searchedPeople = [NSMutableArray arrayWithArray:[adressBookPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@) OR (ANY emails contains[cd] %@)", searchText,searchText]]];
          }
          else{
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
@@ -1055,7 +1058,7 @@
      else if (selectedOption == FacebookButton){
          
          if (searchText.length > 0) {
-             searchedPeople = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name BEGINSWITH[cd] %@)", searchText]]];
+             searchedPeople = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
          }
          else{
              searchedPeople = [NSMutableArray arrayWithArray:fbPeople];

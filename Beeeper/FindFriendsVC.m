@@ -103,6 +103,7 @@
             [btn setSelected:YES];
         }
     }
+    
     searchBar.frame = CGRectMake(0, 80, searchBar.frame.size.width, searchBar.frame.size.height);
     
     [headerV addSubview:searchBar];
@@ -125,7 +126,7 @@
         }
         NSRange range = NSMakeRange(0, 1);
         NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
     }];
 }
 
@@ -588,6 +589,7 @@
     }
 }
 
+
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
     header.backgroundColor = [UIColor clearColor];
@@ -655,6 +657,11 @@
 }
 
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    if ([searchText length] == 0) {
+        [self searchBarCancelButtonClicked:searchBar];
+    }
+}
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar{
     
@@ -709,7 +716,7 @@
             
             NSRange range = NSMakeRange(0, 1);
             NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
     
         }];
      }

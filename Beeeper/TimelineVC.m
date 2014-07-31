@@ -694,9 +694,9 @@
         
         UILabel *reminderLabel = (id)[cell viewWithTag:-6];
         
-        reminderLabel.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1].CGColor;
-        reminderLabel.layer.borderWidth = 1;
-        reminderLabel.layer.cornerRadius  = 2;
+//        reminderLabel.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1].CGColor;
+//        reminderLabel.layer.borderWidth = 1;
+//        reminderLabel.layer.cornerRadius  = 2;
         
         UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
         UIButton *beepItbutton = (id)[cell viewWithTag:-8];

@@ -23,7 +23,7 @@
 
 @interface BeeepItVC ()
 {
-    NSString *beepTime;
+    NSString *beeepTime;
     int beepTimeSeconds;
     NSMutableString *shareText;
     NSString *imageURL;
@@ -335,10 +335,10 @@
 }
 
 -(void)setBeeepTime:(NSNotification *)notif{
-    beepTime = [notif.userInfo objectForKey:@"Beeep Time"];
+    beeepTime = [notif.userInfo objectForKey:@"Beeep Time"];
     beepTimeSeconds = [[notif.userInfo objectForKey:@"Seconds"]intValue];
     
-    [self.beeepTimeButton setTitle:beepTime forState:UIControlStateNormal];
+    [self.beeepTimeButton setTitle:beeepTime forState:UIControlStateNormal];
 }
 
 - (void)didReceiveMemoryWarning
@@ -579,9 +579,6 @@
               // Check if the Facebook app is installed and we can present the share dialog
               FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
               params.link = [NSURL URLWithString:website];
-              params.caption = @"a dot game";
-              params.linkDescription = @"this is link description";
-              params.name = @"Fuck event";
               NSURL *url = [NSURL URLWithString:imageURL];
               params.picture = url;
               
@@ -716,11 +713,34 @@
     if (timestamp > 0 && fingerPrint != nil) { //Create beeep
         [[BPCreate sharedBP]beeepCreate:fingerPrint beeep_time:beepTime completionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
+                
+                UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+                localNotification.fireDate = [NSDate dateWithTimeIntervalSince1970:beep_time];
+                NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle uppercaseString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
+                localNotification.alertBody = alertBody;
+                localNotification.timeZone = [NSTimeZone defaultTimeZone];
+                localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                
+                [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                
                 [self close:nil];
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                
+                if ([objs isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *error  = (NSDictionary *)objs;
+                    NSString *message = [error objectForKey:@"message"];
+                    NSString *info = [error objectForKey:@"info"];
+                    
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:message message:info delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+
+                }
+                else{
+                
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                }
             }
         }];
     }

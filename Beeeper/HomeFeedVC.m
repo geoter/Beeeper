@@ -336,11 +336,21 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if (events != nil) {
-        
-        UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
     
-
+        UICollectionViewCell *cell;
+        
         Event_Search *event = [events objectAtIndex:indexPath.row];
+        
+        double now_time = [[NSDate date]timeIntervalSince1970];
+        double event_timestamp = event.timestamp;
+        
+        if (now_time > event_timestamp) {
+            cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLiteDisabled" forIndexPath:indexPath];
+        }
+        else{
+            cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
+        }
+
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
@@ -364,17 +374,17 @@
         UILabel *titleLbl = (id)[containerV viewWithTag:4];
         
         monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-        monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+       // monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
         monthLbl.text = [month uppercaseString];
         
         dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
         dayLbl.text = daynumber;
-        dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+       // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         
         //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
         
         titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-        titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+       // titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         
         //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
         //    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
@@ -414,6 +424,10 @@
             [area sizeToFit];
         }
 
+        if (area.frame.size.width > 130  && now_time > event_timestamp) {
+            [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
+        }
+        
         area.center = CGPointMake(containerV.center.x, area.center.y);
         area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
         
@@ -467,30 +481,25 @@
         //disable Beeep button if past event
         
         UIButton *beeepBtn = (id)[containerV viewWithTag:99];
-        double now_time = [[NSDate date]timeIntervalSince1970];
-        double event_timestamp = event.timestamp;
-        
-        if (now_time > event_timestamp) {
-            
-            if (![cell viewWithTag:3455465]) {
-                UIView *v = [[UIView alloc]initWithFrame:cell.bounds];
-                v.backgroundColor = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:244/255.0 alpha:0.4];
-                v.tag = 3455465;
-                [cell addSubview:v];
-            }
-        }
-        else{
-            [[cell viewWithTag:3455465]removeFromSuperview];
-        }
-
         
         return cell;
     }
     else{
-            UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfall" forIndexPath:indexPath];
+        
+            UICollectionViewCell *cell;
         
             Friendsfeed_Object *event = [beeeps objectAtIndex:indexPath.row];
+        
+            double now_time = [[NSDate date]timeIntervalSince1970];
+            double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
             
+            if (now_time > event_timestamp) {
+               cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallDisabled" forIndexPath:indexPath];
+            }
+            else{
+               cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfall" forIndexPath:indexPath];
+            }
+        
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
             
@@ -513,17 +522,17 @@
             UILabel *titleLbl = (id)[containerV viewWithTag:4];
             
             monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-            monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+            //monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
             monthLbl.text = [month uppercaseString];
             
             dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
             dayLbl.text = daynumber;
-            dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+           // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
             
             //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
 
             titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-            titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+          //  titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
             
         //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
         //    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
@@ -562,7 +571,11 @@
             [area sizeToFit];
             area.center = CGPointMake(containerV.center.x, area.center.y);
             area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
-            
+        
+            if (area.frame.size.width > 130  && now_time > event_timestamp) {
+                [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
+            }
+        
             UILabel *areaIcon = (id)[containerV viewWithTag:-1];
             areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
             
@@ -644,22 +657,7 @@
             //disable Beeep button if past event
             
             UIButton *beeepBtn = (id)[containerV viewWithTag:99];
-            double now_time = [[NSDate date]timeIntervalSince1970];
-            double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
-            
-            if (now_time > event_timestamp) {
-                
-                if (![cell viewWithTag:3455465]) {
-                    UIView *v = [[UIView alloc]initWithFrame:cell.bounds];
-                    v.backgroundColor = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:244/255.0 alpha:0.4];
-                    v.tag = 3455465;
-                    [cell addSubview:v];
-                }
-            }
-            else{
-                [[cell viewWithTag:3455465]removeFromSuperview];
-            }
-
+        
         
             return cell;
     }
@@ -727,7 +725,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, (selectedIndex == 1)?298:270);
+    return CGSizeMake(148, (selectedIndex == 1)?307:270);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //
@@ -866,6 +864,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [beeeps objectAtIndex:path.row];
     viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -943,7 +942,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (NSInteger) numberOfMenuItems
 {
-    return 3;
+    return 4;
 }
 
 -(UIImage*) imageForItemAtIndex:(NSInteger)index
@@ -958,6 +957,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             break;
         case 2:
             imageName = @"Suggest_popup_unpressed";
+            break;
+        case 3:
+            imageName = @"Comment_popup_unpressed";
             break;
             
         default:
@@ -980,6 +982,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             break;
         case 2:
             [self suggestEventAtIndexPath:indexPath];
+            break;
+        case 3:
+            [self commentEventAtIndexPath:indexPath];
             break;
             
         default:
@@ -1111,6 +1116,19 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         }
     }
     
+}
+
+-(void)commentEventAtIndexPath:(NSIndexPath *)indexPath{
+    
+    Friendsfeed_Object*b = [beeeps objectAtIndex:indexPath.row];
+    Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
+    
+    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
+    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.showKeyboard = YES;
+    
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{

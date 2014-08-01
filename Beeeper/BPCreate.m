@@ -77,7 +77,19 @@ static BPCreate *thisWebServices = nil;
                 self.completed(YES,nil);
         }
         else{
-            self.completed(NO,nil);
+            
+            NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            NSArray *errors = [dict objectForKey:@"errors"];
+            
+            NSDictionary *error = [errors firstObject];
+            
+            if (error != nil) {
+                self.completed(NO,error);
+            }
+
+            
+            
         }
     }
     @catch (NSException *exception) {

@@ -337,20 +337,12 @@
     
     if (events != nil) {
     
-        UICollectionViewCell *cell;
+        UICollectionViewCell * cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
         
         Event_Search *event = [events objectAtIndex:indexPath.row];
         
         double now_time = [[NSDate date]timeIntervalSince1970];
         double event_timestamp = event.timestamp;
-        
-        if (now_time > event_timestamp) {
-            cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLiteDisabled" forIndexPath:indexPath];
-        }
-        else{
-            cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
-        }
-
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
@@ -581,6 +573,7 @@
             
             //now move are to center
             area.textAlignment = NSTextAlignmentCenter;
+    
             
             UILabel *favorites = (id)[containerV viewWithTag:-3];
             UILabel *comments = (id)[containerV viewWithTag:-4];
@@ -598,8 +591,12 @@
             favorites.hidden = (favorites.text.intValue == 0);
             comments.hidden = (comments.text.intValue == 0);
             beeeps.hidden = (beeeps.text.intValue == 0);
-
-            
+        
+            float centerOfPassedIcon = (favorites.frame.origin.y - area.frame.origin.y-area.frame.size.height)/2;
+        
+            UIImageView *passedIcon = (UIImageView *)[cell viewWithTag:67];
+        
+            passedIcon.center = CGPointMake(passedIcon.center.x, favorites.frame.origin.y - centerOfPassedIcon);
            // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
             NSString *imageName = [NSString stringWithFormat:@"%@",[event.eventFfo.eventDetailsFfo.imageUrl MD5]];
@@ -995,6 +992,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
+    
+   UICollectionViewCell *cell= [self.collectionV cellForItemAtIndexPath:indexpath];
+
+    if ([cell.reuseIdentifier isEqualToString:@"EventCellWaterfallDisabled"]) {
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     

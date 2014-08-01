@@ -44,6 +44,8 @@
     NSString *websiteURL;
     NSMutableString *shareText;
     NSMutableArray* rowsToReload;
+    
+    BOOL passedEvent;
 }
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -288,7 +290,7 @@
     }
     
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
-    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 15, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
     
@@ -364,6 +366,18 @@
     }
     @finally {
         
+    }
+    
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = suggestion.what.timestamp;
+
+    if (now_time > event_timestamp) {
+        passedEvent = YES;
+        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
     }
     
     //Image
@@ -488,7 +502,7 @@
     }
     
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
-    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 15, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
     UIView *headerV = self.tableV.tableHeaderView;
@@ -565,6 +579,18 @@
     }
     @finally {
         
+    }
+    
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = ffo.eventFfo.eventDetailsFfo.timestamp;
+    
+    if (now_time > event_timestamp) {
+        passedEvent = YES;
+        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
     }
     
     //Image
@@ -684,7 +710,7 @@
     }
     
     venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5+(int)(venueLbl.frame.size.height/2));
-    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+    self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 15, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
     self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
     
@@ -729,6 +755,18 @@
         likeBtn.image = [UIImage imageNamed:@"like_event.png"];
         
 //        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+    }
+    
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = t.event.timestamp;
+    
+    if (now_time > event_timestamp) {
+        passedEvent = YES;
+        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
     }
     
     //Tags
@@ -884,7 +922,7 @@
         
         venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
                                       +(int)(venueLbl.frame.size.height/2));
-        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 15, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
         self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
         
     }
@@ -929,7 +967,18 @@
     self.commentsLabel.hidden = (commentsLbl.text.length == 0);
     self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
         
-
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = event.eventInfo.timestamp;
+    
+    if (now_time > event_timestamp) {
+        passedEvent = YES;
+        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+    }
+    
     //Tags
     
     NSMutableString *formattedTags = [[NSMutableString alloc]init];
@@ -1084,7 +1133,7 @@
         
         venueLbl.center = CGPointMake(venueLbl.superview.center.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height+5
                                       +(int)(venueLbl.frame.size.height/2));
-        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 18, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+        self.venueIcon.frame = CGRectMake(venueLbl.frame.origin.x - 15, venueLbl.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
         self.venueIcon.center = CGPointMake(self.venueIcon.center.x, self.venueLabel.center.y);
 
     }
@@ -1163,6 +1212,18 @@
     }
     @finally {
         
+    }
+    
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = event.eventInfo.timestamp;
+    
+    if (now_time > event_timestamp) {
+        passedEvent = YES;
+        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
     }
     
     //Image
@@ -1290,7 +1351,7 @@
 }
 
 -(void)likeIt{
-    Timeline_Object *t = tml; //one of those two will be used
+
     Friendsfeed_Object *ffo = tml;
     
     UIView *headerV = self.tableV.tableHeaderView;
@@ -1407,6 +1468,32 @@
                     [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
                 }
                 
+            }];
+
+        }
+        else if ([tml isKindOfClass:[Timeline_Object class]]){
+            
+            Timeline_Object *t = tml; //one of those two will be used
+            
+            NSString *fingerprint = t.event.fingerprint;
+            
+            [[EventWS sharedBP]unlikeEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                if (completed) {
+                    isLiker = NO;
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
             }];
 
         }
@@ -1529,6 +1616,34 @@
             }];
             
         }
+        else if ([tml isKindOfClass:[Timeline_Object class]]){
+            
+            Timeline_Object *t = tml; //one of those two will be used
+            
+            NSString *fingerprint = t.event.fingerprint;
+            
+            [[EventWS sharedBP]likeEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                if (completed) {
+                    isLiker = NO;
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+            }];
+            
+        }
+
+        
 
         
     }
@@ -1626,6 +1741,20 @@
 
 - (IBAction)beeepItPressed:(id)sender {
    
+    if (passedEvent) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    if ([beeepers indexOfObject:my_id] != NSNotFound) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     
     if([tml isKindOfClass:[Friendsfeed_Object class]] || [tml isKindOfClass:[Timeline_Object class]] || [tml isKindOfClass:[Suggestion_Object class]]){

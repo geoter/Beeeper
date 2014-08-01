@@ -35,6 +35,8 @@ static BPCreate *thisWebServices = nil;
     return nil;
 }
 
+
+
 -(void)beeepCreate:(NSString *)fingerprint beeep_time:(NSString *)beeep_time completionBlock:(completed)compbloc{
    
     self.completed = compbloc;
@@ -74,7 +76,10 @@ static BPCreate *thisWebServices = nil;
     @try {
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         if ([dict objectForKey:@"beeep"]) {
-                self.completed(YES,nil);
+            
+            //invalidate push
+            
+            self.completed(YES,nil);
         }
         else{
             

@@ -41,8 +41,8 @@
     int segmentIndex;
     BOOL loading;
     BOOL loadNextPage;
-    NSMutableArray *sections;
-    NSMutableDictionary *suggestionsPerSection;
+  //  NSMutableArray *sections;
+  //  NSMutableDictionary *suggestionsPerSection;
         NSMutableArray *rowsToReload;
 }
 @end
@@ -67,11 +67,14 @@
             
             if (objs.count != 0) {
                 [beeeps addObjectsFromArray:objs];
-                loadNextPage = YES;
-                
-                [self groupBeeepsByMonth];
+
+                if (objs.count == 10) {
+                    loadNextPage = YES;
+                }
+
+                [self.tableV reloadData];
+//                [self groupBeeepsByMonth];
             }
-            [self.tableV reloadData];
         }
     }];
 }
@@ -133,11 +136,18 @@
                     
                     beeeps = [NSMutableArray arrayWithArray:objs];
                     
-                    loadNextPage = YES;
-                    suggestionsPerSection = [NSMutableDictionary dictionary];
-                    sections = [NSMutableArray array];
+                    if (beeeps.count == 10) {
+                        loadNextPage = YES;
+                    }
+                    else{
+                        loadNextPage = NO;
+                    }
+                    
+                  //  suggestionsPerSection = [NSMutableDictionary dictionary];
+                   // sections = [NSMutableArray array];
          
-                    [self groupBeeepsByMonth];
+                    [self.tableV reloadData];
+                 //   [self groupBeeepsByMonth];
                 }
             }];
             
@@ -219,11 +229,12 @@
                     loading = NO;
                 }
                 
-                suggestionsPerSection = [NSMutableDictionary dictionary];
-                sections = [NSMutableArray array];
+               // suggestionsPerSection = [NSMutableDictionary dictionary];
+               // sections = [NSMutableArray array];
                 
+                [self.tableV reloadData];
                 
-                [self groupBeeepsByMonth];
+//                [self groupBeeepsByMonth];
                 
             }
         }];
@@ -613,26 +624,21 @@
 
 #pragma mark - Table view data source
 
+#pragma mark - Table view data source
+
+#pragma mark - Table view data source
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return (sections.count>0 && loadNextPage)?(sections.count+2):sections.count+1;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-
-    if (loadNextPage && section == sections.count+1) {
-        return 1;
-    }
     
-    if (section == 0) {
-        return 1;
-    }
-  
-    NSMutableArray *filtered_activities = [self timelineForSection:section];
-    return filtered_activities.count;
+    return (loadNextPage)?beeeps.count+2:beeeps.count+1;
 }
 
 
@@ -641,7 +647,7 @@
     static NSString *CellIdentifier;
     UITableViewCell *cell;
     
-    if (loadNextPage && indexPath.section == sections.count+1) {
+    if (loadNextPage && indexPath.row == beeeps.count + 1) {
         
         CellIdentifier = @"LoadMoreCell";
         
@@ -649,23 +655,23 @@
         
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
-
+        
         [self nextPage];
         
         return cell;
         
     }
     
-    if (indexPath.section == 0) {
-
+    if (indexPath.row == 0) {
+        
         CellIdentifier = @"ToggleCell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
-        UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 35)];
-        headerView.backgroundColor = [UIColor clearColor];
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(306, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1]];
-
+        UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
+        
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1]];
+        
         segment.delegate = self;
         [headerView addSubview:segment];
         segment.center = CGPointMake(160, 16);
@@ -675,8 +681,6 @@
         CellIdentifier =  @"Cell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-        
         cell.backgroundColor = [UIColor clearColor];
         
         UILabel *mLbl = (id)[cell viewWithTag:1];
@@ -693,16 +697,25 @@
         //    [cell viewWithTag:66].layer.borderWidth = 0.5;
         
         UILabel *reminderLabel = (id)[cell viewWithTag:-6];
-        
-//        reminderLabel.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1].CGColor;
-//        reminderLabel.layer.borderWidth = 1;
-//        reminderLabel.layer.cornerRadius  = 2;
-        
         UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
         UIButton *beepItbutton = (id)[cell viewWithTag:-8];
         
+        Timeline_Object *b = [beeeps objectAtIndex:indexPath.row-1];
+        
         if (self.mode != Timeline_My) {
+
             beepItbutton.hidden = NO;
+            
+            double now_time = [[NSDate date]timeIntervalSince1970];
+            double event_timestamp = b.event.timestamp;
+            
+            if (now_time > event_timestamp) {
+               [beepItbutton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+            }
+            else{
+                [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
+            }
+            
             reminderIcon.hidden = YES;
             reminderLabel.hidden = YES;
         }
@@ -712,18 +725,7 @@
             reminderLabel.hidden = NO;
         }
         
-        //reminderLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-        
-        
-        NSMutableArray *filtered_activities = [self timelineForSection:indexPath.section];
-        
-        Timeline_Object *b = [filtered_activities objectAtIndex:indexPath.row];
-
         titleLbl.text = [b.event.title capitalizedString];
-        [titleLbl sizeToFitHeight];
-        
-        UIView *bottomV = (id)[cell viewWithTag:666];
-        bottomV.frame = CGRectMake(106, titleLbl.frame.origin.y+titleLbl.frame.size.height, 145, 51);
         
         //EVENT DATE
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -749,11 +751,10 @@
         monthLbl.text = [month uppercaseString];
         monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
-       float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
+        float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
         
         NSString *alert_time = [self dailyLanguage:timestamp];
-        reminderLabel.text = [alert_time stringByAppendingString:@""];
-    
+        reminderLabel.text = alert_time;
         //Venue name
         
         UILabel *venueLbl = (id)[cell viewWithTag:5];
@@ -763,16 +764,12 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation uppercaseString];
+        venueLbl.text = loc.venueStation;
         
         //Likes,Beeeps,Comments
         UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
         UILabel *likesLbl = (id)[cell viewWithTag:-3];
         UILabel *commentsLbl = (id)[cell viewWithTag:-4];
-        
-        likesLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-        commentsLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-        beeepsLbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
         
         likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
         commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
@@ -806,18 +803,19 @@
             [pendingImagesDict setObject:indexPath forKey:imageName];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
         }
-
+        
     }
+    
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 0) {
-        return 37;
+    if (indexPath.row == 0) {
+        return 40;
     }
-    else if (indexPath.section == sections.count+1 && loadNextPage){
+    else if (indexPath.row == beeeps.count+1 && loadNextPage){
         return 51;
     }
     else{
@@ -833,18 +831,14 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.section == 0) {
+    if (indexPath.row == 0) {
         return;
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
-    NSMutableArray *filtered_activities = [self timelineForSection:indexPath.section];
-    
-    Timeline_Object *b = [filtered_activities objectAtIndex:indexPath.row];
-
-    viewController.tml = b;
+    viewController.tml = [beeeps objectAtIndex:indexPath.row-1];
     
     [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -856,111 +850,29 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
-    if(sections.count > 0 && section != 0){
-        return 7;
-    }
-    else if (section == 0 && sections.count >0){
-        return 1;
+    if(beeeps.count > 0 && !loading){
+        return 0;
     }
     else{
-        return 51;
+        return 50;
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
+    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,320.0,50.0)];
+    footer.backgroundColor =[UIColor clearColor];
+    UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
+    lbl.text = (loading)?@"Loading...":@"There are no beeeps available.";
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
+    lbl.textAlignment = NSTextAlignmentCenter;
+    [footer addSubview:lbl];
     
-    if(sections.count > 0 && section != 0){
-        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
-        footer.backgroundColor = [UIColor clearColor];
-        return footer;
-    }
-    else if (section == 0 && sections.count != 0){
-        
-        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
-        footer.backgroundColor = [UIColor clearColor];
-        return footer;
-    }
-    else{
-        UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,320.0,50.0)];
-        footer.backgroundColor =[UIColor clearColor];
-        UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
-        lbl.text = (loading)?@"Loading...":@"There are no beeeps available.";
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-        lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
-        lbl.textAlignment = NSTextAlignmentCenter;
-        [footer addSubview:lbl];
-        
-        return footer;
-
-    }
-
+    return footer;
+    
     
 }
-
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    
-    if(section == sections.count+1) {
-        return 1;
-    }
-    else if(section == 0){
-        return 1;
-    }
-    else{
-        return 47;
-    }
-    
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
-    if(section == sections.count+1) {
-        
-        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
-        header.backgroundColor = [UIColor clearColor];
-        return header;
-    }
-    
-    if(section == 0){
-        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
-        header.backgroundColor = [UIColor clearColor];
-        return header;
-
-    }
-    
-    NSString *signature = [sections objectAtIndex:section-1];
-    NSArray *components = [signature componentsSeparatedByString:@"#"];
-    NSString *month = [components objectAtIndex:0];
-    NSString *daynumber = [components objectAtIndex:1];
-    
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
-    header.backgroundColor = [UIColor clearColor];
-    
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, 306, 47)];
-    [backV setBackgroundColor:[UIColor whiteColor]];
-    [header addSubview:backV];
-    
-    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
-    mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-    mlbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
-    mlbl.text = [month uppercaseString];
-    mlbl.textAlignment = NSTextAlignmentCenter;
-    [backV addSubview:mlbl];
-    
-    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
-    dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
-    dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
-    dlbl.text = daynumber;
-    dlbl.textAlignment = NSTextAlignmentCenter;
-    [backV addSubview:dlbl];
-    
-    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
-    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
-    [header addSubview:headerBottomLine];
-    
-    return header;
-}
-
 
 
 -(void)imageDownloadFinished:(NSNotification *)notif{
@@ -1021,12 +933,25 @@
 
 -(IBAction)beeepItPressed:(UIButton *)sender{
     
+    if(segmentIndex == 1){
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSMutableArray *filtered_activities = [self timelineForSection:path.section];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row];
+   
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
-    Timeline_Object *b = [filtered_activities objectAtIndex:path.row];
+    if ([b.beeepersIds indexOfObject:my_id] != NSNotFound) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     viewController.tml = b;
@@ -1041,9 +966,7 @@
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSMutableArray *filtered_activities = [self timelineForSection:path.section];
-    
-    Timeline_Object *b = [filtered_activities objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row];
 
 
     NSArray *likes = b.beeep.beeepInfo.likes;
@@ -1067,9 +990,7 @@
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSMutableArray *filtered_activities = [self timelineForSection:path.section];
-    
-    Timeline_Object *b = [filtered_activities objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row];
    
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = b;
@@ -1081,10 +1002,9 @@
    
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
+
     
-    NSMutableArray *filtered_activities = [self timelineForSection:path.section];
-    
-    Timeline_Object *b = [filtered_activities objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row];
     
     FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
@@ -1282,15 +1202,15 @@
     NSString* overdueMessage;
     
     if (years>0){
-        overdueMessage = [NSString stringWithFormat:@"%dy", (years)];
+        overdueMessage = [NSString stringWithFormat:@"%d years before", (years)];
     }else if (months>0){
-        overdueMessage = [NSString stringWithFormat:@"%dmo", (months)];
+        overdueMessage = [NSString stringWithFormat:@"%d months before", (months)];
     }else if (days>0){
-        overdueMessage = [NSString stringWithFormat:@"%dd", (days)];
+        overdueMessage = [NSString stringWithFormat:@"%d days before", (days)];
     }else if (hours>0){
-        overdueMessage = [NSString stringWithFormat:@"%dh", (hours)];
+        overdueMessage = [NSString stringWithFormat:@"%d hours before", (hours)];
     }else if (minutes>0){
-        overdueMessage = [NSString stringWithFormat:@"%dm", (minutes)];
+        overdueMessage = [NSString stringWithFormat:@"%d minutes before", (minutes)];
     }else if (overdueTimeInterval<60){
         overdueMessage = [NSString stringWithFormat:@"On Time"];
     }
@@ -1301,7 +1221,7 @@
 
 #pragma mark - Group by date
 
--(void)groupBeeepsByMonth{
+/*-(void)groupBeeepsByMonth{
     @try {
 
         [beeeps sortUsingComparator:^NSComparisonResult(Timeline_Object *obj1, Timeline_Object *obj2) {
@@ -1392,4 +1312,6 @@
         return filtered_activities;
     }
 }
+ 
+ */
 @end

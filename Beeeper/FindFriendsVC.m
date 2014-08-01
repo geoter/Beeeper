@@ -133,10 +133,7 @@
                 [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
             }
         }
-        NSRange range = NSMakeRange(0, 1);
-        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
-    }];
+         }];
 }
 
 -(void)goBack{
@@ -922,11 +919,6 @@
 }
 
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    if ([searchText length] == 0) {
-        [self searchBarCancelButtonClicked:searchBar];
-    }
-}
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar{
     
@@ -974,6 +966,7 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
+    
     if ([searchText length] == 0) {
         if (selectedOption == MailButton){
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
@@ -1052,11 +1045,7 @@
             }];
 
             
-            NSRange range = NSMakeRange(0, 1);
-            NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-            [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
-    
-        }];
+        }
      }
      else if (selectedOption == MailButton){
        

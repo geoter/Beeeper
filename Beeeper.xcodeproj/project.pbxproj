@@ -22,6 +22,8 @@
 		5E09B58719261AFF00AF5DE8 /* EventWS.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E09B58619261AFF00AF5DE8 /* EventWS.m */; };
 		5E1D5645192F316000962F94 /* MyDateTimePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1D5644192F316000962F94 /* MyDateTimePicker.m */; };
 		5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1D5646192F616300962F94 /* AddressBook.framework */; };
+		5E3C24FD198BFA5500096329 /* beeepItPassed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FB198BFA5500096329 /* beeepItPassed.png */; };
+		5E3C24FE198BFA5500096329 /* beeepItPassed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */; };
 		5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8801960981C00DB2E6F /* CoreData.framework */; };
 		5E51B8831960982300DB2E6F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8821960982300DB2E6F /* CoreLocation.framework */; };
 		5E51B8851960982A00DB2E6F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8841960982A00DB2E6F /* CoreText.framework */; };
@@ -549,6 +551,8 @@
 		5E1D5644192F316000962F94 /* MyDateTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDateTimePicker.m; sourceTree = "<group>"; };
 		5E1D5646192F616300962F94 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		5E1D5648192F616900962F94 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		5E3C24FB198BFA5500096329 /* beeepItPassed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItPassed.png; sourceTree = "<group>"; };
+		5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepItPassed@2x.png"; sourceTree = "<group>"; };
 		5E51B8801960981C00DB2E6F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		5E51B8821960982300DB2E6F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		5E51B8841960982A00DB2E6F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -2474,6 +2478,8 @@
 		CEF263AC18DC7F000047510D /* R */ = {
 			isa = PBXGroup;
 			children = (
+				5E3C24FB198BFA5500096329 /* beeepItPassed.png */,
+				5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */,
 				CEFFF794198A75E600FA3CF3 /* liked_event.png */,
 				CEFFF795198A75E600FA3CF3 /* liked_event@2x.png */,
 				CE2BA444193E23C3004D63C3 /* empty-selection0cirlce-suggestit.png */,
@@ -2755,6 +2761,7 @@
 				CE79424018DB27C600748EDD /* Beeep_it_btn@2x.png in Resources */,
 				CEEE3EC418C9D62F00665C21 /* Welcome_Logo@2x.png in Resources */,
 				CEF263A118DC59A10047510D /* 12.png in Resources */,
+				5E3C24FE198BFA5500096329 /* beeepItPassed@2x.png in Resources */,
 				CEA113251952ED77003C8D7B /* Like_popup_unpressed@2x.png in Resources */,
 				9615E8CF192DB7870099B3E0 /* editProfileBtn.png in Resources */,
 				CEA113231952ED77003C8D7B /* Beeep_popup_unpressed@2x.png in Resources */,
@@ -2795,6 +2802,7 @@
 				5E58956119756BEF00FDA837 /* buttonsHighlightBG.jpg in Resources */,
 				CE79424418DB329E00748EDD /* close_btn@2x.png in Resources */,
 				CE25F9ED18B6761300D8B858 /* NotificationBackgroundErrorIcon.png in Resources */,
+				5E3C24FD198BFA5500096329 /* beeepItPassed.png in Resources */,
 				CEEE3EFE18CA102700665C21 /* checkbox_empty@2x.png in Resources */,
 				CE79423F18DB27C600748EDD /* Beeep_it_btn.png in Resources */,
 				9615E8E7192DC43B0099B3E0 /* pin_icon_white@2x.png in Resources */,
@@ -3242,8 +3250,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3256,7 +3264,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "345DEEE4-3A72-44FF-80DE-7D0FECEE313E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3266,8 +3274,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3280,7 +3288,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "345DEEE4-3A72-44FF-80DE-7D0FECEE313E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

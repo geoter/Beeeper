@@ -243,7 +243,7 @@
         [nameLbl sizeToFitHeight];
 
         UIView *bottomV = (id)[cell viewWithTag:666];
-        bottomV.frame = CGRectMake(110, nameLbl.frame.origin.y+nameLbl.frame.size.height, 196, 51);
+       // bottomV.frame = CGRectMake(110, nameLbl.frame.origin.y+nameLbl.frame.size.height, 196, 51);
         
         NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -255,7 +255,7 @@
 
         }
         
-        beeepedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
+        beeepedBy.text = [NSString stringWithFormat:@"%@ %@",[w.name capitalizedString] ,[w.lastname capitalizedString]];
         
         NSString *who_imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
         
@@ -452,6 +452,14 @@
     NSMutableArray *filtered_activities = [self suggestionsForSection:path.section];
     
     Suggestion_Object *suggestion = [filtered_activities objectAtIndex:path.row];
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    if ([suggestion.beeepersIds indexOfObject:my_id] != NSNotFound) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     viewController.tml = suggestion;

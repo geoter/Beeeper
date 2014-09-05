@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -3308,9 +3308,6 @@
                                                             <state key="normal" image="like_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
-                                                            <connections>
-                                                                <action selector="showLikes:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="3DM-f2-lDI"/>
-                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="sZW-mf-XWl">
                                                             <rect key="frame" x="254" y="39" width="43" height="23"/>
@@ -3319,9 +3316,6 @@
                                                             <state key="normal" image="comments_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
-                                                            <connections>
-                                                                <action selector="showComments:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="7oI-G2-fFD"/>
-                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="TQz-GD-tnh">
                                                             <rect key="frame" x="251" y="66" width="46" height="23"/>
@@ -3330,9 +3324,6 @@
                                                             <state key="normal" image="Beeeps_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
-                                                            <connections>
-                                                                <action selector="showBeeepers:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="wVq-rK-4oj"/>
-                                                            </connections>
                                                         </button>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gNR-XA-Zou">
                                                             <rect key="frame" x="253" y="40" width="25" height="21"/>
@@ -3471,6 +3462,9 @@
                                                             <state key="normal" image="like_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="showLikes:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="yDF-A5-uGg"/>
+                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="qH4-G9-Coq">
                                                             <rect key="frame" x="71" y="79" width="43" height="23"/>
@@ -3479,6 +3473,9 @@
                                                             <state key="normal" image="comments_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="showComments:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="2Mv-iR-qSb"/>
+                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="HJ3-bM-gtd">
                                                             <rect key="frame" x="128" y="79" width="46" height="23"/>
@@ -3487,6 +3484,9 @@
                                                             <state key="normal" image="Beeeps_icon.png">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="showBeeepers:" destination="Rt9-l3-4WD" eventType="touchUpInside" id="dUb-z9-8z3"/>
+                                                            </connections>
                                                         </button>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fsX-IJ-bQE">
                                                             <rect key="frame" x="95" y="81" width="25" height="21"/>

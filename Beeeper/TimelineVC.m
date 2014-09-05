@@ -940,10 +940,10 @@
         return;
     }
     
-    UITableViewCell *cell = (id)sender.superview.superview.superview.superview.superview;
+    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    Timeline_Object *b = [beeeps objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
    
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
@@ -966,7 +966,7 @@
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    Timeline_Object *b = [beeeps objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
 
 
     NSArray *likes = b.beeep.beeepInfo.likes;
@@ -990,7 +990,7 @@
     UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    Timeline_Object *b = [beeeps objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
    
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = b;
@@ -1004,7 +1004,7 @@
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
 
     
-    Timeline_Object *b = [beeeps objectAtIndex:path.row];
+    Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
     
     FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;

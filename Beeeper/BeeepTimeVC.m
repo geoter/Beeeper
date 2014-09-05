@@ -19,7 +19,7 @@
     [super setHighlighted:highlighted];
     
     if (highlighted) {
-        self.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+        self.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     

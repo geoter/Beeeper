@@ -366,7 +366,7 @@
         UILabel *titleLbl = (id)[containerV viewWithTag:4];
         
         monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-       // monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+       // monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         monthLbl.text = [month uppercaseString];
         
         dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
@@ -514,7 +514,7 @@
             UILabel *titleLbl = (id)[containerV viewWithTag:4];
             
             monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-            //monthLbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+            //monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
             monthLbl.text = [month uppercaseString];
             
             dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
@@ -673,7 +673,7 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
 
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
         segment.delegate = self;
         [headerView addSubview:segment];
         segment.center = headerView.center;

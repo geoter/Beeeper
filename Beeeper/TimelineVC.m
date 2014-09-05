@@ -526,7 +526,7 @@
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
         lbl.text = @"Following";
-        lbl.backgroundColor =  [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
+        lbl.backgroundColor =  [UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
         lbl.textColor = [UIColor whiteColor];
         lbl.textAlignment = NSTextAlignmentCenter;
         lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
@@ -556,7 +556,7 @@
         lbl.attributedText = txt;
         
         lbl.backgroundColor = [UIColor whiteColor];
-        lbl.textColor = [UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1];
+        lbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
 
         
@@ -564,7 +564,7 @@
         
         self.followButton.hidden = NO;
         
-        [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
+        [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
     }
     else{
@@ -670,7 +670,7 @@
         
         UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
         
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:250/255.0 green:203/255.0 blue:1/255.0 alpha:1]];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:241/255.0 green:181/255.0 blue:18/255.0 alpha:1]];
         
         segment.delegate = self;
         [headerView addSubview:segment];
@@ -764,7 +764,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = loc.venueStation;
+        venueLbl.text = [loc.venueStation uppercaseString];
         
         //Likes,Beeeps,Comments
         UILabel *beeepsLbl = (id)[cell viewWithTag:-5];

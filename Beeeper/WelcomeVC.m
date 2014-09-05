@@ -54,7 +54,7 @@
     
     [self autoLoginIfAvailable];
     
-    [[UINavigationBar appearance] setBarTintColor: [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
+    [[UINavigationBar appearance] setBarTintColor: [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
     
@@ -381,7 +381,7 @@
 -(void)showSplashScreen{
 
     UIView *backV = [[UIView alloc]initWithFrame:self.view.bounds];
-    backV.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+    backV.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"beeeper-logo-Splash"]];
     imgV.tag = 454;
     imgV.center = CGPointMake(backV.center.x, backV.center.y-22);

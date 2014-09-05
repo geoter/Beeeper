@@ -83,7 +83,7 @@ CGFloat const   GHAnimationDelay = GHAnimationDuration/10;
         _radius = 90;
         
         self.itemBGColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1].CGColor;
-        self.itemBGHighlightedColor = [UIColor colorWithRed:250.0/255.0 green:217.0/255.0 blue:0 alpha:1].CGColor;
+        self.itemBGHighlightedColor = [UIColor colorWithRed:240.0/255.0 green:217.0/255.0 blue:0 alpha:1].CGColor;
         
     }
     return self;
@@ -365,7 +365,7 @@ CGFloat const   GHAnimationDelay = GHAnimationDuration/10;
             
             if (fabs(distanceFromItem) < toleranceDistance ) {
                 CALayer *layer = [self.menuItems objectAtIndex:closeToIndex];
-                layer.backgroundColor =  [UIColor colorWithRed:250.0/255.0 green:217.0/255.0 blue:0 alpha:1].CGColor;
+                layer.backgroundColor =  [UIColor colorWithRed:240.0/255.0 green:208.0/255.0 blue:0 alpha:1].CGColor;
                 
                 CGFloat distanceFromItemBorder = fabs(distanceFromItem);
                 

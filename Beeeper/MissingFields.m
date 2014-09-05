@@ -117,7 +117,7 @@
 }
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
-    textField.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+    textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder attributes:@{NSForegroundColorAttributeName: textField.textColor}];
     
     UIView *v = [self.scrollV viewWithTag:100+textField.tag];

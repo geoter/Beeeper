@@ -1687,15 +1687,12 @@
     
     switch (buttonIndex) {
         case 0:
-            
-            break;
-        case 1:
             [self sendFacebook];
             break;
-        case 2:
+        case 1:
             [self sendTwitter];
             break;
-        case 3:{
+        case 2:{
             if ([MFMessageComposeViewController canSendText]) {
                 [self sendSMS];
             }
@@ -1708,7 +1705,7 @@
             }
             break;
         }
-        case 4:
+        case 3:
         {
             if ([MFMailComposeViewController canSendMail]) {
                 [self sendEmail];
@@ -1716,12 +1713,20 @@
             else{
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                 pasteboard.string = websiteURL;
+                
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Copied to Clipboard"];
+
             }
         }
             break;
-        case 5:{
+        case 4:{
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = websiteURL;
+
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Copied to Clipboard"];
+            
             break;
         }
         default:

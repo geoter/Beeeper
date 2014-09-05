@@ -477,7 +477,7 @@
     
     UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
     mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-    mlbl.textColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1];
+    mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
     mlbl.text = [month uppercaseString];
     mlbl.textAlignment = NSTextAlignmentCenter;
     [backV addSubview:mlbl];

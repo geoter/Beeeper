@@ -745,7 +745,7 @@
             btn.layer.borderWidth = 0.0f;
         }
         else{
-            sender.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1].CGColor;
+            sender.layer.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1].CGColor;
             sender.layer.borderWidth = 1.0f;
         }
     }

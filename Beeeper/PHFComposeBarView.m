@@ -288,7 +288,7 @@ static CGFloat kTextViewToSuperviewHeightDelta;
         [_button setTitleEdgeInsets:UIEdgeInsetsMake(0.5f, 0, 0, 0)];
         [_button setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin];
         [_button setTitle:[self buttonTitle] forState:UIControlStateNormal];
-        [_button setBackgroundColor:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1]];
+        [_button setBackgroundColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
         UIColor *disabledColor = [UIColor whiteColor];
         [_button setTitleColor:disabledColor forState:UIControlStateDisabled];
         UIColor *enabledColor = [UIColor whiteColor];

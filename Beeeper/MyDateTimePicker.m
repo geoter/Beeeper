@@ -48,7 +48,7 @@
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         doneButton.frame = CGRectMake(0, MyDateTimePickerPickerHeight, width, MyDateTimePickerToolbarHeight);
         [doneButton setTitle:@"Done" forState:UIControlStateNormal];
-        doneButton.backgroundColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1];
+        doneButton.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
         [doneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:doneButton];
         

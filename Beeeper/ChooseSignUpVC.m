@@ -80,7 +80,7 @@
                   value:[UIFont fontWithName:@"HelveticaNeue-Light" size:15]
                   range:[btnTitle rangeOfString:btnTitle]];
     
-    [string addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:250/255.0 green:217/255.0 blue:0 alpha:1] range:range];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1] range:range];
     [self.emailSignupButton setAttributedTitle:string forState:UIControlStateNormal];
 }
 

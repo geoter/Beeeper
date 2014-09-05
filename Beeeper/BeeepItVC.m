@@ -55,7 +55,7 @@
 {
     [super viewDidLoad];
 
-    self.suggestButton.layer.borderColor = [UIColor colorWithRed:250/255.0 green:217/255.0 blue:0/255.0 alpha:1].CGColor;
+    self.suggestButton.layer.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1].CGColor;
     self.suggestButton.layer.borderWidth = 1;
     self.suggestButton.layer.cornerRadius = 5;
     

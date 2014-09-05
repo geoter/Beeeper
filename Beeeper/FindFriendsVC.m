@@ -338,6 +338,12 @@
 
                   }];
              }
+             else{
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Permission Denied" message:@"Facebook access was denied. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert show];
+                 });
+             }
          }];
         
     }

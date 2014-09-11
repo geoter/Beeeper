@@ -62,6 +62,7 @@
 		5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAED19594E910033C061 /* suggest_selected@2x.png */; };
 		5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */; };
 		5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEF19594E910033C061 /* suggest_selected.png */; };
+		5EBAFA9519C1962F0093D6BA /* WebBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */; };
 		5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */; };
 		5ECC9F70197D9E86004748CF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */; };
 		5EE13A1A1950202900540C04 /* BPSuggestions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A191950202900540C04 /* BPSuggestions.m */; };
@@ -607,6 +608,8 @@
 		5EA7FAED19594E910033C061 /* suggest_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_selected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
+		5EBAFA9319C1962F0093D6BA /* WebBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebBrowserVC.h; sourceTree = "<group>"; };
+		5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebBrowserVC.m; sourceTree = "<group>"; };
 		5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		5EE13A181950202900540C04 /* BPSuggestions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSuggestions.h; sourceTree = "<group>"; };
@@ -2268,6 +2271,8 @@
 				CEF1E5AD18E48BA000DF7539 /* Timeline */,
 				962E3DAD194CC2B900A0DD87 /* FollowList */,
 				CEA64F5018B3C2A000B7ECF5 /* LoginEmailVC.h */,
+				5EBAFA9319C1962F0093D6BA /* WebBrowserVC.h */,
+				5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */,
 				CEA64F5118B3C2A000B7ECF5 /* LoginEmailVC.m */,
 				CEA64F5318B3C48A00B7ECF5 /* SignUpVC.h */,
 				CEA64F5418B3C48A00B7ECF5 /* SignUpVC.m */,
@@ -3000,6 +3005,7 @@
 				CE02EBFA18EC63CC00B5674C /* UIImage+WebP.m in Sources */,
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
 				CEA64F4918B3A71400B7ECF5 /* LoginVC.m in Sources */,
+				5EBAFA9519C1962F0093D6BA /* WebBrowserVC.m in Sources */,
 				5E51B8C419614C7900DB2E6F /* GKImageCropView.m in Sources */,
 				CE02EC3218EC64D800B5674C /* AFPropertyListRequestOperation.m in Sources */,
 				9637AA3A18C0E73200651BD8 /* Base64Transcoder.c in Sources */,
@@ -3193,7 +3199,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3212,6 +3219,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3232,7 +3240,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3244,6 +3253,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3268,7 +3278,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3292,7 +3302,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CE092C78-0A42-4555-A189-266A0E157721";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

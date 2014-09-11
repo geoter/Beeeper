@@ -79,7 +79,7 @@
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
     layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 5;
+    layout.headerHeight = 10;
     layout.footerHeight = 10;
     layout.minimumColumnSpacing = 6;
     layout.minimumInteritemSpacing = 6;
@@ -533,9 +533,9 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
         
-        //        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Friends",@"All", nil] size:CGSizeMake(185, 25)];
-        //        [headerView addSubview:segment];
-        //        segment.center = headerView.center;
+//        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Friends",@"All", nil] size:CGSizeMake(185, 25)];
+//        [headerView addSubview:segment];
+//        segment.center = headerView.center;
         reusableview = headerView;
     }
     

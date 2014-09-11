@@ -24,6 +24,7 @@
 #import "Event_Search.h"
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
+#import "WebBrowserVC.h"
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
@@ -1742,6 +1743,15 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)ShowWebsite:(id)sender {
+    NSLog(@"link");
+    
+   WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    viewController.url = [NSURL URLWithString:websiteURL];
+    
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (IBAction)beeepItPressed:(id)sender {

@@ -37,6 +37,7 @@
 
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;
+- (IBAction)ShowWebsite:(id)sender;
 
 - (IBAction)beeepItPressed:(id)sender;
 - (IBAction)showLikes:(id)sender;

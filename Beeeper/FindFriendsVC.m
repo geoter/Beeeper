@@ -42,11 +42,15 @@
     NSString *searchStr;
     BOOL loadNextPage;
     NSMutableArray *rowsToReload;
+    UIActivityIndicatorView *activityIndicator;
+
 
 }
+@property (nonatomic,strong)  UIView *loadingView;
 @end
 
 @implementation FindFriendsVC
+@synthesize loadingView;
 
 - (void)viewDidLoad
 {
@@ -131,6 +135,16 @@
                 NSRange range = NSMakeRange(0, 1);
                 NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
                 [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+                
+                [UIView animateWithDuration:0.7f
+                                 animations:^
+                 {
+                     loadingView.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                 }
+                 ];
             }
         }
          }];
@@ -149,20 +163,48 @@
         
         if (completed) {
          
-            if (objcts > 0) {
-                loadNextPage = YES;
-                searchedPeople = [NSMutableArray arrayWithArray:objcts];
+            dispatch_async(dispatch_get_main_queue(), ^{
 
-                NSRange range = NSMakeRange(0, 1);
-                NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-                [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+                [UIView animateWithDuration:0.7f
+                                 animations:^
+                 {
+                     loadingView.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                 }
+                 ];
+                
+                if (objcts > 0) {
+                    loadNextPage = YES;
+                    searchedPeople = [NSMutableArray arrayWithArray:objcts];
 
-            }
+                    
+                    NSRange range = NSMakeRange(0, 1);
+                    NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                    [self.tableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+
+                }
+          });
         }
     }];
 }
 
 -(void)optionSelectedFromHeader:(UIButton *)btn{
+    
+    [searchedPeople removeAllObjects];
+    [self.tableV reloadData];
+    
+    [UIView animateWithDuration:0.7f
+                     animations:^
+     {
+         loadingView.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+    
     
     [selectedPeople removeAllObjects];
     selectedEmails = [NSMutableArray array];
@@ -223,6 +265,8 @@
 
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+            
+            
             return;
         }
         //5
@@ -285,9 +329,23 @@
         
         CFRelease(allPeople);
         
-        adressBookPeople = [NSMutableArray arrayWithArray:contacts];
-        searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
-        [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+       
+            [UIView animateWithDuration:0.7f
+                             animations:^
+             {
+                 loadingView.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+             }
+             ];
+            
+            adressBookPeople = [NSMutableArray arrayWithArray:contacts];
+            searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
+            [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+            
+        });
     });
 }
 
@@ -334,6 +392,21 @@
                       fbPeople = [NSMutableArray arrayWithArray:friends];
                       searchedPeople = [NSMutableArray arrayWithArray:friends];
                       
+                      
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          
+                          [UIView animateWithDuration:0.7f
+                                           animations:^
+                           {
+                               loadingView.alpha = 0;
+                           }
+                                           completion:^(BOOL finished)
+                           {
+                           }
+                           ];
+                      });
+                     
+                      
                       [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
                   }];
@@ -350,6 +423,22 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
+    if (loadingView != nil) {
+        [loadingView removeFromSuperview];
+    }
+    
+    
+    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+    [loadingView setBackgroundColor:[UIColor clearColor]];
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [loadingView addSubview:activityIndicator];
+    activityIndicator.center =loadingView.center;
+    [self.view addSubview:loadingView];
+    [self.view bringSubviewToFront:loadingView];
+    [activityIndicator startAnimating];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.backItem.title = @"";

@@ -117,6 +117,9 @@
                 NSLog(@"%@",user);
                 [self setSelectedLoginMethod:[NSDictionary dictionaryWithObjects:@[username.text,password.text] forKeys:@[@"username",@"password"]]];
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.5];
+                
+                username.text = @"";
+                password.text = @"";
             }
             else{
                 [self hideLoading];

@@ -447,23 +447,27 @@
 }
 
 -(void)hideLoading{
-    
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-         self.tableV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
+    dispatch_async(dispatch_get_main_queue(), ^{
+       
+   
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
         
-     }
-     ];
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+             self.tableV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+            
+         }
+         ];
+        
+        });
 }
 
 

@@ -24,6 +24,7 @@
 #import "SuggestBeeepVC.h"
 #import "BorderTextField.h"
 #import "Event_Search.h"
+#import "BeeepedBy.h"
 
 @interface HomeFeedVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource, GHContextOverlayViewDelegate,MONActivityIndicatorViewDelegate>
 {
@@ -969,6 +970,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     NSIndexPath* indexPath = [self.collectionV indexPathForItemAtPoint:point];
     
+    
     NSString* msg = nil;
     switch (selectedIndex) {
         case 0:
@@ -992,6 +994,39 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
+    
+    
+    if (beeeps != nil || selectedIndex == 1) {
+        Friendsfeed_Object *ffo = [beeeps objectAtIndex:indexpath.row];
+       
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        NSArray *beeeepers = ffo.eventFfo.beeepedBy;
+        
+        for (NSString *beeeper in beeeepers) {
+            if ([beeeper isEqualToString:my_id]) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+                return;
+            }
+        }
+    }
+    else{
+        Event_Search *event = [events objectAtIndex:indexpath.row];
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        NSArray *beeeepers = event.beeepedBy;
+        
+        for (BeeepedBy *beeeper in beeeepers) {
+            if ([beeeper.beeepedByIdentifier isEqualToString:my_id]) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+                return;
+            }
+        }
+    }
+ 
     
    UICollectionViewCell *cell= [self.collectionV cellForItemAtIndexPath:indexpath];
 

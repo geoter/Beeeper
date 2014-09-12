@@ -33,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *beeepsButton;
 @property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 @property (weak, nonatomic) IBOutlet UIButton *beeepItButton;
+@property (weak, nonatomic) IBOutlet UIImageView *passedIcon;
 
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;

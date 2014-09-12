@@ -392,13 +392,18 @@
 
     if (now_time > event_timestamp) {
         passedEvent = YES;
-        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+//        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        self.passedIcon.hidden = NO;
+        self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
+    }
+    else{
+        self.passedIcon.hidden = YES;
+        self.beeepItButton.hidden = NO;
     }
     
     //Image
@@ -622,13 +627,19 @@
     
     if (now_time > event_timestamp) {
         passedEvent = YES;
-        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+//        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+
+        self.passedIcon.hidden = NO;
+        self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
+    }
+    else{
+        self.passedIcon.hidden = YES;
+        self.beeepItButton.hidden = NO;
     }
     
     //Image
@@ -800,13 +811,19 @@
     
     if (now_time > event_timestamp) {
         passedEvent = YES;
-        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+//        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+
+        self.passedIcon.hidden = NO;
+        self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
+    }
+    else{
+        self.passedIcon.hidden = YES;
+        self.beeepItButton.hidden = NO;
     }
     
     
@@ -1028,15 +1045,20 @@
     
     if (now_time > event_timestamp) {
         passedEvent = YES;
-        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+//        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+
+        self.passedIcon.hidden = NO;
+        self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
-
+    else{
+        self.passedIcon.hidden = YES;
+        self.beeepItButton.hidden = NO;
+    }
     
     @try {
         if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
@@ -1309,13 +1331,19 @@
     
     if (now_time > event_timestamp) {
         passedEvent = YES;
-        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
-                [self.beeepItButton setUserInteractionEnabled:NO];
+//        self.titleLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+//        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+//        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+
+        self.passedIcon.hidden = NO;
+        self.beeepItButton.hidden = YES;
+        [self.beeepItButton setUserInteractionEnabled:NO];
+    }
+    else{
+        self.passedIcon.hidden = YES;
+        self.beeepItButton.hidden = NO;
     }
     
     //Image
@@ -1802,7 +1830,7 @@
         }
         case 3:
         {
-            if ([MFMailComposeViewController canSendMail]) {
+            if ([MFMessageComposeViewController canSendText] && [MFMailComposeViewController canSendMail]) {
                 [self sendEmail];
             }
             else{

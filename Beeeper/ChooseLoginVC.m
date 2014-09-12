@@ -122,7 +122,7 @@
                 password.text = @"";
             }
             else{
-                [self hideLoading];
+                [self hideLoadingWithErrorMessage:@"Make sure your username and password are correct."];
             }
         }];
 
@@ -301,7 +301,8 @@
             }
             else{
                 number_of_attempts = 0;
-                [self hideLoading];
+                
+                 [self hideLoadingWithErrorMessage:@"Twitter login failed. Please try again or contact us."];
             }
         }
     }];
@@ -326,7 +327,7 @@
             }
             else{
                 number_of_attempts = 0;
-                [self hideLoading];
+                 [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
             }
         }
         
@@ -381,10 +382,12 @@
             }
              else
              {
-                 [self hideLoading];
+       
                  
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
+                     
+                     [self hideLoadingWithErrorMessage:@"Twitter login failed. Please make sure Beeeper is enabled in Settings->Twitter."];
                  }
                  else
                  {
@@ -435,7 +438,7 @@
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
             }
             else{
-                [self hideLoading];
+               [self hideLoadingWithErrorMessage:@"Twitter login failed. Please try again or contact us."];
             }
         }];
 
@@ -453,7 +456,7 @@
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
             }
             else{
-                [self hideLoading];
+                [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
             }
             
         }];
@@ -475,13 +478,18 @@
                     [self performSelectorOnMainThread:@selector(loginPressed:) withObject:nil waitUntilDone:NO];
                 }
                 else{
-                    [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                       [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
+                    });
                 }
             }];
         } else {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideLoadingWithErrorMessage:@"Facebook authorization failed. Please try again or contact us."];
+            });
             // An error occurred, we need to handle the error
             // See: https://developers.facebook.com/docs/ios/errors
-            [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
         }
     }];
 }
@@ -562,6 +570,27 @@
      }
      ];
 }
+
+-(void)hideLoadingWithErrorMessage:(NSString *)message{
+    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+    [indicatorView stopAnimating];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         loadingBGV.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         [loadingBGV removeFromSuperview];
+         
+         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Login Failed" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+         [alert show];
+     }
+     ];
+}
+
 
 #pragma mark -
 #pragma mark - MONActivityIndicatorViewDelegate Methods

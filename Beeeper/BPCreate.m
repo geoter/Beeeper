@@ -142,7 +142,7 @@ static BPCreate *thisWebServices = nil;
         
         id fingerprint = [self encodeWithHmacsha256:fingerPrint_Input];
         
-        [valuesDict setObject:fingerprint forKey:@"fingerprint"];
+        [valuesDict setObject:[self urlencode:fingerprint] forKey:@"fingerprint"];
         
         NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/create"];
         

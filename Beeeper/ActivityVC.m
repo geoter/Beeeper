@@ -82,7 +82,7 @@
             if (objcts.count != 0) {
                 
                 [activities addObjectsFromArray:objcts];
-                loadNextPage = YES;
+                loadNextPage = (objcts.count == 10);
                 [self groupActivitiesByMonth];
             }
         }
@@ -135,7 +135,7 @@
         for (Activity_Object *activity in activities) {
             //EVENT DATE
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];
             
@@ -146,7 +146,7 @@
             
             NSString *month = [day_month objectAtIndex:1];
             NSString *daynumber = [day_month objectAtIndex:2];
-            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] objectAtIndex:1];
             NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
             
             NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
@@ -186,7 +186,7 @@
         for (Activity_Object *activity in activities) {
             //EVENT DATE
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];
             
@@ -197,7 +197,7 @@
             
             NSString *month = [day_month objectAtIndex:1];
             NSString *daynumber = [day_month objectAtIndex:2];
-            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+            NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] objectAtIndex:1];
             NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
             
             NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
@@ -469,25 +469,53 @@
     NSString *month = [components objectAtIndex:0];
     NSString *daynumber = [components objectAtIndex:1];
     
+    //Today
+    NSDate *date = [NSDate date];
+    NSDateFormatter *formatter  = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MMM#d#YYYY"];
+    NSString *signatureToday = [formatter stringFromDate:date];
+    
+    BOOL isToday = [signature isEqualToString:signatureToday];
+    
+    //Tommorrow
+    
+    NSDate *dateTmw = [date dateByAddingTimeInterval:60*60*24];
+    NSString *signatureTmw = [formatter stringFromDate:dateTmw];
+    
+    BOOL isTomorrow = [signature isEqualToString:signatureTmw];
+    
+    
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
     header.backgroundColor = [UIColor clearColor];
     UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 47)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     
-    UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
-    mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-    mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
-    mlbl.text = [month uppercaseString];
-    mlbl.textAlignment = NSTextAlignmentCenter;
-    [backV addSubview:mlbl];
-    
-    UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
-    dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
-    dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
-    dlbl.text = daynumber;
-    dlbl.textAlignment = NSTextAlignmentCenter;
-    [backV addSubview:dlbl];
+    if (isToday || isTomorrow) {
+        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 36)];
+        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
+        mlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
+        mlbl.text = (isToday)?@"Today":@"Tomorrow";
+        mlbl.textAlignment = NSTextAlignmentCenter;
+        [backV addSubview:mlbl];
+    }
+
+    else{
+        
+        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
+        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+        mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
+        mlbl.text = [month uppercaseString];
+        mlbl.textAlignment = NSTextAlignmentCenter;
+        [backV addSubview:mlbl];
+        
+        UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
+        dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
+        dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
+        dlbl.text = daynumber;
+        dlbl.textAlignment = NSTextAlignmentCenter;
+        [backV addSubview:dlbl];
+    }
     
     UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(0, header.frame.size.height-1, 306, 1)];
     headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];

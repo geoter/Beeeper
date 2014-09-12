@@ -46,7 +46,7 @@
     [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *keywords){
         
         if (keywords.count > 0) {
-            loadNextPage = YES;
+            loadNextPage = (keywords.count == 15);
             [filteredResults addObjectsFromArray:keywords];
         }
         
@@ -351,7 +351,7 @@
     Event_Search *event = [events objectAtIndex:indexPath.row];
     
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];

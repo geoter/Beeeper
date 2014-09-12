@@ -169,7 +169,7 @@
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
         
         Timeline_Object *t = tml; //one of those two will be used
         Friendsfeed_Object *ffo = tml;
@@ -810,7 +810,7 @@
         [self presentViewController:viewController animated:YES completion:nil];
     }
     else{
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
 

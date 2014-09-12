@@ -1180,7 +1180,7 @@
         if (completed) {
             
             if (objcts.count > 0) {
-                loadNextPage = YES;
+                loadNextPage = (objcts.count == 20);
                 [searchedPeople addObjectsFromArray:objcts];
             }
         }

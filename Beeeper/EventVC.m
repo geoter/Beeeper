@@ -203,6 +203,8 @@
     
     [super viewWillAppear:animated];
     
+    //Hide beeep it button if coming from My Timeline
+    
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         [self showEventWithTimelineObject];
     }
@@ -212,6 +214,7 @@
     else if ([tml isKindOfClass:[Suggestion_Object class]]){
         [self showEventWithSuggestion];
     }
+
 }
 
 
@@ -219,7 +222,7 @@
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];
     
@@ -339,6 +342,21 @@
 //        [self.likesButton setImage:[UIImage imageNamed:@"liked_event"] forState:UIControlStateNormal];
     }
     
+    @try {
+        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @catch (NSException *exception) {
+        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @finally {
+        
+    }
+
+    
     //Tags
     
     NSMutableString *formattedTags = [[NSMutableString alloc]init];
@@ -378,7 +396,9 @@
         self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
         self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+        [self.beeepItButton setUserInteractionEnabled:NO];
     }
     
     //Image
@@ -429,7 +449,7 @@
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];
     
@@ -552,6 +572,21 @@
     self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
     self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
     
+    @try {
+        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @catch (NSException *exception) {
+        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @finally {
+        
+    }
+
+    
     //Tags
     
     NSMutableString *formattedTags = [[NSMutableString alloc]init];
@@ -591,7 +626,9 @@
         self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
         self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+        [self.beeepItButton setUserInteractionEnabled:NO];
     }
     
     //Image
@@ -639,7 +676,7 @@
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];
     
@@ -767,8 +804,26 @@
         self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
         self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+        [self.beeepItButton setUserInteractionEnabled:NO];
     }
+    
+    
+    @try {
+        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @catch (NSException *exception) {
+        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @finally {
+        
+    }
+  
     
     //Tags
     
@@ -845,7 +900,7 @@
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];
     
@@ -977,8 +1032,26 @@
         self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
         self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+        [self.beeepItButton setUserInteractionEnabled:NO];
     }
+
+    
+    @try {
+        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @catch (NSException *exception) {
+        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @finally {
+        
+    }
+
     
     //Tags
     
@@ -1050,6 +1123,7 @@
         
     }
     
+    
     [self hideLoading];
 }
 
@@ -1058,7 +1132,7 @@
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
     NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     [formatter setLocale:usLocale];
     
@@ -1184,6 +1258,21 @@
         self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
 
     }
+
+    @try {
+        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @catch (NSException *exception) {
+        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+            self.beeepItButton.hidden = YES;
+        }
+    }
+    @finally {
+        
+    }
+
     
     //Tags
     
@@ -1224,7 +1313,9 @@
         self.dayNumberLabel.textColor = [UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
         self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
-        [self.beeepItButton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        [self.beeepItButton setImage:[UIImage imageNamed:@"passed"] forState:UIControlStateNormal];
+                [self.beeepItButton setUserInteractionEnabled:NO];
     }
     
     //Image
@@ -1476,9 +1567,10 @@
             
             Timeline_Object *t = tml; //one of those two will be used
             
-            NSString *fingerprint = t.event.fingerprint;
-            
-            [[EventWS sharedBP]unlikeEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            //NSString *fingerprint = t.event.fingerprint;
+           
+            [[EventWS sharedBP]unlikeBeeep:t.beeep.beeepInfo.weight user:t.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+          
                 if (completed) {
                     isLiker = NO;
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
@@ -1623,7 +1715,9 @@
             
             NSString *fingerprint = t.event.fingerprint;
             
-            [[EventWS sharedBP]likeEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            
+            [[EventWS sharedBP]likeBeeep:t.beeep.beeepInfo.weight user:t.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                
                 if (completed) {
                     isLiker = NO;
                     [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
@@ -1631,10 +1725,10 @@
                     //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                     
                     UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
-                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked"];
                 }
                 else{
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
@@ -1736,7 +1830,10 @@
 }
 
 -(void)beeepIt:(NSNotification *)notif{
+    
     [self close:nil];
+    
+    self.beeepItButton.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning

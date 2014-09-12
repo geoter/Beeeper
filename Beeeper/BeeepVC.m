@@ -126,7 +126,7 @@
 }
 
 - (void)locationError:(NSError *)error{
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Error" message:@"Please make sure Beeeper can receive your current location." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Error" message:@"Please make sure Beeeper is enabled in Settings>Privacy>Location" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.tag = 99;
     [alert show];
 }

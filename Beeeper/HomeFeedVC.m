@@ -192,7 +192,7 @@
         if (completed && objs.count >0) {
             events = nil;
             [beeeps addObjectsFromArray:objs];
-            loadNextPage = YES;
+            loadNextPage = (objs.count == 10);
         }
         
        [self.collectionV reloadData];
@@ -345,7 +345,7 @@
         double event_timestamp = event.timestamp;
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
         
         NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [formatter setLocale:usLocale];
@@ -493,7 +493,7 @@
             }
         
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
             
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];

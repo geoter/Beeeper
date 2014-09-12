@@ -330,7 +330,15 @@
     
     CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
     
-    txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 212, textViewSize.height);
+    int lines = round(textViewSize.height/txtV.font.lineHeight);
+    
+    if (lines == 2) {
+        txtV.frame = CGRectMake(txtV.frame.origin.x, 16, 212, textViewSize.height);
+    }
+    else{
+        txtV.frame = CGRectMake(txtV.frame.origin.x, 20, 212, textViewSize.height);
+    }
+    
     
     return cell;
 }

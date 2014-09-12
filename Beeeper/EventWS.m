@@ -121,7 +121,7 @@ static EventWS *thisWebServices = nil;
         NSMutableArray *postValues = [NSMutableArray array];
         
         [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
-        [postValues addObject:[NSDictionary dictionaryWithObject:fingerprint forKey:@"fingerprint"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
         
         [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         
@@ -305,11 +305,11 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:fingerprint forKey:@"fingerprint"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
     
-    [request addPostValue:fingerprint forKey:@"fingerprint"];
+    [request addPostValue:[self urlencode:fingerprint] forKey:@"fingerprint"];
     
     [request setRequestMethod:@"POST"];
     
@@ -367,7 +367,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:fingerprint forKey:@"fingerprint"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
     

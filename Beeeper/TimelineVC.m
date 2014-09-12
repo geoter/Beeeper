@@ -15,7 +15,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GTSegmentedControl.h"
 #import <FacebookSDK/FacebookSDK.h>
-
+#import "GHContextMenuView.h"
+#import "SuggestBeeepVC.h"
+#import "EventWS.h"
+#import "Event_Show_Object.h"
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -31,7 +34,7 @@
 }
 @end
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
@@ -198,6 +201,15 @@
 {
     [super viewDidLoad];
 
+    GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
+    overlay.dataSource = self;
+    overlay.delegate = self;
+    
+	// Do any additional setup after loading the view.
+    //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+    UILongPressGestureRecognizer* _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:overlay action:@selector(longPressDetected:)];
+    [self.tableV addGestureRecognizer:_longPressRecognizer];
+    
     loading = YES;
     
     if (user == nil) {
@@ -710,9 +722,10 @@
             double event_timestamp = b.event.timestamp;
             
             if (now_time > event_timestamp) {
-               [beepItbutton setImage:[UIImage imageNamed:@"beeepItPassed"] forState:UIControlStateNormal];
+                [beepItbutton setHidden:YES];
             }
             else{
+                [beepItbutton setHidden:NO];
                 [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
             }
             
@@ -729,7 +742,7 @@
         
         //EVENT DATE
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
         NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [formatter setLocale:usLocale];
         
@@ -1218,6 +1231,177 @@
     return overdueMessage;
 }
 
+#pragma mark - GHMenu methods
+
+-(BOOL) shouldShowMenuAtPoint:(CGPoint)point
+{
+    NSIndexPath* indexPath = [self.tableV indexPathForRowAtPoint:point];
+    UITableViewCell* cell = [self.tableV cellForRowAtIndexPath:indexPath];
+    
+    return cell != nil;
+}
+
+- (NSInteger) numberOfMenuItems
+{
+    return 4;
+}
+
+-(UIImage*) imageForItemAtIndex:(NSInteger)index
+{
+    NSString* imageName = nil;
+    switch (index) {
+        case 0:
+            imageName = @"Beeep_popup_unpressed";
+            break;
+        case 1:
+            imageName = @"Like_popup_unpressed";
+            break;
+        case 2:
+            imageName = @"Suggest_popup_unpressed";
+            break;
+        case 3:
+            imageName = @"Comment_popup_unpressed";
+            break;
+            
+        default:
+            break;
+    }
+    return [UIImage imageNamed:imageName];
+}
+
+- (void) didSelectItemAtIndex:(NSInteger)selectedIndex forMenuAtPoint:(CGPoint)point
+{
+    NSIndexPath* indexPath = [self.tableV indexPathForRowAtPoint:point];
+    
+    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row-1];
+    
+    switch (selectedIndex) {
+        case 0:
+            [self beeepEventAtIndexPath:indexPath];
+            break;
+        case 1:
+            [self likeEventAtIndexPath:indexPath];
+            break;
+        case 2:
+            [self suggestEventAtIndexPath:indexPath];
+            break;
+        case 3:
+            [self commentEventAtIndexPath:indexPath];
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+-(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
+    
+    if (segmentIndex != 0) { //Passed
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    
+
+    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row-1];
+    viewController.tml = b;
+    
+    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
+    
+    [self presentViewController:viewController animated:YES completion:nil];
+    
+}
+
+-(void)likeEventAtIndexPath:(NSIndexPath *)indexpath{
+    
+        
+    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row-1];
+    
+    NSArray *likes = b.beeep.beeepInfo.likes;
+    NSMutableArray *likers = [NSMutableArray array];
+    
+    for (Likes *l in likes) {
+        NSString *liker = l.likers.likersIdentifier;
+        [likers addObject:liker];
+    }
+    
+    if ([likers indexOfObject:[[BPUser sharedBP].user objectForKey:@"id"]] == NSNotFound) {
+        
+        [[EventWS sharedBP]likeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+            if (completed) {
+                
+                [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                b.beeep.beeepInfo.likes = likers;
+                
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                
+                [self.tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else{
+                
+                NSArray *errorArray = [response objectForKey:@"errors"];
+                NSDictionary *errorDict = [errorArray firstObject];
+                
+                NSString *info = [errorDict objectForKey:@"info"];
+                if ([info isEqualToString:@"You have already liked this event"]) {
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                }
+            }
+        }];
+        
+    }
+    else{
+        [[EventWS sharedBP]unlikeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+            if (completed) {
+                [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                b.beeep.beeepInfo.likes = likers;
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                
+                [self.tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
+            }
+        }];
+    }
+    
+}
+
+-(void)commentEventAtIndexPath:(NSIndexPath *)indexPath{
+    
+    Timeline_Object*b = [beeeps objectAtIndex:indexPath.row-1];
+    
+    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row-1];
+    viewController.comments = [NSMutableArray arrayWithArray: b.beeep.beeepInfo.comments];
+    viewController.showKeyboard = YES;
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+-(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
+    
+    Timeline_Object*b = [beeeps objectAtIndex:indexpath.row-1];
+    
+    
+    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    viewController.fingerprint = b.event.fingerprint;
+    
+    if (viewController.fingerprint != nil) {
+        [self presentViewController:viewController animated:YES completion:nil];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+
+
+}
+
 
 #pragma mark - Group by date
 
@@ -1241,7 +1425,7 @@
         for (Timeline_Object *activity in beeeps) {
             //EVENT DATE
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];
             
@@ -1287,7 +1471,7 @@
         for (Timeline_Object *suggestion in beeeps) {
             //EVENT DATE
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy hh:mm"];
+            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];
             

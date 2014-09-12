@@ -391,7 +391,14 @@
                          [[self container] setFrame:newContainerFrame];
                          self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, newContainerFrame.origin.y);
                      }
-                     completion:NULL];
+                     completion:^(BOOL finished)
+                    {
+                        if (comments.count > 0) {
+                            [self.tableV scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[comments count]-1 inSection:0]
+                                               atScrollPosition:UITableViewScrollPositionBottom
+                                                       animated:YES];
+                        }
+                    }];
 }
 
 - (void)composeBarViewDidPressButton:(PHFComposeBarView *)composeBarView {

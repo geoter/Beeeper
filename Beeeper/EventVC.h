@@ -34,7 +34,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 @property (weak, nonatomic) IBOutlet UIButton *beeepItButton;
 
-
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;
 - (IBAction)ShowWebsite:(id)sender;

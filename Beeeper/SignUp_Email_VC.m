@@ -228,6 +228,8 @@
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        
+        [locManager startTracking];
     }
 
 }

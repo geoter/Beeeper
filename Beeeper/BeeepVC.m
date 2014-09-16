@@ -26,11 +26,12 @@
     MyDateTimePicker *datePicker;
     UITextField *activeTXTF;
     LocationManager *locManager;
-    NSString *base64Image;
 }
+@property(nonatomic,strong) NSString *base64Image;
 @end
 
 @implementation BeeepVC
+@synthesize base64Image;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -126,13 +127,13 @@
 }
 
 - (void)locationError:(NSError *)error{
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Error" message:@"Please make sure Beeeper is enabled in Settings>Privacy>Location" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please go to Settings > Privacy > Location Services and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.tag = 99;
     [alert show];
 }
 
 - (void)locationDisabled{
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Location Disabled" message:@"Please allow Beeeper to use your current location." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please go to Settings > Privacy > Location Services and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alert.tag = 99;
     [alert show];
 }
@@ -560,7 +561,7 @@
  
     //adjust format of keywords
     @try {
-        
+       
         NSMutableString *keywords = [[NSMutableString alloc]init];
         NSString *keywords_comma  = [values objectForKey:@"keywords"];
         
@@ -625,12 +626,13 @@
                     [self.navigationController presentViewController:viewController animated:YES completion:NULL];
                 }
                 else{
-                    [sender setTitle:@"NEXT" forState:UIControlStateNormal];
-                    [activityInd removeFromSuperview];
                     
                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                     [alert show];
                 }
+                
+                [activityInd removeFromSuperview];
+                [sender setTitle:@"NEXT" forState:UIControlStateNormal];
             }];
         }
         else{
@@ -1012,7 +1014,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, .8);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
     base64Image = [self base64forData:imageData];
     
     [self imageSelected:chosenPhotoBtn];

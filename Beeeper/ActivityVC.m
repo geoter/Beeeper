@@ -323,6 +323,8 @@
             formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
         }
         
+        formattedString = [formattedString stringByReplacingOccurrencesOfString:@"comment" withString:@"commented on"];
+        
         NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
         
         [attText addAttribute:NSFontAttributeName

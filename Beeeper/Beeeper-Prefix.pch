@@ -24,7 +24,7 @@
     #import "MVYSideMenuOptions.h"
     #import "MVYSideMenuController.h"
     #import "CRToast.h"
-    #import "SVProgressHUD.h"
+    #import "SVProgressHUD/SVProgressHUD.h"
     #import "JSONKit.h"
     #import "BPUsersLookup.h"
     #import "BPHomeFeed.h"

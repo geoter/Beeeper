@@ -309,7 +309,7 @@ static EventWS *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
     
-    [request addPostValue:[self urlencode:fingerprint] forKey:@"fingerprint"];
+    [request addPostValue:fingerprint forKey:@"fingerprint"];
     
     [request setRequestMethod:@"POST"];
     

@@ -13,6 +13,7 @@
 #import "Timeline_Object.h"
 #import "Friendsfeed_Object.h"
 #import "Event_Search.h"
+#import "Activity_Object.h"
 
 @interface CommentsVC ()<PHFComposeBarViewDelegate,UITableViewDataSource,UITableViewDelegate>
 {
@@ -489,6 +490,44 @@
         }];
 
     }
+    else if ([self.event_beeep_object isKindOfClass:[Activity_Object class]]){
+        Activity_Object *activity = self.event_beeep_object;
+        
+        NSString *fingerprint;
+        
+        if(activity.eventActivity.count > 0){
+            EventActivity *event = [activity.eventActivity firstObject];
+            fingerprint = event.fingerprint;
+        }
+        else if(activity.beeepInfoActivity.eventActivity.count >0){
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+            fingerprint = event.fingerprint;
+        }
+        
+        [[EventWS sharedBP]postComment:text Event:fingerprint WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                NSMutableDictionary *commentDict = [NSMutableDictionary dictionary];
+                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                
+                [commentDict setObject:[NSString stringWithFormat:@"%@ %@",name,surname] forKey:@"name"];
+                [commentDict setObject:text forKey:@"comment"];
+                
+                Comments *c = [[Comments alloc]init];
+                c.userCommentDict = commentDict;
+                [comments addObject:c];
+                
+                [self.tableV reloadData];
+                [self prependTextToTextView:text];
+                [composeBarView setText:@"" animated:YES];
+                [composeBarView resignFirstResponder];
+                
+            }
+        }];
+        
+    }
+
     
     
 }

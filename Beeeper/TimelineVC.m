@@ -19,6 +19,8 @@
 #import "SuggestBeeepVC.h"
 #import "EventWS.h"
 #import "Event_Show_Object.h"
+#import "BPSuggestions.h"
+
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -483,6 +485,17 @@
     }else{
         [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:nil];
     }
+    
+//    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+//        
+//        if (completed) {
+//            if (objcts>0) {
+//               
+//            }
+//        }
+//    }];
+
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -886,6 +899,7 @@
     
     
 }
+
 
 
 -(void)imageDownloadFinished:(NSNotification *)notif{

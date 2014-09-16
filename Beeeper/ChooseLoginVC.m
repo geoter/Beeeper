@@ -220,7 +220,7 @@
                  
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper Disabled" message:@"Please enable Beeeper in your Settings->Facebook" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper Disabled" message:@"Please go to Settings > Facebook and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                      [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                  }
                  else

@@ -1245,9 +1245,21 @@
     
     isLiker = NO;
     
+    @try {
+        NSArray *beeepersArr = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        beeepers = [beeepersArr valueForKey:@"id"];
+    }
+    @catch (NSException *exception) {
+    
+    }
+    @finally {
+    
+    }
+   
+    
     if(beeep == nil){
         self.likesLabel.hidden = YES;
-        self.beeepsLabel.hidden = YES;
+        self.beeepsLabel.hidden = (beeepers.count == 0)?YES:NO;
         self.commentsLabel.hidden = YES;
     }
     else{

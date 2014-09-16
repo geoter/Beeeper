@@ -3601,6 +3601,7 @@
                         <outlet property="profileImage" destination="FWz-V2-aUA" id="CI2-IF-RaR"/>
                         <outlet property="profileImageBorderV" destination="NMV-RM-1dD" id="XdG-GP-Kkl"/>
                         <outlet property="settingsIcon" destination="S5d-gQ-BPi" id="pLl-TY-NrU"/>
+                        <outlet property="suggestionsButton" destination="qoi-3H-D8O" id="5H2-HT-E31"/>
                         <outlet property="tableV" destination="AM0-DC-lTp" id="Px2-M7-kYt"/>
                         <outlet property="topV" destination="8TV-rn-oLs" id="xTq-Gi-VZv"/>
                         <outlet property="userCityLabel" destination="S8y-sB-67d" id="xA7-Bf-cHW"/>
@@ -3813,7 +3814,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Add_new_beeep_btn.png" width="62" height="62"/>
+        <image name="Add_new_beeep_btn.png" width="65" height="65"/>
         <image name="Beeep_it_btn.png" width="131" height="40"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="activityBtn.png" width="34" height="35"/>

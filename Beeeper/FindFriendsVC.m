@@ -950,7 +950,7 @@
         
         [FBWebDialogs
          presentRequestsDialogModallyWithSession:nil
-         message:@"Learn how to make your iOS apps social."
+         message:@"I would like to invite you to use Beeeper!"
          title:nil
          parameters:params
          handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {

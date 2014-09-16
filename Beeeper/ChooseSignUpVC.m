@@ -138,7 +138,7 @@
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
                      
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please enable Beeeper in your Settings->Facebook." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please go to Settings > Facebook and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                      [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                  }
                  else
@@ -372,7 +372,9 @@
                 
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please go to Settings > Privacy > Location Services and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                
                 [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             }
             
@@ -537,7 +539,7 @@
             
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please make sure that Beeeper is enabled in Location Settings" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please go to Settings > Privacy > Location Services and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
         }
         

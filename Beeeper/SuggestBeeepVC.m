@@ -9,6 +9,7 @@
 #import "SuggestBeeepVC.h"
 #import "BPSuggestions.h"
 
+
 @interface SuggestBeeepVC ()
 {
     NSMutableArray *people;
@@ -47,6 +48,14 @@
     UIColor *color = [UIColor lightTextColor];
     self.searchTxtF.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Search by name" attributes:@{NSForegroundColorAttributeName: color}];
     
+    [self getFollowers];
+
+}
+
+-(void)getFollowers{
+    
+    static int failsCount = 0;
+    
     [[BPUser sharedBP]getFollowersForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
         
         if (objs == 0) {
@@ -62,8 +71,13 @@
             filteredPeople = people;
             [self.tableV reloadData];
         }
+        else{
+            failsCount++;
+            if (failsCount < 5) {
+                [self getFollowers];
+            }
+        }
     }];
-
 }
 
 -(void)adjustFonts{

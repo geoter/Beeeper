@@ -3812,6 +3812,72 @@
             </objects>
             <point key="canvasLocation" x="2706" y="257"/>
         </scene>
+        <!--Google Custom SearchVC - Search Images-->
+        <scene sceneID="2kY-Hu-ufN">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="bSZ-6Z-ZHH" customClass="GoogleCustomSearchVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oVD-rd-cjC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="0BH-4U-uxy">
+                                <rect key="frame" x="0.0" y="69" width="320" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type to Search" minimumFontSize="17" id="2NZ-Mq-uWs">
+                                        <rect key="frame" x="31" y="0.0" width="289" height="42"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="bSZ-6Z-ZHH" id="mKG-ff-JcK"/>
+                                        </connections>
+                                    </textField>
+                                    <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="search_icon_2.png" id="tLA-Tz-Bg8">
+                                        <rect key="frame" x="10" y="15" width="13" height="12"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Gig-6U-YQR">
+                                <rect key="frame" x="0.0" y="112" width="320" height="456"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Search Images" id="vMm-zU-jPl"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="scrollview" destination="Gig-6U-YQR" id="Kyr-Dx-oou"/>
+                        <outlet property="searchField" destination="2NZ-Mq-uWs" id="RhR-vi-6zT"/>
+                        <outlet property="topV" destination="0BH-4U-uxy" id="Aox-9P-HPR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eBu-HC-Vjo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3142" y="975"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="PvF-wM-ngi">
+            <objects>
+                <navigationController storyboardIdentifier="GoogleCustomSearchVC" automaticallyAdjustsScrollViewInsets="NO" id="hNR-4I-fPd" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZBT-76-Jf9">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="bSZ-6Z-ZHH" kind="relationship" relationship="rootViewController" id="0UZ-XW-NTG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="k1L-jQ-zZd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2758" y="975"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Add_new_beeep_btn.png" width="65" height="65"/>

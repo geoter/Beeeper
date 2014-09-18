@@ -123,6 +123,17 @@
     page = 0;
     loadNextPage = YES;
 
+    
+    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+    [loadingView setBackgroundColor:[UIColor clearColor]];
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [loadingView addSubview:activityIndicator];
+    activityIndicator.center =loadingView.center;
+    [self.view addSubview:loadingView];
+    [self.view bringSubviewToFront:loadingView];
+    [activityIndicator startAnimating];
+    
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed && selectedOption == BeeeperButton) {
@@ -143,6 +154,7 @@
                  }
                                  completion:^(BOOL finished)
                  {
+                     [loadingView removeFromSuperview];
                  }
                  ];
             }
@@ -424,20 +436,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     
-    if (loadingView != nil) {
-        [loadingView removeFromSuperview];
-    }
-    
-    
-    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
-    [loadingView setBackgroundColor:[UIColor clearColor]];
-    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
-    [loadingView addSubview:activityIndicator];
-    activityIndicator.center =loadingView.center;
-    [self.view addSubview:loadingView];
-    [self.view bringSubviewToFront:loadingView];
-    [activityIndicator startAnimating];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationItem.hidesBackButton = YES;
@@ -541,7 +540,7 @@
     
     if (selectedOption == FacebookButton) {
         
-        txtF.text = [user objectForKey:@"name"];
+        txtF.text = [[user objectForKey:@"name"] capitalizedString];
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
@@ -569,8 +568,8 @@
     }
     else{
     
-        NSString *name =[user objectForKey:@"name"];
-        NSString *lastname =[user objectForKey:@"lastname"];
+        NSString *name =[[user objectForKey:@"name"] capitalizedString];
+        NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
 
         NSArray *emails= [user objectForKey:@"emails"];
         NSMutableString *emailsStr = [[NSMutableString alloc]init];
@@ -584,14 +583,14 @@
             
         }
            if (name && lastname) {
-            txtF.text = [NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]];
+            txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
         }
         else if(name == nil && lastname == nil && emails.count > 0){
            
             txtF.text = emailsStr;
         }
         else{
-            txtF.text = [NSString stringWithFormat:@"%@",([user objectForKey:@"name"])?[user objectForKey:@"name"]:[user objectForKey:@"lastname"]];
+            txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
         }
 
         emailtxtF.text = emailsStr;
@@ -904,7 +903,7 @@
         
         NSURL *url = [NSURL URLWithString:@"https://api.elasticemail.com/mailer/send"];
         
-        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+        __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
         [request addPostValue:@"Beeeper" forKey:@"from"];
@@ -1047,14 +1046,21 @@
 
 - (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
+    static int count = 0;
+    
     if ([text isEqualToString:@"\n"]) {
         [searchBar resignFirstResponder];
         return YES;
     }
     
-    NSString* searchText = [searchBar.text stringByReplacingCharactersInRange:range withString:text];
-    
-    [self filterContentForSearchText:searchText scope:nil];
+    if (count == 1) {
+         NSString* searchText = [searchBar.text stringByReplacingCharactersInRange:range withString:text];
+         [self filterContentForSearchText:searchText scope:nil];
+        count = 0;
+    }
+    else{
+        count ++;
+    }
     
     return YES;
 }

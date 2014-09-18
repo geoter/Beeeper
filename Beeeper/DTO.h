@@ -24,3 +24,18 @@
 + (BOOL)isInternetReachable;
 
 @end
+
+
+@interface NSString(UnicodeEncode)
+-(NSString *)unicodeEncode;
+@end
+
+@implementation NSString(UnicodeEncode)
+
+-(NSString *)unicodeEncode{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *decodevalue = [[NSString alloc] initWithData:data encoding:NSNonLossyASCIIStringEncoding];
+    return decodevalue;
+}
+
+@end

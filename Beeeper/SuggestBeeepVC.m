@@ -64,12 +64,23 @@
         else{
             self.noBeeepersFoundLbl.hidden = YES;
         }
+        
         if (completed) {
-            people = [NSMutableArray arrayWithArray:objs];
-            NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
-            people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
-            filteredPeople = people;
-            [self.tableV reloadData];
+            
+            @try {
+                people = [NSMutableArray arrayWithArray:objs];
+                NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
+                people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
+                filteredPeople = people;
+                [self.tableV reloadData];
+            }
+            @catch (NSException *exception) {
+    
+            }
+            @finally {
+    
+            }
+         
         }
         else{
             failsCount++;
@@ -129,24 +140,33 @@
 }
 
 - (IBAction)donePressed:(id)sender {
-    
-    NSMutableArray *users_ids = [NSMutableArray array];
-    
-    for (NSDictionary *user in selectedPeople) {
-        [users_ids addObject:[user objectForKey:@"id"]];
+    @try {
+        NSMutableArray *users_ids = [NSMutableArray array];
+        
+        for (NSDictionary *user in selectedPeople) {
+            [users_ids addObject:[user objectForKey:@"id"]];
+        }
+        
+        [[BPSuggestions sharedBP]suggestEvent:self.fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Suggested!"];
+                [self closePressed:nil];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Suggestion failed. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+            }
+        }];
     }
+    @catch (NSException *exception) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Exception Error" message:@"Suggestion failed." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    @finally {
     
-    [[BPSuggestions sharedBP]suggestEvent:self.fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
-        if (completed) {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Suggested!"];
-            [self closePressed:nil];
-        }
-        else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Suggestion failed. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-        }
-    }];
+    }
+ 
 }
 
 -(void)showInView:(UIView *)v{
@@ -229,29 +249,39 @@
     NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString *imagePath = [user objectForKey:@"image_path"];
+   
+    @try {
     
-    //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        userImage.backgroundColor = [UIColor clearColor];
-        userImage.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        userImage.image = img;
-    }
-    else{
-        userImage.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        
-      //  NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
         NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            userImage.backgroundColor = [UIColor clearColor];
+            userImage.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            userImage.image = img;
+        }
+        else{
+            userImage.image = nil;
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            
+            //  NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
+            
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+        }
+
     }
+    @catch (NSException *exception) {
+    
+    }
+    @finally {
+    
+    }
+    //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
     
     if ([selectedPeople indexOfObject:user] != NSNotFound) {
         [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];

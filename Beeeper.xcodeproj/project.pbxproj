@@ -38,6 +38,8 @@
 		5E1781ED19C1EC9300B01832 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1781DD19C1EC9300B01832 /* UIView+WebCacheOperation.m */; };
 		5E1D5645192F316000962F94 /* MyDateTimePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1D5644192F316000962F94 /* MyDateTimePicker.m */; };
 		5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1D5646192F616300962F94 /* AddressBook.framework */; };
+		5E35C55F19C9A92B00D39D6B /* GoogleCustomSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E35C55E19C9A92B00D39D6B /* GoogleCustomSearchVC.m */; };
+		5E35C56319C9AA3A00D39D6B /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E35C56219C9AA3A00D39D6B /* AsyncImageView.m */; };
 		5E3C24FD198BFA5500096329 /* beeepItPassed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FB198BFA5500096329 /* beeepItPassed.png */; };
 		5E3C24FE198BFA5500096329 /* beeepItPassed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */; };
 		5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8801960981C00DB2E6F /* CoreData.framework */; };
@@ -587,6 +589,10 @@
 		5E1D5644192F316000962F94 /* MyDateTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDateTimePicker.m; sourceTree = "<group>"; };
 		5E1D5646192F616300962F94 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		5E1D5648192F616900962F94 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		5E35C55D19C9A92B00D39D6B /* GoogleCustomSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleCustomSearchVC.h; sourceTree = "<group>"; };
+		5E35C55E19C9A92B00D39D6B /* GoogleCustomSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleCustomSearchVC.m; sourceTree = "<group>"; };
+		5E35C56119C9AA3A00D39D6B /* AsyncImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageView.h; sourceTree = "<group>"; };
+		5E35C56219C9AA3A00D39D6B /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
 		5E3C24FB198BFA5500096329 /* beeepItPassed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItPassed.png; sourceTree = "<group>"; };
 		5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepItPassed@2x.png"; sourceTree = "<group>"; };
 		5E51B8801960981C00DB2E6F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -1271,6 +1277,8 @@
 				CE79422B18DB22CD00748EDD /* BeeepItVC.m */,
 				CEF263A818DC68390047510D /* BeeepTimeVC.h */,
 				CEF263A918DC68390047510D /* BeeepTimeVC.m */,
+				5E35C55D19C9A92B00D39D6B /* GoogleCustomSearchVC.h */,
+				5E35C55E19C9A92B00D39D6B /* GoogleCustomSearchVC.m */,
 			);
 			name = Beeep;
 			sourceTree = "<group>";
@@ -1343,6 +1351,15 @@
 				5E1781DD19C1EC9300B01832 /* UIView+WebCacheOperation.m */,
 			);
 			path = SDWebImage;
+			sourceTree = "<group>";
+		};
+		5E35C56019C9AA3A00D39D6B /* AsyncImageView */ = {
+			isa = PBXGroup;
+			children = (
+				5E35C56119C9AA3A00D39D6B /* AsyncImageView.h */,
+				5E35C56219C9AA3A00D39D6B /* AsyncImageView.m */,
+			);
+			path = AsyncImageView;
 			sourceTree = "<group>";
 		};
 		5E51B8B519614C7900DB2E6F /* GKClasses */ = {
@@ -1791,6 +1808,7 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5E35C56019C9AA3A00D39D6B /* AsyncImageView */,
 				5E1781BC19C1EC9300B01832 /* SDWebImage */,
 				5E58956C1975950100FDA837 /* JSBadgeView.h */,
 				5E58956D1975950100FDA837 /* JSBadgeView.m */,
@@ -3060,6 +3078,7 @@
 				96733221194863AE00A58217 /* UserActivity.m in Sources */,
 				CE7CFADC18B797310044C9AC /* HPGrowingTextView.m in Sources */,
 				CE02EC2F18EC64D800B5674C /* AFImageRequestOperation.m in Sources */,
+				5E35C56319C9AA3A00D39D6B /* AsyncImageView.m in Sources */,
 				CE02EC2E18EC64D800B5674C /* AFHTTPRequestOperation.m in Sources */,
 				5E51B8C319614C7900DB2E6F /* GKImageCropOverlayView.m in Sources */,
 				CEA64F5518B3C48A00B7ECF5 /* SignUpVC.m in Sources */,
@@ -3113,6 +3132,7 @@
 				5E1781E419C1EC9300B01832 /* SDWebImageDownloaderOperation.m in Sources */,
 				CEEE3EEC18C9FBD200665C21 /* ChooseLoginVC.m in Sources */,
 				5E09B55C192216C800AF5DE8 /* Timeline_Object.m in Sources */,
+				5E35C55F19C9A92B00D39D6B /* GoogleCustomSearchVC.m in Sources */,
 				5E1781EA19C1EC9300B01832 /* UIImage+WebP.m in Sources */,
 				CEF1E5B018E48BAF00DF7539 /* TimelineVC.m in Sources */,
 				CEFDE83C18EDAE4600E500A9 /* TermsVC.m in Sources */,

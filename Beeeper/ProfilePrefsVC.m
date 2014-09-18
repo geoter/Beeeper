@@ -350,7 +350,7 @@
     
     
     mediaPicker = [[GKImagePicker alloc] init];
-    mediaPicker.cropSize = CGSizeMake(310, 241);
+    mediaPicker.cropSize = CGSizeMake(300,300);
     mediaPicker.delegate = self;
     
     if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {

@@ -409,7 +409,7 @@
     }
     else if(activity.eventActivity.count > 0){
         EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [event.title capitalizedString];
+        NSString *event_title = [[event.title unicodeEncode]capitalizedString];
         formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
     }
     else if(activity.beeepInfoActivity.eventActivity.count >0){
@@ -449,7 +449,7 @@
     else if(activity.eventActivity.count > 0){
         
         EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [event.title capitalizedString];
+        NSString *event_title = [[event.title unicodeEncode] capitalizedString];
         [attText addAttribute:NSFontAttributeName
                         value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                         range:[formattedString rangeOfString:event_title]];

@@ -20,7 +20,7 @@
 #import "EventWS.h"
 #import "Event_Show_Object.h"
 #import "BPSuggestions.h"
-
+#import "Reachability.h"
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -86,8 +86,10 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
-    @try {
     
+    
+    @try {
+        
         NSLog(@"Mpike");
         
         [self setUserInfo];
@@ -367,7 +369,11 @@
     
     [self downloadUserImageIfNecessery];
     
+    BOOL mpike;
+    
     if ([user objectForKey:@"name"] == nil || [user objectForKey:@"lastname"] == nil) {
+        
+         mpike = YES;
         
          [self showLoading];
         
@@ -393,6 +399,8 @@
         
         if ([user objectForKey:@"city"] == nil) {
           
+             mpike = YES;
+            
             [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
                 
                 [self hideLoading];
@@ -426,6 +434,19 @@
             self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
         }
     }
+    
+    if (!mpike) {
+        
+        [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+            
+            [self hideLoading];
+            if (completed && objs.count >0) {
+                NSDictionary *userDict = [objs firstObject];
+                self.user = userDict;
+                [self setUserInfo];
+            }
+        }];
+    }
 }
 
 -(void)downloadUserImageIfNecessery{
@@ -441,13 +462,25 @@
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+//        
+//        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+//            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+//            self.profileImage.image = img;
+//        }
+//        else{
+//
         
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            self.profileImage.image = img;
+        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+        [reachability startNotifier];
+        
+        NetworkStatus status = [reachability currentReachabilityStatus];
+        
+        if(status == NotReachable)
+        {
+            //No internet
         }
-        else{
-            
+        else if (status == ReachableViaWiFi)
+        {
             dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
             dispatch_async(q, ^{
                 /* Fetch the image from the server... */
@@ -464,6 +497,12 @@
                 });
             });
         }
+        else if (status == ReachableViaWWAN) 
+        {
+            //3G
+        }
+        
+       // }
     
     }
     @catch (NSException *exception) {

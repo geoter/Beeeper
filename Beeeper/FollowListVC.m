@@ -266,28 +266,40 @@
     NSString *imagePath = [user objectForKey:@"image_path"];
     
    // NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    @try {
+       
+        NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            userImage.backgroundColor = [UIColor clearColor];
+            userImage.image = nil;
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            userImage.image = img;
+        }
+        else{
+            userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+            [pendingImagesDict setObject:indexPath forKey:imageName];
+            
+            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
+            
+            
+        }
     
-    NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        userImage.backgroundColor = [UIColor clearColor];
-        userImage.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        userImage.image = img;
     }
-    else{
+    @catch (NSException *exception) {
+       
         userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-        [pendingImagesDict setObject:indexPath forKey:imageName];
         
         //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-        
 
     }
-
+    @finally {
+        
+    }
     if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
         btn.hidden = YES;
     }

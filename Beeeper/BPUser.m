@@ -223,7 +223,17 @@ static BPUser *thisWebServices = nil;
         [self updateUser];
     }
     else{
-        self.setUserSettingsCompleted(NO,nil);
+        
+        NSDictionary * response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        NSArray *errors = [response objectForKey:@"errors"];
+        
+        NSDictionary *error = [errors firstObject];
+        
+        if (error != nil) {
+            self.setUserSettingsCompleted(NO,[error objectForKey:@"message"]);
+        }
+
     }
 
 }

@@ -15,6 +15,11 @@
     NSMutableArray *googleReponseArray;
     NSMutableArray *moreButton;
     UITapGestureRecognizer *tapG;
+    int currentPage;
+    ASIFormDataRequest *requestAsync;
+    int lastX;
+    int lastY;
+    int lastHeight;
 }
 @end
 
@@ -49,7 +54,7 @@
     moreButton = [NSMutableArray array];
     
     if (self.initialText) {
-         [self getGoogleImagesForQuery:self.initialText withPage:1];   
+         [self getGoogleImagesForQuery:self.initialText withPage:1];
     }
 }
 
@@ -75,13 +80,37 @@
     if (!tapG) {
         tapG = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(releaseKeyboard)];
     }
-
+   
+    for (UIView *v in self.scrollview.subviews) {
+        [v setUserInteractionEnabled:NO];
+    }
+    
     [self.scrollview addGestureRecognizer:tapG];
 }
 
+
 -(void)textFieldDidEndEditing:(UITextField *)textField{
+    
+    for (UIView *v in self.scrollview.subviews) {
+        [v setUserInteractionEnabled:YES];
+    }
+    
     [self.scrollview removeGestureRecognizer:tapG];
 }
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    for (UIView *v in self.scrollview.subviews) {
+        [v setUserInteractionEnabled:YES];
+    }
+    
+    [self.scrollview removeGestureRecognizer:tapG];
+
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
 
 -(void)releaseKeyboard{
     [self.searchField resignFirstResponder];
@@ -90,6 +119,16 @@
 - (void)getGoogleImagesForQuery:(NSString*)query withPage:(int)page
 {
     @try{
+        
+        if (page == 1) {
+            lastX = 5;
+            lastY = 5;
+            lastHeight = 110;
+            
+            for (UIView *v in self.scrollview.subviews) {
+                [v removeFromSuperview];
+            }
+        }
     
         int firstImageNumber = page * 6;
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:
@@ -98,32 +137,50 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         NSLog(@"Request is %@",request);
         
-        __weak ASIFormDataRequest *requestAsync = [[ASIFormDataRequest alloc]initWithURL:url];
-        [requestAsync setRequestMethod:@"GET"];
-        [requestAsync setCompletionBlock:^(void){
-            [requestAsync responseData];
+        requestAsync = [ASIFormDataRequest requestWithURL:url];
+        __weak ASIFormDataRequest *requestWeak = requestAsync;
+        
+        [requestWeak setRequestMethod:@"GET"];
+        [requestWeak setCompletionBlock:^{
+        
+            @try {
+               
+                NSData *responseData = [requestWeak responseData];
+                
+                NSError *error;
+                NSDictionary *responseDic = [NSJSONSerialization JSONObjectWithData:
+                                             responseData options:NSJSONWritingPrettyPrinted error:&error];
+                
+                NSArray *resultArray = [[responseDic objectForKey:@"responseData"]
+                                        objectForKey:@"results"];
+                for(int i=0;i<[resultArray count];i++)
+                    [googleReponseArray addObject:[resultArray objectAtIndex:i]];
+                ;
+                
+                [self displayImages:resultArray];
+                
+                currentPage = page+1;
+                
+                if (currentPage < 5) {
+                    [self getGoogleImagesForQuery:query withPage:currentPage];
+                }
+                
+            }
+            @catch (NSException *exception) {
+     
+            }
+            @finally {
+            
+            }
+
         }];
         
-        NSData *responseData = [NSURLConnection sendSynchronousRequest:request
-                                                     returningResponse:nil error:nil];
-        NSError *error;
-        NSDictionary *responseDic = [NSJSONSerialization JSONObjectWithData:
-                                     responseData options:NSJSONWritingPrettyPrinted error:&error];
+        [requestWeak setFailedBlock:^{
+            NSLog(@"fail");
+        }];
         
-        NSArray *resultArray = [[responseDic objectForKey:@"responseData"]
-                                objectForKey:@"results"];
-        for(int i=0;i<[resultArray count];i++)
-           [googleReponseArray addObject:[resultArray objectAtIndex:i]];
-        ;
-
-        page = page + 1;
+        [requestWeak startAsynchronous];
         
-        if (page < 5) {
-            
-            [self getGoogleImagesForQuery:query withPage:page];
-            
-            [self displayImages];
-        }
         
     }
     
@@ -133,20 +190,24 @@
 }
 
 
--(void)displayImages{
+-(void)displayImages:(NSArray *)images{
+    
+//    for (UIView *v in self.scrollview.subviews){
+//        [v removeFromSuperview];
+//    }
     
     self.scrollview.contentInset = UIEdgeInsetsZero;
     
-    int x = 5;
-    int y = 5;
-    int height = 110;
-    for(int i=0;i<[googleReponseArray count];i++){
+    int x = lastX;
+    int y = lastY;
+    int height = lastHeight;
+    for(int i=0;i<[images count];i++){
         
         if((i != 0) && (i%3==0)){
             x = 5;
             height = height + 105;
             y = y + 105;
-            self.scrollview.contentSize = CGSizeMake(320,height );
+            self.scrollview.contentSize = CGSizeMake(320,height);
         }
         
         AsyncImageView* asyncImage = [[AsyncImageView alloc]
@@ -156,7 +217,7 @@
         asyncImage.layer.borderColor = [[UIColor grayColor] CGColor];
         asyncImage.layer.borderWidth = 1.0f;
         asyncImage.imageURL = [NSURL URLWithString:
-                               [[googleReponseArray objectAtIndex:i]objectForKey:@"tbUrl"]];//tbUrl
+                               [[images objectAtIndex:i]objectForKey:@"tbUrl"]];//tbUrl
         [self.scrollview addSubview:asyncImage];
         
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -168,7 +229,14 @@
         
         x = x + 105;
         
+        lastX = x;
+        lastY = y;
+        lastHeight = height;
     }
+    
+}
+
+-(void)imageSelection:(UIButton *)btn{
     
 }
 

@@ -86,8 +86,6 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
-    
-    
     @try {
         
         NSLog(@"Mpike");
@@ -243,12 +241,11 @@
                 
                 if (beeeps.count > 0) {
                     loading = NO;
+                    [self.tableV reloadData];
                 }
                 
                // suggestionsPerSection = [NSMutableDictionary dictionary];
                // sections = [NSMutableArray array];
-                
-                [self.tableV reloadData];
                 
 //                [self groupBeeepsByMonth];
                 
@@ -443,7 +440,8 @@
             if (completed && objs.count >0) {
                 NSDictionary *userDict = [objs firstObject];
                 self.user = userDict;
-                [self setUserInfo];
+                
+                [self downloadUserImageIfNecessery];
             }
         }];
     }

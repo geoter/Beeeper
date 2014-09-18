@@ -794,12 +794,12 @@
                 break;
             case 2://search web
             {
-                UINavigationController *navVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
-                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
-                vC.initialText = [values objectForKey:@"title"];
-                [self presentViewController:navVC animated:YES completion:nil];
-                
-                return;
+//                UINavigationController *navVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
+//                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
+//                vC.initialText = [values objectForKey:@"title"];
+//                [self presentViewController:navVC animated:YES completion:nil];
+//                
+//                return;
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
@@ -837,16 +837,17 @@
             case 1://search web
             {
                 
-                UINavigationController *navVC  = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
-                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
-                vC.initialText = [values objectForKey:@"title"];
-                [self presentViewController:navVC animated:YES completion:nil];
-
-                return;
+//                UINavigationController *navVC  = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
+//                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
+//                vC.initialText = [values objectForKey:@"title"];
+//                [self presentViewController:navVC animated:YES completion:nil];
+//
+//                return;
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
                 picker.delegate = self;
+                picker.initialSearchTerm = [values objectForKey:@"title"];
                 picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
                 picker.enablePhotoDownload = YES;
                 picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;

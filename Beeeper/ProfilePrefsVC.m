@@ -96,8 +96,17 @@
             self.navigationItem.rightBarButtonItem = nil;
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
+            
+            if ([objs isKindOfClass:[NSString class]]) {
+                NSString *obj = (NSString *)objs;
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:obj delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Editing failed" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
             
             UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Save"
                                                                             style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];

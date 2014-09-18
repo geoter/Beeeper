@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment defaultVersion="1792" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
         <!--Choose LoginVC-->
@@ -130,7 +131,7 @@
             </objects>
             <point key="canvasLocation" x="151" y="257"/>
         </scene>
-        <!--CommentsVC - Comments-->
+        <!--Comments-->
         <scene sceneID="cpL-8T-tFC">
             <objects>
                 <viewController storyboardIdentifier="CommentsVC" automaticallyAdjustsScrollViewInsets="NO" id="aj7-rd-wlg" customClass="CommentsVC" sceneMemberID="viewController">
@@ -340,7 +341,7 @@
             </objects>
             <point key="canvasLocation" x="1630" y="975"/>
         </scene>
-        <!--Missing Fields - Missing Fields-->
+        <!--Missing Fields-->
         <scene sceneID="uac-9K-9jc">
             <objects>
                 <viewController storyboardIdentifier="MissingFields" title="Missing Fields" automaticallyAdjustsScrollViewInsets="NO" id="fGe-UV-Q9O" customClass="MissingFields" sceneMemberID="viewController">
@@ -1746,7 +1747,7 @@
             </objects>
             <point key="canvasLocation" x="534" y="257"/>
         </scene>
-        <!--Notifications PrefsVC - Notification Preferences-->
+        <!--Notification Preferences-->
         <scene sceneID="laW-ei-iZM">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="FVA-S2-UhM" customClass="NotificationsPrefsVC" sceneMemberID="viewController">
@@ -2048,7 +2049,7 @@
             </objects>
             <point key="canvasLocation" x="1664" y="1670"/>
         </scene>
-        <!--Profile PrefsVC - Edit Profile-->
+        <!--Edit Profile-->
         <scene sceneID="Npu-OJ-VWB">
             <objects>
                 <viewController storyboardIdentifier="EditProfile" automaticallyAdjustsScrollViewInsets="NO" id="s2Z-gV-BIl" customClass="ProfilePrefsVC" sceneMemberID="viewController">
@@ -2292,7 +2293,7 @@
             </objects>
             <point key="canvasLocation" x="2069" y="1667"/>
         </scene>
-        <!--SettingsVC - Settings-->
+        <!--Settings-->
         <scene sceneID="R1r-P8-9RX">
             <objects>
                 <viewController storyboardIdentifier="SettingsVC" title="Settings" automaticallyAdjustsScrollViewInsets="NO" id="78b-sP-fAQ" customClass="SettingsVC" sceneMemberID="viewController">
@@ -3051,7 +3052,7 @@
             </objects>
             <point key="canvasLocation" x="910" y="257"/>
         </scene>
-        <!--NotificationsVC - Notifications-->
+        <!--Notifications-->
         <scene sceneID="7hY-dL-HJG">
             <objects>
                 <viewController storyboardIdentifier="NotificationsVC" autoresizesArchivedViewToFullSize="NO" id="Ag7-X4-56u" customClass="NotificationsVC" sceneMemberID="viewController">
@@ -3612,7 +3613,7 @@
             </objects>
             <point key="canvasLocation" x="2350" y="257"/>
         </scene>
-        <!--SuggestionsVC - Suggestions-->
+        <!--Suggestions-->
         <scene sceneID="N0i-Mh-6sV">
             <objects>
                 <viewController storyboardIdentifier="SuggestionsVC" id="1xM-QF-nJ3" customClass="SuggestionsVC" sceneMemberID="viewController">
@@ -3812,7 +3813,7 @@
             </objects>
             <point key="canvasLocation" x="2706" y="257"/>
         </scene>
-        <!--Google Custom SearchVC - Search Images-->
+        <!--Search Images-->
         <scene sceneID="2kY-Hu-ufN">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="bSZ-6Z-ZHH" customClass="GoogleCustomSearchVC" sceneMemberID="viewController">

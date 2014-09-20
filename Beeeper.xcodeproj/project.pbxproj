@@ -649,6 +649,7 @@
 		5EA7FAED19594E910033C061 /* suggest_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_selected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
+		5EA8C94919CC8FC400F1EE01 /* UIImagePickerControllerExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImagePickerControllerExtended.h; sourceTree = "<group>"; };
 		5EBAFA9319C1962F0093D6BA /* WebBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebBrowserVC.h; sourceTree = "<group>"; };
 		5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebBrowserVC.m; sourceTree = "<group>"; };
 		5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -1738,6 +1739,7 @@
 		CE02EBB918EC624D00B5674C /* UIImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
+				5EA8C94919CC8FC400F1EE01 /* UIImagePickerControllerExtended.h */,
 				CE02EBBA18EC624D00B5674C /* UIImagePickerController+Block.h */,
 				CE02EBBB18EC624D00B5674C /* UIImagePickerController+Block.m */,
 				CE02EBBC18EC624D00B5674C /* UIImagePickerController+Edit.h */,
@@ -3310,7 +3312,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2CBDECBD-9199-4121-AB49-7F26F8467463";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3334,7 +3336,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2CBDECBD-9199-4121-AB49-7F26F8467463";
+				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

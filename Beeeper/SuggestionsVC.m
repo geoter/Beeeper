@@ -281,7 +281,7 @@
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         NSString *imageName = [NSString stringWithFormat:@"%@",[what.imageUrl MD5]];
-        
+        imageName = [[DTO sharedDTO]fixLink:imageName];
       
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];

@@ -183,16 +183,23 @@ static BPSuggestions *thisWebServices = nil;
     
     requestFailedCounter++;
     
-    NSString *responseString = [request responseString];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
-    
-    if (requestFailedCounter < 5) {
-        [self getSuggestionsWithCompletionBlock:self.completed];
+    @try {
+        NSString *responseString = [request responseString];
+        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
+
     }
-    else{
-        self.completed(NO,nil);
+    @catch (NSException *exception) {
+        
     }
-    
+    @finally {
+        if (requestFailedCounter < 5) {
+            [self getSuggestionsWithCompletionBlock:self.completed];
+        }
+        else{
+            self.completed(NO,nil);
+        }
+   
+    }
 }
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{

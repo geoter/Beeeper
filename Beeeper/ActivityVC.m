@@ -230,7 +230,9 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    
+    self.title = @"Activity";
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 

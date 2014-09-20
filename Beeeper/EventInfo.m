@@ -10,6 +10,7 @@
 
 NSString *const kEventInfoLocked = @"locked";
 NSString *const kEventInfoSource = @"source";
+NSString *const kEventInfoComments = @"comments";
 NSString *const kEventInfoLocation = @"location";
 NSString *const kEventInfoImageUrl = @"image_url";
 NSString *const kEventInfoTitle = @"title";
@@ -18,6 +19,8 @@ NSString *const kEventInfoDescription = @"description";
 NSString *const kEventInfoTimestamp = @"timestamp";
 NSString *const kEventInfoLoc = @"loc";
 NSString *const kEventInfoUrl = @"url";
+NSString *const kEventInfoLikesCount = @"likes_count";
+NSString *const kEventInfoLikes = @"likes";
 
 
 @interface EventInfo ()
@@ -28,6 +31,7 @@ NSString *const kEventInfoUrl = @"url";
 
 @implementation EventInfo
 
+@synthesize comments = _comments;
 @synthesize locked = _locked;
 @synthesize source = _source;
 @synthesize location = _location;
@@ -38,7 +42,8 @@ NSString *const kEventInfoUrl = @"url";
 @synthesize timestamp = _timestamp;
 @synthesize loc = _loc;
 @synthesize url = _url;
-
+@synthesize likesCount = _likesCount;
+@synthesize likes = _likes;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
@@ -62,7 +67,9 @@ NSString *const kEventInfoUrl = @"url";
             self.timestamp = [[self objectOrNilForKey:kEventInfoTimestamp fromDictionary:dict] doubleValue];
             self.loc = [self objectOrNilForKey:kEventInfoLoc fromDictionary:dict];
             self.url = [self objectOrNilForKey:kEventInfoUrl fromDictionary:dict];
-
+            self.likesCount = [[self objectOrNilForKey:kEventInfoLikesCount fromDictionary:dict] doubleValue];
+            self.likes = [self objectOrNilForKey:kEventInfoLikes fromDictionary:dict];
+            self.comments = [self objectOrNilForKey:kEventInfoComments fromDictionary:dict];
     }
     
     return self;
@@ -92,7 +99,32 @@ NSString *const kEventInfoUrl = @"url";
     }
     [mutableDict setValue:[NSArray arrayWithArray:tempArrayForLoc] forKey:kEventInfoLoc];
     [mutableDict setValue:self.url forKey:kEventInfoUrl];
-
+    [mutableDict setValue:[NSNumber numberWithDouble:self.likesCount] forKey:kEventInfoLikesCount];
+    
+    NSMutableArray *tempArrayForLikes = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.likes) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForLikes addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForLikes addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForLikes] forKey:kEventInfoLikes];
+    
+    NSMutableArray *tempArrayForComments = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.comments) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForComments addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForComments addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForComments] forKey:kEventInfoComments];
+    
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
 
@@ -125,12 +157,17 @@ NSString *const kEventInfoUrl = @"url";
     self.timestamp = [aDecoder decodeDoubleForKey:kEventInfoTimestamp];
     self.loc = [aDecoder decodeObjectForKey:kEventInfoLoc];
     self.url = [aDecoder decodeObjectForKey:kEventInfoUrl];
+    self.likesCount = [aDecoder decodeDoubleForKey:kEventInfoLikesCount];
+    self.likes = [aDecoder decodeObjectForKey:kEventInfoLikes];
+    self.comments = [aDecoder decodeObjectForKey:kEventInfoComments];
+
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-
+    [aCoder encodeObject:_comments forKey:kEventInfoComments];
+    [aCoder encodeObject:_likes forKey:kEventInfoLikes];
     [aCoder encodeDouble:_locked forKey:kEventInfoLocked];
     [aCoder encodeObject:_source forKey:kEventInfoSource];
     [aCoder encodeObject:_location forKey:kEventInfoLocation];
@@ -141,6 +178,7 @@ NSString *const kEventInfoUrl = @"url";
     [aCoder encodeDouble:_timestamp forKey:kEventInfoTimestamp];
     [aCoder encodeObject:_loc forKey:kEventInfoLoc];
     [aCoder encodeObject:_url forKey:kEventInfoUrl];
+    [aCoder encodeDouble:_likesCount forKey:kEventInfoLikesCount];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -148,7 +186,8 @@ NSString *const kEventInfoUrl = @"url";
     EventInfo *copy = [[EventInfo alloc] init];
     
     if (copy) {
-
+       
+        copy.comments = [self.comments copyWithZone:zone];
         copy.locked = self.locked;
         copy.source = [self.source copyWithZone:zone];
         copy.location = [self.location copyWithZone:zone];
@@ -159,6 +198,8 @@ NSString *const kEventInfoUrl = @"url";
         copy.timestamp = self.timestamp;
         copy.loc = [self.loc copyWithZone:zone];
         copy.url = [self.url copyWithZone:zone];
+         copy.likesCount = self.likesCount;
+         copy.likes = [self.likes copyWithZone:zone];
     }
     
     return copy;

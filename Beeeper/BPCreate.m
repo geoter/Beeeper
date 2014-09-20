@@ -148,18 +148,18 @@ static BPCreate *thisWebServices = nil;
         
         ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
         
-        NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
+        NSMutableArray *postValues = [[NSMutableArray alloc]init];
         
-        [postValues setObject:[self urlencode:fingerprint] forKey:@"fingerprint"];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
 
         for (NSString *key in values.allKeys) {
-                [postValues setObject:[self urlencode:[values objectForKey:key]] forKey:key];
+                [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:[values objectForKey:key]] forKey:key]];
                 [request setPostValue:[values objectForKey:key] forKey:key];
         }
         
         [request setPostValue:fingerprint forKey:@"fingerprint"];
         
-        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
+        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         
         [request setRequestMethod:@"POST"];
         

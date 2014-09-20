@@ -9,21 +9,18 @@
 #import "BeeepVC.h"
 #import "BeeepItVC.h"
 #import "DZNPhotoPickerController.h"
-#import "UIImagePickerController+Edit.h"
-#import "UIImagePickerController+Block.h"
+#import "UIImagePickerControllerExtended.h"
 #import "MyDateTimePicker.h"
 #import "Private.h"
 #import "LocationManager.h"
 #import <AddressBook/AddressBook.h>
 #import "BPCreate.h"
-#import "GKImagePicker.h"
 #import "GoogleCustomSearchVC.h"
 
 @class BorderTextField;
-@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate,GKImagePickerDelegate>
+@interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate>
 {
     NSMutableDictionary *values;
-    GKImagePicker *mediaPicker;
     MyDateTimePicker *datePicker;
     UITextField *activeTXTF;
     LocationManager *locManager;
@@ -771,9 +768,6 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
-    mediaPicker = [[GKImagePicker alloc] init];
-    mediaPicker.cropSize = CGSizeMake(310, 241);
-    mediaPicker.delegate = self;
     
     if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera                                  ]) {
         
@@ -781,25 +775,19 @@
             case 0: //Take Photo
             {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                    mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-                    [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+                    
+                    [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypeCamera];
                 }
             }
                 break;
             case 1: //Choose existing
             {
-                 mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                 [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+                 [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
             }
                 break;
             case 2://search web
             {
-//                UINavigationController *navVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
-//                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
-//                vC.initialText = [values objectForKey:@"title"];
-//                [self presentViewController:navVC animated:YES completion:nil];
-//                
-//                return;
+               
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
@@ -830,26 +818,19 @@
         switch (buttonIndex) {
             case 0: //Choose existing
             {
-                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+               [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
             }
                 break;
             case 1://search web
             {
                 
-//                UINavigationController *navVC  = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"GoogleCustomSearchVC"];
-//                GoogleCustomSearchVC *vC=[navVC.viewControllers firstObject];
-//                vC.initialText = [values objectForKey:@"title"];
-//                [self presentViewController:navVC animated:YES completion:nil];
-//
-//                return;
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
                 picker.delegate = self;
-                picker.initialSearchTerm = [values objectForKey:@"title"];
                 picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
                 picker.enablePhotoDownload = YES;
+                picker.initialSearchTerm = [values objectForKey:@"title"];
                 picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
                 
                 picker.finalizationBlock = ^(DZNPhotoPickerController *picker, NSDictionary *info) {
@@ -987,7 +968,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 # pragma mark -
 # pragma mark GKImagePicker Delegate Methods
 
-- (void)imagePicker:(GKImagePicker *)imagePicker pickedImage:(UIImage *)image{
+- (void)imagePicker:(UIImagePickerController *)imagePicker pickedImage:(UIImage *)image{
 
     NSLog(@"%@",NSStringFromCGSize(image.size));
     UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
@@ -1006,13 +987,30 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     base64Image = [self base64forData:imageData];
     
     [self imageSelected:chosenPhotoBtn];
-    
-    [self hideImagePicker];
 }
 
-- (void)hideImagePicker{
-    [mediaPicker.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+
+- (void)presentImagePickerWithSourceType:(UIImagePickerControllerSourceType)sourceType
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = sourceType;
+    picker.allowsEditing = YES;
+    picker.delegate = self;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+    // picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
+    /*picker.finalizationBlock = ^(UIImagePickerController *picker, NSDictionary *info) {
+     //   [self handleImagePicker:picker withMediaInfo:info];
+    };
+    
+    picker.cancellationBlock = ^(UIImagePickerController *picker) {
+     //   [self dismissController:picker];
+    };*/
+    
+ 
 }
+
 
 # pragma mark -
 # pragma mark UIImagePickerDelegate Methods
@@ -1033,8 +1031,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     base64Image = [self base64forData:imageData];
     
     [self imageSelected:chosenPhotoBtn];
-    
-    [self hideImagePicker];
 
 }
 

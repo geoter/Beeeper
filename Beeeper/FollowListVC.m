@@ -265,6 +265,7 @@
     
     NSString *imagePath = [user objectForKey:@"image_path"];
     
+    imagePath = [[DTO sharedDTO]fixLink:imagePath];
    // NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     @try {
        

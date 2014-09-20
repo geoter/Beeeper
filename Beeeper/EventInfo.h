@@ -11,16 +11,19 @@
 
 @interface EventInfo : NSObject <NSCoding, NSCopying>
 
-@property (nonatomic, assign) double locked;
-@property (nonatomic, strong) NSString *source;
-@property (nonatomic, strong) NSString *location;
-@property (nonatomic, strong) NSString *imageUrl;
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *fingerprint;
 @property (nonatomic, strong) NSString *eventInfoDescription;
+@property (nonatomic, strong) NSString *fingerprint;
+@property (nonatomic, strong) NSArray *comments;
 @property (nonatomic, assign) double timestamp;
-@property (nonatomic, strong) NSArray *loc;
+@property (nonatomic, strong) NSString *imageUrl;
+@property (nonatomic, strong) NSArray *likes;
 @property (nonatomic, strong) NSString *url;
+@property (nonatomic, strong) NSString *source;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *location;
+@property (nonatomic, assign) double locked;
+@property (nonatomic, strong) NSArray *loc;
+@property (nonatomic, assign) double likesCount;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

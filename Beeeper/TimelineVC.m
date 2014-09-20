@@ -76,6 +76,7 @@
                 if (objs.count == 10) {
                     loadNextPage = YES;
                 }
+                loading = NO;
 
                 [self.tableV reloadData];
 //                [self groupBeeepsByMonth];
@@ -86,13 +87,15 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
+    
+    
     @try {
         
         NSLog(@"Mpike");
         
         [self setUserInfo];
         
-        loadNextPage = YES;
+        loadNextPage = NO;
         
         if (option != 0 && option != 1) {
             option = segmentIndex;
@@ -150,8 +153,9 @@
                     
                   //  suggestionsPerSection = [NSMutableDictionary dictionary];
                    // sections = [NSMutableArray array];
-         
-                    [self.tableV reloadData];
+                    if (beeeps.count > 0) {
+                        [self.tableV reloadData];   
+                    }
                  //   [self groupBeeepsByMonth];
                 }
             }];
@@ -451,7 +455,7 @@
 
     @try {
         
-        NSString *imagePath = [user objectForKey:@"image_path"];
+        NSString *imagePath =  [[DTO sharedDTO]fixLink:[user objectForKey:@"image_path"]];
         
        // NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
@@ -460,14 +464,13 @@
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-//        
-//        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-//            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-//            self.profileImage.image = img;
-//        }
-//        else{
-//
         
+        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+            self.profileImage.image = img;
+        }
+
+  
         Reachability *reachability = [Reachability reachabilityForInternetConnection];
         [reachability startNotifier];
         
@@ -484,15 +487,19 @@
                 /* Fetch the image from the server... */
                 NSString *imagePath = [user objectForKey:@"image_path"];
                 NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
-                UIImage *img = [[UIImage alloc] initWithData:data];
-                
-                [self saveImage:img withFileName:imageName inDirectory:localPath];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    /* This is the main thread again, where we set the tableView's image to
-                     be what we just fetched. */
-                    self.profileImage.image = img;
-                });
+               
+                if (data) {
+                    
+                    UIImage *img = [[UIImage alloc] initWithData:data];
+                    
+                    [self saveImage:img withFileName:imageName inDirectory:localPath];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        /* This is the main thread again, where we set the tableView's image to
+                         be what we just fetched. */
+                        self.profileImage.image = img;
+                    });
+                }
             });
         }
         else if (status == ReachableViaWWAN) 
@@ -522,6 +529,7 @@
     }else{
         [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:nil];
     }
+    
     
 //    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 //        
@@ -952,6 +960,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {
+                loading = NO;
                 [self.tableV reloadData];
                 [rowsToReload removeAllObjects];
             }

@@ -12,21 +12,21 @@
 #import "UIImagePickerController+Block.h"
 #import "SPGooglePlacesAutocompleteDemoViewController.h"
 #import "SPGooglePlacesAutocomplete.h"
-#import "GKImagePicker.h"
 
-@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate,GKImagePickerDelegate>
+@interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
-    GKImagePicker *mediaPicker;
     NSString *base64Image;
     NSDictionary *user;
     NSString *gender;
     BOOL changedImage;
 
 }
+@property(nonatomic,strong) UIImage *selectedImage;
 @property(nonatomic,strong) SVPlacemark *place;
 @end
 
 @implementation ProfilePrefsVC
+@synthesize selectedImage;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -86,7 +86,15 @@
     }
     
     if (base64Image != nil) {
+       
         [dict setObject:base64Image forKey:@"base64_image"];
+        NSString *imageName = [NSString stringWithFormat:@"http://assets.beeeper.com/img/user/%@.jpg",[[BPUser sharedBP].user objectForKey:@"id"]];
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:[imageName MD5]];
+        
+        [self saveImage:selectedImage withFileName:[imageName MD5] inDirectory:localPath];
     }
     
     [[BPUser sharedBP]setUserSettings:dict WithCompletionBlock:^(BOOL completed,NSArray *objs){
@@ -199,7 +207,7 @@
 
 -(void)downloadUserImageIfNecessery{
     
-    NSString *imagePath = [user objectForKey:@"image_path"];
+    NSString *imagePath = [[DTO sharedDTO]fixLink:[user objectForKey:@"image_path"]];
     
   //  NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
@@ -358,10 +366,6 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
     
-    mediaPicker = [[GKImagePicker alloc] init];
-    mediaPicker.cropSize = CGSizeMake(300,300);
-    mediaPicker.delegate = self;
-    
     if (buttonIndex != actionSheet.cancelButtonIndex && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         
         
@@ -369,15 +373,13 @@
             case 0: //Take Photo
             {
                 if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                    mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-                    [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+                    [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypeCamera];
                 }
             }
                 break;
             case 1: //Choose existing
             {
-                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+                [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
             }
                 break;
                         default:
@@ -389,8 +391,7 @@
         switch (buttonIndex) {
             case 0: //Choose existing
             {
-                mediaPicker.imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                [self presentViewController:mediaPicker.imagePickerController animated:YES completion:NULL];
+                [self presentImagePickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
             }
                 break;
                       default:
@@ -399,6 +400,20 @@
         
     }
 }
+
+- (void)presentImagePickerWithSourceType:(UIImagePickerControllerSourceType)sourceType
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = sourceType;
+    picker.allowsEditing = YES;
+    picker.delegate = self;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+}
+
+
+
 
 
 -(void)imagePickerController:
@@ -442,6 +457,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                                             style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
             
             self.navigationItem.rightBarButtonItem = rightButton;
+            
+            selectedImage = img;
+            
         }
         
         changedImage = YES;
@@ -533,6 +551,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         BOOL write = [UIImageJPEGRepresentation(image, 1) writeToFile:directoryPath options:NSAtomicWrite error:nil];
         NSLog(@"Saved Image: %@ - %d",directoryPath,write);
         
+        if (!write) {
+           BOOL write = [UIImagePNGRepresentation(image) writeToFile:directoryPath options:NSAtomicWrite error:nil];
+            NSLog(@"ne");
+        }
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
@@ -541,7 +563,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 # pragma mark -
 # pragma mark GKImagePicker Delegate Methods
 
-- (void)imagePicker:(GKImagePicker *)imagePicker pickedImage:(UIImage *)image{
+- (void)imagePicker:(UIImagePickerController *)imagePicker pickedImage:(UIImage *)image{
     
     UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
     [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
@@ -551,7 +573,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
-    
+
+    selectedImage = image;
     NSData *imageData = UIImageJPEGRepresentation(image, 0.6);
     base64Image = [self base64forData:imageData];
     
@@ -564,13 +587,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
     changedImage = YES;
     self.profileImage.image = image;
-    [self hideImagePicker];
 
 }
 
-- (void)hideImagePicker{
-    [mediaPicker.imagePickerController dismissViewControllerAnimated:YES completion:nil];
-}
 
 # pragma mark -
 # pragma mark UIImagePickerDelegate Methods
@@ -585,7 +604,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
-    
+    selectedImage = image;
     NSData *imageData = UIImageJPEGRepresentation(image, 0.6);
     base64Image = [self base64forData:imageData];
     
@@ -598,7 +617,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
     changedImage = YES;
     self.profileImage.image = image;
-    [self hideImagePicker];
     
 }
 

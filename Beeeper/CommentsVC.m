@@ -128,13 +128,15 @@
     UIImageView *image = (id)[cell viewWithTag:2];
     
     
-    Comments *objct = [comments objectAtIndex:indexPath.row];
+    id objct = [comments objectAtIndex:indexPath.row];
     
     if ([objct isKindOfClass:[Comments class]]) {
     
-        if (objct.userCommentDict == nil) {
+        Comments *commentObjct = (Comments *)objct;
+        
+        if (commentObjct.userCommentDict == nil) {
             
-            double timestamp = objct.comment.timestamp;
+            double timestamp = commentObjct.comment.timestamp;
             double now_timestamp = [[NSDate date] timeIntervalSince1970];
             
             date.text = [self dailyLanguage:now_timestamp-timestamp];
@@ -176,8 +178,8 @@
             
             NSDictionary *user =  [BPUser sharedBP].user;
             
-            NSString *nameStr=[objct.userCommentDict objectForKey:@"name"];
-            NSString *comment=[objct.userCommentDict objectForKey:@"comment"];
+            NSString *nameStr=[commentObjct.userCommentDict objectForKey:@"name"];
+            NSString *comment=[commentObjct.userCommentDict objectForKey:@"comment"];
             txtV.text = comment;
             name.text = nameStr;
             
@@ -225,7 +227,7 @@
     else if([objct isKindOfClass:[NSString class]]){
     
         
-       /*
+    /*
         NSDictionary *dict = (NSDictionary *)objct;
         
         double timestamp = [[dict objectForKey:@"timestamp"] doubleValue];

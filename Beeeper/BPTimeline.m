@@ -217,11 +217,19 @@ static BPTimeline *thisWebServices = nil;
 }
 
 -(void)timelineFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
-
-    timeline_page--;
-    self.completed(NO,nil);
+   
+    @try {
+        NSString *responseString = [request responseString];
+        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        timeline_page--;
+        self.completed(NO,nil);
+    }
+   
 }
 
 -(void)downloadImage:(Timeline_Object *)tml{

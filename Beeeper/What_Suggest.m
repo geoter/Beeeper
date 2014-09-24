@@ -8,7 +8,9 @@
 #import "What_Suggest.h"
 
 
+
 NSString *const kWhatDescription = @"description";
+NSString *const kWhatComments = @"comments";
 NSString *const kWhatFingerprint = @"fingerprint";
 NSString *const kWhatTimestamp = @"timestamp";
 NSString *const kWhatImageUrl = @"image_url";
@@ -31,6 +33,7 @@ NSString *const kWhatLikesCount = @"likes_count";
 @implementation What_Suggest
 
 @synthesize whatDescription = _whatDescription;
+@synthesize comments = _comments;
 @synthesize fingerprint = _fingerprint;
 @synthesize timestamp = _timestamp;
 @synthesize imageUrl = _imageUrl;
@@ -56,19 +59,20 @@ NSString *const kWhatLikesCount = @"likes_count";
     // This check serves to make sure that a non-NSDictionary object
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
-            self.whatDescription = [self objectOrNilForKey:kWhatDescription fromDictionary:dict];
-            self.fingerprint = [self objectOrNilForKey:kWhatFingerprint fromDictionary:dict];
-            self.timestamp = [[self objectOrNilForKey:kWhatTimestamp fromDictionary:dict] doubleValue];
-            self.imageUrl = [self objectOrNilForKey:kWhatImageUrl fromDictionary:dict];
-            self.likes = [self objectOrNilForKey:kWhatLikes fromDictionary:dict];
-            self.url = [self objectOrNilForKey:kWhatUrl fromDictionary:dict];
-            self.source = [self objectOrNilForKey:kWhatSource fromDictionary:dict];
-            self.title = [self objectOrNilForKey:kWhatTitle fromDictionary:dict];
-            self.location = [self objectOrNilForKey:kWhatLocation fromDictionary:dict];
-            self.locked = [[self objectOrNilForKey:kWhatLocked fromDictionary:dict] doubleValue];
-            self.loc = [self objectOrNilForKey:kWhatLoc fromDictionary:dict];
-            self.likesCount = [[self objectOrNilForKey:kWhatLikesCount fromDictionary:dict] doubleValue];
-
+        self.whatDescription = [self objectOrNilForKey:kWhatDescription fromDictionary:dict];
+        self.comments = [self objectOrNilForKey:kWhatComments fromDictionary:dict];
+        self.fingerprint = [self objectOrNilForKey:kWhatFingerprint fromDictionary:dict];
+        self.timestamp = [[self objectOrNilForKey:kWhatTimestamp fromDictionary:dict] doubleValue];
+        self.imageUrl = [self objectOrNilForKey:kWhatImageUrl fromDictionary:dict];
+        self.likes = [self objectOrNilForKey:kWhatLikes fromDictionary:dict];
+        self.url = [self objectOrNilForKey:kWhatUrl fromDictionary:dict];
+        self.source = [self objectOrNilForKey:kWhatSource fromDictionary:dict];
+        self.title = [self objectOrNilForKey:kWhatTitle fromDictionary:dict];
+        self.location = [self objectOrNilForKey:kWhatLocation fromDictionary:dict];
+        self.locked = [[self objectOrNilForKey:kWhatLocked fromDictionary:dict] doubleValue];
+        self.loc = [self objectOrNilForKey:kWhatLoc fromDictionary:dict];
+        self.likesCount = [[self objectOrNilForKey:kWhatLikesCount fromDictionary:dict] doubleValue];
+        
     }
     
     return self;
@@ -79,6 +83,17 @@ NSString *const kWhatLikesCount = @"likes_count";
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
     [mutableDict setValue:self.whatDescription forKey:kWhatDescription];
+    NSMutableArray *tempArrayForComments = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.comments) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForComments addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForComments addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForComments] forKey:kWhatComments];
     [mutableDict setValue:self.fingerprint forKey:kWhatFingerprint];
     [mutableDict setValue:[NSNumber numberWithDouble:self.timestamp] forKey:kWhatTimestamp];
     [mutableDict setValue:self.imageUrl forKey:kWhatImageUrl];
@@ -110,11 +125,11 @@ NSString *const kWhatLikesCount = @"likes_count";
     }
     [mutableDict setValue:[NSArray arrayWithArray:tempArrayForLoc] forKey:kWhatLoc];
     [mutableDict setValue:[NSNumber numberWithDouble:self.likesCount] forKey:kWhatLikesCount];
-
+    
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
 
-- (NSString *)description 
+- (NSString *)description
 {
     return [NSString stringWithFormat:@"%@", [self dictionaryRepresentation]];
 }
@@ -132,8 +147,9 @@ NSString *const kWhatLikesCount = @"likes_count";
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super init];
-
+    
     self.whatDescription = [aDecoder decodeObjectForKey:kWhatDescription];
+    self.comments = [aDecoder decodeObjectForKey:kWhatComments];
     self.fingerprint = [aDecoder decodeObjectForKey:kWhatFingerprint];
     self.timestamp = [aDecoder decodeDoubleForKey:kWhatTimestamp];
     self.imageUrl = [aDecoder decodeObjectForKey:kWhatImageUrl];
@@ -150,8 +166,9 @@ NSString *const kWhatLikesCount = @"likes_count";
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-
+    
     [aCoder encodeObject:_whatDescription forKey:kWhatDescription];
+    [aCoder encodeObject:_comments forKey:kWhatComments];
     [aCoder encodeObject:_fingerprint forKey:kWhatFingerprint];
     [aCoder encodeDouble:_timestamp forKey:kWhatTimestamp];
     [aCoder encodeObject:_imageUrl forKey:kWhatImageUrl];
@@ -170,8 +187,9 @@ NSString *const kWhatLikesCount = @"likes_count";
     What_Suggest *copy = [[What_Suggest alloc] init];
     
     if (copy) {
-
+        
         copy.whatDescription = [self.whatDescription copyWithZone:zone];
+        copy.comments = [self.comments copyWithZone:zone];
         copy.fingerprint = [self.fingerprint copyWithZone:zone];
         copy.timestamp = self.timestamp;
         copy.imageUrl = [self.imageUrl copyWithZone:zone];
@@ -187,6 +205,5 @@ NSString *const kWhatLikesCount = @"likes_count";
     
     return copy;
 }
-
 
 @end

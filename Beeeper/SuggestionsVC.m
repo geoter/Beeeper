@@ -472,7 +472,12 @@
 
 - (IBAction)beeepItPressed:(UIButton *)sender{
     
-    UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     NSMutableArray *filtered_activities = [self suggestionsForSection:path.section];
@@ -511,7 +516,7 @@
             [formatter setLocale:usLocale];
             
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
-            [formatter setDateFormat:@"MMM#d#YYYY"];
+            [formatter setDateFormat:@"MMM#dd#YYYY"];
             NSString *signature = [formatter stringFromDate:date];
             
             if ([section_signature isEqualToString:signature]) {

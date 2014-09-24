@@ -214,7 +214,21 @@
     else if ([tml isKindOfClass:[Suggestion_Object class]]){
         [self showEventWithSuggestion];
     }
+    else{
+        [self updateEventInfo];
+    }
+}
 
+ //in case of coming back from comments vc
+
+-(void)updateEventInfo{
+    self.commentsLabel.text = [NSString stringWithFormat:@"%d",(int)comments.count];
+    self.likesLabel.text = [NSString stringWithFormat:@"%d",(int)likers.count];
+    self.beeepsLabel.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
+    
+    self.commentsLabel.hidden = (comments.count == 0);
+    self.likesLabel.hidden = (likers.count == 0);
+    self.beeepsLabel.hidden = (beeepers.count == 0);
 }
 
 -(void)showEventWithSuggestion{
@@ -303,18 +317,26 @@
     UILabel *likesLbl = (id)[headerV viewWithTag:-3];
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
-    beeepers = [NSMutableArray arrayWithArray:suggestion.beeepersIds];
-    likesLbl.text = [NSString stringWithFormat:@"%d",suggestion.what.likes.count];
-    // commentsLbl.text = [NSString stringWithFormat:@"%d",t.beeep.beeepInfo.comments.count];
-    commentsLbl.hidden = YES;
-    self.commentsButton.hidden = YES;
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",suggestion.beeepersIds.count];
+    if (!beeepers){
+        beeepers = [NSMutableArray arrayWithArray:suggestion.beeepersIds];
+    }
     
-    likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
+    self.beeepsLabel.hidden = (beeepers.count == 0);
     
+    if (!likers) {
+        likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
+    }
+
+    likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     self.likesLabel.hidden = (likers.count == 0);
-    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
-    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
+
+    if(!comments){
+        comments = [NSMutableArray arrayWithArray:suggestion.what.comments];
+    }
+
+    commentsLbl.text = [NSString stringWithFormat:@"%d",comments.count];
+    self.commentsLabel.hidden = (comments.count == 0);
     
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
@@ -538,21 +560,30 @@
     
     Beeeps *b = [ffo.beeepFfo.beeeps firstObject];
     
-    likers = [NSMutableArray arrayWithArray:[b.likes valueForKey:@"likes"]];
-    likesLbl.text = [NSString stringWithFormat:@"%d",b.likes.count];
+    if (!likers) {
+        likers = [NSMutableArray arrayWithArray:[b.likes valueForKey:@"likes"]];
+    }
     
-    commentsLbl.text = [NSString stringWithFormat:@"%d",b.comments.count];
-    comments = [NSMutableArray arrayWithArray:b.comments];
+    likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",ffo.eventFfo.beeepedBy.count];
-    beeepers = [NSMutableArray arrayWithArray:ffo.eventFfo.beeepedBy];
-   
-    NSArray *likers = [[b.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
+    if (!comments) {
+        comments = [NSMutableArray arrayWithArray:b.comments];
+    }
+
+    commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
+    
+    if (!beeepers) {
+        beeepers = [NSMutableArray arrayWithArray:ffo.eventFfo.beeepedBy];
+    }
+
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
+    
+    NSArray *likersIDS = [[b.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
     
-    if ([likers indexOfObject:my_id] != NSNotFound) {
+    if ([likersIDS indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
     }
     
@@ -573,8 +604,8 @@
     
     
     self.likesLabel.hidden = (likers.count == 0);
-    self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
-    self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
+    self.commentsLabel.hidden = (comments.count == 0);
+    self.beeepsLabel.hidden = (beeepers.count == 0);
     
     @try {
         if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
@@ -768,25 +799,34 @@
     UILabel *likesLbl = (id)[headerV viewWithTag:-3];
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
-    likers = [NSMutableArray arrayWithArray:[t.beeep.beeepInfo.likes valueForKey:@"likes"]];
-    likesLbl.text = [NSString stringWithFormat:@"%d",t.beeep.beeepInfo.likes.count];
-    commentsLbl.text = [NSString stringWithFormat:@"%d",t.beeep.beeepInfo.comments.count];
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",t.beeepersIds.count];
-   
-    beeepers = [NSMutableArray arrayWithArray:t.beeepersIds];
+    if (!likers) {
+        likers = [NSMutableArray arrayWithArray:[t.beeep.beeepInfo.likes valueForKey:@"likes"]];
+    }
     
-    NSArray *likers = [[t.beeep.beeepInfo.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
+    likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
+    self.likesLabel.hidden = (likers.count == 0);
+    
+    if (!comments) {
+        commentsLbl.text = [NSString stringWithFormat:@"%d",(int)t.beeep.beeepInfo.comments.count];
+    }
+    
+    self.commentsLabel.hidden = (comments.count == 0);
+   
+    if (!beeepers) {
+        beeepers = [NSMutableArray arrayWithArray:t.beeepersIds];
+    }
+
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
+    
+    self.beeepsLabel.hidden = (beeepers.count == 0);
+    
+    NSArray *likersIDS = [[t.beeep.beeepInfo.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
     
-
-   self.likesLabel.hidden = (likers.count == 0);
-   self.commentsLabel.hidden = (commentsLbl.text.intValue == 0);
-   self.beeepsLabel.hidden = (beeepsLbl.text.intValue == 0);
-    
-    if ([likers indexOfObject:my_id] != NSNotFound) {
+    if ([likersIDS indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
     }
     
@@ -1008,13 +1048,24 @@
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
     isLiker = NO;
-
-    likesLbl.text = [NSString stringWithFormat:@"%d",eventSearch.likes.count];
-    commentsLbl.text = [NSString stringWithFormat:@"%d",eventSearch.comments.count];
-    beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",beeepers.count];
     
-    likers =[NSMutableArray arrayWithArray:eventSearch.likes];
+    if (!likers) {
+        likers =[NSMutableArray arrayWithArray:eventSearch.likes];
+    }
+    
+    likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
+
+    if (!comments) {
+        comments = [NSMutableArray arrayWithArray:eventSearch.comments];
+    }
+    
+    commentsLbl.text = [NSString stringWithFormat:@"%d",(int)eventSearch.comments.count];
+    
+    if (!beeepers) {
+        beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    }
+    
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
     
     if ([likers indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
@@ -1036,8 +1087,8 @@
     
     
     self.likesLabel.hidden = (likers.count == 0);
-    self.commentsLabel.hidden = (eventSearch.comments.count == 0);
-    self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
+    self.commentsLabel.hidden = (comments == 0);
+    self.beeepsLabel.hidden = (beeepers.count == 0);
         
     double now_time = [[NSDate date]timeIntervalSince1970];
     double event_timestamp = event.eventInfo.timestamp;
@@ -1260,16 +1311,22 @@
         
         if (event != nil) {
             
-            self.likesLabel.hidden = (event.eventInfo.likes.count > 0)?NO:YES;
-            self.beeepsLabel.hidden = (beeepers.count == 0)?YES:NO;
-            self.commentsLabel.hidden = (event.eventInfo.comments.count > 0)?NO:YES;
+            if (!comments) {
+                comments = [NSMutableArray arrayWithArray:event.eventInfo.comments];
+            }
+
+            if (!likers) {
+                likers = [NSMutableArray arrayWithArray:event.eventInfo.likes];
+            }
             
-            self.beeepsLabel.text = [NSString stringWithFormat:@"%d",beeepers.count];
-            self.likesLabel.text = [NSString stringWithFormat:@"%d",event.eventInfo.likes.count];
-            self.commentsLabel.text = [NSString stringWithFormat:@"%d",event.eventInfo.comments.count];
+            self.likesLabel.hidden = (likers.count == 0);
+            self.beeepsLabel.hidden = (beeepers.count == 0);
+            self.commentsLabel.hidden = (comments.count == 0);
             
-            comments = [NSMutableArray arrayWithArray:event.eventInfo.comments];
-            likers = [NSMutableArray arrayWithArray:event.eventInfo.likes];
+            self.beeepsLabel.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
+            self.likesLabel.text = [NSString stringWithFormat:@"%d",(int)likers.count];
+            self.commentsLabel.text = [NSString stringWithFormat:@"%d",(int)comments.count];
+            
             isLiker = [likers indexOfObject:my_id] != NSNotFound;
             
             if (isLiker) {
@@ -1291,12 +1348,18 @@
     }
     else{
         
-        likesLbl.text = [NSString stringWithFormat:@"%d",beeep.likes.count];
-        commentsLbl.text = [NSString stringWithFormat:@"%d",beeep.comments.count];
+        if (!likers) {
+            likers = [NSMutableArray arrayWithArray:beeep.likes];
+        }
+        
+        if (!comments) {
+            comments = [NSMutableArray arrayWithArray:beeep.comments];
+        }
+        
+        likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
 
         //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
-        
-        likers =[NSMutableArray arrayWithArray:beeep.likes];
         
         if ([likers indexOfObject:my_id] != NSNotFound) {
             isLiker = YES;
@@ -1315,8 +1378,8 @@
         
         
         self.likesLabel.hidden = (likers.count == 0);
-        self.commentsLabel.hidden = (commentsLbl.text.length == 0);
-        self.beeepsLabel.hidden = (beeepsLbl.text.length == 0);
+        self.commentsLabel.hidden = (comments.count == 0);
+        self.beeepsLabel.hidden = (beeepers.count == 0);
 
     }
 
@@ -2562,6 +2625,7 @@
     CGFloat alpha = 1.0f;
     return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
+
 
 
 

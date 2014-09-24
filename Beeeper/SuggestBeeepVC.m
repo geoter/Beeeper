@@ -58,13 +58,6 @@
     
     [[BPUser sharedBP]getFollowersForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
         
-        if (objs == 0) {
-            self.noBeeepersFoundLbl.hidden = NO;
-        }
-        else{
-            self.noBeeepersFoundLbl.hidden = YES;
-        }
-        
         if (completed) {
             
             @try {
@@ -73,6 +66,13 @@
                 people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
                 filteredPeople = people;
                 [self.tableV reloadData];
+                
+                if (objs == 0) {
+                    self.noBeeepersFoundLbl.hidden = NO;
+                }
+                else{
+                    self.noBeeepersFoundLbl.hidden = YES;
+                }
             }
             @catch (NSException *exception) {
     

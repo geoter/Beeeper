@@ -14,6 +14,7 @@
 #import "Friendsfeed_Object.h"
 #import "Event_Search.h"
 #import "Activity_Object.h"
+#import "Suggestion_Object.h"
 
 @interface CommentsVC ()<PHFComposeBarViewDelegate,UITableViewDataSource,UITableViewDelegate>
 {
@@ -133,27 +134,27 @@
     if ([objct isKindOfClass:[Comments class]]) {
     
         Comments *commentObjct = (Comments *)objct;
+            
+        double timestamp = commentObjct.comment.timestamp;
+        double now_timestamp = [[NSDate date] timeIntervalSince1970];
         
-        if (commentObjct.userCommentDict == nil) {
+        date.text = [self dailyLanguage:now_timestamp-timestamp];
+        
+        Comments *commentObj = (Comments *)objct;
+        NSString *comment = commentObj.comment.comment;
+        txtV.text = comment;
+        
+        name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
+        
+        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+        
+        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+        
+        //NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+        
+        if (commentObj.commenter.imagePath) {
             
-            double timestamp = commentObjct.comment.timestamp;
-            double now_timestamp = [[NSDate date] timeIntervalSince1970];
-            
-            date.text = [self dailyLanguage:now_timestamp-timestamp];
-            
-            Comments *commentObj = (Comments *)objct;
-            NSString *comment = commentObj.comment.comment;
-            txtV.text = comment;
-            
-            name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
-            
-            CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
-            
-            txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
-            
-            //NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            
-            NSString *imageName = [NSString stringWithFormat:@"%@",[commentObj.commenter.imagePath MD5]];
+            NSString *imageName = [NSString stringWithFormat:@"%@",[[[DTO sharedDTO]fixLink:commentObj.commenter.imagePath] MD5]];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
@@ -167,60 +168,9 @@
             else{
                 image.image = nil;
                 [pendingImagesDict setObject:indexPath forKey:imageName];
-                [[DTO sharedDTO]downloadImageFromURL:commentObj.commenter.imagePath];
+                [[DTO sharedDTO]downloadImageFromURL:[[DTO sharedDTO]fixLink:commentObj.commenter.imagePath]];
                 [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
             }
-
-        }
-        else{
-            
-            date.text= @"Just Now";
-            
-            NSDictionary *user =  [BPUser sharedBP].user;
-            
-            NSString *nameStr=[commentObjct.userCommentDict objectForKey:@"name"];
-            NSString *comment=[commentObjct.userCommentDict objectForKey:@"comment"];
-            txtV.text = comment;
-            name.text = nameStr;
-            
-            CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
-            
-            txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
-            
-            NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-            
-            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            
-            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-            
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            
-            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-            
-            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-                image.image = img;
-            }
-            else{
-                
-                dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-                dispatch_async(q, ^{
-                    /* Fetch the image from the server... */
-                    NSString *imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-                    imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-                    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
-                    UIImage *img = [[UIImage alloc] initWithData:data];
-                    
-                    [self saveImage:img withFileName:imageName inDirectory:localPath];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        /* This is the main thread again, where we set the tableView's image to
-                         be what we just fetched. */
-                        image.image = img;
-                    });
-                });
-            }
-
         }
         
     }
@@ -528,9 +478,39 @@
             }
         }];
         
-    }
+    }else if ([self.event_beeep_object isKindOfClass:[Suggestion_Object class]]){
+        
+        Suggestion_Object *event = self.event_beeep_object;
+        
+        [[EventWS sharedBP]postComment:text Event:event.what.fingerprint WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
 
-    
+                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                NSString *myID = [[BPUser sharedBP].user objectForKey:@"id"];
+                Comments *c = [[Comments alloc]init];
+
+                c.comment = [[Comment alloc]init];
+                c.comment.comment = text;
+                c.comment.timestamp = [[NSDate date]timeIntervalSince1970];
+                
+                c.commenter = [[Commenter alloc]init];
+                c.commenter.name = name;
+                c.commenter.lastname = surname;
+                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                
+                [comments addObject:c];
+                
+                [self.tableV reloadData];
+                [self prependTextToTextView:text];
+                [composeBarView setText:@"" animated:YES];
+                [composeBarView resignFirstResponder];
+                
+            }
+        }];
+
+    }
     
 }
 

@@ -151,11 +151,10 @@
                         loadNextPage = NO;
                     }
                     
+                    [self.tableV reloadData];
+                    
                   //  suggestionsPerSection = [NSMutableDictionary dictionary];
                    // sections = [NSMutableArray array];
-                    if (beeeps.count > 0) {
-                        [self.tableV reloadData];   
-                    }
                  //   [self groupBeeepsByMonth];
                 }
             }];
@@ -1013,7 +1012,13 @@
         return;
     }
     
-    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
+
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
@@ -1036,7 +1041,13 @@
 
 - (IBAction)showLikes:(UIButton *)sender {
     
-    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
+
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
@@ -1060,7 +1071,13 @@
 
 - (IBAction)showComments:(UIButton *)sender {
    
-    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
+
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
@@ -1073,7 +1090,13 @@
 
 - (IBAction)showBeeepers:(UIButton *)sender {
    
-    UITableViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
+
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
 
     

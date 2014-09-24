@@ -35,7 +35,6 @@
 {
     [super viewDidLoad];
    
-
 	[self adjustFonts];
 }
 
@@ -96,6 +95,8 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     
+
+    
     
     if (textField.tag == 5) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:6];
@@ -108,6 +109,17 @@
         
         [self showLoading];
         
+        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+        [reachability startNotifier];
+        
+        NetworkStatus status = [reachability currentReachabilityStatus];
+        
+        if(status == NotReachable)
+        {
+            [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
+            return YES;
+        }
+        
         UITextField *username = (id)[self.scrollV viewWithTag:5];
         UITextField *password = (id)[self.view viewWithTag:6];
         
@@ -118,11 +130,11 @@
                 [self setSelectedLoginMethod:[NSDictionary dictionaryWithObjects:@[username.text,password.text] forKeys:@[@"username",@"password"]]];
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.5];
                 
-                username.text = @"";
+                [self hideLoading];
                 password.text = @"";
             }
             else{
-                [self hideLoadingWithErrorMessage:@"Make sure your username and password are correct."];
+                [self hideLoadingWithTitle:@"Failed to login" ErrorMessage:@"Make sure your username and password are correct."];
             }
         }];
 
@@ -164,7 +176,20 @@
 
 - (IBAction)fbLoginPressed:(id)sender {
    
+    [self showLoading];
    
+    
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+        [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
+        return;
+    }
+
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
@@ -216,29 +241,33 @@
              }
              else
              {
-                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                 
-                 if (error == nil) {
-                     NSLog(@"User Has disabled your app from settings...");
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper Disabled" message:@"Please go to Settings > Facebook and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-                 }
-                 else
-                 {
-                     NSLog(@"Error in Login: %@", error);
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong.Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+           
+                     [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                     
+                     if (error == nil) {
+                         NSLog(@"User Has disabled your app from settings...");
+                         [self hideLoadingWithTitle:@"Beeeper Disabled" ErrorMessage:@"Please go to Settings > Facebook and set Beeeper to on."];
+                     }
+                     else
+                     {
+                         NSLog(@"Error in Login: %@", error);
+                         
+                        [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Something went wrong.Please try again."];
 
-                 }
+                     }
+                     
+                 });
              }
          }];
     }
     else
     {
+        
+        [self hideLoadingWithTitle:@"No Facebook accounts configured" ErrorMessage: @"You can add a Facebook account on Settings > Facebook."];
+        
         NSLog(@"Not Configured in Settings......"); // show user an alert view that Twitter is not configured in settings.
-       
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Facebook account" message:@"There are no Facebook accounts configured.You can add or create a Facebook account in Settings." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
-        [alert show];
+    
        /*
         if (FBSession.activeSession.state == FBSessionStateOpen
             || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
@@ -301,8 +330,7 @@
             }
             else{
                 number_of_attempts = 0;
-                
-                 [self hideLoadingWithErrorMessage:@"Twitter login failed. Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
             }
         }
     }];
@@ -327,7 +355,7 @@
             }
             else{
                 number_of_attempts = 0;
-                 [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
             }
         }
         
@@ -336,8 +364,20 @@
 
 - (IBAction)twitterLoginPressed:(id)sender {
     
+    [self showLoading];
 
-
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+        [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
+        return;
+    }
+    
+    
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -386,8 +426,7 @@
                  
                  if (error == nil) {
                      NSLog(@"User Has disabled your app from settings...");
-                     
-                     [self hideLoadingWithErrorMessage:@"Twitter login failed. Please make sure Beeeper is enabled in Settings->Twitter."];
+                     [self hideLoadingWithTitle:@"No Twitter accounts configured" ErrorMessage:@"Please make sure Beeeper is enabled in Settings->Twitter."];
                  }
                  else
                  {
@@ -438,7 +477,7 @@
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
             }
             else{
-               [self hideLoadingWithErrorMessage:@"Twitter login failed. Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
             }
         }];
 
@@ -456,7 +495,7 @@
                 [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
             }
             else{
-                [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
             }
             
         }];
@@ -479,14 +518,14 @@
                 }
                 else{
                     dispatch_async(dispatch_get_main_queue(), ^{
-                       [self hideLoadingWithErrorMessage:@"Facebook login failed. Please try again or contact us."];
+                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
                     });
                 }
             }];
         } else {
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self hideLoadingWithErrorMessage:@"Facebook authorization failed. Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Facebook authorization failed." ErrorMessage:@"Please try again or contact us"];
             });
             // An error occurred, we need to handle the error
             // See: https://developers.facebook.com/docs/ios/errors
@@ -525,6 +564,11 @@
 }
 
 -(void)showLoading{
+    
+    if ([self.view viewWithTag:-434]) {
+        return;
+    }
+    
     UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
     loadingBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
     
@@ -571,7 +615,8 @@
      ];
 }
 
--(void)hideLoadingWithErrorMessage:(NSString *)message{
+-(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
+    
     UIView *loadingBGV = (id)[self.view viewWithTag:-434];
     MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
     [indicatorView stopAnimating];
@@ -585,7 +630,7 @@
      {
          [loadingBGV removeFromSuperview];
          
-         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Login Failed" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
          [alert show];
      }
      ];

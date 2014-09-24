@@ -374,7 +374,13 @@
 
 - (IBAction)rightButtonPressed:(UIButton *)sender {
    
-    UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UITableViewCell *cell = (UITableViewCell *)view;
+
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
     NSDictionary *user = [people objectAtIndex:path.row];

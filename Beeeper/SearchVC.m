@@ -598,7 +598,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showBeeepLikes:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search* event = [events objectAtIndex:path.row];
@@ -612,7 +617,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (IBAction)showBeeepComments:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search* event = [events objectAtIndex:path.row];
@@ -624,7 +634,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (IBAction)showReBeeeps:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search* event = [events objectAtIndex:path.row];

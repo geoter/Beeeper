@@ -807,7 +807,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)eventBeeepPressed:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
@@ -822,7 +827,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showUser:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
@@ -838,7 +848,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showBeeepLikes:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
@@ -853,7 +868,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showBeeepComments:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
@@ -867,7 +887,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (IBAction)showReBeeeps:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
 
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
@@ -880,7 +905,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showEventLikes:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search* event = [events objectAtIndex:path.row];
@@ -895,7 +925,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)showEventComments:(UIButton *)sender {
     
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search *event = [events objectAtIndex:path.row];
@@ -909,7 +944,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (IBAction)showEventBeepers:(UIButton *)sender {
-    UICollectionViewCell *cell = (id)sender.superview.superview.superview.superview;
+ 
+    UIView *view = sender;
+    while (view != nil && ![view isKindOfClass:[UICollectionViewCell class]]) {
+        view = [view superview];
+    }
+    
+    UICollectionViewCell *cell = (UICollectionViewCell *)view;
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
     Event_Search* event = [events objectAtIndex:path.row];

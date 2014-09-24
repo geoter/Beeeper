@@ -191,7 +191,7 @@ static BPActivity *thisWebServices = nil;
         [self getActivityWithCompletionBlock:self.activity_completed];
     }
     else{
-        self.activity_completed(NO,nil);
+        self.activity_completed(NO,@"activityFailed");
     }
     
 }
@@ -199,7 +199,7 @@ static BPActivity *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     if (responseString == nil) {
-        compbloc(NO,nil);
+        compbloc(NO,@"Response String is NIL");
     }
 
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -343,11 +343,11 @@ static BPActivity *thisWebServices = nil;
             self.event_completed(YES,event);
         }
         else{
-            self.event_completed(NO,nil);
+            self.event_completed(NO,[NSString stringWithFormat:@"eventReceived but failed in [NSArray class]: %@",responseString]);
         }
     }
     else{
-        self.event_completed(NO,nil);
+        self.event_completed(NO,[NSString stringWithFormat:@"eventReceived but failed in else: %@",responseString]);
     }
     
    
@@ -438,7 +438,7 @@ static BPActivity *thisWebServices = nil;
         self.beeep_completed(YES,beeep);
     }
     else{
-        self.beeep_completed(NO,nil);
+        self.beeep_completed(NO,[NSString stringWithFormat:@"BeeepFromActivityFinished but failed: %@",responseString]);
     }
    
 }
@@ -446,7 +446,7 @@ static BPActivity *thisWebServices = nil;
 -(void)beeepFromActivityFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    self.beeep_completed(NO,nil);
+    self.beeep_completed(NO,@"BeeepFromActivityFailed");
 }
 
 

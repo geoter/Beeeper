@@ -98,7 +98,7 @@ static BPCreate *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        self.completed(NO,nil);
+        self.completed(NO,@"beeepCreateFinished Catch error");
     }
     @finally {
  
@@ -175,7 +175,7 @@ static BPCreate *thisWebServices = nil;
 
     }
     @catch (NSException *exception) {
-        self.completed(NO,nil);
+        self.completed(NO,@"eventCreate CATCH");
     }
     @finally {
         
@@ -207,7 +207,7 @@ static BPCreate *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        self.completed(YES,nil);
+        self.completed(YES,@"eventCreateFinished CATCH");
     }
     @finally {
     
@@ -217,7 +217,7 @@ static BPCreate *thisWebServices = nil;
 -(void)eventCreateFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
 
-    self.completed(NO,nil);
+    self.completed(NO,@"eventCreateFailed");
 }
 
 - (id)encodeWithHmacsha256:(NSString *)data

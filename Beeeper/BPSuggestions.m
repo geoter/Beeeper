@@ -196,7 +196,7 @@ static BPSuggestions *thisWebServices = nil;
             [self getSuggestionsWithCompletionBlock:self.completed];
         }
         else{
-            self.completed(NO,nil);
+            self.completed(NO,@"suggestionsFailed");
         }
    
     }
@@ -205,7 +205,7 @@ static BPSuggestions *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     if (responseString == nil) {
-        compbloc(NO,nil);
+        compbloc(NO,@"Response is nil");
     }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -343,7 +343,7 @@ static BPSuggestions *thisWebServices = nil;
         
     }
     @catch (NSException *exception) {
-        self.suggestEventCompleted(NO,nil);
+        self.suggestEventCompleted(NO,@"suggestEvent CATCH");
     }
     @finally {
         
@@ -362,12 +362,12 @@ static BPSuggestions *thisWebServices = nil;
             self.suggestEventCompleted(YES,nil);
         }
         else{
-            self.suggestEventCompleted(NO,nil);
+            self.suggestEventCompleted(NO,[NSString stringWithFormat:@"suggestEventFinished but failed: %@",responseString]);
         }
 
     }
     @catch (NSException *exception) {
-           self.suggestEventCompleted(NO,nil);
+           self.suggestEventCompleted(NO,@"suggestEventFinished CATCH");
     }
     @finally {
         
@@ -377,7 +377,7 @@ static BPSuggestions *thisWebServices = nil;
 -(void)suggestEventFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-       self.suggestEventCompleted(NO,nil);
+       self.suggestEventCompleted(NO,@"suggestEventFailed");
     
 }
 

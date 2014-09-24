@@ -196,7 +196,7 @@ static BPTimeline *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
    
     if (responseString == nil) {
-        compbloc(NO,nil);
+        compbloc(NO,@"Response is nil");
         timeline_page--;
     }
     
@@ -218,18 +218,9 @@ static BPTimeline *thisWebServices = nil;
 
 -(void)timelineFailed:(ASIHTTPRequest *)request{
    
-    @try {
-        NSString *responseString = [request responseString];
-        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
-    }
-    @catch (NSException *exception) {
-        
-    }
-    @finally {
-        timeline_page--;
-        self.completed(NO,nil);
-    }
-   
+    timeline_page--;
+    
+    self.completed(NO,@"timelineFailed");
 }
 
 -(void)downloadImage:(Timeline_Object *)tml{

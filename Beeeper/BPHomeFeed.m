@@ -189,7 +189,7 @@ static BPHomeFeed *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     if (responseString == nil) {
-        compbloc(NO,nil);
+        compbloc(NO,@"Response is NIL");
     }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -219,8 +219,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
+     self.completed(NO,@"friendsFeedFailed");
 }
 
 

@@ -118,6 +118,10 @@
                 self.noNotifsFound.hidden = NO;
             }
             else{
+            
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getNotifications Completed but notifications == 0" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                [alert show];
+
                 self.noNotifsFound.hidden = YES;
             }
             

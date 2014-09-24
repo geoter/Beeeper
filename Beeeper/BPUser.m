@@ -155,7 +155,7 @@ static BPUser *thisWebServices = nil;
         }];
     }
     @catch (NSException *exception) {
-        self.completed(NO,nil);
+        self.completed(NO,[NSString stringWithFormat:@"signupFinished CATCH %@",responseString]);
     }
     @finally {
         
@@ -164,7 +164,7 @@ static BPUser *thisWebServices = nil;
 }
 
 -(void)signupFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+    self.completed(NO,@"signupFailed");
 }
 
 #pragma mark - User settings
@@ -239,7 +239,7 @@ static BPUser *thisWebServices = nil;
 -(void)setUserSettingsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    self.setUserSettingsCompleted(NO,nil);
+    self.setUserSettingsCompleted(NO,[NSString stringWithFormat:@"setUserSettingsFailed: %@",responseString]);
 }
 
 #pragma mark - FB Signup
@@ -298,14 +298,14 @@ static BPUser *thisWebServices = nil;
                     self.fbSignUpCompleted(completed,user);
                 }
                 else{
-                    self.fbSignUpCompleted(NO,nil);
+                    self.fbSignUpCompleted(NO,@"fbSignupReceived Completed == NO");
                 }
             }];
         }
         
     }
     @catch (NSException *exception) {
-        self.fbSignUpCompleted(NO,nil);
+        self.fbSignUpCompleted(NO,@"fbSignupReceived catch");
 
     }
     @finally {
@@ -318,7 +318,7 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.fbSignUpCompleted(NO,nil);
+    self.fbSignUpCompleted(NO,[NSString stringWithFormat:@"fbSignupFailed",responseString]);
     
 }
 

@@ -100,7 +100,7 @@ static BPUsersLookup *thisWebServices = nil;
 
 -(void)userLookupFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
-    self.completed(NO,nil);
+    self.completed(NO,[NSString stringWithFormat:@"userLookupFailed: %@",responseString]);
 }
 
 - (NSString *)urlencode:(NSString *)str {

@@ -906,7 +906,7 @@
         __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
-        [request addPostValue:@"Beeeper" forKey:@"from"];
+        [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
         
         NSMutableString *recipients = [[NSMutableString alloc]init];
         
@@ -925,8 +925,22 @@
             NSString *responseString = [request responseString];
             NSLog(@"Send Response: %@", responseString);
             
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+            if ([responseString rangeOfString:@"Error"].location != NSNotFound) {
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
+            
+            }
+            else{            
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+                
+                [selectedPeople removeAllObjects];
+                
+                [self.tableV reloadData];
+
+                self.navigationItem.rightBarButtonItem = nil;
+
+            }
 
         }];
         [request setFailedBlock:^{

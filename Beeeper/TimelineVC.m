@@ -157,6 +157,13 @@
                    // sections = [NSMutableArray array];
                  //   [self groupBeeepsByMonth];
                 }
+                else{
+                    if ([objs isKindOfClass:[NSString class]]) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                        
+                    }
+                }
             }];
             
         }

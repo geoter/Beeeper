@@ -89,7 +89,7 @@ static EventWS *thisWebServices = nil;
 
     }
     @catch (NSException *exception) {
-        self.comment_completed(NO,nil);
+        self.comment_completed(NO,@"postComment CATCH");
     }
     @finally {
     
@@ -104,7 +104,7 @@ static EventWS *thisWebServices = nil;
 
 -(void)postCommentFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
-    self.comment_completed(NO,nil);
+    self.comment_completed(NO,[NSString stringWithFormat:@"postCommentFailed: %@",responseString]);
 }
 
 
@@ -142,7 +142,7 @@ static EventWS *thisWebServices = nil;
         
     }
     @catch (NSException *exception) {
-        self.comment_completed(NO,nil);
+        self.comment_completed(NO,[NSString stringWithFormat:@"postComment Event Catch"]);
     }
     @finally {
         
@@ -157,7 +157,7 @@ static EventWS *thisWebServices = nil;
 
 -(void)postEventCommentFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
-    self.comment_completed(NO,nil);
+     self.comment_completed(NO,[NSString stringWithFormat:@"postEventCommentFailed: %@",responseString]);
 }
 
 
@@ -212,7 +212,7 @@ static EventWS *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        self.like_beeep_completed(NO,response);
+        self.like_beeep_completed(NO,[NSString stringWithFormat:@"like_Beeep_Received Catch: %@",responseString]);
     }
     @finally {
         
@@ -224,7 +224,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.like_beeep_completed(NO,nil);
+    self.like_beeep_completed(NO,[NSString stringWithFormat:@"like_Beeep_Failed: %@",responseString]);
     
 }
 
@@ -267,17 +267,16 @@ static EventWS *thisWebServices = nil;
     
     NSDictionary *response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    
     @try {
         if ([response objectForKey:@"success"]) {
             self.like_beeep_completed(YES,nil);
         }
         else{
-            self.like_beeep_completed(NO,nil);
+            self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Received else: %@",responseString]);
         }
     }
     @catch (NSException *exception) {
-        self.like_beeep_completed(NO,nil);
+        self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Received catch: %@",responseString]);
     }
     @finally {
         
@@ -289,7 +288,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.like_beeep_completed(NO,nil);
+    self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Failed: %@",responseString]);
     
 }
 
@@ -336,11 +335,11 @@ static EventWS *thisWebServices = nil;
             self.like_event_completed(YES,nil);
         }
         else{
-            self.like_event_completed(NO,nil);
+            self.like_event_completed(NO,[NSString stringWithFormat:@"like_Event_Received else: %@",responseString]);
         }
     }
     @catch (NSException *exception) {
-        self.like_event_completed(NO,nil);
+        self.like_event_completed(NO,[NSString stringWithFormat:@"like_Event_Received Catch: %@",responseString]);
     }
     @finally {
         
@@ -352,7 +351,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.like_event_completed(NO,nil);
+    self.like_event_completed(NO,[NSString stringWithFormat:@"like_Event_Failed: %@",responseString]);
     
 }
 
@@ -398,11 +397,11 @@ static EventWS *thisWebServices = nil;
             self.like_event_completed(YES,nil);
         }
         else{
-            self.like_event_completed(NO,nil);
+            self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Received else: %@",responseString]);
         }
     }
     @catch (NSException *exception) {
-        self.like_event_completed(NO,nil);
+        self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Received catch: %@",responseString]);
     }
     @finally {
         
@@ -414,7 +413,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.like_event_completed(NO,nil);
+    self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Failed: %@",responseString]);
     
 }
 
@@ -479,7 +478,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.searchKeyword_completed(NO,nil);
+    self.searchKeyword_completed(NO,[NSString stringWithFormat:@"searchKeywordFailed:%@",responseString]);
 }
 
 #pragma mark - Search events
@@ -549,7 +548,7 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *events = [NSMutableArray array];
     
     if (eventsArray.count ==0) {
-        self.searchEvent_completed(NO,nil);
+        self.searchEvent_completed(NO,[NSString stringWithFormat:@"Events == 0: %@",responseString]);
         return;
     }
     
@@ -570,7 +569,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.searchEvent_completed(NO,nil);
+    self.searchEvent_completed(NO,[NSString stringWithFormat:@"searchEventFailed: %@",responseString]);
 }
 
 -(void)nextSearchEventsWithCompletionBlock:(completed)compbloc{
@@ -751,7 +750,7 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *events = [NSMutableArray array];
     
     if (eventsArray.count ==0) {
-        self.get_All_Events_completed(NO,nil);
+        self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished eventsArray == 0: %@",responseString]);
         return;
     }
     
@@ -772,7 +771,7 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.get_All_Events_completed(NO,nil);
+    self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFailed: %@",responseString]);
 }
 
 
@@ -791,7 +790,7 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *events = [NSMutableArray array];
     
     if (eventsArray.count ==0) {
-        self.get_All_Local_Events_completed(NO,nil);
+        self.get_All_Local_Events_completed(NO,[NSString stringWithFormat:@""]);
         return;
     }
     

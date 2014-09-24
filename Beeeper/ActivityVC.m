@@ -109,6 +109,14 @@
                 self.noActivityFound.hidden = YES;
             }
             else{
+                
+                if ([objcts isKindOfClass:[NSString class]]) {
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getAllEvents Completed but objs.count == 0" message:(NSString *)objcts delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+                    
+                }
+
+                
                 self.noActivityFound.hidden = NO;
             }
             

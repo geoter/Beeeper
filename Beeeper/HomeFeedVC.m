@@ -170,10 +170,16 @@
             [refreshControl endRefreshing];
             
             if (objs.count > 0) {
-                loadNextPage = YES;
+                loadNextPage = (objs.count == 10);
                 self.noBeeepsLabel.hidden = YES;
             }
             else{
+                if ([objs isKindOfClass:[NSString class]]) {
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+                    
+                }
+
                 self.noBeeepsLabel.hidden = NO;
             }
             
@@ -194,9 +200,9 @@
             events = nil;
             [beeeps addObjectsFromArray:objs];
             loadNextPage = (objs.count == 10);
+
+            [self.collectionV reloadData];
         }
-        
-       [self.collectionV reloadData];
     }];
 }
 
@@ -208,25 +214,27 @@
             
             if (objs.count != 0) {
                 
-                self.noBeeepsLabel.hidden = YES;
-                
                 beeeps = nil;
                 [events addObjectsFromArray:objs];
                 
-                loadNextPage = YES;
+                loadNextPage = (objs.count == 10);
                 
-                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-                [refreshControl endRefreshing];
-                
-                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
             else{
-                self.noBeeepsLabel.hidden = NO;
+                if ([objs isKindOfClass:[NSString class]]) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                    });
+                    
+                }
             }
             
         }
         
-        [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     }];
 }
 
@@ -253,6 +261,13 @@
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
             }
+            else{
+                if ([objs isKindOfClass:[NSString class]]) {
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+                    
+                }
+            }
         }
         
         [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -275,6 +290,13 @@
                 self.noBeeepsLabel.hidden = YES;
             }
             else{
+                
+                if ([objs isKindOfClass:[NSString class]]) {
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getAllEvents Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+                    
+                }
+                
                 self.noBeeepsLabel.hidden = NO;
             }
             

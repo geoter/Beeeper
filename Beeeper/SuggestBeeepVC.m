@@ -60,6 +60,15 @@
         
         if (completed) {
             
+            if ([objs isKindOfClass:[NSArray class]] && objs.count == 0) {
+               
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser Completed but objs == 0" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+                    
+                });
+            }
+            
             @try {
                 people = [NSMutableArray arrayWithArray:objs];
                 NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
@@ -86,6 +95,14 @@
             failsCount++;
             if (failsCount < 5) {
                 [self getFollowers];
+            }
+            else{
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    [alert show];
+
+                 });
             }
         }
     }];
@@ -368,7 +385,7 @@
     [rowsToReload addObjectsFromArray:rows];
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

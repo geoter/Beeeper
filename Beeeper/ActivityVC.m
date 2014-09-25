@@ -48,7 +48,7 @@
     }];
 
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
     [refreshControl addTarget:self action:@selector(getActivity) forControlEvents:UIControlEventValueChanged];
@@ -82,7 +82,7 @@
             if (objcts.count != 0) {
                 
                 [activities addObjectsFromArray:objcts];
-                loadNextPage = (objcts.count == 10);
+                loadNextPage = (objcts.count == [BPActivity sharedBP].pageLimit);
                 [self groupActivitiesByMonth];
             }
         }
@@ -497,7 +497,7 @@
     BOOL isTomorrow = [signature isEqualToString:signatureTmw];
     
     
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
     header.backgroundColor = [UIColor clearColor];
     UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 306, 47)];
     [backV setBackgroundColor:[UIColor whiteColor]];
@@ -596,7 +596,7 @@
     [rowsToReload addObjectsFromArray:rows];
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

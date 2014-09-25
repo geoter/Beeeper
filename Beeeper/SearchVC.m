@@ -44,13 +44,22 @@
     loadNextPage = NO;
     
     [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *keywords){
-        
-        if (keywords.count > 0) {
-            loadNextPage = (keywords.count == 15);
-            [filteredResults addObjectsFromArray:keywords];
+       
+        @try {
+            if (keywords.count > 0) {
+                loadNextPage = (keywords.count == [EventWS sharedBP].pageLimit);
+                [filteredResults addObjectsFromArray:keywords];
+            }
+            
+            [self.tableV reloadData];
+        }
+        @catch (NSException *exception) {
+    
+        }
+        @finally {
+    
         }
         
-        [self.tableV reloadData];
         
     }];
     
@@ -183,7 +192,7 @@
         if (completed) {
             events = [NSArray arrayWithArray:evnts];
 
-            if (events.count > 0) {
+            if (events.count == [EventWS sharedBP].pageLimit) {
                loadNextPage = YES;   
             }
             
@@ -778,7 +787,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

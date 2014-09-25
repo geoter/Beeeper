@@ -24,7 +24,7 @@ typedef void(^completed)(BOOL,id);
 @property (copy) completed event_completed;
 @property (copy) completed activity_completed;
 @property (copy) completed local_activity_completed;
-
+@property (nonatomic,assign) int pageLimit;
 - (id)init;
 + (BPActivity *)sharedBP;
 @end

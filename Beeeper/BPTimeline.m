@@ -113,9 +113,9 @@ static BPTimeline *thisWebServices = nil;
     
     //    [[request UserInfo]setObject:info forKey:@"info"];
     
-    [request setDidFinishSelector:@selector(timelineFinished:)];
+    [request setDidFinishSelector:@selector(nextTimelineFinished:)];
     
-    [request setDidFailSelector:@selector(timelineFailed:)];
+    [request setDidFailSelector:@selector(nextTimelineFailed:)];
     
     [request startAsynchronous];
 
@@ -182,15 +182,43 @@ static BPTimeline *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
-    NSError *error;
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+
+    if (beeeps.count > 0) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        [self parseResponseString:responseString WithCompletionBlock:self.completed];
+    }
+    else{
+        [self timelineFailed:request];
+    }
+}
+
+-(void)timelineFailed:(ASIHTTPRequest *)request{
     
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    timeline_page--;
+    
+    self.completed(NO,@"timelineFailed");
+}
+
+-(void)nextTimelineFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
     
     [self parseResponseString:responseString WithCompletionBlock:self.completed];
+}
+
+-(void)nextTimelineFailed:(ASIHTTPRequest *)request{
+    
+    timeline_page--;
+    
+    self.completed(NO,@"nextTimelineFailed");
 }
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
@@ -216,12 +244,6 @@ static BPTimeline *thisWebServices = nil;
     compbloc(YES,bs);
 }
 
--(void)timelineFailed:(ASIHTTPRequest *)request{
-   
-    timeline_page--;
-    
-    self.completed(NO,@"timelineFailed");
-}
 
 -(void)downloadImage:(Timeline_Object *)tml{
     

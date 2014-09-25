@@ -14,7 +14,6 @@ static EventWS *thisWebServices = nil;
 
 @interface EventWS ()
 {
-    int pageLimit;
     int all_events_page;
     int search_events_page;
     NSString *order;
@@ -24,12 +23,13 @@ static EventWS *thisWebServices = nil;
 @end
 
 @implementation EventWS
+@synthesize pageLimit;
 
 -(id)init{
     self = [super init];
     if(self) {
         thisWebServices = self;
-        pageLimit = 15;
+        pageLimit = 5;
         all_events_page = 0;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
@@ -666,7 +666,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:25.0];
     
     [request setDelegate:self];
     
@@ -686,9 +686,6 @@ static EventWS *thisWebServices = nil;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
-    
-    
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
     
     
     NSMutableArray *array = [NSMutableArray array];
@@ -716,6 +713,7 @@ static EventWS *thisWebServices = nil;
     self.get_All_Events_completed = compbloc;
     
     [request setRequestMethod:@"GET"];
+    [request setResponseEncoding:NSUTF8StringEncoding];
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
@@ -737,14 +735,6 @@ static EventWS *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
-
-    
     NSArray *eventsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     NSMutableArray *events = [NSMutableArray array];
@@ -753,6 +743,13 @@ static EventWS *thisWebServices = nil;
         self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished eventsArray == 0: %@",responseString]);
         return;
     }
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    NSError *error;
+    BOOL succeed = [responseString writeToFile:filePath
+                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
     
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];

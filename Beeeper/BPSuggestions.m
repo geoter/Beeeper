@@ -14,7 +14,6 @@ static BPSuggestions *thisWebServices = nil;
 @interface BPSuggestions ()
 {
     int page;
-    int pageLimit;
     
     NSOperationQueue *operationQueue;
     int requestFailedCounter;
@@ -23,6 +22,7 @@ static BPSuggestions *thisWebServices = nil;
 
 
 @implementation BPSuggestions
+@synthesize pageLimit;
 
 -(id)init{
     self = [super init];
@@ -165,15 +165,23 @@ static BPSuggestions *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    [self parseResponseString:responseString WithCompletionBlock:self.completed];
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+
+    if (beeeps.count > 0) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        [self parseResponseString:responseString WithCompletionBlock:self.completed];
+    }
+    else{
+        [self suggestionsFailed:request];
+    }
+
     
 }
 

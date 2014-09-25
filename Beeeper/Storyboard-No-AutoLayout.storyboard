@@ -1192,7 +1192,7 @@
                                         <rect key="frame" x="19" y="197" width="283" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.87450980392156863" green="0.8901960784313725" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
-                                        <state key="normal" title="None">
+                                        <state key="normal" title="Select time">
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -2517,15 +2517,15 @@
             </objects>
             <point key="canvasLocation" x="1269" y="1670"/>
         </scene>
-        <!--Web BrowserVC-->
+        <!--Web-->
         <scene sceneID="Win-em-UBB">
             <objects>
-                <viewController storyboardIdentifier="WebBrowser" id="jqc-zW-5ia" customClass="WebBrowserVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebBrowser" title="Web" id="jqc-zW-5ia" customClass="WebBrowserVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Nwz-u8-Zpb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" id="hJN-7m-SEb">
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" id="hJN-7m-SEb">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>

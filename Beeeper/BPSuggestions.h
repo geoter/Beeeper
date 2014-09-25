@@ -21,7 +21,7 @@ typedef void(^completed)(BOOL,id);
 @property (copy) void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;
 @property (copy) completed suggestEventCompleted;
-
+@property (nonatomic,assign)  int pageLimit;
 - (id)init;
 + (BPSuggestions *)sharedBP;
 

@@ -688,25 +688,33 @@ static BPUser *thisWebServices = nil;
 
     
     NSString *responseString = [request responseString];
-
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",_userID]];
-    NSError *error;
-    BOOL success  = [responseString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
-    
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    for (NSDictionary *user in users) {
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+    if (users.count == 0) {
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",_userID]];
+        NSError *error;
+        BOOL success  = [responseString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
+        
+        
+        
+        for (NSDictionary *user in users) {
+            NSString *imagePath = [user objectForKey:@"image_path"];
+            [[DTO sharedDTO]downloadImageFromURL:imagePath];
+        }
+        
+        self.followers_completed(YES,users);
+
+    }
+    else{
+        [self followersFailed:request];
     }
     
-    self.followers_completed(YES,users);
-
+    
 }
 
 -(void)followersFailed:(ASIHTTPRequest *)request{
@@ -807,21 +815,25 @@ static BPUser *thisWebServices = nil;
 -(void)followingReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",_userID]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
+    NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
+    if (users.count > 0) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",_userID]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        self.following_completed(YES,users);
+    }
+    else{
+        [self followingFailed:request];
+    }
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
-    
-    NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    self.following_completed(YES,users);
+
     
 }
 

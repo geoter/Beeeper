@@ -3312,7 +3312,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
+				PROVISIONING_PROFILE = "e803a2b0-0436-4d6e-8ca1-40e37a0cac62";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3336,7 +3336,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d214a42e-5df2-4ffb-9a41-b4cc2c1ea56c";
+				PROVISIONING_PROFILE = "e803a2b0-0436-4d6e-8ca1-40e37a0cac62";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

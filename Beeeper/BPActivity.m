@@ -15,7 +15,6 @@ static BPActivity *thisWebServices = nil;
 @interface BPActivity ()
 {
     int page;
-    int pageLimit;
     
     NSOperationQueue *operationQueue;
     int requestFailedCounter;
@@ -23,6 +22,7 @@ static BPActivity *thisWebServices = nil;
 @end
 
 @implementation BPActivity
+@synthesize pageLimit;
 
 -(id)init{
     self = [super init];
@@ -165,17 +165,25 @@ static BPActivity *thisWebServices = nil;
     requestFailedCounter = 0;
     
     NSString *responseString = [request responseString];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    
-    [self parseResponseString:responseString WithCompletionBlock:self.activity_completed];
+    if (beeeps.count >0) {
+      
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        
+        [self parseResponseString:responseString WithCompletionBlock:self.activity_completed];
+    }
+    else{
+        [self activityFailed:request];
+    }
+
 }
 
 -(void)activityFailed:(ASIHTTPRequest *)request{
@@ -183,9 +191,6 @@ static BPActivity *thisWebServices = nil;
     NSLog(@"FAILES REQUEST->ACTIVITY");
     
     requestFailedCounter++;
-    
-    NSString *responseString = [request responseString];
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
     
     if (requestFailedCounter < 5) {
         [self getActivityWithCompletionBlock:self.activity_completed];

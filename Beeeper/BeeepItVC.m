@@ -73,6 +73,13 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
     
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
+    
+    [viewController.view setFrame:CGRectMake(0, 0, viewController.view.frame.size.width, viewController.view.frame.size.height)];
+    [self.view addSubview:viewController.view];
+    [self addChildViewController:viewController];
+
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{

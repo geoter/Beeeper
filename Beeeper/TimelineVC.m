@@ -639,7 +639,7 @@
         [self.followButton addSubview:lbl];
         
         self.followButton.hidden = NO;
-        
+       // [self.followButton setBackgroundColor:[]
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
     }

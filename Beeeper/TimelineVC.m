@@ -535,6 +535,8 @@
     }
     
     
+    [self.tableV reloadData];
+    
 //    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 //        
 //        if (completed) {
@@ -853,6 +855,10 @@
         likesLbl.hidden = (likesLbl.text.intValue == 0);
         commentsLbl.hidden = (commentsLbl.text.intValue == 0);
         beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+       
+        beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
         
         //Image
         

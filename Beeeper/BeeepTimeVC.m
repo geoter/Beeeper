@@ -67,22 +67,32 @@
 
 - (IBAction)close:(id)sender {
     
-    [UIView animateWithDuration:0.5f
-                     animations:^
-     {
-         self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         [self removeFromParentViewController];
-         [self.view removeFromSuperview];
-         
-     }];
+    if (self.closeExits) {
+        
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"CloseBeeepItVC" object:nil];
+    }
+    else{
+        
+        [UIView animateWithDuration:0.5f
+                         animations:^
+         {
+             self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
+         }
+                         completion:^(BOOL finished)
+         {
+             [self removeFromParentViewController];
+             [self.view removeFromSuperview];
+             
+         }];
+    }
+    
 }
 
 - (IBAction)buttonClicked:(UIButton *)sender {
     
     //self.checkMark.frame = CGRectMake(270, sender.frame.origin.y+8, 25, 24);
+    
+    self.closeExits = NO;
     
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[sender titleForState:UIControlStateNormal],@"Beeep Time",[NSString stringWithFormat:@"%d",(int)sender.tag],@"Seconds",nil];
     

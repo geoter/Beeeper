@@ -631,6 +631,8 @@ static EventWS *thisWebServices = nil;
     
     all_events_page ++;
     
+    NSLog(@"Next Page: %d",all_events_page);
+    
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
     

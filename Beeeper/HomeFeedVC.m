@@ -256,23 +256,16 @@
                 beeeps = nil;
                 events = [NSMutableArray arrayWithArray:objs];
                 
-                loadNextPage = YES;
+                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
                 
                 UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-            }
-            else{
-                if ([objs isKindOfClass:[NSString class]]) {
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                    [alert show];
-                    
-                }
+                
+                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
         }
-        
-        [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     }];
 
     

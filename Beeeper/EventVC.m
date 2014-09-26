@@ -25,6 +25,7 @@
 #import <Social/Social.h>
 #import <MessageUI/MessageUI.h>
 #import "WebBrowserVC.h"
+#import "SearchVC.h"
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
@@ -398,7 +399,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsLabel.text = correctString;
+        self.tagsField.text = correctString;
         
     }
     @catch (NSException *exception) {
@@ -642,7 +643,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsLabel.text = correctString;
+        self.tagsField.text = correctString;
         
     }
     @catch (NSException *exception) {
@@ -902,7 +903,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsLabel.text = correctString;
+        self.tagsField.text = correctString;
         
     }
     @catch (NSException *exception) {
@@ -1145,7 +1146,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsLabel.text = correctString;
+        self.tagsField.text = correctString;
         
     }
     @catch (NSException *exception) {
@@ -1418,7 +1419,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsLabel.text = correctString;
+        self.tagsField.text = correctString;
         
     }
     @catch (NSException *exception) {
@@ -2626,7 +2627,32 @@
     return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
+#pragma mark - Tags
 
+- (IBAction)tagSelected:(id)sender {
+    NSLog(@"Clicked");
+    
+    CGPoint pos = [sender locationInView:self.tagsField];
+    UITextView *_tv = self.tagsField;
+    
+    NSLog(@"Tap Gesture Coordinates: %.2f %.2f", pos.x, pos.y);
+    
+    
+    //eliminate scroll offset
+   // pos.y += _tv.contentOffset.y;
+    
+    //get location in text from textposition at point
+    UITextPosition *tapPos = [_tv closestPositionToPoint:pos];
+    
+    //fetch the word at this position (or nil, if not available)
+    UITextRange * wr = [_tv.tokenizer rangeEnclosingPosition:tapPos withGranularity:UITextGranularityWord inDirection:UITextLayoutDirectionRight];
+    
+    NSString *tag = [_tv textInRange:wr];
+    
+    if (tag.length != 0) {
+        [SearchVC showInVC:self withSeachTerm:[tag stringByReplacingOccurrencesOfString:@"#" withString:@""]];   
+    }
+}
 
 
 @end

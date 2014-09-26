@@ -11,6 +11,8 @@
 @interface BeeepTimeVC : UIViewController
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 @property (weak, nonatomic) IBOutlet UIImageView *checkMark;
+@property (nonatomic,assign) BOOL closeExits;
+
 - (IBAction)close:(id)sender;
 - (IBAction)buttonClicked:(id)sender;
 

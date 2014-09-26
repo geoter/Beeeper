@@ -14,10 +14,12 @@
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapG;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
+@property (nonatomic,strong) NSString *initialSearchTerm;
+
 
 - (IBAction)cancelPressed:(id)sender;
 - (IBAction)releaseSearch:(id)sender;
 
-+(void)showInVC:(UIViewController *)vc;
++(void)showInVC:(UIViewController *)vc withSeachTerm:(NSString *)term;
 
 @end

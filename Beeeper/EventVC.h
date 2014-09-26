@@ -21,7 +21,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *codeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *codeNumberLabel;
 @property (weak, nonatomic) IBOutlet UILabel *websiteLabel;
-@property (weak, nonatomic) IBOutlet UILabel *tagsLabel;
+@property (weak, nonatomic) IBOutlet UITextView *tagsField;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (weak, nonatomic) IBOutlet UILabel *likesLabel;
@@ -37,11 +37,12 @@
 
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;
-- (IBAction)ShowWebsite:(id)sender;
 
+- (IBAction)ShowWebsite:(id)sender;
 - (IBAction)beeepItPressed:(id)sender;
 - (IBAction)showLikes:(id)sender;
 - (IBAction)showComments:(id)sender;
 - (IBAction)showBeeeps:(id)sender;
+- (IBAction)tagSelected:(id)sender;
 
 @end

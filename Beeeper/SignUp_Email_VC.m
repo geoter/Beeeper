@@ -82,28 +82,23 @@
     for (UIView *sub in [self.scrollV subviews]) {
         if ([sub isKindOfClass:[UITextField class]]) {
             switch (sub.tag) {
-                case 1:
-                {
-                    NSArray *components = [[(UITextField *)sub text] componentsSeparatedByString:@" "];
-                    if (components.count == 1) {
-                        [values setObject:[components firstObject] forKey:@"name"];
-                    }
-                    else{
-                        NSRange nameRange = [[(UITextField *)sub text]rangeOfString:[components firstObject]];
-                        [values setObject:[components firstObject] forKey:@"name"];
-
-                        NSString *lastName = [[(UITextField *)sub text]substringFromIndex:nameRange.location+nameRange.length+1];
-                        [values setObject:[components lastObject] forKey:@"lastname"];
-                    }
+                case 1:{
+                    [values setObject:[(UITextField *)sub text] forKey:@"name"];
                     break;
                 }
-                case 2:
-                    [values setObject:[(UITextField *)sub text] forKey:@"password"];
+                case 2:{
+                    [values setObject:[(UITextField *)sub text] forKey:@"lastname"];
                     break;
-                case 3:
+                }
+                case 3:{
                     [values setObject:[(UITextField *)sub text] forKey:@"email"];
                     break;
-                    default:
+                }
+                case 4:
+                    [values setObject:[(UITextField *)sub text] forKey:@"password"];
+                    break;
+                
+                default:
                     break;
             }
         }
@@ -310,8 +305,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
    
-    
-    if (textField.tag != 3) {
+    if (textField.tag != 4) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:textField.tag+1];
         [txtF becomeFirstResponder];
     }

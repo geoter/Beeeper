@@ -72,10 +72,13 @@
     [self adjustFonts];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(close:) name:@"CloseBeeepItVC" object:nil];
     
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
+    BeeepTimeVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
     [viewController.view setFrame:CGRectMake(0, 0, viewController.view.frame.size.width, viewController.view.frame.size.height)];
+    viewController.closeExits = YES;
+    
     [self.view addSubview:viewController.view];
     [self addChildViewController:viewController];
 
@@ -739,7 +742,7 @@
                     NSString *message = [error objectForKey:@"message"];
                     NSString *info = [error objectForKey:@"info"];
                     
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:message message:info delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
 
                 }

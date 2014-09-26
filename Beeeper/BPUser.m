@@ -651,6 +651,8 @@ static BPUser *thisWebServices = nil;
     NSDictionary *dict = [BPUser sharedBP].user;
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"user=%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",5]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",0]];
     
     _userID = [[BPUser sharedBP].user objectForKey:@"id"];
     

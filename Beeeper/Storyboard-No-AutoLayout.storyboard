@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
     <dependencies>
+        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
@@ -437,7 +438,7 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="MWO-vL-mmx">
+                                                <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="MWO-vL-mmx">
                                                     <rect key="frame" x="52" y="95" width="206" height="159"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -1408,7 +1409,7 @@
                                                             </attributedString>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="cGR-f6-Qgn">
+                                                        <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="cGR-f6-Qgn">
                                                             <rect key="frame" x="16" y="48" width="116" height="90"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -1877,7 +1878,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Yh2-1W-NzU">
-                                        <rect key="frame" x="8" y="1" width="49" height="47"/>
+                                        <rect key="frame" x="18" y="1" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="tabbar-home.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1889,7 +1890,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="WYb-X0-RtZ">
-                                        <rect key="frame" x="265" y="1" width="55" height="47"/>
+                                        <rect key="frame" x="258" y="1" width="55" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <inset key="contentEdgeInsets" minX="0.0" minY="7" maxX="0.0" maxY="0.0"/>
                                         <state key="normal" image="tabbar-notif.png">
@@ -1907,7 +1908,7 @@
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="3Gu-U7-Ocb">
-                                        <rect key="frame" x="128" y="-19" width="65" height="65"/>
+                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <state key="normal" backgroundImage="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1917,7 +1918,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Ce7-eu-18U">
-                                        <rect key="frame" x="212" y="3" width="49" height="47"/>
+                                        <rect key="frame" x="205" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="tabbar-timeline.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1929,7 +1930,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Rmv-Tf-kUz">
-                                        <rect key="frame" x="59" y="1" width="49" height="47"/>
+                                        <rect key="frame" x="74" y="1" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="search_icon_gray.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1941,7 +1942,7 @@
                                         </connections>
                                     </button>
                                     <view userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="scaleToFill" id="bMH-sL-qOb">
-                                        <rect key="frame" x="278" y="15" width="27" height="24"/>
+                                        <rect key="frame" x="279" y="15" width="27" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
@@ -2926,7 +2927,7 @@
                                                             <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="1F1-AC-SOu">
+                                                        <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="1F1-AC-SOu">
                                                             <rect key="frame" x="16" y="48" width="116" height="90"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -3087,7 +3088,7 @@
                                                             <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="eNa-B3-rur">
+                                                        <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="eNa-B3-rur">
                                                             <rect key="frame" x="16" y="48" width="116" height="90"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -3199,7 +3200,7 @@
                                                                         <action selector="showEventBeepers:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="DVw-Jr-fCG"/>
                                                                     </connections>
                                                                 </button>
-                                                                <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="z4t-ev-6EP">
+                                                                <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="z4t-ev-6EP">
                                                                     <rect key="frame" x="16" y="46" width="116" height="90"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                                 </imageView>
@@ -3399,7 +3400,7 @@
                                                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" id="isU-yV-cwQ">
                                                     <rect key="frame" x="0.0" y="431" width="107" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" red="0.94509803921568625" green="0.70980392156862748" blue="0.070588235294117646" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" image="editProfileBtn.png"/>
                                                     <connections>
@@ -3409,7 +3410,7 @@
                                                 <button opaque="NO" tag="2" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" id="99c-wh-Cn4">
                                                     <rect key="frame" x="107" y="431" width="108" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" red="0.94509803921568625" green="0.70980392156862748" blue="0.070588235294117646" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <inset key="contentEdgeInsets" minX="0.0" minY="2" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" image="suggestionsBtn.png"/>
                                                     <connections>
@@ -3419,7 +3420,7 @@
                                                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" id="R0F-Ic-7lH">
                                                     <rect key="frame" x="214" y="431" width="106" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" red="0.94509803921568625" green="0.70980392156862748" blue="0.070588235294117646" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <inset key="contentEdgeInsets" minX="0.0" minY="1" maxX="0.0" maxY="0.0"/>
                                                     <state key="normal" image="activityBtn.png"/>
                                                     <connections>
@@ -3874,7 +3875,7 @@
                                                             <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="m3N-fT-1yK">
+                                                        <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="m3N-fT-1yK">
                                                             <rect key="frame" x="8" y="7" width="96" height="86"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -4097,10 +4098,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Add_new_beeep_btn.png" width="65" height="65"/>
+        <image name="Add_new_beeep_btn.png" width="49" height="45"/>
         <image name="Beeep_it_btn.png" width="131" height="40"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
-        <image name="activityBtn.png" width="34" height="35"/>
+        <image name="activityBtn.png" width="33" height="35"/>
         <image name="add_photo.png" width="99" height="102"/>
         <image name="arrow-cell.png" width="9" height="16"/>
         <image name="back.png" width="55" height="19"/>
@@ -4132,7 +4133,7 @@
         <image name="search_icon_white.png" width="13" height="13"/>
         <image name="settings-icon-timeline.png" width="21" height="22"/>
         <image name="suggest_unselected.png" width="22" height="22"/>
-        <image name="suggestionsBtn.png" width="56" height="34"/>
+        <image name="suggestionsBtn.png" width="55" height="33"/>
         <image name="tabbar-home.png" width="25" height="23"/>
         <image name="tabbar-notif.png" width="23" height="26"/>
         <image name="tabbar-timeline.png" width="30" height="23"/>

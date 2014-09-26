@@ -67,8 +67,6 @@
                     [[DTO sharedDTO]downloadImageFromURL:imagePath];
                 }
                 
-                [self updateUsersCount];
-                
                 NSMutableArray *true_following = [NSMutableArray array];
                 
                 if (following != nil) {
@@ -84,6 +82,11 @@
                     [self hideLoading];
                 }
             }
+            else{
+                [self hideLoading];
+            }
+            
+            [self updateUsersCount];
         }];
          
          //to get which of the followers is our user following

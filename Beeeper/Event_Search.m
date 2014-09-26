@@ -242,5 +242,4 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     return copy;
 }
 
-
 @end

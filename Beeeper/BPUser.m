@@ -692,7 +692,7 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = [request responseString];
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    if (users.count == 0) {
+    if (users.count != 0) {
         
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory

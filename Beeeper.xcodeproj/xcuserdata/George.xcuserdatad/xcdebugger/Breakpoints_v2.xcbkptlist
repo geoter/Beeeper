@@ -388,7 +388,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/EventWS.m"
@@ -404,7 +404,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/EventWS.m"
@@ -535,7 +535,7 @@
                   symbolName = "-[EventVC likeIt]"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.012629"
+                  timestampString = "433529371.296886"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "1875"
@@ -549,7 +549,7 @@
                   symbolName = "__17-[EventVC likeIt]_block_invoke534"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.012772"
+                  timestampString = "433529371.297029"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "1875"
@@ -581,7 +581,7 @@
                   symbolName = "-[EventVC likeIt]"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.013442"
+                  timestampString = "433529371.297746"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "1713"
@@ -595,7 +595,7 @@
                   symbolName = "__17-[EventVC likeIt]_block_invoke493"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.013581"
+                  timestampString = "433529371.297884"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "1713"
@@ -708,11 +708,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837192.254598"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "867"
-            endingLineNumber = "867"
+            startingLineNumber = "872"
+            endingLineNumber = "872"
             landmarkName = "-imagePickerControllerDidCancel:"
             landmarkType = "5">
          </BreakpointContent>
@@ -724,11 +724,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837192.254598"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "678"
-            endingLineNumber = "678"
+            startingLineNumber = "683"
+            endingLineNumber = "683"
             landmarkName = "-areAllDataAvailable:"
             landmarkType = "5">
          </BreakpointContent>
@@ -740,11 +740,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432838418.838317"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "886"
-            endingLineNumber = "886"
+            startingLineNumber = "891"
+            endingLineNumber = "891"
             landmarkName = "-userPickedPhoto:"
             landmarkType = "5">
          </BreakpointContent>
@@ -962,11 +962,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837192.254598"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "791"
-            endingLineNumber = "791"
+            startingLineNumber = "796"
+            endingLineNumber = "796"
             landmarkName = "-actionSheet:didDismissWithButtonIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -978,13 +978,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837952.329009"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1041"
-            endingLineNumber = "1041"
-            landmarkName = "@implementation BeeepVC"
-            landmarkType = "3">
+            startingLineNumber = "1046"
+            endingLineNumber = "1046">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -994,11 +992,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837952.329009"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1020"
-            endingLineNumber = "1020"
+            startingLineNumber = "1025"
+            endingLineNumber = "1025"
             landmarkName = "-imagePickerController:didFinishPickingImage:editingInfo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1010,11 +1008,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837126.900733"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "995"
-            endingLineNumber = "995"
+            startingLineNumber = "1000"
+            endingLineNumber = "1000"
             landmarkName = "-presentImagePickerWithSourceType:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1026,11 +1024,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BeeepVC.m"
-            timestampString = "432837131.772253"
+            timestampString = "433527524.78503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "973"
-            endingLineNumber = "973"
+            startingLineNumber = "978"
+            endingLineNumber = "978"
             landmarkName = "-imagePicker:pickedImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1338,11 +1336,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "432847561.215817"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "187"
@@ -1358,7 +1356,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "432847563.139311"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "219"
@@ -1374,7 +1372,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "432847821.318938"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "161"
@@ -1390,7 +1388,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "432848090.309438"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "178"
@@ -1694,59 +1692,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/CommentsVC.m"
-            timestampString = "433164577.317874"
+            timestampString = "433529371.219284"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "487"
-            endingLineNumber = "487"
+            startingLineNumber = "536"
+            endingLineNumber = "536"
             landmarkName = "-composeBarViewDidPressButton:"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Beeeper/CommentsVC.m"
-            timestampString = "433164577.317874"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
-            landmarkName = "-composeBarViewDidPressButton:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[CommentsVC composeBarViewDidPressButton:]"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/CommentsVC.m"
-                  timestampString = "433164107.993042"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "536"
-                  endingLineNumber = "536"
-                  offsetFromSymbolStart = "3682">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__43-[CommentsVC composeBarViewDidPressButton:]_block_invoke326"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/CommentsVC.m"
-                  timestampString = "433164107.993209"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "536"
-                  endingLineNumber = "536"
-                  offsetFromSymbolStart = "40">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1762,22 +1714,6 @@
             startingLineNumber = "158"
             endingLineNumber = "158"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Beeeper/CommentsVC.m"
-            timestampString = "433164695.750615"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
-            landmarkName = "-composeBarViewDidPressButton:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1931,7 +1867,7 @@
                   symbolName = "-[EventVC viewDidLoad]"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.018718"
+                  timestampString = "433529371.305684"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "122"
@@ -1945,7 +1881,7 @@
                   symbolName = "__22-[EventVC viewDidLoad]_block_invoke99"
                   moduleName = "Beeeper"
                   urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433524684.018856"
+                  timestampString = "433529371.305918"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "122"
@@ -1974,11 +1910,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "433510664.640915"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "289"
@@ -1990,11 +1926,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/BPCreate.m"
-            timestampString = "433510665.325887"
+            timestampString = "433527067.632513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "284"
@@ -2038,7 +1974,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Beeeper/EventWS.m"
@@ -2113,6 +2049,100 @@
             endingLineNumber = "1170"
             landmarkName = "-getOldNotificationsWithCompletionBlock:"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/BPCreate.m"
+            timestampString = "433527067.632513"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "-eventCreate:completionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/BPCreate.m"
+            timestampString = "433527067.632513"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "156"
+            endingLineNumber = "156"
+            landmarkName = "-eventCreate:completionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/BeeepVC.m"
+            timestampString = "433527527.558159"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "660"
+            endingLineNumber = "660"
+            landmarkName = "-areAllDataAvailable:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Beeeper/EventVC.m"
+            timestampString = "433528779.925475"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2470"
+            endingLineNumber = "2470"
+            landmarkName = "-composeBarViewDidPressButton:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[EventVC composeBarViewDidPressButton:]"
+                  moduleName = "Beeeper"
+                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
+                  timestampString = "433529371.308844"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2471"
+                  endingLineNumber = "2471"
+                  offsetFromSymbolStart = "336">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[EventVC composeBarViewDidPressButton:]_block_invoke"
+                  moduleName = "Beeeper"
+                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
+                  timestampString = "433529371.308981"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2471"
+                  endingLineNumber = "2471"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

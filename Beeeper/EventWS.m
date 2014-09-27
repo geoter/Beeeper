@@ -65,13 +65,13 @@ static EventWS *thisWebServices = nil;
         
         NSMutableArray *postValues = [NSMutableArray array];
         
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:[self urlencode:commentText]] forKey:@"comment"]];
         [postValues addObject:[NSDictionary dictionaryWithObject:user_id forKey:@"user"]];
         [postValues addObject:[NSDictionary dictionaryWithObject:beeep_id forKey:@"beeep_id"]];
         
         [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         
-        [request addPostValue:commentText forKey:@"comment"];
+        [request addPostValue:[self urlencode:commentText] forKey:@"comment"];
         [request addPostValue:user_id forKey:@"user"];
         [request addPostValue:beeep_id forKey:@"beeep_id"];
         

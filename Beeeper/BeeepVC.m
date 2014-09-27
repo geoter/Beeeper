@@ -654,6 +654,11 @@
         mpike = YES;
     }
     else{
+        
+        NSString *title = [values objectForKey:@"title"];
+        title = [self urlencode:title];
+        [values setObject:title forKey:@"title"];
+        
         [self validTextfield:self.titleTxtF];
     }
     if (![values objectForKey:@"timestamp"]) {

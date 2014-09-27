@@ -907,6 +907,7 @@
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
         [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
         [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
+        [request addPostValue:@"Beeeper" forKey:@"from_name"];
         
         NSMutableString *recipients = [[NSMutableString alloc]init];
         
@@ -958,7 +959,7 @@
         
         
         NSMutableDictionary* params =   [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                         [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"to",
+                                         [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"suggestions",
                                          nil];
         
         [FBWebDialogs

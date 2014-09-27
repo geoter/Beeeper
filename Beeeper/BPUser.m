@@ -424,10 +424,6 @@ static BPUser *thisWebServices = nil;
    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
-    if (dict.allKeys.count == 0) {
-        return;
-    }
-    
     [dict setObject:deviceToken forKey:@"deviceToken"];
     
     [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:dict]]];

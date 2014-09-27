@@ -78,7 +78,7 @@ static BPCreate *thisWebServices = nil;
         if ([dict objectForKey:@"beeep"]) {
             
             //invalidate push
-            
+            [self invalidateBeeep:[dict objectForKey:@"beeep"]];
             self.completed(YES,nil);
         }
         else{
@@ -249,5 +249,44 @@ static BPCreate *thisWebServices = nil;
     return [NSString stringWithFormat:@"%@", safeString];
 }
 
+-(void)invalidateBeeep:(NSString *)weight{
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/invalidate/push"];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
+    
+    [postValues setObject:[NSString stringWithFormat:@"1"] forKey:@"invalidatePUSH"];
+    [postValues setObject:weight forKey:@"beeep_id"];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
+    
+    [request addPostValue:[NSString stringWithFormat:@"1"] forKey:@"invalidatePUSH"];
+    [request addPostValue:weight forKey:@"beeep_id"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setDidFinishSelector:@selector(invalidateFinished:)];
+    
+    [request setDidFailSelector:@selector(invalidateFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)invalidateFinished:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+
+}
+
+-(void)invalidateFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    
+}
 
 @end

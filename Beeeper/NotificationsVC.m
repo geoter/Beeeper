@@ -114,8 +114,8 @@
             newNotifications = [NSMutableArray arrayWithArray:newNotifs];
             oldNotifications = [NSMutableArray arrayWithArray:oldNotifs];
 
-            if (notifications.count == 0) {
-                self.noNotifsFound.hidden = NO;
+            if (notifications.count > 0) {
+                self.noNotifsFound.hidden = YES;
             }
             else{
             
@@ -123,6 +123,10 @@
                 [alert show];
 
                 self.noNotifsFound.hidden = YES;
+                
+                [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                
+                return;
             }
             
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

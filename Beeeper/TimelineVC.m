@@ -87,8 +87,6 @@
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
     
-    
-    
     @try {
         
         NSLog(@"Mpike");
@@ -537,6 +535,8 @@
     }
     
     
+    [self.tableV reloadData];
+    
 //    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 //        
 //        if (completed) {
@@ -602,8 +602,8 @@
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
         lbl.text = @"Following";
-        lbl.backgroundColor =  [UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
-        lbl.textColor = [UIColor whiteColor];
+        lbl.backgroundColor = [UIColor whiteColor]; //[UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
+        lbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
         lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
         lbl.layer.cornerRadius = 2;
@@ -639,7 +639,7 @@
         [self.followButton addSubview:lbl];
         
         self.followButton.hidden = NO;
-        
+       // [self.followButton setBackgroundColor:[]
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
         [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
     }
@@ -700,10 +700,6 @@
 
 #pragma mark - Table view data source
 
-#pragma mark - Table view data source
-
-#pragma mark - Table view data source
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
@@ -746,11 +742,11 @@
         
         UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
         
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(310, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:241/255.0 green:181/255.0 blue:18/255.0 alpha:1]];
+        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(308, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1]];
         
         segment.delegate = self;
         [headerView addSubview:segment];
-        segment.center = CGPointMake(160, 16);
+        segment.center = CGPointMake(160, 18);
         [cell addSubview:headerView];
     }
     else{
@@ -855,6 +851,10 @@
         likesLbl.hidden = (likesLbl.text.intValue == 0);
         commentsLbl.hidden = (commentsLbl.text.intValue == 0);
         beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+       
+        beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
         
         //Image
         
@@ -962,7 +962,7 @@
     [rowsToReload addObjectsFromArray:rows];
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

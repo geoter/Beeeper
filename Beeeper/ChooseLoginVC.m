@@ -176,8 +176,6 @@
 
 - (IBAction)fbLoginPressed:(id)sender {
    
-    [self showLoading];
-   
     
     Reachability *reachability = [Reachability reachabilityForInternetConnection];
     [reachability startNotifier];
@@ -363,8 +361,6 @@
 }
 
 - (IBAction)twitterLoginPressed:(id)sender {
-    
-    [self showLoading];
 
     Reachability *reachability = [Reachability reachabilityForInternetConnection];
     [reachability startNotifier];

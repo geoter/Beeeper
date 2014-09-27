@@ -16,6 +16,7 @@ typedef void(^completed)(BOOL,id);
 
 -(void)getLocalFriendsFeed:(completed)compbloc;
 
+@property (nonatomic,assign) int pageLimit;
 @property (copy) void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;
 

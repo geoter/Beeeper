@@ -121,6 +121,8 @@
             
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getNotifications Completed but notifications == 0" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
                 [alert show];
+            }
+            else{
 
                 self.noNotifsFound.hidden = YES;
                 
@@ -513,7 +515,7 @@
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+    if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

@@ -20,7 +20,7 @@
 #import "FollowListVC.h"
 #import "CommentsVC.h"
 
-@interface SearchVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate>
+@interface SearchVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIAlertViewDelegate>
 {
     NSMutableArray *filteredResults;
     NSArray *suggestionValues;
@@ -44,13 +44,22 @@
     loadNextPage = NO;
     
     [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *keywords){
-        
-        if (keywords.count > 0) {
-            loadNextPage = (keywords.count == 15);
-            [filteredResults addObjectsFromArray:keywords];
+       
+        @try {
+            if (keywords.count > 0) {
+                loadNextPage = (keywords.count == [EventWS sharedBP].pageLimit);
+                [filteredResults addObjectsFromArray:keywords];
+            }
+            
+            [self.tableV reloadData];
+        }
+        @catch (NSException *exception) {
+    
+        }
+        @finally {
+    
         }
         
-        [self.tableV reloadData];
         
     }];
     
@@ -60,7 +69,13 @@
 {
     [super viewDidLoad];
     
-    [self resetSearch];
+    if (self.initialSearchTerm) {
+        [self searchTerm:self.initialSearchTerm];
+        self.title = self.initialSearchTerm;
+    }
+    else{
+        [self resetSearch];
+    }
     
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
@@ -96,8 +111,19 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+
+    if (self.initialSearchTerm) {
+        
+        UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+        self.navigationItem.leftBarButtonItem = leftItem;
+        
+        self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+        [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+    }
+    else{
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+    }
 
 }
 
@@ -105,7 +131,9 @@
     [super viewWillDisappear:animated];
 }
 
-
+-(void)goBack{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 -(void)resetSearch{
     
@@ -179,19 +207,26 @@
 
     [self.collectionV setContentOffset:CGPointZero];
     
-    [[EventWS sharedBP]searchEvent:tag WithCompletionBlock:^(BOOL completed,NSArray *evnts){
+    [self searchTerm:tag];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+-(void)searchTerm:(NSString *)term{
+    
+    [[EventWS sharedBP]searchEvent:term WithCompletionBlock:^(BOOL completed,NSArray *evnts){
         if (completed) {
             events = [NSArray arrayWithArray:evnts];
-
-            if (events.count > 0) {
-               loadNextPage = YES;   
+            
+            if (events.count == [EventWS sharedBP].pageLimit) {
+                loadNextPage = YES;
             }
             
             self.collectionV.hidden = NO;
             [self.collectionV reloadData];
             
             [UIView animateWithDuration:0.3f
-                     animations:^
+                             animations:^
              {
                  self.tableV.alpha = 0;
              }
@@ -200,15 +235,21 @@
                  
              }
              ];
-
+            
         }
         else{
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No upcoming Beeeps Found" message:@"Please search for another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            alert.tag = 55;
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
         }
     }];
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 55) {
+        [self goBack];
+    }
 }
 
 #pragma mark - SearchField
@@ -308,28 +349,15 @@
     [self.tableV removeGestureRecognizer:tapG];
 }
 
-+(void)showInVC:(UIViewController *)vc{
++(void)showInVC:(UIViewController *)vc withSeachTerm:(NSString *)term{
     
-    SearchVC *sVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVC"];
-    [vc.view addSubview:sVC.view];
-    [vc addChildViewController:sVC];
+    SearchVC *sVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVCNav"];
     
+    sVC.initialSearchTerm = term;
     sVC.topV.frame = CGRectMake(0, -sVC.topV.frame.size.height, 320, sVC.topV.frame.size.height);
     sVC.tableV.alpha = 0;
 
-    [vc.navigationController setNavigationBarHidden:YES animated:YES];
-    
-    [UIView animateWithDuration:0.7f
-                     animations:^
-     {
-          sVC.topV.frame = CGRectMake(0, 0, sVC.topV.frame.size.width, sVC.topV.frame.size.height);
-          sVC.tableV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         [sVC.searchTextField becomeFirstResponder];
-     }
-     ];
+    [vc.navigationController pushViewController:sVC animated:YES];
 }
 
 #pragma mark - UICollectionView
@@ -778,7 +806,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

@@ -80,7 +80,7 @@
             if (objcts>0) {
                 [suggestions addObjectsFromArray:objcts];
                 [self groupSuggestionsByMonth];
-                loadNextPage = (objcts.count == 10);
+                loadNextPage = (objcts.count == [BPSuggestions sharedBP].pageLimit);
             }
         }
     }];
@@ -99,18 +99,39 @@
         [refreshControl endRefreshing];
         [self hideLoading];
         
-        if (objcts.count > 0) {
-            self.noSuggestionsLabel.hidden = YES;
-            self.tableV.hidden = NO;
+        if (completed) {
+            
+            if (objcts.count > 0) {
+                self.noSuggestionsLabel.hidden = YES;
+                self.tableV.hidden = NO;
+            }
+            else{
+                self.noSuggestionsLabel.hidden = NO;
+                self.tableV.hidden = YES;
+                
+                if ([objcts isKindOfClass:[NSArray class]] && objcts.count == 0) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getSuggestions Completed but objcts == 0" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                        
+                    });
+                }
+                
+            }
+
+            
+            suggestions = [NSMutableArray arrayWithArray:objcts];
+            [self groupSuggestionsByMonth];
         }
         else{
             self.noSuggestionsLabel.hidden = NO;
-            self.tableV.hidden = YES;
-        }
-        
-        if (completed) {
-            suggestions = [NSMutableArray arrayWithArray:objcts];
-            [self groupSuggestionsByMonth];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getSuggestions not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                [alert show];
+                
+            });
         }
     }];
 
@@ -441,7 +462,7 @@
     [rowsToReload addObjectsFromArray:rows];
      [pendingImagesDict removeObjectForKey:imageName];
    
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

@@ -18,7 +18,7 @@ typedef void(^completed)(BOOL,id);
 @property (copy) completed getEvent_completed;
 @property (copy) completed get_All_Events_completed;
 @property (copy) completed get_All_Local_Events_completed;
-
+@property (nonatomic,assign) int pageLimit;
 @property (copy) void(^like_beeep_completed)(BOOL,id);
 
 - (id)init;

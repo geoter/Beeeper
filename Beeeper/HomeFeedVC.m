@@ -170,7 +170,7 @@
             [refreshControl endRefreshing];
             
             if (objs.count > 0) {
-                loadNextPage = (objs.count == 10);
+                loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
                 self.noBeeepsLabel.hidden = YES;
             }
             else{
@@ -199,7 +199,7 @@
         if (completed && objs.count >0) {
             events = nil;
             [beeeps addObjectsFromArray:objs];
-            loadNextPage = (objs.count == 10);
+            loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
 
             [self.collectionV reloadData];
         }
@@ -207,6 +207,8 @@
 }
 
 -(void)nextHomeFeed{
+    
+    loadNextPage = NO;
     
     [[EventWS sharedBP]nextAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
@@ -217,7 +219,7 @@
                 beeeps = nil;
                 [events addObjectsFromArray:objs];
                 
-                loadNextPage = (objs.count == 10);
+                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
                 
                 [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
@@ -254,23 +256,16 @@
                 beeeps = nil;
                 events = [NSMutableArray arrayWithArray:objs];
                 
-                loadNextPage = YES;
+                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
                 
                 UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
                 [refreshControl endRefreshing];
                 
                 [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-            }
-            else{
-                if ([objs isKindOfClass:[NSString class]]) {
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                    [alert show];
-                    
-                }
+                
+                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
         }
-        
-        [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     }];
 
     
@@ -775,7 +770,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     [pendingImagesDict removeObjectForKey:imageName];
     
-    if (rowsToReload.count == 5  || pendingImagesDict.count < 5) {
+     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
             @try {

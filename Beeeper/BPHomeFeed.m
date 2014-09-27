@@ -14,7 +14,6 @@ static BPHomeFeed *thisWebServices = nil;
 @interface BPHomeFeed ()
 {
     int page;
-    int pageLimit;
     int feedLength;
     NSString *order;
     int length;
@@ -24,6 +23,7 @@ static BPHomeFeed *thisWebServices = nil;
 @end
 
 @implementation BPHomeFeed
+@synthesize pageLimit;
 
 -(id)init{
     self = [super init];
@@ -175,15 +175,23 @@ static BPHomeFeed *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"FriendsFeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [responseString writeToFile:filePath
-                              atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    [self parseResponseString:responseString WithCompletionBlock:self.completed];
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+
+    if (beeeps.count > 0) {
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"FriendsFeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        [self parseResponseString:responseString WithCompletionBlock:self.completed];
+    }
+    else{
+        [self friendsFeedFailed:request];
+    }
 }
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
@@ -221,7 +229,6 @@ static BPHomeFeed *thisWebServices = nil;
     
      self.completed(NO,@"friendsFeedFailed");
 }
-
 
 
 -(void)downloadImage:(Friendsfeed_Object *)ffo{

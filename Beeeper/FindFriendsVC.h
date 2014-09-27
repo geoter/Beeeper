@@ -13,6 +13,7 @@ typedef void(^completed)(BOOL,id);
 @property (weak, nonatomic) IBOutlet UIView *headerV;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (nonatomic,copy) completed search_completed;
+@property (nonatomic,assign) int pageLimit;
 
 - (IBAction)rightButtonPressed:(id)sender;
 

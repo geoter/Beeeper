@@ -89,7 +89,7 @@
 
 -(void)getSuggestions{
     
-    loadNextPage = YES;
+    loadNextPage = NO;
     
     [self showLoading];
     
@@ -101,7 +101,10 @@
         
         if (completed) {
             
+            loadNextPage = ([BPSuggestions sharedBP].pageLimit == objcts.count);
+            
             if (objcts.count > 0) {
+                
                 self.noSuggestionsLabel.hidden = YES;
                 self.tableV.hidden = NO;
             }

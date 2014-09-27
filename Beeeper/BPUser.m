@@ -418,6 +418,10 @@ static BPUser *thisWebServices = nil;
 
 -(void)sendDeviceToken{
     
+    if (deviceToken == nil) {
+        return;
+    }
+    
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/update/IOS/id"];
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];

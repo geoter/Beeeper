@@ -24,4 +24,5 @@ typedef void(^completed)(BOOL,id);
 -(void)beeepCreate:(NSString *)fingerprint beeep_time:(NSString *)beeep_time completionBlock:(completed)compbloc;
 -(void)eventCreate:(NSDictionary *)values completionBlock:(completed)compbloc;
 -(void)invalidateBeeep:(NSString *)weight;
+-(void)beeepDelete:(NSString *)fingerprint timestamp:(NSString *)timestamp weight:(NSString *)weight completionBlock:(completed)compbloc;
 @end

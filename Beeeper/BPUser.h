@@ -30,6 +30,8 @@ typedef void(^notifications_completed)(BOOL,id,id);
 @property (copy) completed setUserSettingsCompleted;
 @property (copy) completed localFollowersCompleted;
 @property (copy) completed localFollowingCompleted;
+@property (copy) completed beeepersFromFBCompleted;
+@property (copy) completed beeepersFromTWCompleted;
 
 @property (nonatomic,strong) NSDictionary *user;
 
@@ -74,6 +76,8 @@ typedef void(^notifications_completed)(BOOL,id,id);
 -(void)sendDemoPush:(int)seconts;
 
 -(void)getUser;
+-(void)beeepersFromFB_IDs:(NSString *)idsJSON WithCompletionBlock:(completed)compbloc;
+-(void)beeepersFromTW_IDs:(NSString *)idsJSON WithCompletionBlock:(completed)compbloc;
 
 - (id)init;
 + (BPUser *)sharedBP;

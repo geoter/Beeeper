@@ -113,6 +113,60 @@ static BPCreate *thisWebServices = nil;
     
 }
 
+-(void)beeepDelete:(NSString *)fingerprint timestamp:(NSString *)timestamp weight:(NSString *)weight completionBlock:(completed)compbloc{
+
+    self.completed = compbloc;
+    
+    NSString *postStr = [NSString stringWithFormat:@"{\"fingerpring\":\"%@\",\"timestamp\":\"%@\",\"weight\":\"%@\"}",fingerprint,timestamp,weight];
+    
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/delete"];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
+    
+    [postValues setObject:[self urlencode:postStr] forKey:@"beeep"];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
+    
+    [request addPostValue:postStr forKey:@"beeep"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+
+    [request setCompletionBlock:^{
+        
+        @try {
+            
+            NSString *responseString = [request responseString];
+            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            self.completed(YES,beeepers);
+        }
+        @catch (NSException *exception) {
+            self.completed(NO,nil);
+        }
+        @finally {
+            
+        }
+        
+    }];
+    
+    [request setFailedBlock:^{
+        NSString *responseString = [request responseString];
+        self.completed(NO,nil);
+    }];
+
+    
+    [request startAsynchronous];
+
+}
+
+
+
 -(void)eventCreate:(NSDictionary *)values completionBlock:(completed)compbloc{
 
     self.completed = compbloc;

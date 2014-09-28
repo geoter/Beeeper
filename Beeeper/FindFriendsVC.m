@@ -43,7 +43,8 @@
     NSMutableArray *rowsToReload;
     UIActivityIndicatorView *activityIndicator;
 
-
+    NSArray *accounts;
+    NSArray *usernames;
 }
 @property (nonatomic,strong)  UIView *loadingView;
 @end
@@ -167,6 +168,16 @@
 
 -(void)getBeeeperUsers{
     
+    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+    [loadingView setBackgroundColor:[UIColor clearColor]];
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [loadingView addSubview:activityIndicator];
+    activityIndicator.center =loadingView.center;
+    [self.view addSubview:loadingView];
+    [self.view bringSubviewToFront:loadingView];
+    [activityIndicator startAnimating];
+    
     page = 0;
     loadNextPage = YES;
     
@@ -176,15 +187,17 @@
          
             dispatch_async(dispatch_get_main_queue(), ^{
 
-                [UIView animateWithDuration:0.7f
+                [UIView animateWithDuration:0.2f
                                  animations:^
                  {
                      loadingView.alpha = 0;
                  }
                                  completion:^(BOOL finished)
                  {
+                     [loadingView removeFromSuperview];
                  }
                  ];
+                
                 
                 if (objcts > 0) {
                     loadNextPage = YES;
@@ -234,7 +247,7 @@
             break;
         }
         case 2:
-            
+            [self requestTWFriends];
             break;
         case 3:
             [self showAddressBook];
@@ -268,17 +281,48 @@
     
 }
 
+-(void)showLoading{
+    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+    [loadingView setBackgroundColor:[UIColor clearColor]];
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [loadingView addSubview:activityIndicator];
+    activityIndicator.center =loadingView.center;
+    [self.view addSubview:loadingView];
+    [self.view bringSubviewToFront:loadingView];
+    [activityIndicator startAnimating];
+}
+
+-(void)hideLoading{
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         loadingView.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         [loadingView removeFromSuperview];
+     }
+     ];
+
+}
+
 -(void)showAddressBook{
   
+    [self showLoading];
+    
     ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error) {
         if (!granted){
             //4
-
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-            
-            
+            dispatch_async(dispatch_get_main_queue(), ^{
+       
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                
+                [self hideLoading];
             return;
+    
+            });
         }
         //5
         
@@ -342,15 +386,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
        
-            [UIView animateWithDuration:0.7f
-                             animations:^
-             {
-                 loadingView.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-             }
-             ];
+            [self hideLoading];
             
             adressBookPeople = [NSMutableArray arrayWithArray:contacts];
             searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
@@ -361,6 +397,8 @@
 }
 
 -(void)requestFBFriends{
+    
+    [self showLoading];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]){
         
@@ -399,31 +437,60 @@
                       
                       NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                       friends=[friends sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                      NSArray *fb_ids = [friends valueForKey:@"id"];
+                      NSString *friendStr = [fb_ids componentsJoinedByString:@","];
+
+                      //fbPeople = [NSMutableArray arrayWithArray:friends];
+                      //searchedPeople = [NSMutableArray arrayWithArray:friends];
+
                       
-                      fbPeople = [NSMutableArray arrayWithArray:friends];
-                      searchedPeople = [NSMutableArray arrayWithArray:friends];
-                      NSArray *fb_ids = [fbPeople valueForKey:@"id"];
-                      
-                      dispatch_async(dispatch_get_main_queue(), ^{
+                      [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
                           
-                          [UIView animateWithDuration:0.7f
-                                           animations:^
-                           {
-                               loadingView.alpha = 0;
-                           }
-                                           completion:^(BOOL finished)
-                           {
-                           }
-                           ];
-                      });
-                     
-                      
-                      [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                          if (completed) {
+                              if (objcts && objcts.count>0) {
+                                  NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                                  NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                                  
+                                  fbPeople = [NSMutableArray arrayWithArray:friends];
+                                  searchedPeople = [NSMutableArray arrayWithArray:friends];
+                                 
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+
+                                      [self.tableV reloadData];
+                                      
+                                      [self hideLoading];
+                                  });
+                                  
+                                  
+                 
+                              }
+                              else{
+                                  [self.tableV reloadData];
+                              }
+                          }
+                          else{
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  
+                                  [self hideLoading];
+                                  
+                                  
+                                  UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                  [alert show];
+                              });
+
+
+                          }
+                      }];
+                    
 
                   }];
              }
              else{
                  dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     [self hideLoading];
+                     
                      UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Permission Denied" message:@"Facebook access was denied. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                      [alert show];
                  });
@@ -432,6 +499,147 @@
         
     }
 }
+
+-(void)requestTWFriends{
+    
+    [self showLoading];
+    
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error){
+        if (granted) {
+            accounts = [accountStore accountsWithAccountType:accountType];
+            usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
+
+            if (usernames.count == 0) {
+                NSLog(@"NO ACCOUNT");
+                return ;
+            }
+            
+            if (usernames.count > 1) {
+                
+                UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                popup.tag = 77;
+                
+                for (NSString *name in usernames) {
+                    [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
+                }
+                
+                [popup addButtonWithTitle:@"Cancel"];
+                
+                popup.cancelButtonIndex = popup.numberOfButtons -1;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [popup showInView:self.view];
+                });
+                
+            }
+            else{
+                
+                ACAccount *twitterAccount = [accounts objectAtIndex:0];
+                NSString *userID = ((NSDictionary*)[twitterAccount valueForKey:@"properties"])[@"user_id"];
+                
+                SLRequest *twitterInfoRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friends/ids.json?"] parameters:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@", userID],@"user_id", nil]];
+                [twitterInfoRequest setAccount:twitterAccount];
+                // Making the request
+                [twitterInfoRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // Check if we reached the reate limit
+                        if ([urlResponse statusCode] == 429) {
+                            NSLog(@"Rate limit reached");
+                            return;
+                        }
+                        // Check if there was an error
+                        if (error) {
+                            NSLog(@"Error: %@", error.localizedDescription);
+                            return;
+                        }
+                        // Check if there is some response data
+                        if (responseData) {
+                            NSError *error = nil;
+                            NSArray *TWData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:&error];
+                            
+                            NSString *ids = [[TWData valueForKey:@"ids"] componentsJoinedByString:@","];
+                           
+                            [[BPUser sharedBP]beeepersFromTW_IDs:ids WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+                                
+                                if (completed) {
+                                    if (objcts && objcts.count>0) {
+                                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                                        NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                                        
+                                        fbPeople = [NSMutableArray arrayWithArray:friends];
+                                        searchedPeople = [NSMutableArray arrayWithArray:friends];
+                                        
+                                        
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            
+                                            [self.tableV reloadData];
+                                            
+                                            [self hideLoading];
+                                        });
+                                        
+                                        
+                                        
+                                    }
+                                    else{
+                                        [self hideLoading];
+                                        [self.tableV reloadData];
+                                    }
+                                }
+                                else{
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        
+                                        [self hideLoading];
+                                        
+                                        
+                                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                        [alert show];
+                                    });
+                                    
+                                    
+                                }
+                            }];
+                        }
+                    });
+                }];
+            }
+
+            
+        } else {
+            NSLog(@"No access granted");
+        }
+    }];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
+    if (actionSheet.tag == 77) { // twitter
+        
+        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex];
+        NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
+        NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
+        
+        
+        
+        
+        
+    }
+    else{
+        
+        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex];
+        id email = [fbAccount valueForKeyPath:@"properties.uid"];
+        NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
+        
+        
+    }
+    
+}
+
 
 -(void)viewWillAppear:(BOOL)animated{
     
@@ -503,7 +711,7 @@
 
     NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
     
-     if (selectedOption != BeeeperButton) {
+     if (selectedOption == MailButton) {
          
          tickedV.hidden = NO;
          followBtn.hidden = YES;
@@ -537,117 +745,89 @@
          }
      }
     
-    if (selectedOption == FacebookButton) {
-        
-        txtF.text = [[user objectForKey:@"name"] capitalizedString];
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *imagePath = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",[user objectForKey:@"id"]];
 
-        NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
+    
+    NSString *name =[[user objectForKey:@"name"] capitalizedString];
+    NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
 
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            userImage.backgroundColor = [UIColor clearColor];
-            userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            userImage.image = img;
+    NSArray *emails= [user objectForKey:@"emails"];
+    NSMutableString *emailsStr = [[NSMutableString alloc]init];
+    
+    if (emails.count > 0) {
+
+        for (NSString *email in emails) {
+            [emailsStr appendFormat:@"%@ ,",email];
         }
-        else{
-            userImage.backgroundColor = [UIColor lightGrayColor];
-            userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-           
-            [pendingImagesDict setObject:indexPath forKey:imageName];
-            [[DTO sharedDTO]downloadImageFromURL:imagePath];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-        }
-
+        [emailsStr deleteCharactersInRange:NSMakeRange([emailsStr length]-1, 1)];
+        
+    }
+       if (name && lastname) {
+        txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
+    }
+    else if(name == nil && lastname == nil && emails.count > 0){
+       
+        txtF.text = emailsStr;
     }
     else{
+        txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
+    }
+
+    emailtxtF.text = emailsStr;
     
-        NSString *name =[[user objectForKey:@"name"] capitalizedString];
-        NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
-
-        NSArray *emails= [user objectForKey:@"emails"];
-        NSMutableString *emailsStr = [[NSMutableString alloc]init];
-        
-        if (emails.count > 0) {
-
-            for (NSString *email in emails) {
-                [emailsStr appendFormat:@"%@ ,",email];
-            }
-            [emailsStr deleteCharactersInRange:NSMakeRange([emailsStr length]-1, 1)];
+    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSString *imagePath = [user objectForKey:@"image_path"];
+    
+    @try {
+    
+        if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
             
-        }
-           if (name && lastname) {
-            txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
-        }
-        else if(name == nil && lastname == nil && emails.count > 0){
-           
-            txtF.text = emailsStr;
-        }
-        else{
-            txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
-        }
-
-        emailtxtF.text = emailsStr;
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        
-        @try {
-        
-            if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
-                
-                //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-                
-                NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-                
-                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-                
-                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                    userImage.backgroundColor = [UIColor clearColor];
-                    userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                    UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-                    userImage.image = img;
-                }
-                else{
-                    userImage.backgroundColor = [UIColor lightGrayColor];
-                    userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                    [pendingImagesDict setObject:indexPath forKey:imageName];
-                    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-                }
-                
+            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            
+            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
+            
+            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+            
+            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                userImage.backgroundColor = [UIColor clearColor];
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
+                userImage.image = img;
             }
             else{
-                
-                userImage.image = nil;
-                
-                UIImage *imageContact = [user objectForKey:@"image"];
-                if (imageContact != nil) {
-                    userImage.image = imageContact;
-                    userImage.backgroundColor = [UIColor clearColor];
-                }
-                else{
-                    userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                }
-                
+                userImage.backgroundColor = [UIColor lightGrayColor];
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+                [pendingImagesDict setObject:indexPath forKey:imageName];
+                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
             }
             
+        }
+        else{
             
-
-        }
-        @catch (NSException *exception) {
-            NSLog(@"provlima");
-        }
-        @finally {
+            userImage.image = nil;
+            
+            UIImage *imageContact = [user objectForKey:@"image"];
+            if (imageContact != nil) {
+                userImage.image = imageContact;
+                userImage.backgroundColor = [UIColor clearColor];
+            }
+            else{
+                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+            }
             
         }
         
+        
+
     }
+    @catch (NSException *exception) {
+        NSLog(@"provlima");
+    }
+    @finally {
+        
+    }
+    
+    
     
     return cell;
 }
@@ -754,80 +934,6 @@
             UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Invite"
                                                                             style:UIBarButtonItemStyleDone target:self action:@selector(invitePressed:)];
              self.navigationItem.rightBarButtonItem = rightButton;
-        }
-        else{
-            self.navigationItem.rightBarButtonItem = nil;
-        }
-    }
-    else if (selectedOption == FacebookButton){
-        NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
-        
-        if ([selectedPeople indexOfObject:user] == NSNotFound) {
-            
-            [selectedPeople addObject:user];
-            
-            tickedV.alpha = 0;
-            tickedV.hidden = NO;
-            
-            [UIView animateWithDuration:0.0f
-                             animations:^
-             {
-                 tickedV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
-                 
-                 [UIView animateWithDuration:0.0f
-                                  animations:^
-                  {
-                      tickedV.alpha = 1;
-                  }
-                                  completion:^(BOOL finished)
-                  {
-                  }
-                  ];
-             }
-             ];
-            
-        }
-        else{
-            
-            [selectedPeople removeObject:user];
-            
-            NSArray *emailAdresses = [user objectForKey:@"emails"];
-            
-            for (NSString *email in emailAdresses) {
-                [selectedEmails removeObject:email];
-            }
-            
-            [UIView animateWithDuration:0.0f
-                             animations:^
-             {
-                 tickedV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected.png"]];
-                 
-                 [UIView animateWithDuration:0.0f
-                                  animations:^
-                  {
-                      tickedV.alpha = 1;
-                  }
-                                  completion:^(BOOL finished)
-                  {
-                  }
-                  ];
-             }
-             ];
-            
-        }
-        
-        if (selectedPeople.count > 0) {
-            UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Invite"
-                                                                            style:UIBarButtonItemStyleDone target:self action:@selector(invitePressed:)];
-            self.navigationItem.rightBarButtonItem = rightButton;
         }
         else{
             self.navigationItem.rightBarButtonItem = nil;

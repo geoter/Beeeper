@@ -1429,6 +1429,108 @@ static BPUser *thisWebServices = nil;
     
 }
 
+#pragma mark - Facebook
+
+-(void)beeepersFromFB_IDs:(NSString *)idsJSON WithCompletionBlock:(completed)compbloc{
+    
+    self.beeepersFromFBCompleted = compbloc;
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:idsJSON] forKey:@"fb_list"]];
+
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/facebook/list"];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:URL.absoluteString values:postValues]];
+    
+    [request addPostValue:idsJSON forKey:@"fb_list"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setCompletionBlock:^{
+        
+        @try {
+           
+            NSString *responseString = [request responseString];
+            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            self.beeepersFromFBCompleted(YES,beeepers);
+        }
+        @catch (NSException *exception) {
+            self.beeepersFromFBCompleted(NO,nil);
+        }
+        @finally {
+            
+        }
+        
+    }];
+    
+    [request setFailedBlock:^{
+        NSString *responseString = [request responseString];
+        self.beeepersFromFBCompleted(NO,nil);
+    }];
+    
+    [request setDidFailSelector:@selector(getNewNotificationsFailed:)];
+    
+    [request startAsynchronous];
+
+}
+
+-(void)beeepersFromTW_IDs:(NSString *)idsJSON WithCompletionBlock:(completed)compbloc{
+    self.beeepersFromTWCompleted = compbloc;
+    
+    NSMutableArray *postValues = [NSMutableArray array];
+    
+    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:idsJSON] forKey:@"tw_list"]];
+    
+    NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/twitter/list"];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
+    
+    [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:URL.absoluteString values:postValues]];
+    
+    [request addPostValue:idsJSON forKey:@"tw_list"];
+    
+    [request setRequestMethod:@"POST"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    [request setCompletionBlock:^{
+        
+        @try {
+            
+            NSString *responseString = [request responseString];
+            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            self.beeepersFromTWCompleted(YES,beeepers);
+        }
+        @catch (NSException *exception) {
+            self.beeepersFromTWCompleted(NO,nil);
+        }
+        @finally {
+            
+        }
+        
+    }];
+    
+    [request setFailedBlock:^{
+        NSString *responseString = [request responseString];
+        self.beeepersFromTWCompleted(NO,nil);
+    }];
+    
+    [request setDidFailSelector:@selector(getNewNotificationsFailed:)];
+    
+    [request startAsynchronous];
+}
+
 #pragma mark - Tabbar Notifs
 
 -(void)getNewNotificationsWithCompletionBlock:(completed)compbloc{

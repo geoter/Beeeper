@@ -22,6 +22,7 @@ typedef void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;
 @property (copy) completed suggestEventCompleted;
 @property (nonatomic,assign)  int pageLimit;
+@property (nonatomic,assign)  BOOL loadNextPage;
 - (id)init;
 + (BPSuggestions *)sharedBP;
 

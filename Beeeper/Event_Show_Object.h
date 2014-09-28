@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString *hashTags;
 @property (nonatomic, strong) NSString *beeepedBy;
 @property (nonatomic, strong) EventInfo *eventInfo;
+@property (nonatomic, strong) NSArray *comments;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

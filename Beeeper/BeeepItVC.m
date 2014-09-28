@@ -169,8 +169,6 @@
                 [alert show];
             }
         }];
-
-        
        
         
         beeepTitle = title;
@@ -285,8 +283,8 @@
         }
         
         for (UIView *v in self.scrollV.subviews) {
-            if ([v isKindOfClass:[UITextView class]]) {
-                UITextView *txtV = (UITextView *)v;
+            if ([v isKindOfClass:[UILabel class]]) {
+                UILabel *txtV = (UILabel *)v;
                 
                 switch (txtV.tag) {
                     case 1:
@@ -306,6 +304,24 @@
                         break;
                 }
             }
+            
+            if ([v isKindOfClass:[UITextView class]]) {
+                UITextView *txtV = (UITextView *)v;
+                
+                switch (txtV.tag) {
+                    case 3:
+                    {
+                        txtV.text = (venue)?venue:@"n/a";
+                        [txtV sizeToFit];
+                        txtV.center = CGPointMake(self.view.center.x, txtV.center.y);
+                        self.venueIcon.frame = CGRectMake(txtV.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+                    }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
         }
         
         NSString *imageUrl;

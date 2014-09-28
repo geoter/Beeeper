@@ -32,7 +32,6 @@
     NSMutableArray *suggestions;
     NSMutableArray *sections;
     NSMutableDictionary *pendingImagesDict;
-    BOOL loadNextPage;
     NSMutableDictionary *suggestionsPerSection;
         NSMutableArray *rowsToReload;
 
@@ -68,19 +67,16 @@
 
 -(void)nextPage{
     
-    if (!loadNextPage) {
-        return;
-    }
-    
-    loadNextPage = NO;
     
     [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
-            if (objcts>0) {
+            if (objcts && objcts.count>0) {
                 [suggestions addObjectsFromArray:objcts];
                 [self groupSuggestionsByMonth];
-                loadNextPage = (objcts.count == [BPSuggestions sharedBP].pageLimit);
+            }
+            else{
+                [self.tableV reloadData];
             }
         }
     }];
@@ -89,7 +85,6 @@
 
 -(void)getSuggestions{
     
-    loadNextPage = NO;
     
     [self showLoading];
     
@@ -100,8 +95,6 @@
         [self hideLoading];
         
         if (completed) {
-            
-            loadNextPage = ([BPSuggestions sharedBP].pageLimit == objcts.count);
             
             if (objcts.count > 0) {
                 
@@ -209,7 +202,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-   return (sections.count>0 && loadNextPage)?(sections.count+1):sections.count;
+   return (sections.count>0 && [BPSuggestions sharedBP].loadNextPage)?(sections.count+1):sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -227,7 +220,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(indexPath.section == sections.count) {
+    if (indexPath.section == sections.count) {
         
         static NSString *CellIdentifier = @"LoadMoreCell";
         
@@ -340,7 +333,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == sections.count+1 && loadNextPage){
+    if (indexPath.section == sections.count){
         return 51;
     }
     else{
@@ -355,7 +348,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
-    if(section == sections.count) {
+    if(section == sections.count ) {
         return 1;
     }
     else{

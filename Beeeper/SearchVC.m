@@ -77,6 +77,8 @@
         [self resetSearch];
     }
     
+    [self.searchTextField addTarget:self action:@selector(searchStringChanged:) forControlEvents:UIControlEventEditingChanged];
+    
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;
@@ -289,21 +291,12 @@
     return YES;
 }
 
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-    NSString * searchStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
-
-    if (searchStr.length < 2) {
-        if (searchStr.length == 0) {
-            [self resetSearch];
-        }
-        return YES;
-    }
+-(void)searchStringChanged:(UITextField *)txtF{
     
-    
-    [[EventWS sharedBP]searchKeyword:searchStr WithCompletionBlock:^(BOOL completed,NSArray *keywords){
+    [[EventWS sharedBP]searchKeyword:txtF.text WithCompletionBlock:^(BOOL completed,NSArray *keywords){
         
         if (completed) {
-        
+            
             UIView *numberOfCommentsV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 41)];
             numberOfCommentsV.backgroundColor = [UIColor clearColor];
             
@@ -315,8 +308,17 @@
             
             self.tableV.tableHeaderView = numberOfCommentsV;
             
-            filteredResults = [NSMutableArray arrayWithArray:keywords];
-
+            @try {
+                filteredResults = [NSMutableArray arrayWithArray:keywords];
+            }
+            @catch (NSException *exception) {
+                [self resetSearch];
+            }
+            @finally {
+                
+            }
+           
+            
         }
         else{
             filteredResults = [NSMutableArray array];
@@ -329,15 +331,21 @@
         else{
             self.tapG.enabled = NO;
         }
-
-         [self.tableV reloadData];
-    
+        
+        [self.tableV reloadData];
+        
     }];
-    
-//    NSPredicate *predicate =
-//    [NSPredicate predicateWithFormat:@"self CONTAINS[cd] %@", searchStr];
-//    filteredResults  = [searchResults filteredArrayUsingPredicate:predicate];
-//    
+
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    NSString * searchStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+    if (searchStr.length < 2) {
+        if (searchStr.length == 0) {
+            [self resetSearch];
+        }
+    }
     
     return YES;
 }

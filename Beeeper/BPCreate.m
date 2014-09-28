@@ -198,6 +198,7 @@ static BPCreate *thisWebServices = nil;
         
         NSString *imageURL = [valuesDict objectForKey:@"image_url"];
         [valuesDict setObject:[dict objectForKey:@"fingerprint"] forKey:@"fingerprint"];
+        [valuesDict setObject:[dict objectForKey:@"title"] forKey:@"title"];
         
         if (![imageURL isEqualToString:imgUrl]) {//event already exists
             self.completed(YES,@[valuesDict,@"The event you are trying to create already exists with a different photo."]);

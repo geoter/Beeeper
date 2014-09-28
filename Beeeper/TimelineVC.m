@@ -470,6 +470,8 @@
         NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
         
         if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+            
+        //    UIImage *img = [UIImage animatedImageWithAnimatedGIFData:[NSData dataWithContentsOfFile:localPath]];
             UIImage *img = [UIImage imageWithContentsOfFile:localPath];
             self.profileImage.image = img;
         }

@@ -426,7 +426,7 @@ static EventWS *thisWebServices = nil;
     
     
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"title=%@",keyword]];
+    [array addObject:[NSString stringWithFormat:@"title=%@",[self urlencode:keyword]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];

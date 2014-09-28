@@ -402,7 +402,7 @@
                       
                       fbPeople = [NSMutableArray arrayWithArray:friends];
                       searchedPeople = [NSMutableArray arrayWithArray:friends];
-                      
+                      NSArray *fb_ids = [fbPeople valueForKey:@"id"];
                       
                       dispatch_async(dispatch_get_main_queue(), ^{
                           

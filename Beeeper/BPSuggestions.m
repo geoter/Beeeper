@@ -17,12 +17,13 @@ static BPSuggestions *thisWebServices = nil;
     
     NSOperationQueue *operationQueue;
     int requestFailedCounter;
+    int requestEmptyResultsCounter;
 }
 @end
 
 
 @implementation BPSuggestions
-@synthesize pageLimit;
+@synthesize pageLimit,loadNextPage;
 
 -(id)init{
     self = [super init];
@@ -33,6 +34,8 @@ static BPSuggestions *thisWebServices = nil;
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
         requestFailedCounter = 0;
+        requestEmptyResultsCounter = 0;
+        loadNextPage = YES;
     }
     return(self);
 }
@@ -112,6 +115,8 @@ static BPSuggestions *thisWebServices = nil;
 
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc{
   
+    loadNextPage = YES;
+    requestEmptyResultsCounter = 0;
     page = 0;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions"];
@@ -168,6 +173,10 @@ static BPSuggestions *thisWebServices = nil;
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
     if (beeeps.count > 0) {
+        
+        requestEmptyResultsCounter = 0;
+        loadNextPage = YES;
+        
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
@@ -179,11 +188,21 @@ static BPSuggestions *thisWebServices = nil;
         [self parseResponseString:responseString WithCompletionBlock:self.completed];
     }
     else{
-        [self suggestionsFailed:request];
+        requestEmptyResultsCounter++;
+        
+        if (requestEmptyResultsCounter <= 2) {
+            loadNextPage = YES;
+            [self nextSuggestionsWithCompletionBlock:self.completed];
+        }
+        else{
+            loadNextPage = NO;
+            self.completed(YES,nil);
+        }
     }
 
     
 }
+
 
 -(void)suggestionsFailed:(ASIHTTPRequest *)request{
     

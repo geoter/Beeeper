@@ -80,6 +80,8 @@
 		5EA7FAF119594E910033C061 /* suggest_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAED19594E910033C061 /* suggest_selected@2x.png */; };
 		5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */; };
 		5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAEF19594E910033C061 /* suggest_selected.png */; };
+		5EAC993219D8202100B438FE /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC993119D8202100B438FE /* UIImage+animatedGIF.m */; };
+		5EAC993419D8204B00B438FE /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAC993319D8204B00B438FE /* ImageIO.framework */; };
 		5EBAFA9519C1962F0093D6BA /* WebBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */; };
 		5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */; };
 		5ECC9F70197D9E86004748CF /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */; };
@@ -650,6 +652,9 @@
 		5EA7FAEE19594E910033C061 /* suggest_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "suggest_unselected@2x.png"; sourceTree = "<group>"; };
 		5EA7FAEF19594E910033C061 /* suggest_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggest_selected.png; sourceTree = "<group>"; };
 		5EA8C94919CC8FC400F1EE01 /* UIImagePickerControllerExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImagePickerControllerExtended.h; sourceTree = "<group>"; };
+		5EAC993019D8202100B438FE /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
+		5EAC993119D8202100B438FE /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
+		5EAC993319D8204B00B438FE /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		5EBAFA9319C1962F0093D6BA /* WebBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebBrowserVC.h; sourceTree = "<group>"; };
 		5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebBrowserVC.m; sourceTree = "<group>"; };
 		5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -1228,6 +1233,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EAC993419D8204B00B438FE /* ImageIO.framework in Frameworks */,
 				CE0B5BB81964279A0075B13B /* MessageUI.framework in Frameworks */,
 				5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */,
 				9638F88218D47E8B007394AC /* QuartzCore.framework in Frameworks */,
@@ -1810,6 +1816,8 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5EAC993019D8202100B438FE /* UIImage+animatedGIF.h */,
+				5EAC993119D8202100B438FE /* UIImage+animatedGIF.m */,
 				5E35C56019C9AA3A00D39D6B /* AsyncImageView */,
 				5E1781BC19C1EC9300B01832 /* SDWebImage */,
 				5E58956C1975950100FDA837 /* JSBadgeView.h */,
@@ -2254,6 +2262,7 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5EAC993319D8204B00B438FE /* ImageIO.framework */,
 				CE109F1D197FC04E009540E5 /* FacebookSDK.framework */,
 				5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */,
 				5ECC9F6D197D9E7C004748CF /* GoogleMaps.framework */,
@@ -3137,6 +3146,7 @@
 				5E35C55F19C9A92B00D39D6B /* GoogleCustomSearchVC.m in Sources */,
 				5E1781EA19C1EC9300B01832 /* UIImage+WebP.m in Sources */,
 				CEF1E5B018E48BAF00DF7539 /* TimelineVC.m in Sources */,
+				5EAC993219D8202100B438FE /* UIImage+animatedGIF.m in Sources */,
 				CEFDE83C18EDAE4600E500A9 /* TermsVC.m in Sources */,
 				CE02EC2D18EC64D800B5674C /* AFHTTPClient.m in Sources */,
 				CE02EBC318EC624D00B5674C /* DZNPhotoDisplayViewController.m in Sources */,

@@ -7,13 +7,13 @@
 
 #import "Event_Show_Object.h"
 #import "EventInfo.h"
-
+#import "Comments.h"
 
 NSString *const kEvent_Show_ObjectTinyUrl = @"tiny_url";
 NSString *const kEvent_Show_ObjectHashTags = @"hash_tags";
 NSString *const kEvent_Show_ObjectBeeepedBy = @"beeeped_by";
 NSString *const kEvent_Show_ObjectEventInfo = @"0";
-
+NSString *const kBaseClassComments = @"comments";
 
 @interface Event_Show_Object ()
 
@@ -27,7 +27,7 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
 @synthesize hashTags = _hashTags;
 @synthesize beeepedBy = _beeepedBy;
 @synthesize eventInfo = _eventInfo;
-
+@synthesize comments = _comments;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
@@ -45,6 +45,20 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
             self.hashTags = [self objectOrNilForKey:kEvent_Show_ObjectHashTags fromDictionary:dict];
             self.beeepedBy = [self objectOrNilForKey:kEvent_Show_ObjectBeeepedBy fromDictionary:dict];
             self.eventInfo = [EventInfo modelObjectWithDictionary:[dict objectForKey:kEvent_Show_ObjectEventInfo]];
+        
+            NSObject *receivedComments = [dict objectForKey:kBaseClassComments];
+            NSMutableArray *parsedComments = [NSMutableArray array];
+            if ([receivedComments isKindOfClass:[NSArray class]]) {
+                for (NSDictionary *item in (NSArray *)receivedComments) {
+                    if ([item isKindOfClass:[NSDictionary class]]) {
+                        [parsedComments addObject:[Comments modelObjectWithDictionary:item]];
+                    }
+                }
+            } else if ([receivedComments isKindOfClass:[NSDictionary class]]) {
+                [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
+            }
+            
+            self.comments = [NSArray arrayWithArray:parsedComments];
 
     }
     
@@ -59,6 +73,18 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
     [mutableDict setValue:self.hashTags forKey:kEvent_Show_ObjectHashTags];
     [mutableDict setValue:self.beeepedBy forKey:kEvent_Show_ObjectBeeepedBy];
     [mutableDict setValue:[self.eventInfo dictionaryRepresentation] forKey:kEvent_Show_ObjectEventInfo];
+
+    NSMutableArray *tempArrayForComments = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.comments) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForComments addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForComments addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForComments] forKey:kBaseClassComments];
 
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
@@ -86,6 +112,7 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
     self.hashTags = [aDecoder decodeObjectForKey:kEvent_Show_ObjectHashTags];
     self.beeepedBy = [aDecoder decodeObjectForKey:kEvent_Show_ObjectBeeepedBy];
     self.eventInfo = [aDecoder decodeObjectForKey:kEvent_Show_ObjectEventInfo];
+    self.comments = [aDecoder decodeObjectForKey:kBaseClassComments];
     return self;
 }
 
@@ -96,6 +123,7 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
     [aCoder encodeObject:_hashTags forKey:kEvent_Show_ObjectHashTags];
     [aCoder encodeObject:_beeepedBy forKey:kEvent_Show_ObjectBeeepedBy];
     [aCoder encodeObject:_eventInfo forKey:kEvent_Show_ObjectEventInfo];
+    [aCoder encodeObject:_comments forKey:kBaseClassComments];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -108,6 +136,7 @@ NSString *const kEvent_Show_ObjectEventInfo = @"0";
         copy.hashTags = [self.hashTags copyWithZone:zone];
         copy.beeepedBy = [self.beeepedBy copyWithZone:zone];
         copy.eventInfo = [self.eventInfo copyWithZone:zone];
+        copy.comments = [self.comments copyWithZone:zone];
     }
     
     return copy;

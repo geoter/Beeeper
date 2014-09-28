@@ -45,7 +45,7 @@
 - (IBAction)editProfilePressed:(id)sender;
 - (IBAction)settingsPressed:(id)sender;
 - (IBAction)importPressed:(id)sender;
-
+- (IBAction)handleTopBarPan:(UIPanGestureRecognizer *)recognizer;
 
 - (IBAction)showSuggestions:(id)sender;
 - (IBAction)showActivity:(id)sender;

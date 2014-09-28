@@ -36,7 +36,7 @@
 }
 @end
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIGestureRecognizerDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
@@ -46,6 +46,7 @@
     int segmentIndex;
     BOOL loading;
     BOOL loadNextPage;
+    CGPoint initialCellCenter;
   //  NSMutableArray *sections;
   //  NSMutableDictionary *suggestionsPerSection;
         NSMutableArray *rowsToReload;
@@ -755,6 +756,14 @@
         CellIdentifier =  @"Cell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        if (cell.gestureRecognizers.count == 0) {
+            UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
+                                           initWithTarget:self action:@selector(handleCellPan:)];
+            pgr.delegate = self;
+            [[cell viewWithTag:66] addGestureRecognizer:pgr];
+        }
+        
         cell.backgroundColor = [UIColor clearColor];
         
         UILabel *mLbl = (id)[cell viewWithTag:1];
@@ -953,6 +962,94 @@
     
 }
 
+- (IBAction)handleCellPan:(UIPanGestureRecognizer *)recognizer {
+    
+    static CGPoint lastKnownVelocity;
+    
+    UIView *cellV = (UITableViewCell *)recognizer.view;
+    
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        
+        if (lastKnownVelocity.x < 0) {
+            
+            recognizer.enabled = NO;
+            
+            [UIView animateWithDuration:0.5f
+                             animations:^
+             {
+                 cellV.center = CGPointMake(cellV.center.x,cellV.center.y);
+             }
+                             completion:^(BOOL finished)
+             {
+                 recognizer.enabled = YES;
+             }
+             ];
+        }
+        else if(cellV.center.y < - 90){
+            
+            [UIView animateWithDuration:0.5f
+                             animations:^
+             {
+                 cellV.center = CGPointMake(cellV.center.x,cellV.center.y);
+
+             }
+                             completion:^(BOOL finished)
+             {
+                 
+             }
+             ];
+        }
+        else{
+            [UIView animateWithDuration:0.5f
+                             animations:^
+             {
+                 cellV.center = CGPointMake(cellV.center.x,cellV.center.y);
+                 
+             }
+                             completion:^(BOOL finished)
+             {
+                 
+             }
+             ];
+            
+        }
+    }
+    else{
+        
+        lastKnownVelocity = [recognizer velocityInView:cellV];
+        
+        if (lastKnownVelocity.y == 0)
+        {
+            // user dragged towards the right
+            CGPoint translation = [recognizer translationInView:cellV];
+            
+            CGPoint newCenter = CGPointMake(recognizer.view.center.x + translation.x,
+                                            recognizer.view.center.y);
+            if(newCenter.x > 79 && newCenter.x < 160){
+                cellV.center = newCenter;
+            }
+            
+            [recognizer setTranslation:CGPointMake(0, 0) inView:cellV];
+        
+        }
+    }
+    
+    NSLog(@"%@",NSStringFromCGPoint(cellV.center));
+}
+
+#pragma mark - UIPangesture Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)panGestureRecognizer {
+    
+    if (self.mode == Timeline_My) {
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES; //otherGestureRecognizer is your custom pan gesture
+}
 
 
 -(void)imageDownloadFinished:(NSNotification *)notif{

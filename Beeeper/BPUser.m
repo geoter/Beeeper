@@ -1,4 +1,4 @@
- //
+//
 //  BPUser.m
 //  Beeeper
 //
@@ -362,12 +362,12 @@ static BPUser *thisWebServices = nil;
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:[NSString stringWithFormat:@"%d",seconts] forKey:@"seconds"];
-    [dict setObject:[NSString stringWithFormat:@"1412125200.223842"] forKey:@"weight"];
+    [dict setObject:[NSString stringWithFormat:@"1412187300.867656"] forKey:@"weight"];
     
     [request addRequestHeader:@"Authorization" value:[self headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:dict]]];
     
     [request setPostValue:[NSString stringWithFormat:@"%d",seconts] forKey:@"seconds"];
-    [request setPostValue:[NSString stringWithFormat:@"1412125200.223842"] forKey:@"weight"];
+    [request setPostValue:[NSString stringWithFormat:@"1412187300.867656"] forKey:@"weight"];
     
     [request setRequestMethod:@"POST"];
     

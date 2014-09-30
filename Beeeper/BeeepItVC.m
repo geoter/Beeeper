@@ -737,17 +737,31 @@
     NSString *beepTime= [NSString stringWithFormat:@"%d",beep_time];
     //Edw exei provlima,otan pas na kaneis kenurgio beep,mallon to fingerprint ine keno
     if (timestamp > 0 && fingerPrint != nil) { //Create beeep
-        [[BPCreate sharedBP]beeepCreate:fingerPrint beeep_time:beepTime completionBlock:^(BOOL completed,NSArray *objs){
+        [[BPCreate sharedBP]beeepCreate:fingerPrint beeep_time:beepTime completionBlock:^(BOOL completed,NSDictionary *objs){
             if (completed) {
                 
-                UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-                localNotification.fireDate = [NSDate dateWithTimeIntervalSince1970:beep_time];
-                NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle uppercaseString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
-                localNotification.alertBody = alertBody;
-                localNotification.timeZone = [NSTimeZone defaultTimeZone];
-                localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-                
-                [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                if ([objs isKindOfClass:[NSString class]]) {
+                    
+                    @try {
+                        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+                        localNotification.fireDate = [NSDate dateWithTimeIntervalSince1970:beep_time];
+                        NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle uppercaseString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
+                        localNotification.alertBody = alertBody;
+                        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+                        localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                        localNotification.userInfo = [NSDictionary dictionaryWithDictionary:objs];
+                        
+                        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                    }
+                    @catch (NSException *exception) {
+    
+                    }
+                    @finally {
+    
+                    }
+                    
+
+                }
                 
                 [self close:nil];
             }

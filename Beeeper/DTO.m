@@ -7,6 +7,7 @@
 //
 
 #import "DTO.h"
+#import "Beeep_Object.h"
 
 static DTO *thisDTO = nil;
 
@@ -15,6 +16,7 @@ static DTO *thisDTO = nil;
     NSOperationQueue *operationQueue;
     NSMutableArray *pendingUrls;
 }
+@property(nonatomic,strong) NSString *notifBeeepID;
 @end
 
 @implementation DTO
@@ -44,6 +46,17 @@ static DTO *thisDTO = nil;
     
     return nil;
 }
+
+- (NSString *)urlencode:(NSString *)str {
+    CFStringRef safeString =
+    CFURLCreateStringByAddingPercentEscapes(NULL,
+                                            (CFStringRef)str,
+                                            NULL,
+                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
+                                            kCFStringEncodingUTF8);
+    return [NSString stringWithFormat:@"%@", safeString];
+}
+
 
 - (void)downloadImageFromURL:(NSString *)url{
     
@@ -114,6 +127,99 @@ static DTO *thisDTO = nil;
         
     }
 }
+
+- (void)setNotificationBeeepID:(NSString *)beeep_id{
+    self.notifBeeepID = beeep_id;
+}
+
+- (NSString *)getNotificationBeeepID{
+    return self.notifBeeepID;
+}
+
+-(void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc{
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/show"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/show?"];
+    
+    NSString *fingerprint;
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    fingerprint = beeep_id;
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"beeep_id=%@",fingerprint]];
+    [array addObject:[NSString stringWithFormat:@"user=%@",my_id]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:7.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setCompletionBlock:^{
+        
+        @try {
+            
+            NSString *responseString = [request responseString];
+            id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            NSArray *eventArray;
+            
+            if ([eventObject isKindOfClass:[NSDictionary class]]) {
+                Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventObject];
+                compbloc(YES,beeep);
+                
+            }
+            else if ([eventObject isKindOfClass:[NSArray class]]){
+                eventArray = eventObject;
+                Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:[eventArray firstObject]];
+                compbloc(YES,beeep);
+            }
+            else{
+                compbloc(NO,[NSString stringWithFormat:@"DTO Beeepfinished but failed: %@",responseString]);
+            }
+
+        }
+        @catch (NSException *exception) {
+            compbloc(NO,nil);
+        }
+        @finally {
+            
+        }
+        
+    }];
+    
+    [request setFailedBlock:^{
+        NSString *responseString = [request responseString];
+        compbloc(NO,nil);
+    }];
+    
+    [request startAsynchronous];
+    
+}
+
 
 
 @end

@@ -188,7 +188,8 @@
         return;
     }
 
-    
+   [self showLoading];
+
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -207,7 +208,10 @@
                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
+                 
                  if (usernames.count > 1) {
+                     
+                     [self hideLoading];
                      
                      UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
                      
@@ -227,7 +231,6 @@
                  }
                  else{
                  
-                      [self showLoading];
                      
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
                      id email = [fbAccount valueForKeyPath:@"properties.uid"];
@@ -314,6 +317,9 @@
 
 -(void)attemptTwitterLogin:(NSString *)uid{
 
+    
+    [self showLoading];
+    
     static int number_of_attempts = 0;
     
     [[BPUser sharedBP]loginTwitterUser:uid completionBlock:^(BOOL completed,NSString *user){
@@ -338,6 +344,8 @@
 }
 
 -(void)attemptFBLogin:(NSString *)uid{
+    
+    [self showLoading];
     
     static int number_of_attempts = 0;
     
@@ -373,6 +381,7 @@
         return;
     }
     
+    [self showLoading];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
@@ -388,6 +397,8 @@
                  usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
                  if (usernames.count > 1) {
+                     
+                     [self hideLoading];
                      
                      UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                      popup.tag = 77;
@@ -407,8 +418,6 @@
                  }
                  else{
                      
-                     [self showLoading];
-                     
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
                      NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
@@ -418,30 +427,32 @@
             }
              else
              {
-       
-                 
-                 if (error == nil) {
-                     NSLog(@"User Has disabled your app from settings...");
-                     [self hideLoadingWithTitle:@"No Twitter accounts configured" ErrorMessage:@"Please make sure Beeeper is enabled in Settings->Twitter."];
-                 }
-                 else
-                 {
-                     NSLog(@"Error in Login: %@", error);
-                 }
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                     
+                     if (error == nil) {
+                         NSLog(@"User Has disabled your app from settings...");
+                         [self hideLoadingWithTitle:@"Beeeper Disabled" ErrorMessage:@"Please go to Settings > Twitter and set Beeeper to on."];
+                     }
+                     else
+                     {
+                         NSLog(@"Error in Login: %@", error);
+                         
+                         [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Something went wrong.Please try again."];
+                         
+                     }
+                     
+                 });
+
              }
          }];
     }
     else
     {
         
-        UIAlertView *alertViewTwitter = [[UIAlertView alloc]
-                                          initWithTitle:@"No Twitter Accounts"
-                                          message:@"There are no Twitter accounts configured. You can add or create a Twitter account in Settings."
-                                          delegate:self
-                                          cancelButtonTitle:@"Close"
-                                          otherButtonTitles:nil];
+        [self hideLoadingWithTitle:@"No Twitter accounts configured" ErrorMessage: @"You can add a Twitter account on Settings > Twitter."];
         
-        [alertViewTwitter show];
         
     }
 }
@@ -485,6 +496,7 @@
         id email = [fbAccount valueForKeyPath:@"properties.uid"];
         NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
         [self showLoading];
+      
         [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
                 [self setSelectedLoginMethod:@"FB"];

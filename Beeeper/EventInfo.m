@@ -6,7 +6,7 @@
 //
 
 #import "EventInfo.h"
-
+#import "Comments.h"
 
 NSString *const kEventInfoLocked = @"locked";
 NSString *const kEventInfoSource = @"source";
@@ -69,7 +69,20 @@ NSString *const kEventInfoLikes = @"likes";
             self.url = [self objectOrNilForKey:kEventInfoUrl fromDictionary:dict];
             self.likesCount = [[self objectOrNilForKey:kEventInfoLikesCount fromDictionary:dict] doubleValue];
             self.likes = [self objectOrNilForKey:kEventInfoLikes fromDictionary:dict];
-            self.comments = [self objectOrNilForKey:kEventInfoComments fromDictionary:dict];
+        
+        NSObject *receivedComments = [dict objectForKey:kEventInfoComments];
+        NSMutableArray *parsedComments = [NSMutableArray array];
+        if ([receivedComments isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *item in (NSArray *)receivedComments) {
+                if ([item isKindOfClass:[NSDictionary class]]) {
+                    [parsedComments addObject:[Comments modelObjectWithDictionary:item]];
+                }
+            }
+        } else if ([receivedComments isKindOfClass:[NSDictionary class]]) {
+            [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
+        }
+        
+        self.comments = [NSArray arrayWithArray:parsedComments];
     }
     
     return self;

@@ -842,7 +842,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1630" y="257"/>
+            <point key="canvasLocation" x="2162" y="257"/>
         </scene>
         <!--Beeep TimeVC-->
         <scene sceneID="lSx-ae-Hud">
@@ -1242,7 +1242,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="afb-oX-veU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1989" y="257"/>
+            <point key="canvasLocation" x="2521" y="257"/>
         </scene>
         <!--SearchVC-->
         <scene sceneID="ez8-8x-7Na">
@@ -1958,6 +1958,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.87450980392156863" green="0.8901960784313725" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
+                    <navigationItem key="navigationItem" id="pTK-Km-Qqe"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="568"/>
                     <connections>
@@ -1968,7 +1969,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9jJ-7y-SKm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="534" y="257"/>
+            <point key="canvasLocation" x="915" y="257"/>
         </scene>
         <!--Notification Preferences-->
         <scene sceneID="laW-ei-iZM">
@@ -3273,7 +3274,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tXJ-n7-di5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="910" y="257"/>
+            <point key="canvasLocation" x="1442" y="257"/>
         </scene>
         <!--Notifications-->
         <scene sceneID="7hY-dL-HJG">
@@ -3362,7 +3363,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ENP-fl-xeH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1269" y="257"/>
+            <point key="canvasLocation" x="1801" y="257"/>
         </scene>
         <!--TimelineVC-->
         <scene sceneID="8Mr-ch-WUX">
@@ -3657,7 +3658,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="1" green="1" blue="0.36753402219999998" alpha="0.0" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="113" id="wnS-C0-2bf" customClass="RMSwipeTableViewCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="113" id="wnS-C0-2bf">
                                         <rect key="frame" x="0.0" y="445" width="320" height="113"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wnS-C0-2bf" id="Puj-uH-tc2">
@@ -3841,7 +3842,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2350" y="257"/>
+            <point key="canvasLocation" x="2882" y="257"/>
         </scene>
         <!--Suggestions-->
         <scene sceneID="N0i-Mh-6sV">
@@ -4041,7 +4042,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cIL-bt-gGT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2706" y="257"/>
+            <point key="canvasLocation" x="3238" y="257"/>
         </scene>
         <!--Search Images-->
         <scene sceneID="2kY-Hu-ufN">

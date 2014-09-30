@@ -7,7 +7,7 @@
 
 #import "Event_Search.h"
 #import "BeeepedBy.h"
-
+#import "Comments.h"
 
 NSString *const kEvent_SearchDescription = @"description";
 NSString *const kEvent_SearchComments = @"comments";
@@ -64,7 +64,21 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
             self.internalBaseClassDescription = [self objectOrNilForKey:kEvent_SearchDescription fromDictionary:dict];
-            self.comments = [self objectOrNilForKey:kEvent_SearchComments fromDictionary:dict];
+
+        NSObject *receivedComments = [dict objectForKey:kEvent_SearchComments];
+        NSMutableArray *parsedComments = [NSMutableArray array];
+        if ([receivedComments isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *item in (NSArray *)receivedComments) {
+                if ([item isKindOfClass:[NSDictionary class]]) {
+                    [parsedComments addObject:[Comments modelObjectWithDictionary:item]];
+                }
+            }
+        } else if ([receivedComments isKindOfClass:[NSDictionary class]]) {
+            [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
+        }
+        
+        self.comments = [NSArray arrayWithArray:parsedComments];
+
             self.fingerprint = [self objectOrNilForKey:kEvent_SearchFingerprint fromDictionary:dict];
             self.timestamp = [[self objectOrNilForKey:kEvent_SearchTimestamp fromDictionary:dict] doubleValue];
             self.imageUrl = [self objectOrNilForKey:kEvent_SearchImageUrl fromDictionary:dict];

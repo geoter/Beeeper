@@ -455,11 +455,12 @@
     
     NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
     
-    [rowsToReload addObjectsFromArray:rows];
-     [pendingImagesDict removeObjectForKey:imageName];
-   
-     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
+     [rowsToReload addObjectsFromArray:rows];
+    
+    if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [pendingImagesDict removeObjectForKey:imageName];
             
             @try {
                 [self.tableV reloadData];

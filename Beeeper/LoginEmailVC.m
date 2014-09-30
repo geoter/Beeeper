@@ -44,9 +44,9 @@
         if (completed) {
             NSLog(@"%@",user);
              [self performSegueWithIdentifier:@"home" sender:self];
+            
         }
     }];
-   
 }
 
 - (IBAction)forgotPassword:(id)sender {

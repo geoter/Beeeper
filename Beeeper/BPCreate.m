@@ -79,7 +79,7 @@ static BPCreate *thisWebServices = nil;
             
             //invalidate push
             [self invalidateBeeep:[dict objectForKey:@"beeep"]];
-            self.completed(YES,nil);
+            self.completed(YES,dict);
         }
         else{
             

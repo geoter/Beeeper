@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Beeep_Object.h"
+#import "EventVC.h"
+
+typedef void(^completed)(BOOL,id);
 
 @interface DTO : NSObject <NSCoding>
 
@@ -22,6 +26,9 @@
 - (NSString *)fixLink:(NSString *)link;
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
+- (void)setNotificationBeeepID:(NSString *)beeep_id;
+- (NSString *)getNotificationBeeepID;
+- (void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc;
 
 @end
 

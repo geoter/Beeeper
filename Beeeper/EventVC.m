@@ -84,6 +84,7 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
+    
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         Timeline_Object *t = tml;
         fingerprint = t.event.fingerprint;
@@ -104,7 +105,7 @@
                     comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
-                        [self showEventForActivityWithBeeep];
+                        [self showEventWithBeeep];
                     }
                 }
                 else{
@@ -123,7 +124,7 @@
                 if (completed) {
                     event_show_Objct = event;
                     if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
-                          [self showEventForActivityWithBeeep];
+                          [self showEventWithBeeep];
                     }
                 }
                 else{
@@ -143,6 +144,50 @@
             if (completed) {
                 event_show_Objct = event;
                 [self showEventForEventLookUpObject];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+
+    }else if ([tml isKindOfClass:[Suggestion_Object class]]){
+        
+        Suggestion_Object *eventObj = tml;
+        fingerprint = eventObj.what.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventWithSuggestion];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+        
+    }
+    else if ([tml isKindOfClass:[NSString class]]){ //Notification
+       
+        [[DTO sharedDTO]getBeeep:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
+            if (completed) {
+                
+                fingerprint = beeep.fingerprint;
+
+                beeep_Objct = beeep;
+                
+                [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                    if (completed) {
+                        event_show_Objct = event;
+                        [self showEventWithBeeep];
+                    }
+                    else{
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    }
+                }];
+
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -211,9 +256,6 @@
     }
     else if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
         [self showEventWithFriendFeedObject];
-    }
-    else if ([tml isKindOfClass:[Suggestion_Object class]]){
-        [self showEventWithSuggestion];
     }
     else{
         [self updateEventInfo];
@@ -318,6 +360,13 @@
     UILabel *likesLbl = (id)[headerV viewWithTag:-3];
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
+    if (event_show_Objct) {
+        comments = [NSMutableArray arrayWithArray:event_show_Objct.eventInfo.comments];
+    }
+
+    commentsLbl.text = [NSString stringWithFormat:@"%d",comments.count];
+    self.commentsLabel.hidden = (comments.count == 0);
+    
     if (!beeepers){
         beeepers = [NSMutableArray arrayWithArray:suggestion.beeepersIds];
     }
@@ -332,13 +381,6 @@
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     self.likesLabel.hidden = (likers.count == 0);
 
-    if(!comments){
-        comments = [NSMutableArray arrayWithArray:suggestion.what.comments];
-    }
-
-    commentsLbl.text = [NSString stringWithFormat:@"%d",comments.count];
-    self.commentsLabel.hidden = (comments.count == 0);
-    
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
@@ -399,7 +441,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsField.text = correctString;
+        self.tagsField.text = [correctString unicodeEncode];
         
     }
     @catch (NSException *exception) {
@@ -643,7 +685,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsField.text = correctString;
+        self.tagsField.text = [correctString unicodeEncode];
         
     }
     @catch (NSException *exception) {
@@ -894,6 +936,7 @@
         hastags = [hastags stringByReplacingOccurrencesOfString:@"[\"" withString:@""];
         hastags = [hastags stringByReplacingOccurrencesOfString:@"\"]" withString:@""];
         hastags = [hastags stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        hastags = [hastags stringByReplacingOccurrencesOfString:@"\\\\" withString:@"\\"];
         
         NSArray *tags = [hastags componentsSeparatedByString:@","];
         for (NSString *tag in tags) {
@@ -903,7 +946,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsField.text = correctString;
+        self.tagsField.text = [correctString unicodeEncode];
         
     }
     @catch (NSException *exception) {
@@ -1146,7 +1189,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsField.text = correctString;
+        self.tagsField.text = [correctString unicodeEncode];
         
     }
     @catch (NSException *exception) {
@@ -1201,7 +1244,7 @@
 }
 
 
--(void)showEventForActivityWithBeeep{
+-(void)showEventWithBeeep{
     
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -1359,8 +1402,7 @@
         
         likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
         commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
-
-        //beeepsLbl.text = [NSString stringWithFormat:@"%d",beeep.beeepersIds.count];
+        beeepsLbl.text = [NSString stringWithFormat:@"%d",beeepers.count];
         
         if ([likers indexOfObject:my_id] != NSNotFound) {
             isLiker = YES;
@@ -1419,7 +1461,7 @@
         }
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        self.tagsField.text = correctString;
+        self.tagsField.text = [correctString unicodeEncode];
         
     }
     @catch (NSException *exception) {
@@ -1545,7 +1587,8 @@
 }
 
 -(void)goBack{
-    [self.navigationController popViewControllerAnimated:YES];
+    
+     [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -1559,7 +1602,9 @@
    
 }
 
+
 -(void)suggestIt{
+    
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
     viewController.fingerprint = fingerprint;
     
@@ -1733,6 +1778,38 @@
             }];
 
         }
+        else if ([tml isKindOfClass:[NSString class]]){
+            
+            Event_Show_Object* event = event_show_Objct;
+            Beeep_Object* beeep = beeep_Objct;
+            
+            //NSString *fingerprint = t.event.fingerprint;
+             NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+            
+            [[EventWS sharedBP]unlikeBeeep:beeep.weight user:my_id WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                
+                if (completed) {
+                    isLiker = NO;
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    likesLbl.hidden = (likers.count == 0);
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+            }];
+            
+        }
+
     }
     else{
         if ([tml isKindOfClass:[Friendsfeed_Object class]]) {
@@ -1873,6 +1950,37 @@
             
             
             [[EventWS sharedBP]likeBeeep:t.beeep.beeepInfo.weight user:t.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                
+                if (completed) {
+                    isLiker = YES;
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    likesLbl.hidden = (likers.count == 0);
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+            }];
+            
+        }
+        else if ([tml isKindOfClass:[NSString class]]){
+            
+            Event_Show_Object* event = event_show_Objct;
+            Beeep_Object* beeep = beeep_Objct;
+            
+            //NSString *fingerprint = t.event.fingerprint;
+            NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+            
+            [[EventWS sharedBP]likeBeeep:beeep.weight user:my_id WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 
                 if (completed) {
                     isLiker = YES;
@@ -2050,7 +2158,7 @@
 - (IBAction)showComments:(id)sender {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
-    viewController.event_beeep_object = tml;
+    viewController.event_beeep_object = ([tml isKindOfClass:[NSString class]])?beeep_Objct:tml;
     viewController.comments = comments;
     [self.navigationController pushViewController:viewController animated:YES];
 

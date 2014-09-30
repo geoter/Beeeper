@@ -521,10 +521,25 @@
 }
 
 - (IBAction)releaseKeyborad:(id)sender {
+   
     for (UIView *v in self.containerScrollV.subviews) {
         if ([v isKindOfClass:[UITextField class]]) {
             UITextField *txtF = (UITextField *)v;
-            [self textFieldShouldReturn:txtF];
+            [txtF resignFirstResponder];
+        }
+        else if (v == self.tagsV){
+            
+            for (UIView *subV in self.tagsV.subviews) {
+                if ([subV isKindOfClass:[UITextField class]]) {
+                    UITextField *txtF = (UITextField *)subV;
+                    [txtF resignFirstResponder];
+                }
+                else if ([subV isKindOfClass:[UITextView class]]){
+                    UITextView *txtV = (id)subV;
+                    [txtV resignFirstResponder];
+                }
+            }
+
         }
         else if ([v isKindOfClass:[UITextView class]]){
             UITextView *txtV = (id)v;
@@ -532,6 +547,7 @@
         }
     }
 
+    [self.containerScrollV setContentOffset:CGPointZero animated:YES];
 }
 
 - (IBAction)close:(id)sender {

@@ -11,6 +11,7 @@
 #import "JSBadgeView.h"
 #import <QuartzCore/QuartzCore.h>
 
+
 @interface TabbarVC ()
 {
 
@@ -44,7 +45,7 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-  //  [[BPUser sharedBP]sendDemoPush:10];
+    [[BPUser sharedBP]sendDemoPush:10];
     
     [self updateNotificationsBadge];
     
@@ -53,6 +54,7 @@
     
     [self tabbarButtonTapped:btn];
     
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidAppear:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
@@ -158,7 +160,32 @@
     [super viewWillAppear:animated];
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+   // [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
+}
+
+-(void)showPushBeeep{
+    
+    NSString *beeepID = [[DTO sharedDTO]getNotificationBeeepID];
+    
+    if (beeepID != nil) {
+        
+        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        viewController.tml = beeepID;
+        
+        NSLog(@"%@",self.navigationController.viewControllers);
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+    }
+
 }
 
 /*

@@ -46,6 +46,13 @@ NSString *const kCommenterImagePath = @"image_path";
             self.imagePath = [self objectOrNilForKey:kCommenterImagePath fromDictionary:dict];
 
     }
+    else if (self && [dict isKindOfClass:[NSArray class]]){
+        NSDictionary *dict2 = [(NSArray *)dict firstObject];
+        self.commenterIdentifier = [self objectOrNilForKey:kCommenterId fromDictionary:dict2];
+        self.lastname = [self objectOrNilForKey:kCommenterLastname fromDictionary:dict2];
+        self.name = [self objectOrNilForKey:kCommenterName fromDictionary:dict2];
+        self.imagePath = [self objectOrNilForKey:kCommenterImagePath fromDictionary:dict2];
+    }
     
     return self;
     

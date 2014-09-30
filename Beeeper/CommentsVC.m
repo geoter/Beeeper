@@ -131,6 +131,7 @@
     
     id objct = [comments objectAtIndex:indexPath.row];
     
+    
     if ([objct isKindOfClass:[Comments class]]) {
     
         Comments *commentObjct = (Comments *)objct;
@@ -565,6 +566,45 @@
             }
         }];
 
+    }
+    else if ([self.event_beeep_object isKindOfClass:[Beeep_Object class]]) {
+        Beeep_Object *t = self.event_beeep_object;
+        
+        [[EventWS sharedBP]postComment:text BeeepId:t.weight user:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                
+                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                NSString *myID = [[BPUser sharedBP].user objectForKey:@"id"];
+                Comments *c = [[Comments alloc]init];
+                
+                c.comment = [[Comment alloc]init];
+                c.comment.comment = text;
+                c.comment.timestamp = [[NSDate date]timeIntervalSince1970];
+                
+                c.commenter = [[Commenter alloc]init];
+                c.commenter.name = name;
+                c.commenter.lastname = surname;
+                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                
+                [comments addObject:c];
+                
+                [self.tableV reloadData];
+                [self prependTextToTextView:text];
+                [composeBarView setText:@"" animated:YES];
+                [composeBarView resignFirstResponder];
+                
+            }
+            else{
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                });
+            }
+        }];
+        
     }
     
 }

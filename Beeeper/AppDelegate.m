@@ -17,7 +17,7 @@
 
    // [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x4B678B)];
     
-   // [self clearDocumentsFolder];
+    [self clearDocumentsFolder];
     
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
     
@@ -36,6 +36,16 @@
     {
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
          (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+    }
+    
+    if (launchOptions != nil)
+    {
+        NSDictionary *dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        if (dictionary != nil)
+        {
+            NSLog(@"Launched from push notification: %@", dictionary);
+            
+        }
     }
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
@@ -208,6 +218,8 @@
     // Handle the user leaving the app while the Facebook login dialog is being shown
     // For example: when the user presses the iOS "home" button while the login dialog is active
     
+    [[DTO sharedDTO]setNotificationBeeepID:@"1413356400.935244"];
+    
      application.applicationIconBadgeNumber = 0;
     
     [FBAppCall handleDidBecomeActive];
@@ -221,6 +233,15 @@
     
     NSDictionary *apsInfo = [userInfo objectForKey:@"aps"];
     
+    /*{
+     alert =     {
+     "action-loc-key" = "View Beeep";
+     body = "\U03c5\U03bf - \U03c5\U03bf\n (2 hours left)";
+     };
+     badge = 1;
+     sound = default;
+     }*/
+    
     if ( application.applicationState == UIApplicationStateActive)
     {
        
@@ -231,6 +252,10 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+   
+    NSDictionary *apsInfo = notification.userInfo;
+    
+    [[DTO sharedDTO]setNotificationBeeepID:@"1413356400.935244"];
     
 }
 

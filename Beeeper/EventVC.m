@@ -72,6 +72,7 @@
 {
     [super viewDidLoad];
     
+    
     [self showLoading];
     
     rowsToReload = [NSMutableArray array];
@@ -197,18 +198,6 @@
 
     }
     
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
-    self.navigationItem.leftBarButtonItem = leftItem;
-    
-    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
-    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
-
-    UIBarButtonItem *btnLike = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"like_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(likeIt)];
-    UIBarButtonItem *btnShare = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"suggest_it_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(suggestIt)];
-    UIBarButtonItem *btnMore = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"more_btn_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showMore)];
-    
-    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnShare,btnLike, nil]];
-    
     self.scrollV.contentSize = CGSizeMake(320, 871);
     
 //    self.monthLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
@@ -248,6 +237,19 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+    
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+    
+    UIBarButtonItem *btnLike = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"like_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(likeIt)];
+    UIBarButtonItem *btnShare = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"suggest_it_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(suggestIt)];
+    UIBarButtonItem *btnMore = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"more_btn_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showMore)];
+    
+    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnShare,btnLike, nil]];
     
     //Hide beeep it button if coming from My Timeline
     
@@ -479,27 +481,8 @@
     
     @try {
         
-     //   extension  = [[suggestion.what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@",[suggestion.what.imageUrl MD5]];
-        
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
-        }
-        
-        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:suggestion.what.imageUrl]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -717,34 +700,16 @@
     
     //Image
     
-    UIImageView *imgV = self.eventImageV;
-    
     NSString *extension;
     NSString *imageName;
     
     @try {
         
        // extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@",[ffo.eventFfo.eventDetailsFfo.imageUrl MD5]];
-
+        imageName  = [NSString stringWithFormat:@"%@",ffo.eventFfo.eventDetailsFfo.imageUrl];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
-        }
-        
-        
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -966,24 +931,10 @@
     @try {
         
         //extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName  = [NSString stringWithFormat:@"%@",[t.event.imageUrl MD5]];
+        imageName  = [NSString stringWithFormat:@"%@",t.event.imageUrl];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
-        }
-        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -1210,27 +1161,10 @@
         
         // extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        imageName  = [NSString stringWithFormat:@"%@",[event.eventInfo.imageUrl MD5]];
+        imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            
-            [[DTO sharedDTO]downloadImageFromURL:event.eventInfo.imageUrl];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
-        }
-        
-        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -1502,26 +1436,10 @@
         
        // extension  = [[event.eventInfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        imageName  = [NSString stringWithFormat:@"%@",[event.eventInfo.imageUrl MD5]];
+        imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            
-            [[DTO sharedDTO]downloadImageFromURL:event.eventInfo.imageUrl];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(eventImageDownloadFinished:) name:imageName object:nil];
-        }
-        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -1534,57 +1452,6 @@
     [self hideLoading];
 }
 
-
--(void)eventImageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            UIImageView *imgV = self.eventImageV;
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-
-    });
-    
-}
-
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-    [rowsToReload addObjectsFromArray:rows];
-    [pendingImagesDict removeObjectForKey:imageName];
-    
-    if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            @try {
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-    
-    
-}
 
 -(void)goBack{
     
@@ -2347,24 +2214,8 @@
     
   // NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@",[cmnts.commenter.imagePath MD5]];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imageV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imageV.image = img;
-        
-    }
-    else{
-        imageV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[DTO sharedDTO]downloadImageFromURL:cmnts.commenter.imagePath];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-    }
+    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:cmnts.commenter.imagePath]]
+            placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
     
     return cell;
 }

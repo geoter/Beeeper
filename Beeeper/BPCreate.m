@@ -47,7 +47,7 @@ static BPCreate *thisWebServices = nil;
     
     NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
 
-    [postValues setObject:[self urlencode:fingerprint] forKey:@"fingerprint"];
+    [postValues setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
     [postValues setObject:beeep_time forKey:@"beeep_time"];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
@@ -125,7 +125,7 @@ static BPCreate *thisWebServices = nil;
     
     NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
     
-    [postValues setObject:[self urlencode:postStr] forKey:@"beeep"];
+    [postValues setObject:[[DTO sharedDTO] urlencode:postStr] forKey:@"beeep"];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
     
@@ -196,7 +196,7 @@ static BPCreate *thisWebServices = nil;
         
         id fingerprint = [self encodeWithHmacsha256:fingerPrint_Input];
         
-        [valuesDict setObject:[self urlencode:fingerprint] forKey:@"fingerprint"];
+        [valuesDict setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
         
         NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/create"];
         
@@ -204,10 +204,10 @@ static BPCreate *thisWebServices = nil;
         
         NSMutableArray *postValues = [[NSMutableArray alloc]init];
         
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
 
         for (NSString *key in values.allKeys) {
-                [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:[values objectForKey:key]] forKey:key]];
+                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[values objectForKey:key]] forKey:key]];
                 [request setPostValue:[values objectForKey:key] forKey:key];
         }
         
@@ -248,7 +248,7 @@ static BPCreate *thisWebServices = nil;
         }
         
         NSString *imgUrl = [dict objectForKey:@"image_url"];
-        imgUrl = [self urlencode:imgUrl];
+        imgUrl = [[DTO sharedDTO] urlencode:imgUrl];
         
         NSString *imageURL = [valuesDict objectForKey:@"image_url"];
         [valuesDict setObject:[dict objectForKey:@"fingerprint"] forKey:@"fingerprint"];

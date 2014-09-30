@@ -59,11 +59,6 @@
     
     [self getActivity];
     
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
-    self.navigationItem.leftBarButtonItem = leftItem;
-    
-    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
-    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 }
 
 
@@ -241,6 +236,13 @@
     
     self.title = @"Activity";
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
@@ -381,48 +383,29 @@
         UIImageView *imgV = (id)[cell viewWithTag:1];
         
        // NSString *extension;
-        NSString *imageName;
+        NSString *imagePath;
         
         if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
           //  extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
+            imagePath = [NSString stringWithFormat:@"%@",wm.imagePath];
         }
         else if (activity.eventActivity.count > 0){
             EventActivity *event = [activity.eventActivity firstObject];
-            NSString *path = event.imageUrl;
-           // extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[path MD5]];
+            imagePath = event.imageUrl;
             
         }
         else if(activity.beeepInfoActivity.eventActivity != nil){
             EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
         //    extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
+            imagePath = [NSString stringWithFormat:@"%@",event.imageUrl];
         }
         else if ([wm.name isEqualToString:@"You"]){
          //   extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
+            imagePath = w.imagePath;
         }
         
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            [pendingImagesDict setObject:indexPath forKey:imageName];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-        }
-        
-        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
+                     placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
         return cell;
 
@@ -586,37 +569,6 @@
 
     
 }
-
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-    [rowsToReload addObjectsFromArray:rows];
-    
-     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            [pendingImagesDict removeObjectForKey:imageName];
-            
-            @try {
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-    
-    
-}
-
 
 
 #pragma mark - Navigation

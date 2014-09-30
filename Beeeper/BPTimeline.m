@@ -196,7 +196,7 @@ static BPTimeline *thisWebServices = nil;
         [self parseResponseString:responseString WithCompletionBlock:self.completed];
     }
     else{
-        [self timelineFailed:request];
+        self.completed(YES,nil);
     }
 }
 
@@ -235,8 +235,8 @@ static BPTimeline *thisWebServices = nil;
     for (NSDictionary *b in beeeps) {
         Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:beeep];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:beeep];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:beeep];
     }

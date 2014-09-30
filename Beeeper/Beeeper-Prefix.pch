@@ -31,7 +31,8 @@
     #import "NSString+MD5.h"
     #import "MONActivityIndicatorView.h"
     #import "Reachability.h"
-    #import "UIImage+animatedGIF.h"
+    #import "SDWebImage/UIImage+GIF.h"
+    #import "SDWebImage/UIImageView+WebCache.h"
 
 #define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 #endif

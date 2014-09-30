@@ -226,8 +226,8 @@ static BPActivity *thisWebServices = nil;
         
         Activity_Object *activity = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:activity];
     }
@@ -241,7 +241,7 @@ static BPActivity *thisWebServices = nil;
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
      
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:fingerprint]]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -292,7 +292,7 @@ static BPActivity *thisWebServices = nil;
     fingerprint = [fingerprint stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
    
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:fingerprint]]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];

@@ -65,13 +65,13 @@ static EventWS *thisWebServices = nil;
         
         NSMutableArray *postValues = [NSMutableArray array];
         
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:[self urlencode:commentText]] forKey:@"comment"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:commentText]] forKey:@"comment"]];
         [postValues addObject:[NSDictionary dictionaryWithObject:user_id forKey:@"user"]];
         [postValues addObject:[NSDictionary dictionaryWithObject:beeep_id forKey:@"beeep_id"]];
         
         [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         
-        [request addPostValue:[self urlencode:commentText] forKey:@"comment"];
+        [request addPostValue:[[DTO sharedDTO] urlencode:commentText] forKey:@"comment"];
         [request addPostValue:user_id forKey:@"user"];
         [request addPostValue:beeep_id forKey:@"beeep_id"];
         
@@ -120,8 +120,8 @@ static EventWS *thisWebServices = nil;
         
         NSMutableArray *postValues = [NSMutableArray array];
         
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:commentText] forKey:@"comment"]];
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:commentText] forKey:@"comment"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
         
         [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         
@@ -304,7 +304,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
     
@@ -366,7 +366,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"fingerprint"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
     
@@ -426,7 +426,7 @@ static EventWS *thisWebServices = nil;
     
     
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"title=%@",[self urlencode:keyword]]];
+    [array addObject:[NSString stringWithFormat:@"title=%@",[[DTO sharedDTO] urlencode:keyword]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -555,8 +555,8 @@ static EventWS *thisWebServices = nil;
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+//        [operationQueue addOperation:invocationOperation];
         
         [events addObject:e];
     }
@@ -756,8 +756,8 @@ static EventWS *thisWebServices = nil;
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+//        [operationQueue addOperation:invocationOperation];
         
         [events addObject:e];
     }
@@ -796,8 +796,8 @@ static EventWS *thisWebServices = nil;
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+//        [operationQueue addOperation:invocationOperation];
         
         [events addObject:e];
     }
@@ -850,7 +850,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/show?"];
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[self urlencode:[self urlencode:fingerprint]]]];
+    [array addObject:[NSString stringWithFormat:@"fingerprint=%@",[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:fingerprint]]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];

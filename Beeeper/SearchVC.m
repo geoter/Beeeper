@@ -480,25 +480,9 @@
     
     
   //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    NSString *imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imageV.backgroundColor = [UIColor clearColor];
-        imageV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imageV.image = img;
-    }
-    else{
-        imageV.backgroundColor = [UIColor lightGrayColor];
-        imageV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-    }
+
+    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
+            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     
     UIView *beeepedByView = (id)[containerV viewWithTag:32];
 //    UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:34];

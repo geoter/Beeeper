@@ -58,7 +58,7 @@ static BPUsersLookup *thisWebServices = nil;
     
     [idsJSON deleteCharactersInRange:NSMakeRange([idsJSON length]-1, 1)];
     [idsJSON appendString:@"]"];
-    NSString *idsJSONEncoded = [self urlencode:idsJSON];
+    NSString *idsJSONEncoded = [[DTO sharedDTO] urlencode:idsJSON];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:[NSDictionary dictionaryWithObject:idsJSONEncoded forKey:@"users"]]]];
     
@@ -90,8 +90,8 @@ static BPUsersLookup *thisWebServices = nil;
         NSDictionary *user = [userArray firstObject];
         [users addObject:user];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:user];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:user];
+//        [operationQueue addOperation:invocationOperation];
 
     }
     

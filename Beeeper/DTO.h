@@ -29,7 +29,8 @@ typedef void(^completed)(BOOL,id);
 - (void)setNotificationBeeepID:(NSString *)beeep_id;
 - (NSString *)getNotificationBeeepID;
 - (void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc;
-
+- (UIImage *)imageWithColor:(UIColor *)color;
+- (NSString *)urlencode:(NSString *)str;
 @end
 
 

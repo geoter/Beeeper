@@ -253,8 +253,8 @@ static BPSuggestions *thisWebServices = nil;
         
         Suggestion_Object *activity = [Suggestion_Object modelObjectWithDictionary:b];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
+//        [operationQueue addOperation:invocationOperation];
         if (activity.what.title != nil) {
            [bs addObject:activity];
         }
@@ -348,8 +348,8 @@ static BPSuggestions *thisWebServices = nil;
         
         NSMutableArray *postValues = [NSMutableArray array];
         
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:users_JSON_array] forKey:@"who"]];
-        [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:fingerprint] forKey:@"what"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:users_JSON_array] forKey:@"who"]];
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"what"]];
         
         [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
         

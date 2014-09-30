@@ -48,6 +48,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+   
     [super viewWillAppear:animated];
 
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];

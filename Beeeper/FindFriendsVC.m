@@ -782,25 +782,8 @@
     
         if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
             
-            //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            
-            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-            
-            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-            
-            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                userImage.backgroundColor = [UIColor clearColor];
-                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-                userImage.image = img;
-            }
-            else{
-                userImage.backgroundColor = [UIColor lightGrayColor];
-                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                [pendingImagesDict setObject:indexPath forKey:imageName];
-                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-            }
-            
+            [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
+                    placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         }
         else{
             
@@ -971,35 +954,6 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 1;
-}
-
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-    [rowsToReload addObjectsFromArray:rows];
-    [pendingImagesDict removeObjectForKey:imageName];
-    
-     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            @try {
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-    
-    
 }
 
 -(void)invitePressed:(UIBarButtonItem *)inviteButton{

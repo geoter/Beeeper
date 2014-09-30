@@ -45,7 +45,7 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    [[BPUser sharedBP]sendDemoPush:10];
+    [[BPUser sharedBP]sendDemoPush:5];
     
     [self updateNotificationsBadge];
     
@@ -167,8 +167,8 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
-   // [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
+   
+    [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
 }
 
 -(void)showPushBeeep{
@@ -177,6 +177,7 @@
     
     if (beeepID != nil) {
         
+        
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.tml = beeepID;
         
@@ -184,6 +185,7 @@
         
         [self.navigationController pushViewController:viewController animated:YES];
         
+        [[DTO sharedDTO]setNotificationBeeepID:nil];
     }
 
 }

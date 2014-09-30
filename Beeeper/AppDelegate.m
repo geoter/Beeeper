@@ -44,7 +44,7 @@
         if (dictionary != nil)
         {
             NSLog(@"Launched from push notification: %@", dictionary);
-            
+            [[DTO sharedDTO]setNotificationBeeepID:[dictionary objectForKey:@"w"]];
         }
     }
     
@@ -218,8 +218,6 @@
     // Handle the user leaving the app while the Facebook login dialog is being shown
     // For example: when the user presses the iOS "home" button while the login dialog is active
     
-    [[DTO sharedDTO]setNotificationBeeepID:@"1413356400.935244"];
-    
      application.applicationIconBadgeNumber = 0;
     
     [FBAppCall handleDidBecomeActive];
@@ -230,8 +228,16 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+   
+    @try {
+        [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
+    }
+    @catch (NSException *exception) {
     
-    NSDictionary *apsInfo = [userInfo objectForKey:@"aps"];
+    }
+    @finally {
+    
+    }
     
     /*{
      alert =     {
@@ -240,22 +246,15 @@
      };
      badge = 1;
      sound = default;
+     w = 111.122;
      }*/
-    
-    if ( application.applicationState == UIApplicationStateActive)
-    {
-       
-    }
-    else{
-    
-    }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
    
     NSDictionary *apsInfo = notification.userInfo;
     
-    [[DTO sharedDTO]setNotificationBeeepID:@"1413356400.935244"];
+    [[DTO sharedDTO]setNotificationBeeepID:[apsInfo objectForKey:@"w"]];
     
 }
 

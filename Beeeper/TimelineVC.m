@@ -141,7 +141,9 @@
                     
                     loading = NO;
                     
-                    beeeps = [NSMutableArray arrayWithArray:objs];
+                    if (objs) {
+                        beeeps = [NSMutableArray arrayWithArray:objs];
+                    }
                     
                     if (beeeps.count == 10) {
                         loadNextPage = YES;
@@ -476,7 +478,6 @@
             UIImage *img = [UIImage imageWithContentsOfFile:localPath];
             self.profileImage.image = img;
         }
-
   
         Reachability *reachability = [Reachability reachabilityForInternetConnection];
         [reachability startNotifier];
@@ -489,25 +490,10 @@
         }
         else if (status == ReachableViaWiFi)
         {
-            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-            dispatch_async(q, ^{
-                /* Fetch the image from the server... */
-                NSString *imagePath = [user objectForKey:@"image_path"];
-                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
-               
-                if (data) {
-                    
-                    UIImage *img = [[UIImage alloc] initWithData:data];
-                    
-                    [self saveImage:img withFileName:imageName inDirectory:localPath];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        /* This is the main thread again, where we set the tableView's image to
-                         be what we just fetched. */
-                        self.profileImage.image = img;
-                    });
-                }
-            });
+            
+            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
+                    placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+           
         }
         else if (status == ReachableViaWWAN) 
         {
@@ -563,19 +549,6 @@
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
 
 -(void)createMenuButtons:(BOOL)animated{
     
@@ -644,8 +617,8 @@
         
         self.followButton.hidden = NO;
        // [self.followButton setBackgroundColor:[]
-        [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
-        [self.followButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
+        [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
+        [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
     }
     else{
         self.followButton.hidden = YES;
@@ -670,7 +643,7 @@
         lbl.layer.cornerRadius = 2;
         
         [self.followersButton addSubview:lbl];
-        [self.followersButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
+        [self.followersButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
         
         //RIGHT
         
@@ -691,7 +664,7 @@
         lbl.textAlignment = NSTextAlignmentCenter;
         [self.followingButton addSubview:lbl];
         
-        [self.followingButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
+        [self.followingButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
 
 
 }
@@ -872,26 +845,8 @@
         
         UIImageView *imgV = (id)[cell viewWithTag:3];
         
-        //NSString *extension = [[b.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
-        NSString *imageName = [NSString stringWithFormat:@"%@",[b.event.imageUrl MD5]];
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imgV.backgroundColor = [UIColor clearColor];
-            imgV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imgV.image = img;
-        }
-        else{
-            imgV.backgroundColor = [UIColor lightGrayColor];
-            imgV.image = nil;
-            [pendingImagesDict setObject:indexPath forKey:imageName];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-        }
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
+                  placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     
@@ -1050,37 +1005,6 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES; //otherGestureRecognizer is your custom pan gesture
-}
-
-
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-    [rowsToReload addObjectsFromArray:rows];
-    [pendingImagesDict removeObjectForKey:imageName];
-    
-     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            @try {
-                loading = NO;
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-
-
 }
 
 #pragma mark - Actions

@@ -438,7 +438,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         NSURL *image_url = [info_values objectForKey:@"source_url"];
 
         
-      //  [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
+      //  [values setObject:[[DTO sharedDTO] urlencode:image_url.absoluteString] forKey:@"image_url"];
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
         UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];

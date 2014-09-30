@@ -313,25 +313,8 @@
         imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
     }*/
     
-    imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        imgV.backgroundColor = [UIColor clearColor];
-        imgV.image = nil;
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        imgV.image = img;
-    }
-    else{
-        imgV.backgroundColor = [UIColor lightGrayColor];
-        imgV.image = nil;
-        [pendingImagesDict setObject:indexPath forKey:imageName];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-    }
-    
+    [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
     
     CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
     

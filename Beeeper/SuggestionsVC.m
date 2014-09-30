@@ -274,47 +274,18 @@
         
         beeepedBy.text = [NSString stringWithFormat:@"%@ %@",[w.name capitalizedString] ,[w.lastname capitalizedString]];
         
-        NSString *who_imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *who_localPath = [documentsDirectoryPath stringByAppendingPathComponent:who_imageName];
         UIImageView *beeepedByImageV = (id)[cell viewWithTag:34];
         
-        if ([[NSFileManager defaultManager]fileExistsAtPath:who_localPath]) {
-            beeepedByImageV.backgroundColor = [UIColor clearColor];
-            beeepedByImageV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:who_localPath];
-            beeepedByImageV.image = img;
-        }
-        else{
-            beeepedByImageV.backgroundColor = [UIColor lightGrayColor];
-            beeepedByImageV.image = nil;
-            [pendingImagesDict setObject:indexPath forKey:who_imageName];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:who_imageName object:nil];
-        }
+        [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
         
 
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        NSString *imageName = [NSString stringWithFormat:@"%@",[what.imageUrl MD5]];
-        imageName = [[DTO sharedDTO]fixLink:imageName];
-      
         
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            imageV.backgroundColor = [UIColor clearColor];
-            imageV.image = nil;
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            imageV.image = img;
-        }
-        else{
-            imageV.backgroundColor = [UIColor lightGrayColor];
-            imageV.image = nil;
-            [pendingImagesDict setObject:indexPath forKey:imageName];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-        }
+        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]
+                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
             return cell;
     }
@@ -449,35 +420,6 @@
 }
 
 
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-     [rowsToReload addObjectsFromArray:rows];
-    
-    if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            [pendingImagesDict removeObjectForKey:imageName];
-            
-            @try {
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-
-    
-}
 
 #pragma mark - Navigation
 

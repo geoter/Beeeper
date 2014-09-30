@@ -591,7 +591,7 @@
         }
         
       
-        [values setObject:[self urlencode:@"http://www.beeeper.com"] forKey:@"src"];
+        [values setObject:[[DTO sharedDTO] urlencode:@"http://www.beeeper.com"] forKey:@"src"];
         
         BOOL proceed = [self areAllDataAvailable:values];
         
@@ -672,7 +672,7 @@
     else{
         
         NSString *title = [values objectForKey:@"title"];
-        title = [self urlencode:title];
+        title = [[DTO sharedDTO] urlencode:title];
         [values setObject:title forKey:@"title"];
         
         [self validTextfield:self.titleTxtF];
@@ -910,7 +910,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         }
         else{
             base64Image = nil;
-             [values setObject:[self urlencode:image_url.absoluteString] forKey:@"image_url"];
+             [values setObject:[[DTO sharedDTO] urlencode:image_url.absoluteString] forKey:@"image_url"];
         }
         
         [self imageSelected:chosenPhotoBtn];
@@ -925,15 +925,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
 }
 
-- (NSString *)urlencode:(NSString *)str {
-    CFStringRef safeString =
-    CFURLCreateStringByAddingPercentEscapes(NULL,
-                                            (CFStringRef)str,
-                                            NULL,
-                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
-                                            kCFStringEncodingUTF8);
-    return [NSString stringWithFormat:@"%@", safeString];
-}
 
 - (NSString *)contentTypeForImageData:(NSData *)data {
     uint8_t c;

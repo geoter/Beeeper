@@ -65,7 +65,7 @@ static BPUser *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        oauth_callback = [self urlencode:@"beeeper://"];
+        oauth_callback = [[DTO sharedDTO] urlencode:@"beeeper://"];
         oauth_nonce = [self random32CharacterString];
         oauth_nonce_accessToken = [self random32CharacterString];
         oauth_signature_method = @"HMAC_SHA1";
@@ -188,7 +188,7 @@ static BPUser *thisWebServices = nil;
        @try {
            id object = [settings objectForKey:key];
            [request addPostValue:object forKey:key];
-           [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:object] forKey:key]];
+           [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:object] forKey:key]];
   
         }
         @catch (NSException *exception) {
@@ -386,13 +386,13 @@ static BPUser *thisWebServices = nil;
 -(void)demoPushReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-    NSLog(@"%@",responseString);
+    NSLog(@"Demo Push:%@",responseString);
 }
 
 -(void)demoPushFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-        NSLog(@"%@",responseString);
+        NSLog(@"Demo Push Error:%@",responseString);
 }
 
 
@@ -566,10 +566,10 @@ static BPUser *thisWebServices = nil;
     
     NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    for (NSDictionary *user in users) {
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
-    }
+//    for (NSDictionary *user in users) {
+//        NSString *imagePath = [user objectForKey:@"image_path"];
+//        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//    }
     
     compbloc(YES,users);
 
@@ -1437,7 +1437,7 @@ static BPUser *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:idsJSON] forKey:@"fb_list"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:idsJSON] forKey:@"fb_list"]];
 
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/facebook/list"];
     
@@ -1487,7 +1487,7 @@ static BPUser *thisWebServices = nil;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [postValues addObject:[NSDictionary dictionaryWithObject:[self urlencode:idsJSON] forKey:@"tw_list"]];
+    [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:idsJSON] forKey:@"tw_list"]];
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/twitter/list"];
     
@@ -1902,9 +1902,9 @@ static BPUser *thisWebServices = nil;
     
     NSString *key;
     
-    key = [NSString stringWithFormat:@"%@&%@",[self urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[self urlencode:[NSString stringWithFormat:@"%@",accessTokenSecret]]];
+    key = [NSString stringWithFormat:@"%@&%@",[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",accessTokenSecret]]];
     
-    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"GET&%@&%@",[self urlencode:link],[self urlencode:domain]] key:key];
+    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"GET&%@&%@",[[DTO sharedDTO] urlencode:link],[[DTO sharedDTO] urlencode:domain]] key:key];
     
     return encodedStr;
 }
@@ -1955,9 +1955,9 @@ static BPUser *thisWebServices = nil;
     
     NSString *key;
     
-    key = [NSString stringWithFormat:@"%@&%@",[self urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[self urlencode:[NSString stringWithFormat:@"%@",accessTokenSecret]]];
+    key = [NSString stringWithFormat:@"%@&%@",[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",accessTokenSecret]]];
     
-    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[self urlencode:link],[self urlencode:domain]] key:key];
+    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[[DTO sharedDTO] urlencode:link],[[DTO sharedDTO] urlencode:domain]] key:key];
     
     return encodedStr;
 }
@@ -2022,9 +2022,9 @@ static BPUser *thisWebServices = nil;
     NSString *unencodedStr = [NSString stringWithFormat:@"oauth_callback=%@&oauth_consumer_key=%@&oauth_nonce=%@&oauth_signature_method=%@&oauth_timestamp=%@&oauth_version=1.0&xoauth_displayname=%@",oauth_callback,consumerKey,oauth_nonce,oauth_signature_method,oauth_timestamp,xoauth_displayname];
     NSString *key;
     
-    key = [NSString stringWithFormat:@"%@&",[self urlencode:[NSString stringWithFormat:@"%@",consumerSecret]]];
+    key = [NSString stringWithFormat:@"%@&",[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",consumerSecret]]];
     
-    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[self urlencode:domain],[self urlencode:unencodedStr]] key:key];
+    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[[DTO sharedDTO] urlencode:domain],[[DTO sharedDTO] urlencode:unencodedStr]] key:key];
     
     signature = encodedStr;
     
@@ -2042,10 +2042,10 @@ static BPUser *thisWebServices = nil;
     [request addRequestHeader:@"Referer" value:@"test"];
     
     if (_fbid) {
-        [request addPostValue:[self urlencode:[NSString stringWithFormat:@"%@",_fbid]] forKey:@"fbid"];
+        [request addPostValue:[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",_fbid]] forKey:@"fbid"];
     }
     else if (_twitterid){
-        [request addPostValue:[self urlencode:[NSString stringWithFormat:@"%@",_twitterid]] forKey:@"twid"];
+        [request addPostValue:[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",_twitterid]] forKey:@"twid"];
     }
     else{
         [request addPostValue:_username forKey:@"username"];
@@ -2143,9 +2143,9 @@ static BPUser *thisWebServices = nil;
     NSString *unencodedStr = [NSString stringWithFormat:@"oauth_consumer_key=%@&oauth_nonce=%@&oauth_signature_method=%@&oauth_timestamp=%@&oauth_token=%@&oauth_verifier=%@&oauth_version=1.0",consumerKey,oauth_nonce_accessToken,oauth_signature_method,oauth_timestamp_accessToken,oauth_token,verifier];
     NSString *key;
     
-    key = [NSString stringWithFormat:@"%@&%@",[self urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[self urlencode:[NSString stringWithFormat:@"%@",oauth_token_secret]]];
+    key = [NSString stringWithFormat:@"%@&%@",[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",consumerSecret]],[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",oauth_token_secret]]];
     
-    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[self urlencode:domain],[self urlencode:unencodedStr]] key:key];
+    NSString *encodedStr = [self encodeWithHmacsha1:[NSString stringWithFormat:@"POST&%@&%@",[[DTO sharedDTO] urlencode:domain],[[DTO sharedDTO] urlencode:unencodedStr]] key:key];
     
     signature_accessToken = encodedStr;
     

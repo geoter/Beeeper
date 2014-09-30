@@ -39,9 +39,6 @@
     rowsToReload = [NSMutableArray array];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
-    
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
-    self.navigationItem.leftBarButtonItem = leftItem;
 
     pendingImagesDict = [NSMutableDictionary dictionary];
 
@@ -61,7 +58,12 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     self.navigationController.navigationBar.backItem.title = @"";
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
@@ -155,23 +157,8 @@
         
         if (commentObj.commenter.imagePath) {
             
-            NSString *imageName = [NSString stringWithFormat:@"%@",[[[DTO sharedDTO]fixLink:commentObj.commenter.imagePath] MD5]];
-            
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            
-            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-            
-            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                image.image = nil;
-                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-                image.image = img;
-            }
-            else{
-                image.image = nil;
-                [pendingImagesDict setObject:indexPath forKey:imageName];
-                [[DTO sharedDTO]downloadImageFromURL:[[DTO sharedDTO]fixLink:commentObj.commenter.imagePath]];
-                [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(imageDownloadFinished:) name:imageName object:nil];
-            }
+            [image sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:commentObj.commenter.imagePath]]
+                    placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         }
         
     }
@@ -265,35 +252,6 @@
     
     // This contains both height and width, but we really care about height.
     return frame.size;
-}
-
--(void)imageDownloadFinished:(NSNotification *)notif{
-    
-    NSString *imageName  = [notif.userInfo objectForKey:@"imageName"];
-    
-    NSArray* rows = [NSArray arrayWithObjects:[pendingImagesDict objectForKey:imageName], nil];
-    
-    [rowsToReload addObjectsFromArray:rows];
-    [pendingImagesDict removeObjectForKey:imageName];
-    
-     if (rowsToReload.count == 5  || (pendingImagesDict.count < 5 && pendingImagesDict.count > 0)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            @try {
-                [self.tableV reloadData];
-                [rowsToReload removeAllObjects];
-            }
-            @catch (NSException *exception) {
-                
-            }
-            @finally {
-                
-            }
-        });
-        
-    }
-    
-    
 }
 
 #pragma mark - Compose

@@ -578,28 +578,28 @@
           } else if (session.isOpen) {
               
             
-            UIImage *img;
-            
-            if(imageURL == nil){
-                NSString *base64Image = [self.values objectForKey:@"base64_image"];
-                NSData *base64Data = [self base64DataFromString:base64Image];
-                
-                if (base64Data != nil) {
-                    img = [UIImage imageWithData:base64Data];
-                }
-            }
-            else{
-                NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
-                
-                NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-                
-                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-                
-                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                    
-                    img = [UIImage imageWithContentsOfFile:localPath];
-                }
-            }
+//            UIImage *img;
+//            
+//            if(imageURL == nil){
+//                NSString *base64Image = [self.values objectForKey:@"base64_image"];
+//                NSData *base64Data = [self base64DataFromString:base64Image];
+//                
+//                if (base64Data != nil) {
+//                    img = [UIImage imageWithData:base64Data];
+//                }
+//            }
+//            else{
+//                NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
+//                
+//                NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+//                
+//                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+//                
+//                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+//                    
+//                    img = [UIImage imageWithContentsOfFile:localPath];
+//                }
+//            }
 
             
               // Check if the Facebook app is installed and we can present the share dialog

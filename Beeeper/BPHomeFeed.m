@@ -207,8 +207,8 @@ static BPHomeFeed *thisWebServices = nil;
     for (NSDictionary *b in beeeps) {
         Friendsfeed_Object *ffo = [Friendsfeed_Object modelObjectWithDictionary:b];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:ffo];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:ffo];
+//        [operationQueue addOperation:invocationOperation];
         
         if ([beeeps indexOfObject:b] == beeeps.count-1) { //FEED LENGTH
             feedLength = [[NSString stringWithFormat:@"%@",[b objectForKey:@"feed_length"]] intValue];

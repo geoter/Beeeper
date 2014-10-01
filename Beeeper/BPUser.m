@@ -586,10 +586,10 @@ static BPUser *thisWebServices = nil;
     
     NSArray *users = [json objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    for (NSDictionary *user in users) {
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
-    }
+//    for (NSDictionary *user in users) {
+//        NSString *imagePath = [user objectForKey:@"image_path"];
+//        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//    }
     
     compbloc(YES,users);
 
@@ -704,10 +704,10 @@ static BPUser *thisWebServices = nil;
         
         
         
-        for (NSDictionary *user in users) {
-            NSString *imagePath = [user objectForKey:@"image_path"];
-            [[DTO sharedDTO]downloadImageFromURL:imagePath];
-        }
+//        for (NSDictionary *user in users) {
+//            NSString *imagePath = [user objectForKey:@"image_path"];
+//            [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//        }
         
         self.followers_completed(YES,users);
 
@@ -1103,9 +1103,9 @@ static BPUser *thisWebServices = nil;
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
-        
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+//        [operationQueue addOperation:invocationOperation];
+//        
         [bs addObject:notification];
     }
     
@@ -1201,8 +1201,8 @@ static BPUser *thisWebServices = nil;
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:notification];
     }
@@ -1303,8 +1303,8 @@ static BPUser *thisWebServices = nil;
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:notification];
     }
@@ -1402,8 +1402,8 @@ static BPUser *thisWebServices = nil;
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:notification];
     }
@@ -1598,8 +1598,8 @@ static BPUser *thisWebServices = nil;
         
         Activity_Object *notification = [Activity_Object modelObjectWithDictionary:activity_item];
         
-        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
-        [operationQueue addOperation:invocationOperation];
+//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:notification];
+//        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:notification];
     }

@@ -2418,8 +2418,39 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <view contentMode="scaleToFill" id="Ecd-Kj-EZd">
+                                            <view contentMode="scaleToFill" id="GAn-Q5-zgW">
                                                 <rect key="frame" x="15" y="272" width="290" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <button opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="HqW-U2-GJ2">
+                                                        <rect key="frame" x="0.0" y="0.0" width="91" height="40"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
+                                                        <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        <state key="normal" title="Email">
+                                                            <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
+                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </state>
+                                                    </button>
+                                                    <textField opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" id="aqy-Vw-YyT">
+                                                        <rect key="frame" x="95" y="0.0" width="187" height="40"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                                        <connections>
+                                                            <outlet property="delegate" destination="s2Z-gV-BIl" id="gmZ-T3-a9O"/>
+                                                        </connections>
+                                                    </textField>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="3"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" id="Ecd-Kj-EZd">
+                                                <rect key="frame" x="15" y="320" width="290" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <button opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jrI-4C-gti">
@@ -2450,7 +2481,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" id="E2b-fo-Vdx">
-                                                <rect key="frame" x="15" y="320" width="290" height="40"/>
+                                                <rect key="frame" x="15" y="368" width="290" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <button opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jY6-3w-8M1">
@@ -2504,6 +2535,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
+                        <outlet property="emailTextField" destination="aqy-Vw-YyT" id="9l2-zM-E0u"/>
                         <outlet property="firstNameTextfield" destination="iEg-rY-Ybo" id="YFk-rq-WQC"/>
                         <outlet property="lastNameTextfield" destination="DZ3-3e-RkB" id="Pt9-7h-X0M"/>
                         <outlet property="locationTxtF" destination="j12-BX-ayb" id="1Rd-fL-kEq"/>

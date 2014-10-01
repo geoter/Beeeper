@@ -45,7 +45,7 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    [[BPUser sharedBP]sendDemoPush:5];
+    //[[BPUser sharedBP]sendDemoPush:5];
     
     [self updateNotificationsBadge];
     

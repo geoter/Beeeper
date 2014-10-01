@@ -61,11 +61,11 @@
             if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
                 
-                for (NSDictionary *user in people) {
-                    NSArray *keys = user.allKeys;
-                    NSString *imagePath = [user objectForKey:@"image_path"];
-                    [[DTO sharedDTO]downloadImageFromURL:imagePath];
-                }
+//                for (NSDictionary *user in people) {
+//                    NSArray *keys = user.allKeys;
+//                    NSString *imagePath = [user objectForKey:@"image_path"];
+//                    [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//                }
                 
                 NSMutableArray *true_following = [NSMutableArray array];
                 
@@ -122,9 +122,9 @@
                  people = [NSMutableArray arrayWithArray:objs];
                  following = [NSMutableArray arrayWithArray:people];
                  
-                 for (NSDictionary *user in people) {
-                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
-                 }
+//                 for (NSDictionary *user in people) {
+//                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
+//                 }
                  
                  [self updateUsersCount];
                  [self.tableV reloadData];
@@ -147,9 +147,9 @@
              if (completed) {
                  people = [NSMutableArray arrayWithArray:objs];
                  
-                 for (NSDictionary *user in people) {
-                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
-                 }
+//                 for (NSDictionary *user in people) {
+//                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
+//                 }
                  
                  [self updateUsersCount];
                  

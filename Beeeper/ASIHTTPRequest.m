@@ -770,6 +770,16 @@ static NSOperationQueue *sharedQueue = nil;
 	return [[[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding:[self responseEncoding]] autorelease];
 }
 
+- (void)setResponseEncoding:(NSStringEncoding)_responseEncoding
+{
+    responseEncoding = _responseEncoding;
+}
+
+- (NSStringEncoding) responseEncoding
+{
+    return responseEncoding || self.defaultResponseEncoding;
+}
+
 - (BOOL)isResponseCompressed
 {
 	NSString *encoding = [[self responseHeaders] objectForKey:@"Content-Encoding"];
@@ -5058,7 +5068,6 @@ static NSOperationQueue *sharedQueue = nil;
 @synthesize showAccurateProgress;
 @synthesize uploadBufferSize;
 @synthesize defaultResponseEncoding;
-@synthesize responseEncoding;
 @synthesize allowCompressedResponse;
 @synthesize allowResumeForFileDownloads;
 @synthesize userInfo;

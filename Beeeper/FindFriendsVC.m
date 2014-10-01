@@ -1330,11 +1330,11 @@
         [self getPeople:searchStr WithCompletionBlock:self.search_completed];
     }
     
-    for (NSDictionary *user in people) {
-        NSArray *keys = user.allKeys;
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        [[DTO sharedDTO]downloadImageFromURL:imagePath];
-    }
+//    for (NSDictionary *user in people) {
+//        NSArray *keys = user.allKeys;
+//        NSString *imagePath = [user objectForKey:@"image_path"];
+//        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//    }
     
     self.search_completed(YES,people);
 }

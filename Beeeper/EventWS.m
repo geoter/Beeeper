@@ -16,6 +16,8 @@ static EventWS *thisWebServices = nil;
 {
     int all_events_page;
     int search_events_page;
+    int requestEmptyResultsCounter;
+
     NSString *order;
     NSOperationQueue *operationQueue;
     NSString *events_Search_keyword;
@@ -34,6 +36,7 @@ static EventWS *thisWebServices = nil;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
+        requestEmptyResultsCounter = 0;
 
     }
     return(self);
@@ -627,60 +630,6 @@ static EventWS *thisWebServices = nil;
 
 #pragma mark - Homefeed
 
--(void)nextAllEventsWithCompletionBlock:(completed)compbloc{
-    
-    all_events_page ++;
-    
-    NSLog(@"Next Page: %d",all_events_page);
-    
-    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
-    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
-    
-    
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
-    
-    
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
-    [array addObject:[NSString stringWithFormat:@"order=%@",order]];
-    [array addObject:[NSString stringWithFormat:@"page=%d",all_events_page]];
-    
-    for (NSString *str in array) {
-        [URLwithVars appendFormat:@"%@",str];
-        
-        if (str != array.lastObject) {
-            [URLwithVars appendString:@"&"];
-        }
-    }
-    
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
-    //email,name,lastname,timezone,password,city,state,country,sex
-    //fbid,twid,active,locked,lastlogin,image_path,username
-    
-    self.get_All_Events_completed = compbloc;
-    
-    [request setRequestMethod:@"GET"];
-    
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
-    
-    [request setTimeOutSeconds:25.0];
-    
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(getAllEventsFinished:)];
-    
-    [request setDidFailSelector:@selector(getAllEventsFailed:)];
-    
-    [request startAsynchronous];
-
-}
 
 -(void)getAllEventsWithCompletionBlock:(completed)compbloc{
     
@@ -704,7 +653,7 @@ static EventWS *thisWebServices = nil;
     }
 
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
+    NSLog(@"First: %@",requestURL.absoluteString);
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
@@ -746,12 +695,14 @@ static EventWS *thisWebServices = nil;
         return;
     }
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    BOOL succeed = [responseString writeToFile:filePath
-                                    atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    if(all_events_page == 0){
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    }
     
     for (NSDictionary *event in eventsArray) {
         Event_Search *e = [Event_Search modelObjectWithDictionary:event];
@@ -772,6 +723,108 @@ static EventWS *thisWebServices = nil;
     
     self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFailed: %@",responseString]);
 }
+
+#pragma mark - Homefeed Next
+
+-(void)nextAllEventsWithCompletionBlock:(completed)compbloc{
+    
+    all_events_page ++;
+    
+    NSLog(@"Next Page: %d",all_events_page);
+    
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
+    NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
+    
+    
+    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    
+    
+    NSMutableArray *array = [NSMutableArray array];
+    [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
+    [array addObject:[NSString stringWithFormat:@"order=%@",@"DATE"]];
+    [array addObject:[NSString stringWithFormat:@"page=%d",all_events_page]];
+    
+    for (NSString *str in array) {
+        [URLwithVars appendFormat:@"%@",str];
+        
+        if (str != array.lastObject) {
+            [URLwithVars appendString:@"&"];
+        }
+    }
+    
+    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
+    
+    NSLog(@"Next: %@",requestURL.absoluteString);
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.get_All_Events_completed = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:25.0];
+    
+    [request setDelegate:self];
+    
+    //    [[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(getNextAllEventsFinished:)];
+    
+    [request setDidFailSelector:@selector(getNextAllEventsFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)getNextAllEventsFinished:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    NSArray *eventsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *events = [NSMutableArray array];
+    
+    if (eventsArray.count ==0) {
+        self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished eventsArray == 0: %@",responseString]);
+        return;
+    }
+    
+    if(all_events_page == 0){
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"homefeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    }
+    
+    for (NSDictionary *event in eventsArray) {
+        Event_Search *e = [Event_Search modelObjectWithDictionary:event];
+        
+        //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:e];
+        //        [operationQueue addOperation:invocationOperation];
+        
+        [events addObject:e];
+    }
+    
+    
+    self.get_All_Events_completed(YES,events);
+}
+
+-(void)getNextAllEventsFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFailed: %@",responseString]);
+}
+
 
 
 -(void)getAllLocalEvents:(completed)compbloc{

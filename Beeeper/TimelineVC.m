@@ -49,7 +49,7 @@
     CGPoint initialCellCenter;
   //  NSMutableArray *sections;
   //  NSMutableDictionary *suggestionsPerSection;
-        NSMutableArray *rowsToReload;
+    NSMutableArray *rowsToReload;
 }
 @end
 
@@ -731,6 +731,10 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
+            initialCellCenter = [cell viewWithTag:66].center;
+        }
+        
         if (cell.gestureRecognizers.count == 0) {
 //            UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
 //                                           initWithTarget:self action:@selector(handleCellPan:)];
@@ -914,8 +918,20 @@
     [footer addSubview:lbl];
     
     return footer;
-    
-    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+    if (self.mode == Timeline_My) {
+         return YES;
+    }
+    return NO;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
 }
 
 - (IBAction)handleCellPan:(UIPanGestureRecognizer *)recognizer {

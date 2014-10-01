@@ -188,8 +188,6 @@
         return;
     }
 
-   [self showLoading];
-
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -381,8 +379,6 @@
         return;
     }
     
-    [self showLoading];
-    
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -397,8 +393,6 @@
                  usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
                  if (usernames.count > 1) {
-                     
-                     [self hideLoading];
                      
                      UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                      popup.tag = 77;
@@ -577,71 +571,84 @@
         return;
     }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    dispatch_async (dispatch_get_main_queue(), ^{
     
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
 
-    loadingBGV.alpha = 0;
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-             loadingBGV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-            [indicatorView startAnimating];
-     }
-     ];
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+                 loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+                [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 
 -(void)hideLoading{
-   UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-   MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-   
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-     }
-     ];
+    
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+       
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+         }
+         ];
+    });
 }
 
 -(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
     
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
+   dispatch_async (dispatch_get_main_queue(), ^{
     
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-         
-         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-         [alert show];
-     }
-     ];
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+             [alert show];
+         }
+         ];
+       
+    });
 }
 
 

@@ -189,6 +189,7 @@ static BPSuggestions *thisWebServices = nil;
     }
     else{
         requestEmptyResultsCounter++;
+        page --;
         
         if (requestEmptyResultsCounter <= 2) {
             loadNextPage = YES;

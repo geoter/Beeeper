@@ -469,7 +469,7 @@
 
         float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
 
-        NSLog(@"H: %f",height);
+//        NSLog(@"H: %f",height);
 
         return height;
     }

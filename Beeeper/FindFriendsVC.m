@@ -166,16 +166,7 @@
 }
 
 -(void)getBeeeperUsers{
-    
-    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
-    [loadingView setBackgroundColor:[UIColor clearColor]];
-    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
-    [loadingView addSubview:activityIndicator];
-    activityIndicator.center =loadingView.center;
-    [self.view addSubview:loadingView];
-    [self.view bringSubviewToFront:loadingView];
-    [activityIndicator startAnimating];
+
     
     page = 0;
     loadNextPage = YES;
@@ -185,18 +176,6 @@
         if (completed) {
          
             dispatch_async(dispatch_get_main_queue(), ^{
-
-                [UIView animateWithDuration:0.2f
-                                 animations:^
-                 {
-                     loadingView.alpha = 0;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     [loadingView removeFromSuperview];
-                 }
-                 ];
-                
                 
                 if (objcts > 0) {
                     loadNextPage = YES;
@@ -210,6 +189,8 @@
                 }
           });
         }
+        
+        [self hideLoading];
     }];
 }
 
@@ -218,22 +199,14 @@
     [searchedPeople removeAllObjects];
     [self.tableV reloadData];
     
-    [UIView animateWithDuration:0.7f
-                     animations:^
-     {
-         loadingView.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-     }
-     ];
-    
     
     [selectedPeople removeAllObjects];
     selectedEmails = [NSMutableArray array];
     
     searchBar.text = @"";
     self.navigationItem.rightBarButtonItem = nil;
+    
+    [self showLoading];
     
     switch (btn.tag) {
         case 0:
@@ -281,34 +254,50 @@
 }
 
 -(void)showLoading{
-    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
-    [loadingView setBackgroundColor:[UIColor clearColor]];
-    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
-    [loadingView addSubview:activityIndicator];
-    activityIndicator.center =loadingView.center;
-    [self.view addSubview:loadingView];
-    [self.view bringSubviewToFront:loadingView];
-    [activityIndicator startAnimating];
+    dispatch_async (dispatch_get_main_queue(), ^{
+
+        if (loadingView != nil) {
+            [loadingView removeFromSuperview];
+            loadingView = nil;
+        }
+        
+        loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
+        [loadingView setBackgroundColor:[UIColor clearColor]];
+        activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        
+        [loadingView addSubview:activityIndicator];
+        activityIndicator.center =loadingView.center;
+
+        [self.view addSubview:loadingView];
+        [self.view bringSubviewToFront:loadingView];
+        [activityIndicator startAnimating];
+       
+    });
 }
 
 -(void)hideLoading{
-    [UIView animateWithDuration:0.2f
-                     animations:^
-     {
-         loadingView.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingView removeFromSuperview];
-     }
-     ];
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        [UIView animateWithDuration:0.2f
+                         animations:^
+         {
+             loadingView.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingView removeFromSuperview];
+             loadingView = nil;
+         }
+         ];
 
+    });
+    
 }
 
 -(void)showAddressBook{
   
-    [self showLoading];
     
     ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error) {
         if (!granted){
@@ -397,7 +386,6 @@
 
 -(void)requestFBFriends{
     
-    [self showLoading];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]){
         
@@ -475,6 +463,8 @@
 
 -(void)requestFBFriendsForAccount:(ACAccount *)facebookAccount{
     
+    [self showLoading];
+    
     NSString *accessToken = [NSString stringWithFormat:@"%@",facebookAccount.credential.oauthToken];
     NSDictionary *parameters = @{@"access_token": accessToken,@"fields":@"id,name"};
     NSURL *feedURL = [NSURL URLWithString:@"https://graph.facebook.com/me/friends"];
@@ -547,8 +537,6 @@
 
 -(void)requestTWFriends{
     
-    [self showLoading];
-    
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
     [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error){
@@ -604,6 +592,7 @@
 
 -(void)requestTWFriendsForAccount:(ACAccount *)twitterAccount{
     
+    [self showLoading];
     
     NSString *userID = ((NSDictionary*)[twitterAccount valueForKey:@"properties"])[@"user_id"];
     
@@ -693,6 +682,10 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     if (buttonIndex == actionSheet.cancelButtonIndex) {
+        if (actionSheet.tag == 77 || actionSheet.tag == 66) {
+            [self hideLoading];
+        }
+
         return;
     }
     
@@ -1432,7 +1425,7 @@
         
         UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:username delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Unfollow" otherButtonTitles:nil];
         [popup showInView:self.view];
-        popup.tag == 66;
+        popup.tag = 66;
         actionSheetIndexPath = path;
     }
     else{

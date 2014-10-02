@@ -16,7 +16,6 @@ static DTO *thisDTO = nil;
     NSOperationQueue *operationQueue;
     NSMutableArray *pendingUrls;
 }
-@property(nonatomic,strong) NSString *notifBeeepID;
 @end
 
 @implementation DTO
@@ -129,11 +128,42 @@ static DTO *thisDTO = nil;
 }
 
 - (void)setNotificationBeeepID:(NSString *)beeep_id{
-    self.notifBeeepID = beeep_id;
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    if (beeep_id) {
+       [mySettingsPlist setObject:beeep_id forKey:@"beeep_push"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+    else{
+        [mySettingsPlist removeObjectForKey:@"beeep_push"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+    
 }
     
 - (NSString *)getNotificationBeeepID{
-    return self.notifBeeepID;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+   
+    @try {
+        NSString *beeep = [mySettingsPlist objectForKey:@"beeep_push"];
+        return beeep;
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    @finally {
+        
+    }
 }
 
 -(void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc{

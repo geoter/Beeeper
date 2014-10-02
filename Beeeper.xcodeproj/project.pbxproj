@@ -72,6 +72,7 @@
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
 		5EE13A261951AE7200540C04 /* Beeep_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A241951AE7200540C04 /* Beeep_Object.m */; };
+		63B5A20A19DD918A0001903D /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63B5A20919DD918A0001903D /* Settings.plist */; };
 		63CB8CEB19DB096B0005E88E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */; };
 		63CB8D0E19DB15890005E88E /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8CEE19DB15890005E88E /* MKAnnotationView+WebCache.m */; };
 		63CB8D0F19DB15890005E88E /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8CF019DB15890005E88E /* NSData+ImageContentType.m */; };
@@ -168,7 +169,6 @@
 		9673323A1948865500A58217 /* Event_Show_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 967332371948865500A58217 /* Event_Show_Object.m */; };
 		9673323B1948865500A58217 /* EventInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 967332391948865500A58217 /* EventInfo.m */; };
 		967DF993191BFB7E007E8CF6 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 967DF992191BFB7D007E8CF6 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		967DF995191C04A4007E8CF6 /* DemoJSON in Resources */ = {isa = PBXBuildFile; fileRef = 967DF994191C04A3007E8CF6 /* DemoJSON */; };
 		969591E51948A8A900526AA0 /* BeeepFfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 969591DA1948A8A900526AA0 /* BeeepFfo.m */; };
 		969591E61948A8A900526AA0 /* Beeeps.m in Sources */ = {isa = PBXBuildFile; fileRef = 969591DC1948A8A900526AA0 /* Beeeps.m */; };
 		969591E71948A8A900526AA0 /* EventDetailsFfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 969591DE1948A8A900526AA0 /* EventDetailsFfo.m */; };
@@ -616,6 +616,7 @@
 		5EE13A1F1951604F00540C04 /* Suggestion_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Suggestion_Object.h; sourceTree = "<group>"; };
 		5EE13A241951AE7200540C04 /* Beeep_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beeep_Object.m; sourceTree = "<group>"; };
 		5EE13A251951AE7200540C04 /* Beeep_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beeep_Object.h; sourceTree = "<group>"; };
+		63B5A20919DD918A0001903D /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		63CB8CED19DB15890005E88E /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		63CB8CEE19DB15890005E88E /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
@@ -763,7 +764,6 @@
 		967332391948865500A58217 /* EventInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventInfo.m; sourceTree = "<group>"; };
 		967DF991191BFB7D007E8CF6 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		967DF992191BFB7D007E8CF6 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		967DF994191C04A3007E8CF6 /* DemoJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DemoJSON; sourceTree = "<group>"; };
 		969591D91948A8A900526AA0 /* BeeepFfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepFfo.h; sourceTree = "<group>"; };
 		969591DA1948A8A900526AA0 /* BeeepFfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeepFfo.m; sourceTree = "<group>"; };
 		969591DB1948A8A900526AA0 /* Beeeps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beeeps.h; sourceTree = "<group>"; };
@@ -2302,7 +2302,7 @@
 		CEA64F1718B39F4F00B7ECF5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				967DF994191C04A3007E8CF6 /* DemoJSON */,
+				63B5A20919DD918A0001903D /* Settings.plist */,
 				CEA64F1818B39F4F00B7ECF5 /* Beeeper-Info.plist */,
 				CEA64F1918B39F4F00B7ECF5 /* InfoPlist.strings */,
 				CEA64F1C18B39F4F00B7ECF5 /* main.m */,
@@ -2644,6 +2644,7 @@
 				CE25F9F418B6761300D8B858 /* NotificationBackgroundSuccessIcon@2x.png in Resources */,
 				CE08DD1F19379A0700B090BE /* yellow-tabbar-settings@2x.png in Resources */,
 				CE79423818DB261B00748EDD /* facebook_icon@2x.png in Resources */,
+				63B5A20A19DD918A0001903D /* Settings.plist in Resources */,
 				CEFDE81518ED651D00E500A9 /* welcome_screen_2.png in Resources */,
 				CE25F9FB18B6761300D8B858 /* TSMessagesDefaultDesign.json in Resources */,
 				CEF2639A18DC59A10047510D /* 5.png in Resources */,
@@ -2679,7 +2680,6 @@
 				CEF263A218DC59A10047510D /* 13.png in Resources */,
 				CEFFF79E198A99B300FA3CF3 /* passed@2x.png in Resources */,
 				CE08DD1D19379A0700B090BE /* yellow-tabbar-notif@2x.png in Resources */,
-				967DF995191C04A4007E8CF6 /* DemoJSON in Resources */,
 				CEF263D318DC81530047510D /* beeep_it_icon_event.png in Resources */,
 				CEF263C618DC7F080047510D /* pin_icon_event@2x.png in Resources */,
 				CE29EE3F18D9CADB0001EC43 /* container_image_4@2x.png in Resources */,

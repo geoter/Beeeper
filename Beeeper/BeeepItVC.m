@@ -233,7 +233,7 @@
         dayNumberLbl.text = daynumber;
         monthLbl.text = [month uppercaseString];
         
-        [shareText appendFormat:@"%@ %@",daynumber,[month uppercaseString]];
+        [shareText appendFormat:@"When: %@ %@",daynumber,[month uppercaseString]];
         
         NSString *venue;
         NSString *jsonString;
@@ -279,7 +279,7 @@
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
             venue = [loc.venueStation uppercaseString];
-            [shareText appendFormat:@"@%@",venue];
+            [shareText appendFormat:@"\nWhere: %@",venue];
         }
         
         for (UIView *v in self.scrollV.subviews) {
@@ -638,49 +638,52 @@
     
     //NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
-    
-    NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
-    NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+    [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageURL]
+                                                        options:0
+                                                       progress:^(NSInteger receivedSize, NSInteger expectedSize)
+     {
+         // progression tracking code
+     }
+                                                      completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished)
+     {
+         if (image && finished)
+         {
+             SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+             
+             [composeController setInitialText:shareText];
+             
+             [composeController addImage:image];
+             
+             NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+             [composeController addURL: url];
+             
+             
+             [self presentViewController:composeController
+                                animated:YES completion:nil];
+             
+             SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+                 if (result == SLComposeViewControllerResultCancelled) {
+                     UIImageView *icon = (id)[self.twitterSwitch.superview viewWithTag:1];
+                     [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
+                     UILabel *lbl = (id)[self.twitterSwitch.superview viewWithTag:2];
+                     lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+                     self.twitterSwitch.on = NO;
+                     
+                     
+                 } else
+                     
+                 {
+                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                     [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+                 }
+                 
+                 //   [composeController dismissViewControllerAnimated:YES completion:Nil];
+             };
+             composeController.completionHandler =myBlock;
+         }
+     }];
 
     
-    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    
-    [composeController setInitialText:shareText];
-    
-    if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-        
-        UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-        [composeController addImage:img];
-    }
-    
-    NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
-    [composeController addURL: url];
-
-    
-    [self presentViewController:composeController
-                       animated:YES completion:nil];
-    
-    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
-        if (result == SLComposeViewControllerResultCancelled) {
-            UIImageView *icon = (id)[self.twitterSwitch.superview viewWithTag:1];
-            [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
-            UILabel *lbl = (id)[self.twitterSwitch.superview viewWithTag:2];
-            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
-            self.twitterSwitch.on = NO;
-
-            
-        } else
-            
-        {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
-        }
-        
-        //   [composeController dismissViewControllerAnimated:YES completion:Nil];
-    };
-    composeController.completionHandler =myBlock;
     
 }
 

@@ -47,7 +47,9 @@ static TabbarVC *thisWebServices = nil;
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    [[BPUser sharedBP]sendDemoPush:5];
+    //[[BPUser sharedBP]sendDemoPush:50];
+    
+    [self pushReceived];
     
     [self updateNotificationsBadge];
     
@@ -56,7 +58,7 @@ static TabbarVC *thisWebServices = nil;
     
     [self tabbarButtonTapped:btn];
     
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidAppear:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
@@ -192,7 +194,10 @@ static TabbarVC *thisWebServices = nil;
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-   
+
+}
+
+-(void)pushReceived{
     [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
 }
 
@@ -203,9 +208,7 @@ static TabbarVC *thisWebServices = nil;
     if (beeepID != nil) {
         
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
-        viewController.tml = beeepID;
-        
-        NSLog(@"%@",self.navigationController.viewControllers);
+        viewController.tml = [NSString stringWithString:beeepID];
         
         [self.navigationController pushViewController:viewController animated:YES];
         

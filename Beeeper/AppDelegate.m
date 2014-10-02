@@ -19,6 +19,8 @@
     
    // [self clearDocumentsFolder];
     
+    [self createEditableCopyOfPlistIfNeeded];
+    
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
@@ -231,6 +233,7 @@
    
     @try {
         [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
     }
     @catch (NSException *exception) {
     
@@ -251,10 +254,24 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-   
-    NSDictionary *apsInfo = notification.userInfo;
+  
     
-    [[DTO sharedDTO]setNotificationBeeepID:[apsInfo objectForKey:@"w"]];
+    @try {
+        
+        NSDictionary *apsInfo = notification.userInfo;
+        
+        [[DTO sharedDTO]setNotificationBeeepID:[apsInfo objectForKey:@"w"]];
+        
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+   
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
+    
     
 }
 
@@ -283,5 +300,31 @@
         }
     }
 }
+
+- (void)createEditableCopyOfPlistIfNeeded
+{
+    // First, test for existence.
+    BOOL success;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *writableDBPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    success = [fileManager fileExistsAtPath:writableDBPath];
+    
+    if (success) return;
+    
+    // The writable database does not exist, so copy the default to the appropriate location.
+    NSString *defaultDBPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Settings.plist"];
+    success = [fileManager copyItemAtPath:defaultDBPath toPath:writableDBPath error:&error];
+    
+    NSLog(@"Egrapsa to pList");
+    
+    if (!success)
+    {
+        NSAssert1(0, @"Failed to create writable Plist file with message '%@'.", [error localizedDescription]);
+    }
+}
+
 
 @end

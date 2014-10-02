@@ -26,6 +26,7 @@
 #import <MessageUI/MessageUI.h>
 #import "WebBrowserVC.h"
 #import "SearchVC.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
@@ -44,11 +45,13 @@
     
     NSString *fingerprint;
     NSString *websiteURL;
+    
     NSMutableString *shareText;
     NSMutableArray* rowsToReload;
     
     BOOL passedEvent;
 }
+@property (nonatomic,strong) NSString *imageURL;
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
 @property (nonatomic,assign) CGRect kInitialViewFrame;
@@ -57,7 +60,7 @@
 @end
 
 @implementation EventVC
-@synthesize kInitialViewFrame,tml;
+@synthesize kInitialViewFrame,tml,imageURL;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -72,7 +75,9 @@
 {
     [super viewDidLoad];
     
-    [[UINavigationBar appearance] setBarTintColor: [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+    UINavigationBar* navigationBar = self.navigationController.navigationBar;
+    
+    [navigationBar setBarTintColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
     
     [self showLoading];
     
@@ -481,8 +486,8 @@
     NSString *imageName;
     
     @try {
-        
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:suggestion.what.imageUrl]]
+        imageURL = [[DTO sharedDTO] fixLink:suggestion.what.imageUrl];
+        [imgV sd_setImageWithURL:[NSURL URLWithString:imageURL]
                 placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     }
     @catch (NSException *exception) {
@@ -709,8 +714,10 @@
        // extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName  = [NSString stringWithFormat:@"%@",ffo.eventFfo.eventDetailsFfo.imageUrl];
         
-        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
                 placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -934,8 +941,9 @@
         //extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName  = [NSString stringWithFormat:@"%@",t.event.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -1164,8 +1172,10 @@
         
         imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -1439,8 +1449,9 @@
         
         imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -2045,7 +2056,7 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
--(void)sendFacebook{
+/*-(void)sendFacebook{
     
     SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
     
@@ -2073,6 +2084,81 @@
     composeController.completionHandler =myBlock;
     
     
+}*/
+
+-(void)sendFacebook{
+    
+    
+    [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
+                                       allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+                                                      FBSessionState state,
+                                                      NSError *error) {
+                                      if (error) {
+                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                              message:error.localizedDescription
+                                                                                             delegate:nil
+                                                                                    cancelButtonTitle:@"OK"
+                                                                                    otherButtonTitles:nil];
+                                          [alertView show];
+                                          
+                                      } else if (session.isOpen) {
+                                          
+                                          
+                                          //            UIImage *img;
+                                          //
+                                          //            if(imageURL == nil){
+                                          //                NSString *base64Image = [self.values objectForKey:@"base64_image"];
+                                          //                NSData *base64Data = [self base64DataFromString:base64Image];
+                                          //
+                                          //                if (base64Data != nil) {
+                                          //                    img = [UIImage imageWithData:base64Data];
+                                          //                }
+                                          //            }
+                                          //            else{
+                                          //                NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
+                                          //
+                                          //                NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                                          //
+                                          //                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+                                          //
+                                          //                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                                          //
+                                          //                    img = [UIImage imageWithContentsOfFile:localPath];
+                                          //                }
+                                          //            }
+                                          
+                                          
+                                          // Check if the Facebook app is installed and we can present the share dialog
+                                          FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
+                                          params.link = [NSURL URLWithString:websiteURL];
+                                          NSURL *url = [NSURL URLWithString:imageURL];
+                                          params.picture = url;
+                                          
+                                          
+                                          // If the Facebook app is installed and we can present the share dialog
+                                          if ([FBDialogs canPresentShareDialogWithParams:params]) {
+                                              // Present share dialog
+                                              [FBDialogs presentShareDialogWithLink:params.link
+                                                                            handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                                                if(error) {
+                                                                                    // An error occurred, we need to handle the error
+                                                                                    // See: https://developers.facebook.com/docs/ios/errors
+                                                                                    NSLog(@"Error publishing story: %@", error.description);
+                                                                                } else {
+                                                                                    // Success
+                                                                                    NSLog(@"result %@", results);
+                                                                                }
+                                                                            }];
+                                          } else {
+                                              // Present the feed dialog
+                                              NSLog(@"fdfd");
+                                          }
+                                          
+                                          
+                                          //run your user info request here
+                                      }
+                                  }];
 }
 
 -(void)sendTwitter {

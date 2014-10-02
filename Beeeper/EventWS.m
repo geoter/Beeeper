@@ -80,7 +80,7 @@ static EventWS *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:7.0];
+        [request setTimeOutSeconds:13.0];
         
         [request setDelegate:self];
         
@@ -133,7 +133,7 @@ static EventWS *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:7.0];
+        [request setTimeOutSeconds:13.0];
         
         [request setDelegate:self];
         
@@ -186,7 +186,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -251,7 +251,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -315,7 +315,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -377,7 +377,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -454,7 +454,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -528,7 +528,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -615,7 +615,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -634,7 +634,8 @@ static EventWS *thisWebServices = nil;
 -(void)getAllEventsWithCompletionBlock:(completed)compbloc{
     
     all_events_page = 0;
-    
+    requestEmptyResultsCounter = 0;
+
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
     
@@ -668,7 +669,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -690,10 +691,21 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *events = [NSMutableArray array];
     
-    if (eventsArray.count ==0) {
-        self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished eventsArray == 0: %@",responseString]);
+    if (eventsArray.count == 0) {
+        
+        requestEmptyResultsCounter++;
+        all_events_page --;
+        
+        if (requestEmptyResultsCounter == 2) {
+            [self nextAllEventsWithCompletionBlock:self.get_All_Events_completed];
+        }
+        else{
+            self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished But eventsArray == 0: %@",responseString]);
+        }
         return;
     }
+    
+    requestEmptyResultsCounter = 0;
     
     if(all_events_page == 0){
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -769,7 +781,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:25.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -792,7 +804,17 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *events = [NSMutableArray array];
     
     if (eventsArray.count ==0) {
-        self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished eventsArray == 0: %@",responseString]);
+        
+        requestEmptyResultsCounter++;
+        all_events_page --;
+        
+        if (requestEmptyResultsCounter < 2) {
+            [self nextAllEventsWithCompletionBlock:self.get_All_Events_completed];
+        }
+        else{
+            self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished But eventsArray == 0: %@",responseString]);
+        }
+        
         return;
     }
     
@@ -926,7 +948,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     

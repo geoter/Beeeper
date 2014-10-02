@@ -18,6 +18,7 @@ static BPHomeFeed *thisWebServices = nil;
     NSString *order;
     int length;
     NSOperationQueue *operationQueue;
+    int requestEmptyResultsCounter;
     
 }
 @end
@@ -35,6 +36,7 @@ static BPHomeFeed *thisWebServices = nil;
         length = 0;
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
+        requestEmptyResultsCounter = 0;
     }
     return(self);
 }
@@ -68,6 +70,8 @@ static BPHomeFeed *thisWebServices = nil;
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc{
     
     page = 0;
+    
+    requestEmptyResultsCounter = 0;
     
     NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970]/1000;
     
@@ -103,7 +107,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -156,7 +160,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -179,18 +183,32 @@ static BPHomeFeed *thisWebServices = nil;
 
     if (beeeps.count > 0) {
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"FriendsFeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-        NSError *error;
-        
-        BOOL succeed = [responseString writeToFile:filePath
-                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        if (page == 0) {
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+            NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"FriendsFeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+            NSError *error;
+            
+            BOOL succeed = [responseString writeToFile:filePath
+                                            atomically:YES encoding:NSUTF8StringEncoding error:&error];
+            
+        }
         
         [self parseResponseString:responseString WithCompletionBlock:self.completed];
     }
     else{
-        [self friendsFeedFailed:request];
+        
+        requestEmptyResultsCounter++;
+        page --;
+        
+        if (requestEmptyResultsCounter == 2) {
+            [self nextFriendsFeedWithCompletionBlock:self.completed];
+        }
+        else{
+            
+            self.completed(NO,[NSString stringWithFormat:@"getFriendsFeedFinished But eventsArray == 0: %@",responseString]);
+        }
+        return;
     }
 }
 

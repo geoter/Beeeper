@@ -21,6 +21,8 @@
 @implementation TabbarVC
 @synthesize notifications =_notifications;
 
+static TabbarVC *thisWebServices = nil;
+
 -(void)setNotifications:(int)notifications{
     _notifications = notifications;
     [self updateNotificationsBadge];
@@ -45,7 +47,7 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    //[[BPUser sharedBP]sendDemoPush:5];
+    [[BPUser sharedBP]sendDemoPush:5];
     
     [self updateNotificationsBadge];
     
@@ -65,6 +67,19 @@
 
 }
 
++ (TabbarVC *)sharedTabbar{
+    
+    if (thisWebServices != nil) {
+        return thisWebServices;
+    }
+    else{
+        return [[TabbarVC alloc]init];
+    }
+    
+    return nil;
+}
+
+
 -(void)updateNotificationsBadge{
     
     
@@ -74,35 +89,16 @@
             
             _notifications = (int)objcts.count;
             
-            
             if (_notifications <= 0) {
                 
-                [UIView animateWithDuration:0.2f
-                                 animations:^
-                 {
-                     self.notificationsBadgeV.alpha = 0;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     
-                 }
-                 ];
+                [self hideBadgeIcon];
             }
             else{
                 
                 JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
                 badgeView.badgeText = [NSString stringWithFormat:@"%d",self.notifications];
                 
-                [UIView animateWithDuration:0.2f
-                                 animations:^
-                 {
-                     self.notificationsBadgeV.alpha = 1;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     
-                 }
-                 ];
+                [self showBadgeIcon];
             }
             
             [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:30];
@@ -111,6 +107,34 @@
     }];
     
    }
+
+-(void)showBadgeIcon{
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         self.notificationsBadgeV.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         
+     }
+     ];
+}
+
+-(void)hideBadgeIcon{
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         self.notificationsBadgeV.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         
+     }
+     ];
+}
 
 -(void)hideTabbar{
 
@@ -158,6 +182,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -176,7 +201,6 @@
     NSString *beeepID = [[DTO sharedDTO]getNotificationBeeepID];
     
     if (beeepID != nil) {
-        
         
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.tml = beeepID;

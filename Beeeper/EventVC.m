@@ -72,6 +72,7 @@
 {
     [super viewDidLoad];
     
+    [[UINavigationBar appearance] setBarTintColor: [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
     
     [self showLoading];
     

@@ -128,7 +128,7 @@ static BPUser *thisWebServices = nil;
 
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -263,7 +263,7 @@ static BPUser *thisWebServices = nil;
 
     [[request UserInfo]setObject:info forKey:@"info"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -375,7 +375,7 @@ static BPUser *thisWebServices = nil;
     
     [request setDidFailSelector:@selector(demoPushFailed:)];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -436,7 +436,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -469,7 +469,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -522,7 +522,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -629,7 +629,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -674,7 +674,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -761,7 +761,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -802,7 +802,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -877,7 +877,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -919,7 +919,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -974,7 +974,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1066,7 +1066,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1164,7 +1164,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1266,7 +1266,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1364,7 +1364,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1449,7 +1449,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1499,7 +1499,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1545,7 +1545,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1759,7 +1759,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1824,7 +1824,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
 
@@ -1982,7 +1982,7 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:headerString];
     [request addRequestHeader:@"Content-Type" value:@"application/x-www-form-urlencoded"];
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -2054,7 +2054,7 @@ static BPUser *thisWebServices = nil;
     
     
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -2102,7 +2102,7 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:headerString];
     [request addRequestHeader:@"Content-Type" value:@"application/x-www-form-urlencoded"];
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     

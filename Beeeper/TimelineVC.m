@@ -608,8 +608,8 @@
                       range:r];
         lbl.attributedText = txt;
         
-        lbl.backgroundColor = [UIColor whiteColor];
-        lbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
+        lbl.backgroundColor = [UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
+        lbl.textColor = [UIColor whiteColor];//[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
 
         

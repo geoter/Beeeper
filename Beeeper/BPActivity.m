@@ -97,7 +97,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -146,7 +146,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -264,7 +264,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -315,7 +315,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -412,7 +412,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     

@@ -227,7 +227,7 @@
 
 
                  }
-                 else{
+                 else if(usernames.count == 1){
                  
                      
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
@@ -236,6 +236,17 @@
                      
                      [self attemptFBLogin:email];
                 
+                 }
+                 else{
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings> Facebook and sign in with your Facebook account.." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+
                  }
              }
              else
@@ -410,13 +421,23 @@
                      });
 
                  }
-                 else{
+                 else if(usernames.count == 1){
                      
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
                      NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
 
                      [self attemptTwitterLogin:user_id];
+                 }
+                 else{
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twitter and sign in with your Twitter account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+
                  }
             }
              else

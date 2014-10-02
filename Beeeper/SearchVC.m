@@ -141,7 +141,7 @@
     
     self.tapG.enabled = NO;
     
-    suggestionValues = [NSArray arrayWithObjects:@"popular",@"sports",@"cinema",@"music",@"TV",@"nightlife",@"radio",@"deals", nil];
+    suggestionValues = [NSArray arrayWithObjects:@"TV",@"movies",@"music",@"deals",@"sports", nil];
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
@@ -149,7 +149,7 @@
     numberOfCommentsV.backgroundColor = [UIColor clearColor];
     
     UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 8, self.tableV.frame.size.width, 25)];
-    numberOfComments.text = [NSString stringWithFormat:@"SUGGESTIONS"];
+    numberOfComments.text = [NSString stringWithFormat:@"POPULAR"];
     numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
     numberOfComments.textAlignment = NSTextAlignmentLeft;
     [numberOfCommentsV addSubview:numberOfComments];

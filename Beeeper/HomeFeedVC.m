@@ -379,8 +379,6 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-   
-    beeeps = nil;
 }
 
 
@@ -602,8 +600,11 @@
             
             area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
             area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-            NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
+        
+        
+        @try {
             
+            NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
             NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
@@ -612,17 +613,24 @@
             [area sizeToFit];
             area.center = CGPointMake(containerV.center.x, area.center.y);
             area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
-        
+            
             if (area.frame.size.width > 130  && now_time > event_timestamp) {
                 [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
             }
-        
+            
             UILabel *areaIcon = (id)[containerV viewWithTag:-1];
             areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
             
             //now move are to center
             area.textAlignment = NSTextAlignmentCenter;
+
+        }
+        @catch (NSException *exception) {
+            NSLog(@"ESKASEEE");
+        }
+        @finally {
     
+        }
             
             UILabel *favorites = (id)[containerV viewWithTag:-3];
             UILabel *comments = (id)[containerV viewWithTag:-4];

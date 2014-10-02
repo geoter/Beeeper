@@ -17,7 +17,7 @@
 
    // [[UINavigationBar appearance] setBarTintColor:UIColorFromRGB(0x4B678B)];
     
-    [self clearDocumentsFolder];
+   // [self clearDocumentsFolder];
     
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
     

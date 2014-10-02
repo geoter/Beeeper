@@ -2293,7 +2293,7 @@
                                                 <rect key="frame" x="15" y="34" width="290" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="editProfileBtn.png" id="CTu-0G-2Ng">
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="CTu-0G-2Ng">
                                                         <rect key="frame" x="250" y="5" width="31" height="31"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     </imageView>
@@ -3495,7 +3495,7 @@
                                                 <view userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="scaleToFill" id="CNf-5n-YFX">
                                                     <rect key="frame" x="215" y="440" width="1" height="33"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" red="0.63921568627450975" green="0.67450980392156867" blue="0.066666666666666666" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.63921568627450975" green="0.67450980392156867" blue="0.70196078431372544" alpha="1" colorSpace="calibratedRGB"/>
                                                 </view>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="qoi-3H-D8O">
                                                     <rect key="frame" x="0.0" y="431" width="320" height="50"/>

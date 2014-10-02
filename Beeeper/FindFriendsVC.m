@@ -26,7 +26,6 @@
     UISearchDisplayController *searchDisplayController;
     UIView *headerView;
     NSIndexPath *actionSheetIndexPath;
-    NSMutableDictionary *pendingImagesDict;
     
     int page;
     
@@ -42,11 +41,12 @@
     BOOL loadNextPage;
     NSMutableArray *rowsToReload;
     UIActivityIndicatorView *activityIndicator;
-
     NSArray *accounts;
     NSArray *usernames;
 }
+
 @property (nonatomic,strong)  UIView *loadingView;
+
 @end
 
 @implementation FindFriendsVC
@@ -56,7 +56,6 @@
 {
     [super viewDidLoad];
 
-    pendingImagesDict = [NSMutableDictionary dictionary];
     rowsToReload = [NSMutableArray array];
     selectedPeople = [NSMutableArray array];
     
@@ -415,76 +414,50 @@
          {
              if (granted)
              {
-                 NSArray *accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
+              
+                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
+                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
-                 ACAccount *facebookAccount = [accounts lastObject];
-                 NSString *accessToken = [NSString stringWithFormat:@"%@",facebookAccount.credential.oauthToken];
-                 NSDictionary *parameters = @{@"access_token": accessToken,@"fields":@"id,name"};
-                 NSURL *feedURL = [NSURL URLWithString:@"https://graph.facebook.com/me/friends"];
-                 SLRequest *feedRequest = [SLRequest
-                                           requestForServiceType:SLServiceTypeFacebook
-                                           requestMethod:SLRequestMethodGET
-                                           URL:feedURL
-                                           parameters:parameters];
-                 feedRequest.account = facebookAccount;
-                 [feedRequest performRequestWithHandler:^(NSData *responseData,
-                                                          NSHTTPURLResponse *urlResponse, NSError *error)
-                  {
-                      
-                      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                                         options:0 error:NULL];
-                      NSArray *friends = [responseDictionary objectForKey:@"data"];
-                      
-                      NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                      friends=[friends sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-                      NSArray *fb_ids = [friends valueForKey:@"id"];
-                      NSString *friendStr = [fb_ids componentsJoinedByString:@","];
+                 if (usernames.count == 0) {
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+                     
+                     
+                     return ;
+                 }
 
-                      //fbPeople = [NSMutableArray arrayWithArray:friends];
-                      //searchedPeople = [NSMutableArray arrayWithArray:friends];
-
-                      
-                      [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
-                          
-                          if (completed) {
-                              if (objcts && objcts.count>0) {
-                                  NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                                  NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-                                  
-                                  fbPeople = [NSMutableArray arrayWithArray:friends];
-                                  searchedPeople = [NSMutableArray arrayWithArray:friends];
-                                 
-                                  
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-
-                                      [self.tableV reloadData];
-                                      
-                                      [self hideLoading];
-                                  });
-                                  
-                                  
+                
+                 if (usernames.count > 1) {
                  
-                              }
-                              else{
-                                  [self.tableV reloadData];
-                              }
-                          }
-                          else{
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  
-                                  [self hideLoading];
-                                  
-                                  
-                                  UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                  [alert show];
-                              });
-
-
-                          }
-                      }];
-                    
-
-                  }];
+                     [self hideLoading];
+                     
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
+                     
+                     popup.tag = 55;
+                     
+                     for (NSString *name in usernames) {
+                         [popup addButtonWithTitle:name];
+                     }
+                     
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+                 }
+                 else{
+                 
+                     ACAccount *facebookAccount = [accounts firstObject];
+                     [self requestFBFriendsForAccount:facebookAccount];
+                 }
              }
              else{
                  dispatch_async(dispatch_get_main_queue(), ^{
@@ -500,6 +473,78 @@
     }
 }
 
+-(void)requestFBFriendsForAccount:(ACAccount *)facebookAccount{
+    
+    NSString *accessToken = [NSString stringWithFormat:@"%@",facebookAccount.credential.oauthToken];
+    NSDictionary *parameters = @{@"access_token": accessToken,@"fields":@"id,name"};
+    NSURL *feedURL = [NSURL URLWithString:@"https://graph.facebook.com/me/friends"];
+    SLRequest *feedRequest = [SLRequest
+                              requestForServiceType:SLServiceTypeFacebook
+                              requestMethod:SLRequestMethodGET
+                              URL:feedURL
+                              parameters:parameters];
+    feedRequest.account = facebookAccount;
+    [feedRequest performRequestWithHandler:^(NSData *responseData,
+                                             NSHTTPURLResponse *urlResponse, NSError *error)
+     {
+         
+         NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseData
+                                                                            options:0 error:NULL];
+         NSArray *friends = [responseDictionary objectForKey:@"data"];
+         
+         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+         friends=[friends sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+         NSArray *fb_ids = [friends valueForKey:@"id"];
+         NSString *friendStr = [fb_ids componentsJoinedByString:@","];
+         
+         //fbPeople = [NSMutableArray arrayWithArray:friends];
+         //searchedPeople = [NSMutableArray arrayWithArray:friends];
+         
+         
+         [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+             
+             if (completed) {
+                 if (objcts && objcts.count>0) {
+                     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                     NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                     
+                     fbPeople = [NSMutableArray arrayWithArray:friends];
+                     searchedPeople = [NSMutableArray arrayWithArray:friends];
+                     
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self.tableV reloadData];
+                         
+                         [self hideLoading];
+                     });
+                     
+                     
+                     
+                 }
+                 else{
+                     [self.tableV reloadData];
+                 }
+             }
+             else{
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     [self hideLoading];
+                     
+                     
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert show];
+                 });
+                 
+                 
+             }
+         }];
+         
+         
+     }];
+
+}
+
 -(void)requestTWFriends{
     
     [self showLoading];
@@ -508,16 +553,25 @@
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
     [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error){
         if (granted) {
-            accounts = [accountStore accountsWithAccountType:accountType];
+            accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:accountType]];
             usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
 
             if (usernames.count == 0) {
-                NSLog(@"NO ACCOUNT");
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [self hideLoading];
+                    
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twitter and sign in with your Twitter account.." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                });
+
+                
                 return ;
             }
             
             if (usernames.count > 1) {
-                
+            
                 UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                 popup.tag = 77;
                 
@@ -536,79 +590,103 @@
             }
             else{
                 
-                ACAccount *twitterAccount = [accounts objectAtIndex:0];
-                NSString *userID = ((NSDictionary*)[twitterAccount valueForKey:@"properties"])[@"user_id"];
+                ACAccount *twitterAccount = [accounts firstObject];
                 
-                SLRequest *twitterInfoRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friends/ids.json?"] parameters:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@", userID],@"user_id", nil]];
-                [twitterInfoRequest setAccount:twitterAccount];
-                // Making the request
-                [twitterInfoRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // Check if we reached the reate limit
-                        if ([urlResponse statusCode] == 429) {
-                            NSLog(@"Rate limit reached");
-                            return;
-                        }
-                        // Check if there was an error
-                        if (error) {
-                            NSLog(@"Error: %@", error.localizedDescription);
-                            return;
-                        }
-                        // Check if there is some response data
-                        if (responseData) {
-                            NSError *error = nil;
-                            NSArray *TWData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:&error];
-                            
-                            NSString *ids = [[TWData valueForKey:@"ids"] componentsJoinedByString:@","];
-                           
-                            [[BPUser sharedBP]beeepersFromTW_IDs:ids WithCompletionBlock:^(BOOL completed,NSArray *objcts){
-                                
-                                if (completed) {
-                                    if (objcts && objcts.count>0) {
-                                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                                        NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-                                        
-                                        fbPeople = [NSMutableArray arrayWithArray:friends];
-                                        searchedPeople = [NSMutableArray arrayWithArray:friends];
-                                        
-                                        
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            
-                                            [self.tableV reloadData];
-                                            
-                                            [self hideLoading];
-                                        });
-                                        
-                                        
-                                        
-                                    }
-                                    else{
-                                        [self hideLoading];
-                                        [self.tableV reloadData];
-                                    }
-                                }
-                                else{
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        
-                                        [self hideLoading];
-                                        
-                                        
-                                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                        [alert show];
-                                    });
-                                    
-                                    
-                                }
-                            }];
-                        }
-                    });
-                }];
+                [self requestTWFriendsForAccount:twitterAccount];
             }
 
             
         } else {
             NSLog(@"No access granted");
         }
+    }];
+}
+
+-(void)requestTWFriendsForAccount:(ACAccount *)twitterAccount{
+    
+    
+    NSString *userID = ((NSDictionary*)[twitterAccount valueForKey:@"properties"])[@"user_id"];
+    
+    SLRequest *twitterInfoRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friends/ids.json"] parameters:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@", userID],@"user_id", nil]];
+    [twitterInfoRequest setAccount:twitterAccount];
+    // Making the request
+    [twitterInfoRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Check if we reached the reate limit
+            if ([urlResponse statusCode] == 429) {
+                NSLog(@"Rate limit reached");
+                return;
+            }
+            // Check if there was an error
+            if (error) {
+                NSLog(@"Error: %@", error.localizedDescription);
+                return;
+            }
+            // Check if there is some response data
+            if (responseData) {
+                NSError *error = nil;
+                NSArray *TWData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:&error];
+                
+                NSArray *idsArr = [TWData valueForKey:@"ids"];
+                
+                if (idsArr.count == 0) {
+                    
+                    fbPeople = [NSMutableArray array];
+                    searchedPeople = [NSMutableArray array];
+                
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        [self.tableV reloadData];
+                        
+                        [self hideLoading];
+                    });
+                    
+                    return;
+                }
+            
+                NSString *ids = [[TWData valueForKey:@"ids"] componentsJoinedByString:@","];
+                
+                [[BPUser sharedBP]beeepersFromTW_IDs:ids WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+                    
+                    if (completed) {
+                       
+                        if (objcts && objcts.count>0) {
+                            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                            NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                            
+                            fbPeople = [NSMutableArray arrayWithArray:friends];
+                            searchedPeople = [NSMutableArray arrayWithArray:friends];
+                            
+                        }
+                        else{
+                            fbPeople = [NSMutableArray array];
+                            searchedPeople = [NSMutableArray array];
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [self.tableV reloadData];
+                            
+                            [self hideLoading];
+                        });
+                    }
+                    else{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            fbPeople = [NSMutableArray array];
+                            searchedPeople = [NSMutableArray array];
+                            
+                            [self hideLoading];
+                            
+                            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                            [alert show];
+                        });
+                        
+                        
+                    }
+                }];
+            }
+        });
     }];
 }
 
@@ -620,22 +698,11 @@
     
     if (actionSheet.tag == 77) { // twitter
         
-        ACAccount *twitterAccount = [accounts objectAtIndex:buttonIndex];
-        NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
-        NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
-        
-        
-        
-        
-        
+        [self requestTWFriendsForAccount:[accounts objectAtIndex:buttonIndex]];
+
     }
     else{
-        
-        ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex];
-        id email = [fbAccount valueForKeyPath:@"properties.uid"];
-        NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
-        
-        
+        [self requestFBFriendsForAccount:[accounts objectAtIndex:buttonIndex]];
     }
     
 }
@@ -832,7 +899,7 @@
             if (emailAdresses.count > 1) {
                 
                 UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:@"Select email adress" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
+                popup.tag == 66;
                 for (NSString *mail in emailAdresses) {
                     [popup addButtonWithTitle:mail];
                 }
@@ -1306,7 +1373,7 @@
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -1365,6 +1432,7 @@
         
         UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:username delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Unfollow" otherButtonTitles:nil];
         [popup showInView:self.view];
+        popup.tag == 66;
         actionSheetIndexPath = path;
     }
     else{
@@ -1437,7 +1505,7 @@
             }
 
         }
-        else{
+        else if(actionSheet.tag == 66){
             
             NSDictionary *user = [searchedPeople objectAtIndex:actionSheetIndexPath.row];
             

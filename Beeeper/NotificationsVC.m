@@ -30,7 +30,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.title = @"Notifications";
     
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
@@ -54,6 +54,7 @@
         [self hideLoading];
         
         if (completed && objcts.count > 0) {
+            
             notifications = [NSMutableArray arrayWithArray:objcts];
             
             [self.tableV reloadData];
@@ -114,7 +115,10 @@
             newNotifications = [NSMutableArray arrayWithArray:newNotifs];
             oldNotifications = [NSMutableArray arrayWithArray:oldNotifs];
 
+            [[TabbarVC sharedTabbar]hideBadgeIcon];
+            
             if (notifications.count > 0) {
+                
                 self.noNotifsFound.hidden = YES;
             }
             else{

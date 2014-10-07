@@ -157,21 +157,14 @@ static TabbarVC *thisWebServices = nil;
 
 -(void)showTabbar{
     
-    [UIView animateWithDuration:0.4f
+    [UIView animateWithDuration:0.5f
                      animations:^
      {
          self.tabBar.frame = CGRectMake(0, self.view.frame.size.height-self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
      }
                      completion:^(BOOL finished)
      {
-         
-         [UIView animateWithDuration:0.4f
-                          animations:^
-          {
-                    self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);
-          }
-                          completion:^(BOOL finished)
-          {}];
+            self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);
      }
      ];
 }

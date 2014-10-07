@@ -202,6 +202,11 @@
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [[TabbarVC sharedTabbar]updateNotificationsBadge];
+}
+
 
 - (void)didReceiveMemoryWarning
 {

@@ -407,17 +407,17 @@
     UIImageView *imageV = (id)[containerV viewWithTag:3];
     UILabel *titleLbl = (id)[containerV viewWithTag:4];
     
-    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+   // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
     monthLbl.text = [month uppercaseString];
     
-    dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+    //dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
     dayLbl.text = daynumber;
     dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
     
-    titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+   // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -445,7 +445,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     area.frame = CGRectMake(37, 190, 108, 32);
     
-    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
+    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     NSString *jsonString = event.location;
     
@@ -456,10 +456,10 @@
     area.text = [loc.venueStation uppercaseString];
     [area sizeToFit];
     area.center = CGPointMake(containerV.center.x, area.center.y);
-    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
+    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
     
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-    areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
+    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
     
     //now move are to center
     area.textAlignment = NSTextAlignmentCenter;
@@ -596,7 +596,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
     //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, 278);
+    return CGSizeMake(148, 307);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //

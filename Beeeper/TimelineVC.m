@@ -180,10 +180,19 @@
             
             if (completed) {
                 followers = objs.count;
-                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-                if (followersLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                    followersLbl.text = mtext;
+                UIButton *followersBtn = self.followersButton;
+                if (followersBtn != nil) {
+                   
+                    followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    
+                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
+                   
+                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                    [attText addAttribute:NSFontAttributeName
+                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                    
+                    [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
                 }
             }
         }];
@@ -192,10 +201,19 @@
             
             if (completed) {
                 following = objs.count;
-                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-                if (followingLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                    followingLbl.text = mtext;
+                UIButton *followingBtn = self.followingButton;
+                if (followingBtn != nil) {
+                   
+                    followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    
+                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
+                    
+                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                    [attText addAttribute:NSFontAttributeName
+                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
+                    
+                    [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
                 }
                 
             }
@@ -267,11 +285,23 @@
         
             if (completed) {
                 followers = objs.count;
-                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-                if (followersLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                    followersLbl.text = mtext;
+                UIButton *followersBtn = self.followersButton;
+                if (followersBtn != nil) {
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        
+                        followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                        
+                        NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
+                       
+                        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                        [attText addAttribute:NSFontAttributeName
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                        
+                        [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
+                    });
                 }
+
             }
         }];
         
@@ -279,10 +309,22 @@
             
             if (completed) {
                 following = objs.count;
-                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-                if (followingLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                    followingLbl.text = mtext;
+                UIButton *followingBtn = self.followingButton;
+                if (followingBtn != nil) {
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        
+                        followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                        
+                        NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
+                        
+                        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                        [attText addAttribute:NSFontAttributeName
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
+                        
+                        [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
+
+                    });
                 }
                 
             }
@@ -547,20 +589,18 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    self.topV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.topV.layer.shadowOpacity = 0.7;
+    self.topV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    self.topV.layer.shadowRadius = 0.8;
+    self.topV.layer.masksToBounds = NO;
 }
 
 
 -(void)createMenuButtons:(BOOL)animated{
     
     for (UIView *v in self.followButton.subviews) {
-        [v removeFromSuperview];
-    }
-    
-    for (UIView *v in self.followersButton.subviews) {
-        [v removeFromSuperview];
-    }
-    
-    for (UIView *v in self.followingButton.subviews) {
         [v removeFromSuperview];
     }
     
@@ -624,48 +664,6 @@
         self.followButton.hidden = YES;
     }
  
-        
-        //CENTER
-        
-        lbl = [[UILabel alloc]initWithFrame:self.followersButton.bounds];
-        lbl.textColor = [UIColor whiteColor];
-        lbl.numberOfLines = 0;
-        lbl.userInteractionEnabled = NO;
-        lbl.tag = 45;
-        
-        NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
-        lbl.text = mtext;
-        lbl.textAlignment = NSTextAlignmentCenter;
-        
-        lbl.layer.borderColor = [UIColor whiteColor].CGColor;
-        lbl.layer.borderWidth = 1.5f;
-        lbl.layer.cornerRadius = 2;
-        
-        [self.followersButton addSubview:lbl];
-        [self.followersButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
-        
-        //RIGHT
-        
-        lbl = [[UILabel alloc]initWithFrame:self.followingButton.bounds];
-        lbl.numberOfLines = 0;
-        lbl.userInteractionEnabled = NO;
-        lbl.textColor = [UIColor whiteColor];
-        lbl.tag = 45;
-        
-        NSString *text = [NSString stringWithFormat:@"%d Following",following];
-        
-        lbl.text = text;
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
-        lbl.layer.borderColor = [UIColor whiteColor].CGColor;
-        lbl.layer.borderWidth = 1.5f;
-        lbl.layer.cornerRadius = 2;
-        
-        lbl.textAlignment = NSTextAlignmentCenter;
-        [self.followingButton addSubview:lbl];
-        
-        [self.followingButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
-
 
 }
 
@@ -722,6 +720,13 @@
         GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(308, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1]];
         
         segment.delegate = self;
+        segment.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        segment.layer.shadowOpacity = 0.2;
+        segment.layer.shadowOffset = CGSizeMake(0, 0.1);
+        segment.layer.shadowRadius = 0.8;
+        segment.layer.masksToBounds = NO;
+        
+
         [headerView addSubview:segment];
         segment.center = CGPointMake(160, 18);
         [cell addSubview:headerView];
@@ -730,6 +735,12 @@
         CellIdentifier =  @"Cell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        cell.layer.shadowOpacity = 0.3;
+        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
+        cell.layer.shadowRadius = 0.8;
+        cell.layer.masksToBounds = NO;
         
         if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
             initialCellCenter = [cell viewWithTag:66].center;
@@ -745,19 +756,22 @@
         cell.backgroundColor = [UIColor clearColor];
         
         UILabel *mLbl = (id)[cell viewWithTag:1];
-        mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+      //  mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
         UILabel *dLbl = (id)[cell viewWithTag:2];
-        dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
+        //dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
         
         UILabel *titleLbl = (id)[cell viewWithTag:4];
-        titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+       // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+
+        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
         
         //    [cell viewWithTag:66].layer.masksToBounds = NO;
         //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
         //    [cell viewWithTag:66].layer.borderWidth = 0.5;
         
-        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+        UILabel *timeLabel = (id)[cell viewWithTag:55];
+        
         UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
         UIButton *beepItbutton = (id)[cell viewWithTag:-8];
         
@@ -805,13 +819,15 @@
         NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
         NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
         
+        timeLabel.text = hour;
+        
         UILabel *dayLbl = (id)[cell viewWithTag:2];
         UILabel *monthLbl = (id)[cell viewWithTag:1];
         
         dayLbl.text = daynumber;
-        dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
+       // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
         monthLbl.text = [month uppercaseString];
-        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+       // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
         float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
         
@@ -826,7 +842,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation uppercaseString];
+        venueLbl.text = [loc.venueStation capitalizedString];
         
         //Likes,Beeeps,Comments
         UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
@@ -867,7 +883,7 @@
         return 51;
     }
     else{
-        return 113;
+        return 81;
     }
 }
 

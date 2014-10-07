@@ -51,7 +51,7 @@ static DTO *thisDTO = nil;
     CFURLCreateStringByAddingPercentEscapes(NULL,
                                             (CFStringRef)str,
                                             NULL,
-                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:"),
+                                            CFSTR("/%&=?$#+-~@<>|\*,()[]{}^!:'"),
                                             kCFStringEncodingUTF8);
     return [NSString stringWithFormat:@"%@", safeString];
 }

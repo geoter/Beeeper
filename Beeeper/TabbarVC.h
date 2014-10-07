@@ -17,7 +17,8 @@
 @property (nonatomic,assign) BOOL showsSplashOnLoad;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
 
--(void)hideBadgeIcon;
+- (void)updateNotificationsBadge;
+- (void)hideBadgeIcon;
 - (IBAction)addBeeepPressed:(id)sender;
 - (IBAction)tabbarButtonTapped:(id)sender;
 

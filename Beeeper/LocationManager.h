@@ -21,8 +21,8 @@
 
 @interface LocationManager : NSObject <CLLocationManagerDelegate> {
     
-        CLLocationManager *locationManager;
-        int locationsCounter;
+    CLLocationManager *locationManager;
+    int locationsCounter;
 }
 
 @property (nonatomic, strong) CLLocationManager *locationManager;

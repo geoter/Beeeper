@@ -297,6 +297,12 @@
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         
+        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        cell.layer.shadowOpacity = 0.7;
+        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
+        cell.layer.shadowRadius = 0.8;
+        cell.layer.masksToBounds = NO;
+        
         NSMutableArray *filtered_activities = [self activitiesForSection:indexPath.section];
         Activity_Object *activity = [filtered_activities objectAtIndex:indexPath.row];
         Who *w = [[activity.who firstObject] copy];

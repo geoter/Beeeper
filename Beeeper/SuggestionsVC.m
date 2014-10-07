@@ -238,6 +238,13 @@
     @try {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        cell.layer.shadowOpacity = 0.4;
+        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
+        cell.layer.shadowRadius = 0.8;
+        cell.layer.masksToBounds = NO;
+        
         NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
         
         Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];

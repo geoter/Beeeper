@@ -12,7 +12,9 @@ typedef void(^completed)(BOOL,id);
 typedef void(^followers_completed)(BOOL,id);
 typedef void(^following_completed)(BOOL,id);
 typedef void(^is_following_completed)(BOOL,id);
-typedef void(^notifications_completed)(BOOL,id,id);
+typedef void(^notifications_completed)(BOOL,id);
+typedef void(^clearBadge_completed)(BOOL);
+typedef void(^markRead_completed)(BOOL);
 
 @interface BPUser : NSObject
 
@@ -20,7 +22,10 @@ typedef void(^notifications_completed)(BOOL,id,id);
 @property (copy) void(^followers_completed)(BOOL,id);
 @property (copy) void(^following_completed)(BOOL,id);
 @property (copy) void(^is_following_completed)(BOOL,id);
-@property (copy) void(^notifications_completed)(BOOL,id,id);
+@property (copy) void(^notifications_completed)(BOOL,id);
+@property (copy) void(^clearBadge_completed)(BOOL);
+@property (copy) void(^markRead_completed)(BOOL);
+
 @property (copy) completed fbSignUpCompleted;
 @property (copy) completed localNotificationsCompleted;
 @property (copy) completed newNotificationsCompleted;
@@ -34,6 +39,8 @@ typedef void(^notifications_completed)(BOOL,id,id);
 @property (copy) completed beeepersFromTWCompleted;
 
 @property (nonatomic,strong) NSDictionary *user;
+@property (nonatomic,assign) int notifsPageLimit;
+@property (nonatomic,assign) int badgeNumber;
 
 #pragma mark - Login
 
@@ -63,8 +70,10 @@ typedef void(^notifications_completed)(BOOL,id,id);
 
 -(void)getLocalNotifications:(completed)compbloc;
 -(void)getNotificationsWithCompletionBlock:(notifications_completed)compbloc;
--(void)getNewNotificationsWithCompletionBlock:(completed)compbloc;
 -(void)nextNotificationsWithCompletionBlock:(notifications_completed)compbloc;
+-(void)newNotificationsWithCompletionBlock:(completed)compbloc;
+-(void)clearBadgeWithCompletionBlock:(clearBadge_completed)compbloc;
+-(void)markNotificationRead:(NSString *)notif_id completionBlock:(markRead_completed)compbloc;
 
 -(void)getEmailSettingsWithCompletionBlock:(completed)compbloc;
 -(void)setEmailSettings:(NSDictionary *)settingsDict WithCompletionBlock:(completed)compbloc;

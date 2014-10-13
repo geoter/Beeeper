@@ -1,15 +1,15 @@
 //
 //  EventActivity.m
 //
-//  Created by George Termentzoglou on 6/11/14
-//  Copyright (c) 2014 georgeterme@gmail.com. All rights reserved.
+//  Created by   on 10/13/14
+//  Copyright (c) 2014 __MyCompanyName__. All rights reserved.
 //
 
 #import "EventActivity.h"
 
 
-NSString *const kEventActivityTitle = @"title";
 NSString *const kEventActivityFingerprint = @"fingerprint";
+NSString *const kEventActivityTitle = @"title";
 NSString *const kEventActivityImageUrl = @"image_url";
 
 
@@ -21,8 +21,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
 
 @implementation EventActivity
 
-@synthesize title = _title;
 @synthesize fingerprint = _fingerprint;
+@synthesize title = _title;
 @synthesize imageUrl = _imageUrl;
 
 
@@ -38,8 +38,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
     // This check serves to make sure that a non-NSDictionary object
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
-            self.title = [self objectOrNilForKey:kEventActivityTitle fromDictionary:dict];
             self.fingerprint = [self objectOrNilForKey:kEventActivityFingerprint fromDictionary:dict];
+            self.title = [self objectOrNilForKey:kEventActivityTitle fromDictionary:dict];
             self.imageUrl = [self objectOrNilForKey:kEventActivityImageUrl fromDictionary:dict];
 
     }
@@ -51,8 +51,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
 - (NSDictionary *)dictionaryRepresentation
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
-    [mutableDict setValue:self.title forKey:kEventActivityTitle];
     [mutableDict setValue:self.fingerprint forKey:kEventActivityFingerprint];
+    [mutableDict setValue:self.title forKey:kEventActivityTitle];
     [mutableDict setValue:self.imageUrl forKey:kEventActivityImageUrl];
 
     return [NSDictionary dictionaryWithDictionary:mutableDict];
@@ -77,8 +77,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
 {
     self = [super init];
 
-    self.title = [aDecoder decodeObjectForKey:kEventActivityTitle];
     self.fingerprint = [aDecoder decodeObjectForKey:kEventActivityFingerprint];
+    self.title = [aDecoder decodeObjectForKey:kEventActivityTitle];
     self.imageUrl = [aDecoder decodeObjectForKey:kEventActivityImageUrl];
     return self;
 }
@@ -86,8 +86,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 
-    [aCoder encodeObject:_title forKey:kEventActivityTitle];
     [aCoder encodeObject:_fingerprint forKey:kEventActivityFingerprint];
+    [aCoder encodeObject:_title forKey:kEventActivityTitle];
     [aCoder encodeObject:_imageUrl forKey:kEventActivityImageUrl];
 }
 
@@ -97,8 +97,8 @@ NSString *const kEventActivityImageUrl = @"image_url";
     
     if (copy) {
 
-        copy.title = [self.title copyWithZone:zone];
         copy.fingerprint = [self.fingerprint copyWithZone:zone];
+        copy.title = [self.title copyWithZone:zone];
         copy.imageUrl = [self.imageUrl copyWithZone:zone];
     }
     

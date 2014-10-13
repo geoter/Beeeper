@@ -15,8 +15,6 @@
 @interface NotificationsVC ()
 {
     NSMutableArray *notifications;
-    NSMutableArray *newNotifications;
-    NSMutableArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
@@ -72,50 +70,20 @@
     
     loadNextPage = NO;
     
-    newNotifications = nil;
-    oldNotifications = nil;
-    
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *notifs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
         [self hideLoading];
         
         if (completed) {
+          
             notifications = [NSMutableArray array];
-            [notifications addObjectsFromArray:newNotifs];
+            [notifications addObjectsFromArray:notifs];
             
-            if (newNotifs.count + oldNotifs.count == 10) {
+            if (notifs.count == [BPUser sharedBP].notifsPageLimit) {
                 loadNextPage = YES;
             }
-            
-            //check for duplicates
-            
-            if (newNotifs.count > 0) {
-                
-                for (Activity_Object *actV in newNotifs) {
-                    NSString *newNotifMD5  = [actV.description MD5];
-                    
-                    for (Activity_Object *oldActV in oldNotifs) {
-                        NSString *oldNotifMD5  = [oldActV.description MD5];
-                        
-                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
-                            [notifications addObject:oldActV];
-                        }
-                    }
-                    
-                }
-
-            }
-            else{
-                [notifications addObjectsFromArray:oldNotifs];
-            }
-            
-            
-            newNotifications = [NSMutableArray arrayWithArray:newNotifs];
-            oldNotifications = [NSMutableArray arrayWithArray:oldNotifs];
-
-            [[TabbarVC sharedTabbar]hideBadgeIcon];
             
             if (notifications.count > 0) {
                 
@@ -152,39 +120,17 @@
     
     loadNextPage = NO;
     
-    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *notifs){
         
         if (completed) {
-            [notifications addObjectsFromArray:newNotifs];
+            
+            [notifications addObjectsFromArray:notifs];
             
             self.noNotifsFound.hidden = notifications.count != 0;
             
-            if (newNotifs.count + oldNotifs.count == 10) {
+            if (notifs.count == [BPUser sharedBP].notifsPageLimit) {
                 loadNextPage = YES;
             }
-            
-            if (newNotifs.count > 0) {
-                
-                for (Activity_Object *actV in newNotifs) {
-                    NSString *newNotifMD5  = [actV.description MD5];
-                    
-                    for (Activity_Object *oldActV in oldNotifs) {
-                        NSString *oldNotifMD5  = [oldActV.description MD5];
-                        
-                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
-                            [notifications addObject:oldActV];
-                        }
-                    }
-                    
-                }
-                
-            }
-            else{
-                [notifications addObjectsFromArray:oldNotifs];
-            }
-            
-            [newNotifications addObjectsFromArray:newNotifs];
-            [oldNotifications addObjectsFromArray:oldNotifs];
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }else{
@@ -194,8 +140,18 @@
     }];
 }
 
+-(void)getNewNotifications{
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [[BPUser sharedBP]clearBadgeWithCompletionBlock:^(BOOL completed){
+        if (completed) {
+            [[TabbarVC sharedTabbar]updateNotificationsBadge];
+        }
+    }];
     
     [self getNotifications];
     
@@ -204,7 +160,8 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [[TabbarVC sharedTabbar]updateNotificationsBadge];
+    
+   
 }
 
 
@@ -268,7 +225,7 @@
 
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
     
-    if(newNotifications != nil && [newNotifications indexOfObject:activity] != NSNotFound){
+    if(!activity.read){
         cell.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
     }
     else{
@@ -345,6 +302,12 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+
+    [[BPUser sharedBP]markNotificationRead:activity.internalBaseClassIdentifier completionBlock:^(BOOL completed){
+        if (completed) {
+            [self.tableV reloadData];
+        }
+    }];
     
     if (activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity != nil) {
         

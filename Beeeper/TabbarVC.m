@@ -84,28 +84,23 @@ static TabbarVC *thisWebServices = nil;
 
 -(void)updateNotificationsBadge{
     
-    
-    [[BPUser sharedBP]getNewNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [[BPUser sharedBP]newNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
             
-            _notifications = (int)objcts.count;
+            JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
+            badgeView.badgeText = [NSString stringWithFormat:@"%d",[BPUser sharedBP].badgeNumber];
             
-            if (_notifications <= 0) {
-                
-                [self hideBadgeIcon];
-            }
-            else{
-                
-                JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
-                badgeView.badgeText = [NSString stringWithFormat:@"%d",self.notifications];
-                
+            if ([BPUser sharedBP].badgeNumber > 0) {
                 [self showBadgeIcon];
             }
-            
-            [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:30];
+            else{
+                [self hideBadgeIcon];
+            }
 
         }
+        
+        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:10];
     }];
     
    }

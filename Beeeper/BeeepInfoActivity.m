@@ -1,16 +1,16 @@
 //
 //  BeeepInfoActivity.m
 //
-//  Created by George Termentzoglou on 6/11/14
-//  Copyright (c) 2014 georgeterme@gmail.com. All rights reserved.
+//  Created by   on 10/13/14
+//  Copyright (c) 2014 __MyCompanyName__. All rights reserved.
 //
 
 #import "BeeepInfoActivity.h"
 
 
 
-NSString *const kBeeepInfoActivityEventActivity = @"event";
 NSString *const kBeeepInfoActivityUserActivity = @"user";
+NSString *const kBeeepInfoActivityEventActivity = @"event";
 NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
 
 
@@ -22,8 +22,8 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
 
 @implementation BeeepInfoActivity
 
-@synthesize eventActivity = _eventActivity;
 @synthesize userActivity = _userActivity;
+@synthesize eventActivity = _eventActivity;
 @synthesize beeepActivity = _beeepActivity;
 
 
@@ -39,19 +39,6 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
     // This check serves to make sure that a non-NSDictionary object
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
-    NSObject *receivedEventActivity = [dict objectForKey:kBeeepInfoActivityEventActivity];
-    NSMutableArray *parsedEventActivity = [NSMutableArray array];
-    if ([receivedEventActivity isKindOfClass:[NSArray class]]) {
-        for (NSDictionary *item in (NSArray *)receivedEventActivity) {
-            if ([item isKindOfClass:[NSDictionary class]]) {
-                [parsedEventActivity addObject:[EventActivity modelObjectWithDictionary:item]];
-            }
-       }
-    } else if ([receivedEventActivity isKindOfClass:[NSDictionary class]]) {
-       [parsedEventActivity addObject:[EventActivity modelObjectWithDictionary:(NSDictionary *)receivedEventActivity]];
-    }
-
-    self.eventActivity = [NSArray arrayWithArray:parsedEventActivity];
     NSObject *receivedUserActivity = [dict objectForKey:kBeeepInfoActivityUserActivity];
     NSMutableArray *parsedUserActivity = [NSMutableArray array];
     if ([receivedUserActivity isKindOfClass:[NSArray class]]) {
@@ -65,6 +52,19 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
     }
 
     self.userActivity = [NSArray arrayWithArray:parsedUserActivity];
+    NSObject *receivedEventActivity = [dict objectForKey:kBeeepInfoActivityEventActivity];
+    NSMutableArray *parsedEventActivity = [NSMutableArray array];
+    if ([receivedEventActivity isKindOfClass:[NSArray class]]) {
+        for (NSDictionary *item in (NSArray *)receivedEventActivity) {
+            if ([item isKindOfClass:[NSDictionary class]]) {
+                [parsedEventActivity addObject:[EventActivity modelObjectWithDictionary:item]];
+            }
+       }
+    } else if ([receivedEventActivity isKindOfClass:[NSDictionary class]]) {
+       [parsedEventActivity addObject:[EventActivity modelObjectWithDictionary:(NSDictionary *)receivedEventActivity]];
+    }
+
+    self.eventActivity = [NSArray arrayWithArray:parsedEventActivity];
     NSObject *receivedBeeepActivity = [dict objectForKey:kBeeepInfoActivityBeeepActivity];
     NSMutableArray *parsedBeeepActivity = [NSMutableArray array];
     if ([receivedBeeepActivity isKindOfClass:[NSArray class]]) {
@@ -88,17 +88,6 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
 - (NSDictionary *)dictionaryRepresentation
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
-    NSMutableArray *tempArrayForEventActivity = [NSMutableArray array];
-    for (NSObject *subArrayObject in self.eventActivity) {
-        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
-            // This class is a model object
-            [tempArrayForEventActivity addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
-        } else {
-            // Generic object
-            [tempArrayForEventActivity addObject:subArrayObject];
-        }
-    }
-    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForEventActivity] forKey:kBeeepInfoActivityEventActivity];
     NSMutableArray *tempArrayForUserActivity = [NSMutableArray array];
     for (NSObject *subArrayObject in self.userActivity) {
         if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
@@ -110,6 +99,17 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
         }
     }
     [mutableDict setValue:[NSArray arrayWithArray:tempArrayForUserActivity] forKey:kBeeepInfoActivityUserActivity];
+    NSMutableArray *tempArrayForEventActivity = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.eventActivity) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForEventActivity addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForEventActivity addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForEventActivity] forKey:kBeeepInfoActivityEventActivity];
     NSMutableArray *tempArrayForBeeepActivity = [NSMutableArray array];
     for (NSObject *subArrayObject in self.beeepActivity) {
         if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
@@ -144,8 +144,8 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
 {
     self = [super init];
 
-    self.eventActivity = [aDecoder decodeObjectForKey:kBeeepInfoActivityEventActivity];
     self.userActivity = [aDecoder decodeObjectForKey:kBeeepInfoActivityUserActivity];
+    self.eventActivity = [aDecoder decodeObjectForKey:kBeeepInfoActivityEventActivity];
     self.beeepActivity = [aDecoder decodeObjectForKey:kBeeepInfoActivityBeeepActivity];
     return self;
 }
@@ -153,8 +153,8 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 
-    [aCoder encodeObject:_eventActivity forKey:kBeeepInfoActivityEventActivity];
     [aCoder encodeObject:_userActivity forKey:kBeeepInfoActivityUserActivity];
+    [aCoder encodeObject:_eventActivity forKey:kBeeepInfoActivityEventActivity];
     [aCoder encodeObject:_beeepActivity forKey:kBeeepInfoActivityBeeepActivity];
 }
 
@@ -164,8 +164,8 @@ NSString *const kBeeepInfoActivityBeeepActivity = @"beeep";
     
     if (copy) {
 
-        copy.eventActivity = [self.eventActivity copyWithZone:zone];
         copy.userActivity = [self.userActivity copyWithZone:zone];
+        copy.eventActivity = [self.eventActivity copyWithZone:zone];
         copy.beeepActivity = [self.beeepActivity copyWithZone:zone];
     }
     

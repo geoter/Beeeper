@@ -67,7 +67,7 @@
 
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
-    self.tableView.decelerationRate = 0.6;
+    //self.tableView.decelerationRate = 0.6;
     
     //search
     
@@ -395,8 +395,9 @@
         
         NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
                                  @"253616411483666", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObjects:@"email",nil], ACFacebookPermissionsKey,
+                                 [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
                                  nil];
+
         
         [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
          {
@@ -444,6 +445,7 @@
                  else{
                  
                      ACAccount *facebookAccount = [accounts firstObject];
+                  
                      [self requestFBFriendsForAccount:facebookAccount];
                  }
              }
@@ -452,7 +454,7 @@
                      
                      [self hideLoading];
                      
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Permission Denied" message:@"Facebook access was denied. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Facebook Access was denied" message:@"Please go to Settings > Facebook and enable Beeeper." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                      [alert show];
                  });
              }

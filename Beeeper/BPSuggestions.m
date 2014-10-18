@@ -384,9 +384,8 @@ static BPSuggestions *thisWebServices = nil;
     NSString *responseString = [request responseString];
     
     @try {
-        NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
-        if ([dict objectForKey:@"success"] ) {
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.suggestEventCompleted(YES,nil);
         }
         else{

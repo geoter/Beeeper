@@ -41,9 +41,30 @@ typedef void(^completed)(BOOL,id);
 @implementation NSString(UnicodeEncode)
 
 -(NSString *)unicodeEncode{
-    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSString *convertedString = [self mutableCopy];
+    
+    CFStringRef transform = CFSTR("Any-Hex/Java");
+    CFStringTransform((__bridge CFMutableStringRef)convertedString, NULL, transform, YES);
+    return convertedString;
+    
+   /* NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
     NSString *decodevalue = [[NSString alloc] initWithData:data encoding:NSNonLossyASCIIStringEncoding];
-    return decodevalue;
+    
+    return decodevalue;*/
+    
+    /*
+    const char *cString=[self UTF8String];
+    NSData *data = [NSData dataWithBytes:cString length:strlen(cString)];
+    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return string;
+     */
+    
+   /* NSString *convertedString = [self mutableCopy];
+    
+    CFStringRef transform = CFSTR("Any-Hex/Java");
+    CFStringTransform((__bridge CFMutableStringRef)convertedString, NULL, transform, YES);
+    return convertedString;*/
 }
 
 @end

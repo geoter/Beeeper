@@ -33,6 +33,8 @@
     NSMutableArray *beeeps;
     NSMutableArray *events;
    
+    GTSegmentedControl *segment;
+    
     int selectedIndex;
     BOOL loadNextPage;
     BOOL initiateData;
@@ -93,15 +95,15 @@
     [self.collectionV addSubview:refreshControl];
     self.collectionV.alwaysBounceVertical = YES;
     
-    self.collectionV.decelerationRate = 0.6;
+    //self.collectionV.decelerationRate = 0.6;
     
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
-    layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 45;
+    layout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 8);
+    layout.headerHeight = 40;
     layout.footerHeight = 50;
-    layout.minimumColumnSpacing = 6;
-    layout.minimumInteritemSpacing = 6;
+    layout.minimumColumnSpacing = 8;
+    layout.minimumInteritemSpacing = 8;
 
     [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
         forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
@@ -415,12 +417,7 @@
     
         UICollectionViewCell * cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
         
-        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-        cell.layer.shadowOpacity = 0.7;
-        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
-        cell.layer.shadowRadius = 0.8;
-        cell.layer.masksToBounds = NO;
-//        cell.layer.borderWidth = 1.0;
+        //        cell.layer.borderWidth = 1.0;
 //        cell.layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.2].CGColor;
 
         Event_Search *event = [events objectAtIndex:indexPath.row];
@@ -548,7 +545,6 @@
         
             Friendsfeed_Object *event = [beeeps objectAtIndex:indexPath.row];
         
-        
             double now_time = [[NSDate date]timeIntervalSince1970];
             double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
             
@@ -558,12 +554,6 @@
             else{
                cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfall" forIndexPath:indexPath];
             }
-        
-            cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-            cell.layer.shadowOpacity = 0.7;
-            cell.layer.shadowOffset = CGSizeMake(0, 0.1);
-            cell.layer.shadowRadius = 0.8;
-            cell.layer.masksToBounds = NO;
         
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
@@ -724,16 +714,14 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
 
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
-        segment.delegate = self;
-        [headerView addSubview:segment];
-        segment.center = headerView.center;
-
-        segment.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-        segment.layer.shadowOpacity = 0.3;
-        segment.layer.shadowOffset = CGSizeMake(0, 0.1);
-        segment.layer.shadowRadius = 0.8;
-        segment.layer.masksToBounds = NO;
+        if (!segment) {
+            
+            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+            segment.delegate = self;
+            [headerView addSubview:segment];
+            segment.frame = CGRectMake(0, headerView.frame.size.height-segment.frame.size.height, segment.frame.size.width, segment.frame.size.height);
+            segment.center = CGPointMake(headerView.center.x,segment.center.y);
+        }
         
         reusableview = headerView;
     }

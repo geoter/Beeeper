@@ -45,6 +45,7 @@
     
     NSString *fingerprint;
     NSString *websiteURL;
+    NSString *beeeperWebsiteURL;
     
     NSMutableString *shareText;
     NSMutableArray* rowsToReload;
@@ -254,7 +255,7 @@
     
      UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     
-    [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnMore,btnLike,btnShare, nil]];
+    [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnShare,btnLike,btnMore, nil]];
     
     UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
     [self.navigationItem setRightBarButtonItem:beeepItem];
@@ -323,6 +324,7 @@
     
     NSString *website = suggestion.what.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",suggestion.what.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -555,7 +557,7 @@
     
     NSString *website = ffo.eventFfo.eventDetailsFfo.source;
     websiteURL = website;
-    
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",ffo.eventFfo.eventDetailsFfo.fingerprint];
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
@@ -789,6 +791,7 @@
 
     website = t.event.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",t.event.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -1027,6 +1030,7 @@
     
     NSString *website = event.eventInfo.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",event.eventInfo.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -1269,6 +1273,7 @@
     
     NSString *website = event.eventInfo.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",event.eventInfo.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     

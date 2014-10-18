@@ -91,15 +91,15 @@
     rowsToReload = [NSMutableArray array];
     pendingImagesDict = [[NSMutableDictionary alloc]init];
     
-    self.collectionV.decelerationRate = 0.6;
+   // self.collectionV.decelerationRate = 0.6;
     
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
-    layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 10;
-    layout.footerHeight = 10;
-    layout.minimumColumnSpacing = 6;
-    layout.minimumInteritemSpacing = 6;
+    layout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 8);
+    layout.headerHeight = 0;
+    layout.footerHeight = 50;
+    layout.minimumColumnSpacing = 8;
+    layout.minimumInteritemSpacing = 8;
     
     [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
          forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
@@ -114,6 +114,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
+    [self.collectionV reloadData];
+    
     if (self.initialSearchTerm) {
         
         UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -473,7 +475,7 @@
     
     beeeps.text = [NSString stringWithFormat:@"%d",(int)event.beeepedBy.count];
     favorites.text = [NSString stringWithFormat:@"%d",(int)event.likes.count];
-    
+    comments.text = [NSString stringWithFormat:@"%d",(int)event.comments.count];
     favorites.hidden = (favorites.text.intValue == 0);
     comments.hidden = (comments.text.intValue == 0);
     beeeps.hidden = (beeeps.text.intValue == 0);
@@ -649,7 +651,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [events objectAtIndex:path.row];
-//    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.comments = [NSMutableArray arrayWithArray:event.comments];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

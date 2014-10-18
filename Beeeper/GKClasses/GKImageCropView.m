@@ -182,7 +182,7 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
         self.scrollView.showsVerticalScrollIndicator = NO;
         self.scrollView.delegate = self;
         self.scrollView.clipsToBounds = NO;
-        self.scrollView.decelerationRate = 0.0; 
+        self.scrollView.decelerationRate = 0.0;
         self.scrollView.backgroundColor = [UIColor clearColor];
         [self addSubview:self.scrollView];
         

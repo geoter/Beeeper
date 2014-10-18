@@ -1062,6 +1062,10 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:[self headerGETRequest:URL.absoluteString values:array]];
     
+//    [request setAuthenticationScheme:@"https"];
+//    
+//    [request setValidatesSecureCertificate:NO];
+//    
     [request setRequestMethod:@"GET"];
     
     [request setTimeOutSeconds:13.0];
@@ -1143,14 +1147,6 @@ static BPUser *thisWebServices = nil;
     @finally {
         
     }
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"notifications-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-    NSError *error;
-    
-    BOOL succeed = [bs writeToFile:filePath
-                                    atomically:YES];
     
     self.notifications_completed(YES,bs);
     
@@ -1294,7 +1290,7 @@ static BPUser *thisWebServices = nil;
 
 -(void)newNotificationsWithCompletionBlock:(notifications_completed)compbloc{
     
-    self.notifications_completed = compbloc;
+    self.newNotificationsCompleted = compbloc;
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
@@ -1364,7 +1360,7 @@ static BPUser *thisWebServices = nil;
                 }
                 else{
                     NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
-                    if(badge.intValue != 0){
+                    if(badge.intValue != -1){
                         badgeNumber = badge.intValue;
                     }
                 }
@@ -1382,14 +1378,14 @@ static BPUser *thisWebServices = nil;
         }
     }
 
-    self.notifications_completed(YES,bs);
+    self.newNotificationsCompleted(YES,bs);
 }
 
 -(void)newNotificationsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
     
-    self.notifications_completed(NO,nil);
+    self.newNotificationsCompleted(NO,nil);
     
 }
 
@@ -1417,10 +1413,7 @@ static BPUser *thisWebServices = nil;
     [request setCompletionBlock:^{
         
         @try {
-            
-            NSString *responseString = [request responseString];
-            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-            
+            badgeNumber = 0;
             self.clearBadge_completed(YES);
         }
         @catch (NSException *exception) {
@@ -1433,7 +1426,6 @@ static BPUser *thisWebServices = nil;
     }];
     
     [request setFailedBlock:^{
-        NSString *responseString = [request responseString];
         self.clearBadge_completed(NO);
     }];
     

@@ -59,6 +59,14 @@
         selectionV.tag = 99;
         [customView sendSubviewToBack:selectionV];
         
+        customView.clearsContextBeforeDrawing= YES;
+        customView.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        customView.layer.shadowOpacity = 0.3;
+        customView.layer.shadowOffset = CGSizeMake(0, 0.1);
+        customView.layer.shadowRadius = 0.8;
+        customView.layer.masksToBounds = NO;
+
+        
         return customView;
     }
     else{

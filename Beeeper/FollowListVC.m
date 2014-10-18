@@ -39,7 +39,7 @@
         self.title = @"Beeepers";
     }
     
-    self.tableV.decelerationRate = 0.6;
+   // self.tableV.decelerationRate = 0.6;
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     rowsToReload = [NSMutableArray array];

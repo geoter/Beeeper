@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import <Social/Social.h>
 #import "MONActivityIndicatorView.h"
+#import "WebBrowserVC.h"
 
 @interface ChooseLoginVC ()<UITextFieldDelegate,MONActivityIndicatorViewDelegate,UIActionSheetDelegate>
 {
@@ -40,6 +41,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     if (!IS_IPHONE_5) {
         self.scrollV.frame = CGRectMake(0, 0, 320, self.scrollV.frame.size.height);
@@ -170,8 +173,15 @@
 }
 
 - (IBAction)forgotPassPressed:(id)sender {
-      UIViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ForgotPassVC"];
-    [self.navigationController pushViewController:vc animated:YES];
+  
+    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
+    viewController.title = @"Forgot Password";
+    [self.navigationController pushViewController:viewController animated:YES];
+
+    
+  //  UIViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ForgotPassVC"];
+  //  [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)fbLoginPressed:(id)sender {

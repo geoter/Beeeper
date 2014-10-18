@@ -271,7 +271,7 @@ static EventWS *thisWebServices = nil;
     NSDictionary *response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     @try {
-        if ([response objectForKey:@"success"]) {
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.like_beeep_completed(YES,nil);
         }
         else{
@@ -334,7 +334,7 @@ static EventWS *thisWebServices = nil;
     NSDictionary *response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     @try {
-        if ([response objectForKey:@"success"]) {
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.like_event_completed(YES,nil);
         }
         else{
@@ -396,7 +396,7 @@ static EventWS *thisWebServices = nil;
     NSDictionary *response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     @try {
-        if ([response objectForKey:@"success"]) {
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.like_event_completed(YES,nil);
         }
         else{

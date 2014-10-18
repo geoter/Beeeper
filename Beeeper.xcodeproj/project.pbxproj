@@ -78,6 +78,12 @@
 		632BB28719E46A63003CD50A /* beeep_it_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 632BB28519E46A63003CD50A /* beeep_it_white@2x.png */; };
 		632BB28A19E46C63003CD50A /* Passed_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 632BB28819E46C63003CD50A /* Passed_white.png */; };
 		632BB28B19E46C63003CD50A /* Passed_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 632BB28919E46C63003CD50A /* Passed_white@2x.png */; };
+		633E992B19ED16EE0067BD56 /* TimelineCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E992A19ED16EE0067BD56 /* TimelineCellView.m */; };
+		633E992E19ED1F740067BD56 /* ActivityCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E992D19ED1F740067BD56 /* ActivityCellView.m */; };
+		633E993119ED25E60067BD56 /* HomefeedCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E993019ED25E60067BD56 /* HomefeedCellView.m */; };
+		633E993419ED35DB0067BD56 /* welcome_screen_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 633E993219ED35DB0067BD56 /* welcome_screen_3.png */; };
+		633E993519ED35DB0067BD56 /* welcome_screen_3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 633E993319ED35DB0067BD56 /* welcome_screen_3@2x.png */; };
+		633E993819ED4C020067BD56 /* UIView+Badge.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E993719ED4C020067BD56 /* UIView+Badge.m */; };
 		6356324219EC519C0001D4AE /* Activity_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356323119EC519C0001D4AE /* Activity_Object.m */; };
 		6356324319EC519C0001D4AE /* BeeepActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356323319EC519C0001D4AE /* BeeepActivity.m */; };
 		6356324419EC519C0001D4AE /* BeeepInfoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356323519EC519C0001D4AE /* BeeepInfoActivity.m */; };
@@ -87,6 +93,14 @@
 		6356324819EC519C0001D4AE /* UserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356323D19EC519C0001D4AE /* UserActivity.m */; };
 		6356324919EC519C0001D4AE /* Who.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356323F19EC519C0001D4AE /* Who.m */; };
 		6356324A19EC519C0001D4AE /* Whom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356324119EC519C0001D4AE /* Whom.m */; };
+		63AE28CC19F14E46004EB040 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28C519F14E46004EB040 /* Images.xcassets */; };
+		63AE28CD19F14E46004EB040 /* THDateDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AE28C719F14E46004EB040 /* THDateDay.m */; };
+		63AE28CE19F14E46004EB040 /* THDateDay.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28C819F14E46004EB040 /* THDateDay.xib */; };
+		63AE28CF19F14E46004EB040 /* THDatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AE28CA19F14E46004EB040 /* THDatePickerViewController.m */; };
+		63AE28D019F14E46004EB040 /* THDatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28CB19F14E46004EB040 /* THDatePickerViewController.xib */; };
+		63AE28D319F14FEA004EB040 /* UIViewController+KNSemiModal.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */; };
+		63AE28D619F15334004EB040 /* calendar_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D419F15334004EB040 /* calendar_btn.png */; };
+		63AE28D719F15334004EB040 /* calendar_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D519F15334004EB040 /* calendar_btn@2x.png */; };
 		63B5A20A19DD918A0001903D /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63B5A20919DD918A0001903D /* Settings.plist */; };
 		63CB8CEB19DB096B0005E88E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */; };
 		63CB8D0E19DB15890005E88E /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8CEE19DB15890005E88E /* MKAnnotationView+WebCache.m */; };
@@ -105,6 +119,8 @@
 		63CB8D1B19DB15890005E88E /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0919DB15890005E88E /* UIImageView+HighlightedWebCache.m */; };
 		63CB8D1C19DB15890005E88E /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0B19DB15890005E88E /* UIImageView+WebCache.m */; };
 		63CB8D1D19DB15890005E88E /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0D19DB15890005E88E /* UIView+WebCacheOperation.m */; };
+		63FAE1A919F0045200D8EA36 /* calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FAE1A719F0045200D8EA36 /* calendar.png */; };
+		63FAE1AA19F0045200D8EA36 /* calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FAE1A819F0045200D8EA36 /* calendar@2x.png */; };
 		9600487C18D473E60043A6FB /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9600487B18D473E60043A6FB /* LocationManager.m */; };
 		9615E8B3192DB57C0099B3E0 /* tabbar-home.png in Resources */ = {isa = PBXBuildFile; fileRef = 9615E8AB192DB57C0099B3E0 /* tabbar-home.png */; };
 		9615E8B4192DB57C0099B3E0 /* tabbar-home@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9615E8AC192DB57C0099B3E0 /* tabbar-home@2x.png */; };
@@ -620,6 +636,16 @@
 		632BB28519E46A63003CD50A /* beeep_it_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeep_it_white@2x.png"; sourceTree = "<group>"; };
 		632BB28819E46C63003CD50A /* Passed_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Passed_white.png; sourceTree = "<group>"; };
 		632BB28919E46C63003CD50A /* Passed_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Passed_white@2x.png"; sourceTree = "<group>"; };
+		633E992919ED16EE0067BD56 /* TimelineCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineCellView.h; sourceTree = "<group>"; };
+		633E992A19ED16EE0067BD56 /* TimelineCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineCellView.m; sourceTree = "<group>"; };
+		633E992C19ED1F740067BD56 /* ActivityCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityCellView.h; sourceTree = "<group>"; };
+		633E992D19ED1F740067BD56 /* ActivityCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityCellView.m; sourceTree = "<group>"; };
+		633E992F19ED25E60067BD56 /* HomefeedCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomefeedCellView.h; sourceTree = "<group>"; };
+		633E993019ED25E60067BD56 /* HomefeedCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomefeedCellView.m; sourceTree = "<group>"; };
+		633E993219ED35DB0067BD56 /* welcome_screen_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = welcome_screen_3.png; sourceTree = "<group>"; };
+		633E993319ED35DB0067BD56 /* welcome_screen_3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "welcome_screen_3@2x.png"; sourceTree = "<group>"; };
+		633E993619ED4C020067BD56 /* UIView+Badge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Badge.h"; sourceTree = "<group>"; };
+		633E993719ED4C020067BD56 /* UIView+Badge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Badge.m"; sourceTree = "<group>"; };
 		6356323019EC519C0001D4AE /* Activity_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity_Object.h; sourceTree = "<group>"; };
 		6356323119EC519C0001D4AE /* Activity_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity_Object.m; sourceTree = "<group>"; };
 		6356323219EC519C0001D4AE /* BeeepActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeepActivity.h; sourceTree = "<group>"; };
@@ -638,6 +664,17 @@
 		6356323F19EC519C0001D4AE /* Who.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Who.m; sourceTree = "<group>"; };
 		6356324019EC519C0001D4AE /* Whom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Whom.h; sourceTree = "<group>"; };
 		6356324119EC519C0001D4AE /* Whom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Whom.m; sourceTree = "<group>"; };
+		63AE28C519F14E46004EB040 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		63AE28C619F14E46004EB040 /* THDateDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDateDay.h; sourceTree = "<group>"; };
+		63AE28C719F14E46004EB040 /* THDateDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDateDay.m; sourceTree = "<group>"; };
+		63AE28C819F14E46004EB040 /* THDateDay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDateDay.xib; sourceTree = "<group>"; };
+		63AE28C919F14E46004EB040 /* THDatePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDatePickerViewController.h; sourceTree = "<group>"; };
+		63AE28CA19F14E46004EB040 /* THDatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDatePickerViewController.m; sourceTree = "<group>"; };
+		63AE28CB19F14E46004EB040 /* THDatePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDatePickerViewController.xib; sourceTree = "<group>"; };
+		63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KNSemiModal.h"; sourceTree = "<group>"; };
+		63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KNSemiModal.m"; sourceTree = "<group>"; };
+		63AE28D419F15334004EB040 /* calendar_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar_btn.png; sourceTree = "<group>"; };
+		63AE28D519F15334004EB040 /* calendar_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar_btn@2x.png"; sourceTree = "<group>"; };
 		63B5A20919DD918A0001903D /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		63CB8CED19DB15890005E88E /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
@@ -673,6 +710,8 @@
 		63CB8D0B19DB15890005E88E /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		63CB8D0C19DB15890005E88E /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		63CB8D0D19DB15890005E88E /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		63FAE1A719F0045200D8EA36 /* calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar.png; sourceTree = "<group>"; };
+		63FAE1A819F0045200D8EA36 /* calendar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar@2x.png"; sourceTree = "<group>"; };
 		9600487A18D473E60043A6FB /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		9600487B18D473E60043A6FB /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		9615E8AB192DB57C0099B3E0 /* tabbar-home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbar-home.png"; sourceTree = "<group>"; };
@@ -1386,6 +1425,20 @@
 			name = "Icons Long Press";
 			sourceTree = "<group>";
 		};
+		63AE28C419F14E46004EB040 /* THCalendarDatePicker */ = {
+			isa = PBXGroup;
+			children = (
+				63AE28C519F14E46004EB040 /* Images.xcassets */,
+				63AE28C619F14E46004EB040 /* THDateDay.h */,
+				63AE28C719F14E46004EB040 /* THDateDay.m */,
+				63AE28C819F14E46004EB040 /* THDateDay.xib */,
+				63AE28C919F14E46004EB040 /* THDatePickerViewController.h */,
+				63AE28CA19F14E46004EB040 /* THDatePickerViewController.m */,
+				63AE28CB19F14E46004EB040 /* THDatePickerViewController.xib */,
+			);
+			path = THCalendarDatePicker;
+			sourceTree = "<group>";
+		};
 		63CB8CEC19DB15890005E88E /* SDWebImage */ = {
 			isa = PBXGroup;
 			children = (
@@ -1763,10 +1816,15 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */,
+				63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */,
+				63AE28C419F14E46004EB040 /* THCalendarDatePicker */,
 				63CB8CEC19DB15890005E88E /* SDWebImage */,
 				5E35C56019C9AA3A00D39D6B /* AsyncImageView */,
 				5E58956C1975950100FDA837 /* JSBadgeView.h */,
 				5E58956D1975950100FDA837 /* JSBadgeView.m */,
+				633E993619ED4C020067BD56 /* UIView+Badge.h */,
+				633E993719ED4C020067BD56 /* UIView+Badge.m */,
 				5E51DEF91965A5840061AE2A /* SPGooglePlacesAutocomplete */,
 				CE0B5BAC196411960075B13B /* SVGeocoder */,
 				5E51B8B519614C7900DB2E6F /* GKClasses */,
@@ -1932,6 +1990,8 @@
 				CE02EB9B18EC258500B5674C /* CHTCollectionViewWaterfallFooter.m */,
 				CE02EB9418EC1F5400B5674C /* EventCellWaterfall.h */,
 				CE02EB9518EC1F5400B5674C /* EventCellWaterfall.m */,
+				633E992F19ED25E60067BD56 /* HomefeedCellView.h */,
+				633E993019ED25E60067BD56 /* HomefeedCellView.m */,
 			);
 			name = HomeFeed;
 			sourceTree = "<group>";
@@ -2067,6 +2127,10 @@
 		CE77BA4318E5A98600D4051A /* R */ = {
 			isa = PBXGroup;
 			children = (
+				63AE28D419F15334004EB040 /* calendar_btn.png */,
+				63AE28D519F15334004EB040 /* calendar_btn@2x.png */,
+				63FAE1A719F0045200D8EA36 /* calendar.png */,
+				63FAE1A819F0045200D8EA36 /* calendar@2x.png */,
 				CE9C7317196D909E004AE8C6 /* user_icon_180x180.png */,
 				CE9C7318196D909E004AE8C6 /* user_icon_180x180@2x.png */,
 				9615E8BE192DB77A0099B3E0 /* new */,
@@ -2253,9 +2317,9 @@
 				CEFDE83D18EDB79600E500A9 /* Activity */,
 				CEF1E5AD18E48BA000DF7539 /* Timeline */,
 				962E3DAD194CC2B900A0DD87 /* FollowList */,
-				CEA64F5018B3C2A000B7ECF5 /* LoginEmailVC.h */,
 				5EBAFA9319C1962F0093D6BA /* WebBrowserVC.h */,
 				5EBAFA9419C1962F0093D6BA /* WebBrowserVC.m */,
+				CEA64F5018B3C2A000B7ECF5 /* LoginEmailVC.h */,
 				CEA64F5118B3C2A000B7ECF5 /* LoginEmailVC.m */,
 				CEA64F5318B3C48A00B7ECF5 /* SignUpVC.h */,
 				CEA64F5418B3C48A00B7ECF5 /* SignUpVC.m */,
@@ -2346,6 +2410,8 @@
 				CEFDE80E18ED651D00E500A9 /* welcome_screen_1@2x.png */,
 				CEFDE80F18ED651D00E500A9 /* welcome_screen_2.png */,
 				CEFDE81018ED651D00E500A9 /* welcome_screen_2@2x.png */,
+				633E993219ED35DB0067BD56 /* welcome_screen_3.png */,
+				633E993319ED35DB0067BD56 /* welcome_screen_3@2x.png */,
 			);
 			name = "R - Welcome";
 			sourceTree = "<group>";
@@ -2417,6 +2483,8 @@
 				CE77BA4318E5A98600D4051A /* R */,
 				CEF1E5AE18E48BAF00DF7539 /* TimelineVC.h */,
 				CEF1E5AF18E48BAF00DF7539 /* TimelineVC.m */,
+				633E992919ED16EE0067BD56 /* TimelineCellView.h */,
+				633E992A19ED16EE0067BD56 /* TimelineCellView.m */,
 			);
 			name = Timeline;
 			sourceTree = "<group>";
@@ -2532,6 +2600,8 @@
 				CEFDE84118EDC3CA00E500A9 /* R */,
 				CEFDE83E18EDB8B300E500A9 /* ActivityVC.h */,
 				CEFDE83F18EDB8B300E500A9 /* ActivityVC.m */,
+				633E992C19ED1F740067BD56 /* ActivityCellView.h */,
+				633E992D19ED1F740067BD56 /* ActivityCellView.m */,
 			);
 			name = Activity;
 			sourceTree = "<group>";
@@ -2612,6 +2682,7 @@
 				CEFDE82A18ED77BD00E500A9 /* friends_feed_icon@2x.png in Resources */,
 				CE29EE3218D9CADB0001EC43 /* beeepit_btn.png in Resources */,
 				5E5895691975775B00FDA837 /* checkbox_check_noborder@2x.png in Resources */,
+				63FAE1AA19F0045200D8EA36 /* calendar@2x.png in Resources */,
 				CE29EE4618D9CADB0001EC43 /* pin_icon.png in Resources */,
 				CE77BA4718E5A98F00D4051A /* check_btn@2x.png in Resources */,
 				CEFDE84518EDC3E700E500A9 /* activity_container_image_2@2x.png in Resources */,
@@ -2637,6 +2708,7 @@
 				CE08DD111937758100B090BE /* tick_following.png in Resources */,
 				CEFDE81218ED651D00E500A9 /* welcome_screen_0@2x.png in Resources */,
 				CE08DD101937758100B090BE /* tick_following@2x.png in Resources */,
+				63AE28D719F15334004EB040 /* calendar_btn@2x.png in Resources */,
 				9615E8DE192DC37A0099B3E0 /* search_icon_bold.png in Resources */,
 				CEEE3EFB18CA102700665C21 /* checkbox_check.png in Resources */,
 				5EA7FAF319594E910033C061 /* suggest_selected.png in Resources */,
@@ -2647,9 +2719,12 @@
 				9615E8CA192DB7870099B3E0 /* following-icon@2x.png in Resources */,
 				CE79423918DB261B00748EDD /* twitter_icon_gray.png in Resources */,
 				969591F2194A142C00526AA0 /* liked_icon_event.png in Resources */,
+				63AE28CC19F14E46004EB040 /* Images.xcassets in Resources */,
 				962E3D8A194C359700A0DD87 /* notifications-badge.png in Resources */,
+				633E993519ED35DB0067BD56 /* welcome_screen_3@2x.png in Resources */,
 				CEEE3ED018C9E02C00665C21 /* Roboto-Regular.ttf in Resources */,
 				CE79423A18DB261B00748EDD /* twitter_icon_gray@2x.png in Resources */,
+				63AE28CE19F14E46004EB040 /* THDateDay.xib in Resources */,
 				CEEE3EF518C9FC9E00665C21 /* icon-twitter@2x.png in Resources */,
 				CE042A091938D4B700E3167A /* selection0cirlce-suggestit.png in Resources */,
 				CE25F9F218B6761300D8B858 /* NotificationBackgroundSuccess@2x.png in Resources */,
@@ -2739,6 +2814,7 @@
 				CEEE3EE618C9F23A00665C21 /* icon-mail.png in Resources */,
 				CE29EE3818D9CADB0001EC43 /* container_image_1.png in Resources */,
 				CE0C883318D0C56D00BA548F /* mail_icon_small@2x.png in Resources */,
+				63FAE1A919F0045200D8EA36 /* calendar.png in Resources */,
 				CE7CFAEA18B797C10044C9AC /* MessageEntryBackground.png in Resources */,
 				CE0C881F18D0BE3200BA548F /* option_1_gray@2x.png in Resources */,
 				CEEE3ECE18C9E02C00665C21 /* Roboto-Light.ttf in Resources */,
@@ -2778,6 +2854,7 @@
 				9615E8E7192DC43B0099B3E0 /* pin_icon_white@2x.png in Resources */,
 				9615E8B8192DB57C0099B3E0 /* tabbar-settings@2x.png in Resources */,
 				962E3DA8194CBD4700A0DD87 /* search_icon_gray.png in Resources */,
+				63AE28D619F15334004EB040 /* calendar_btn.png in Resources */,
 				CE0C883718D0C6D400BA548F /* twitter_icon_small@2x.png in Resources */,
 				CEA1132C19530D00003C8D7B /* import-icon-timeline@2x.png in Resources */,
 				CEF263BD18DC7F080047510D /* event_image.png in Resources */,
@@ -2855,6 +2932,7 @@
 				CE7CFAE618B797C10044C9AC /* MessageEntrySendButton.png in Resources */,
 				CEF263BB18DC7F080047510D /* beeeps_icon_event.png in Resources */,
 				CE29EE3C18D9CADB0001EC43 /* container_image_3.png in Resources */,
+				633E993419ED35DB0067BD56 /* welcome_screen_3.png in Resources */,
 				632BB28619E46A63003CD50A /* beeep_it_white.png in Resources */,
 				CEFDE82918ED77BD00E500A9 /* friends_feed_icon.png in Resources */,
 				CEEE3ECD18C9E02C00665C21 /* Roboto-Bold.ttf in Resources */,
@@ -2871,6 +2949,7 @@
 				CE2A6EB618E2F6B900175A9C /* arrow-cell.png in Resources */,
 				CEF2639618DC59A10047510D /* 1.png in Resources */,
 				CE0C880F18D0BCD300BA548F /* option_1@2x.png in Resources */,
+				63AE28D019F14E46004EB040 /* THDatePickerViewController.xib in Resources */,
 				CE0C880E18D0BCD300BA548F /* option_1.png in Resources */,
 				CEF1E5A718E452F300DF7539 /* searchBarEvents@2x.png in Resources */,
 				962E3DAB194CBEDC00A0DD87 /* search_icon_selected.png in Resources */,
@@ -2914,6 +2993,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63AE28CD19F14E46004EB040 /* THDateDay.m in Sources */,
+				633E993819ED4C020067BD56 /* UIView+Badge.m in Sources */,
 				632BB27D19E421A6003CD50A /* GTPushButton.m in Sources */,
 				CE02EBC418EC624D00B5674C /* DZNPhotoEditViewController.m in Sources */,
 				5E09B558192216C800AF5DE8 /* Comments.m in Sources */,
@@ -2925,6 +3006,7 @@
 				CE02EC3318EC64D800B5674C /* AFURLConnectionOperation.m in Sources */,
 				CE02EC3118EC64D800B5674C /* AFNetworkActivityIndicatorManager.m in Sources */,
 				5E51B8C719614C7900DB2E6F /* GKResizeableCropOverlayView.m in Sources */,
+				63AE28D319F14FEA004EB040 /* UIViewController+KNSemiModal.m in Sources */,
 				6356324319EC519C0001D4AE /* BeeepActivity.m in Sources */,
 				CE25F9FD18B6761300D8B858 /* TSMessageView.m in Sources */,
 				CE02EBCB18EC624D00B5674C /* DZNPhotoServiceFactory.m in Sources */,
@@ -3033,9 +3115,12 @@
 				6356324719EC519C0001D4AE /* EventActivity.m in Sources */,
 				9637AA5618C0E7B800651BD8 /* Reachability.m in Sources */,
 				CE02EBC918EC624D00B5674C /* DZNPhotoServiceClient.m in Sources */,
+				633E992E19ED1F740067BD56 /* ActivityCellView.m in Sources */,
 				CE02EBCA18EC624D00B5674C /* DZNPhotoServiceConstants.m in Sources */,
 				6356324219EC519C0001D4AE /* Activity_Object.m in Sources */,
+				63AE28CF19F14E46004EB040 /* THDatePickerViewController.m in Sources */,
 				5E51DF0B1965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m in Sources */,
+				633E992B19ED16EE0067BD56 /* TimelineCellView.m in Sources */,
 				9637AA5E18C0E7B800651BD8 /* ASIHTTPRequest.m in Sources */,
 				CE02EC4518EC7E1000B5674C /* SearchVC.m in Sources */,
 				CE29EE4A18D9EC5F0001EC43 /* BeeepVC.m in Sources */,
@@ -3045,6 +3130,7 @@
 				CE79424D18DB3CFA00748EDD /* MVYSideMenuController.m in Sources */,
 				CE36F7B518D2035F00A9E917 /* PHFComposeBarView.m in Sources */,
 				CE02EB9618EC1F5400B5674C /* EventCellWaterfall.m in Sources */,
+				633E993119ED25E60067BD56 /* HomefeedCellView.m in Sources */,
 				CEF2638418DC46680047510D /* SVProgressHUD.m in Sources */,
 				CEA64F5218B3C2A000B7ECF5 /* LoginEmailVC.m in Sources */,
 				CE7CFAD118B78A590044C9AC /* FollowListVC.m in Sources */,
@@ -3208,7 +3294,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3224,7 +3310,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cdffdf3d-58c4-497f-860c-9ca980a5dcd2";
+				PROVISIONING_PROFILE = "760ac39c-5083-4d63-bed7-007fe02e9536";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3233,7 +3319,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3249,7 +3335,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cdffdf3d-58c4-497f-860c-9ca980a5dcd2";
+				PROVISIONING_PROFILE = "760ac39c-5083-4d63-bed7-007fe02e9536";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

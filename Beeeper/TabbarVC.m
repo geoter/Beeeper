@@ -10,7 +10,7 @@
 #import "TimelineVC.h"
 #import "JSBadgeView.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "UIView+Badge.h"
 
 @interface TabbarVC ()
 {
@@ -25,7 +25,13 @@ static TabbarVC *thisWebServices = nil;
 
 -(void)setNotifications:(int)notifications{
     _notifications = notifications;
-    [self updateNotificationsBadge];
+
+    if (notifications > 0) {
+        [self showBadgeIcon];
+    }
+    else{
+        [self hideBadgeIcon];
+    }
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -88,8 +94,21 @@ static TabbarVC *thisWebServices = nil;
         
         if (completed) {
             
-            JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
-            badgeView.badgeText = [NSString stringWithFormat:@"%d",[BPUser sharedBP].badgeNumber];
+//            JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
+//            badgeView.badgeText = [NSString stringWithFormat:@"%d",[BPUser sharedBP].badgeNumber];
+            
+            UIView *b;
+            
+            if (![self.notificationsBadgeV.superview viewWithTag:34567]) {
+                b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
+                b.badge.outlineWidth = 0.0;
+                b.badge.badgeColor = [UIColor redColor];
+                b.tag = 34567;
+            }
+            
+            b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
+            
+            [self.notificationsBadgeV.superview addSubview:b];
             
             if ([BPUser sharedBP].badgeNumber > 0) {
                 [self showBadgeIcon];
@@ -100,7 +119,7 @@ static TabbarVC *thisWebServices = nil;
 
         }
         
-        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:10];
+        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:15];
     }];
     
    }

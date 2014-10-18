@@ -495,36 +495,6 @@
             endingLineNumber = "1951"
             landmarkName = "-likeIt"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[EventVC likeIt]"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.500818"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1952"
-                  endingLineNumber = "1952"
-                  offsetFromSymbolStart = "7324">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__17-[EventVC likeIt]_block_invoke556"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.501045"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1952"
-                  endingLineNumber = "1952"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -541,36 +511,6 @@
             endingLineNumber = "1756"
             landmarkName = "-likeIt"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[EventVC likeIt]"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.502387"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1758"
-                  endingLineNumber = "1758"
-                  offsetFromSymbolStart = "3438">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__17-[EventVC likeIt]_block_invoke511"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.502591"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1758"
-                  endingLineNumber = "1758"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -633,7 +573,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1513"
             endingLineNumber = "1513"
-            landmarkName = "-likeEventAtIndexPath:"
+            landmarkName = "-suggestEventAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -649,7 +589,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1459"
             endingLineNumber = "1459"
-            landmarkName = "-imageForItemAtIndex:"
+            landmarkName = "-likeEventAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1521,7 +1461,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "947"
             endingLineNumber = "947"
-            landmarkName = "-tableView:heightForFooterInSection:"
+            landmarkName = "-handleCellPan:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1985,36 +1925,6 @@
             endingLineNumber = "2578"
             landmarkName = "-composeBarViewDidPressButton:"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[EventVC composeBarViewDidPressButton:]"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.510587"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2579"
-                  endingLineNumber = "2579"
-                  offsetFromSymbolStart = "336">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__40-[EventVC composeBarViewDidPressButton:]_block_invoke"
-                  moduleName = "Beeeper"
-                  urlString = "file:///Volumes/D/Users/George/Developer/iOS/Beeeper/Beeeper/Beeeper/EventVC.m"
-                  timestampString = "433764225.51077"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2579"
-                  endingLineNumber = "2579"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

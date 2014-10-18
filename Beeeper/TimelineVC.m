@@ -732,10 +732,10 @@
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
         if (cell.gestureRecognizers.count == 0) {
-//            UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
-//                                           initWithTarget:self action:@selector(handleCellPan:)];
-//            pgr.delegate = self;
-//            [[cell viewWithTag:66] addGestureRecognizer:pgr];
+            UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
+                                           initWithTarget:self action:@selector(handleCellPan:)];
+            pgr.delegate = self;
+            [[cell viewWithTag:66] addGestureRecognizer:pgr];
         }
         
         cell.backgroundColor = [UIColor clearColor];

@@ -25,7 +25,7 @@
 #import "BorderTextField.h"
 #import "Event_Search.h"
 #import "BeeepedBy.h"
-#import <QuartzCore/QuartzCore.h>"
+#import <QuartzCore/QuartzCore.h>
 
 @interface HomeFeedVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource, GHContextOverlayViewDelegate,MONActivityIndicatorViewDelegate>
 {
@@ -68,6 +68,20 @@
     
 }
 
+-(void)refreshCollectionView{
+    
+    if ([self.collectionV viewWithTag:234] == nil) {
+        
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+        refreshControl.tag = 234;
+        refreshControl.tintColor = [UIColor whiteColor];
+        [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+        
+        [self.collectionV addSubview:refreshControl];
+    }
+    
+    [self.collectionV reloadData];
+}
 
 - (void)viewDidLoad
 {
@@ -88,11 +102,6 @@
         if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
     }
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
-    refreshControl.tag = 234;
-    refreshControl.tintColor = [UIColor whiteColor];
-    [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    [self.collectionV addSubview:refreshControl];
     self.collectionV.alwaysBounceVertical = YES;
     
     //self.collectionV.decelerationRate = 0.6;
@@ -153,7 +162,7 @@
                     
                     events = nil;
                     beeeps = [NSMutableArray arrayWithArray:objs];
-                    [self.collectionV reloadData];
+                    [self refreshCollectionView];
                     
                     [self hideLoading];
                 }
@@ -213,7 +222,7 @@
                 
             }
             
-            [self.collectionV reloadData];
+            [self refreshCollectionView];
             
             [self hideLoading];
         });
@@ -238,7 +247,7 @@
                 [beeeps addObjectsFromArray:objs];
                 loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
                 
-                [self.collectionV reloadData];
+                [self refreshCollectionView];
             });
         }
         
@@ -253,7 +262,6 @@
         
         UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
         [refreshControl endRefreshing];
-        [refreshControl removeFromSuperview];
         
         if (completed) {
           
@@ -266,7 +274,7 @@
                     
                     loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
                     
-                    [self.collectionV reloadData];
+                    [self refreshCollectionView];
                 }
                 else{
                     if ([objs isKindOfClass:[NSString class]]) {
@@ -309,7 +317,7 @@
                     UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
                     [refreshControl endRefreshing];
                     
-                    [self.collectionV reloadData];
+                    [self refreshCollectionView];
                     
                     [self hideLoading];
                 }
@@ -351,7 +359,7 @@
                     [events addObjectsFromArray:objs];
                 }
                 
-                [self.collectionV reloadData];
+                [self refreshCollectionView];
                 
             });
         }
@@ -370,6 +378,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -380,6 +389,7 @@
         [self getHomefeed];
     }
 
+    [self refreshCollectionView];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
@@ -484,7 +494,7 @@
         UILabel *area = (id)[containerV viewWithTag:-2];
         area.frame = CGRectMake(37, 190, 108, 32);
         
-        area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+      //  area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
         area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         NSString *jsonString = event.location;
         
@@ -505,7 +515,7 @@
         area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
         
         UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-        areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
+        areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
         
         //now move are to center
         area.textAlignment = NSTextAlignmentCenter;
@@ -614,7 +624,7 @@
             UILabel *area = (id)[containerV viewWithTag:-2];
             area.frame = CGRectMake(37, 190, 108, 32);
             
-            area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+            //area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
             area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         
         
@@ -635,7 +645,7 @@
             }
             
             UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-            areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
+            areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
             
             //now move are to center
             area.textAlignment = NSTextAlignmentCenter;
@@ -905,7 +915,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [beeeps objectAtIndex:path.row];
-    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.comments = beeep.comments;
     
     [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -961,7 +971,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = event;
-    viewController.comments = [NSMutableArray arrayWithArray:event.comments];
+    viewController.comments = event.comments;
 
     [self.navigationController pushViewController:viewController animated:YES];
 
@@ -1232,7 +1242,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
-    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.comments = beeep.comments;
     viewController.showKeyboard = YES;
     
     [self.navigationController pushViewController:viewController animated:YES];

@@ -702,7 +702,7 @@
 {
     // Return the number of rows in the section.
     
-    return (loadNextPage)?beeeps.count+2:beeeps.count+1;
+    return (loadNextPage)?beeeps.count+1:beeeps.count;
 }
 
 
@@ -711,7 +711,7 @@
     static NSString *CellIdentifier;
     UITableViewCell *cell;
     
-    if (loadNextPage && indexPath.row == beeeps.count + 1) {
+    if (loadNextPage && indexPath.row == beeeps.count) {
         
         CellIdentifier = @"LoadMoreCell";
         
@@ -726,165 +726,144 @@
         
     }
     
-    if (indexPath.row == 0) {
-        
-        CellIdentifier = @"CalendarCell";
-        
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-        UIView *whiteAreaV = [cell viewWithTag:12];
-        
-        whiteAreaV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-        whiteAreaV.layer.shadowOpacity = 0.7;
-        whiteAreaV.layer.shadowOffset = CGSizeMake(0, 0.1);
-        whiteAreaV.layer.shadowRadius = 0.8;
-        [whiteAreaV.layer setShadowPath:[[UIBezierPath
-                                    bezierPathWithRect:whiteAreaV.bounds] CGPath]];
-        
+    
+    CellIdentifier =  @"Cell";
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            
+    if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
+        initialCellCenter = [cell viewWithTag:66].center;
     }
-    else{
+    
+    if (cell.gestureRecognizers.count == 0) {
+        UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
+                                       initWithTarget:self action:@selector(handleCellPan:)];
+        pgr.delegate = self;
+        [[cell viewWithTag:66] addGestureRecognizer:pgr];
+    }
+    
+    cell.backgroundColor = [UIColor clearColor];
+    
+    UILabel *mLbl = (id)[cell viewWithTag:1];
+  //  mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    
+    UILabel *dLbl = (id)[cell viewWithTag:2];
+    //dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
+    
+    UILabel *titleLbl = (id)[cell viewWithTag:4];
+   // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
 
-        CellIdentifier =  @"Cell";
-        
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-                
-        if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
-            initialCellCenter = [cell viewWithTag:66].center;
-        }
-        
-        if (cell.gestureRecognizers.count == 0) {
-            UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
-                                           initWithTarget:self action:@selector(handleCellPan:)];
-            pgr.delegate = self;
-            [[cell viewWithTag:66] addGestureRecognizer:pgr];
-        }
-        
-        cell.backgroundColor = [UIColor clearColor];
-        
-        UILabel *mLbl = (id)[cell viewWithTag:1];
-      //  mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-        
-        UILabel *dLbl = (id)[cell viewWithTag:2];
-        //dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
-        
-        UILabel *titleLbl = (id)[cell viewWithTag:4];
-       // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+    
+    //    [cell viewWithTag:66].layer.masksToBounds = NO;
+    //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
+    //    [cell viewWithTag:66].layer.borderWidth = 0.5;
+    
+    UILabel *timeLabel = (id)[cell viewWithTag:55];
+    
+    UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
+    UIButton *beepItbutton = (id)[cell viewWithTag:-8];
+    
+    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
+    
+    if (self.mode != Timeline_My) {
 
-        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+        beepItbutton.hidden = NO;
         
-        //    [cell viewWithTag:66].layer.masksToBounds = NO;
-        //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
-        //    [cell viewWithTag:66].layer.borderWidth = 0.5;
+        double now_time = [[NSDate date]timeIntervalSince1970];
+        double event_timestamp = b.event.timestamp;
         
-        UILabel *timeLabel = (id)[cell viewWithTag:55];
-        
-        UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
-        UIButton *beepItbutton = (id)[cell viewWithTag:-8];
-        
-        Timeline_Object *b = [beeeps objectAtIndex:indexPath.row-1];
-        
-        if (self.mode != Timeline_My) {
-
-            beepItbutton.hidden = NO;
-            
-            double now_time = [[NSDate date]timeIntervalSince1970];
-            double event_timestamp = b.event.timestamp;
-            
-            if (now_time > event_timestamp) {
-                [beepItbutton setHidden:YES];
-            }
-            else{
-                [beepItbutton setHidden:NO];
-                [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
-            }
-            
-            reminderIcon.hidden = YES;
-            reminderLabel.hidden = YES;
+        if (now_time > event_timestamp) {
+            [beepItbutton setHidden:YES];
         }
         else{
-            beepItbutton.hidden = YES;
-            reminderIcon.hidden = NO;
-            reminderLabel.hidden = NO;
+            [beepItbutton setHidden:NO];
+            [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
         }
         
-        titleLbl.text = [b.event.title capitalizedString];
-        
-        //EVENT DATE
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
-        
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-        
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-        
-        timeLabel.text = hour;
-        
-        UILabel *dayLbl = (id)[cell viewWithTag:2];
-        UILabel *monthLbl = (id)[cell viewWithTag:1];
-        
-        dayLbl.text = daynumber;
-       // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
-        monthLbl.text = [month uppercaseString];
-       // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-        
-        float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
-        
-        NSString *alert_time = [self dailyLanguage:timestamp];
-        reminderLabel.text = alert_time;
-        //Venue name
-        
-        UILabel *venueLbl = (id)[cell viewWithTag:5];
-        
-        NSString *jsonString = b.event.location;
-        NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-        
-        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation capitalizedString];
-        
-        //Likes,Beeeps,Comments
-        UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
-        UILabel *likesLbl = (id)[cell viewWithTag:-3];
-        UILabel *commentsLbl = (id)[cell viewWithTag:-4];
-        
-        likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
-        commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
-        beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
-        
-        likesLbl.hidden = (likesLbl.text.intValue == 0);
-        commentsLbl.hidden = (commentsLbl.text.intValue == 0);
-        beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
-        
-        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-       
-        beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
-        
-        //Image
-        
-        UIImageView *imgV = (id)[cell viewWithTag:3];
-        
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
-                  placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
-    
+        reminderIcon.hidden = YES;
+        reminderLabel.hidden = YES;
     }
+    else{
+        beepItbutton.hidden = YES;
+        reminderIcon.hidden = NO;
+        reminderLabel.hidden = NO;
+    }
+    
+    titleLbl.text = [b.event.title capitalizedString];
+    
+    //EVENT DATE
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    [formatter setLocale:usLocale];
+    
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
+    NSString *dateStr = [formatter stringFromDate:date];
+    NSArray *components = [dateStr componentsSeparatedByString:@","];
+    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+    
+    NSString *month = [day_month objectAtIndex:1];
+    NSString *daynumber = [day_month objectAtIndex:2];
+    NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+    NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+    
+    timeLabel.text = hour;
+    
+    UILabel *dayLbl = (id)[cell viewWithTag:2];
+    UILabel *monthLbl = (id)[cell viewWithTag:1];
+    
+    dayLbl.text = daynumber;
+   // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
+    monthLbl.text = [month uppercaseString];
+   // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    
+    float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
+    
+    NSString *alert_time = [self dailyLanguage:timestamp];
+    reminderLabel.text = alert_time;
+    //Venue name
+    
+    UILabel *venueLbl = (id)[cell viewWithTag:5];
+    
+    NSString *jsonString = b.event.location;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    
+    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+    venueLbl.text = [loc.venueStation capitalizedString];
+    
+    //Likes,Beeeps,Comments
+    UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
+    UILabel *likesLbl = (id)[cell viewWithTag:-3];
+    UILabel *commentsLbl = (id)[cell viewWithTag:-4];
+    
+    likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
+    commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
+    beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
+    
+    likesLbl.hidden = (likesLbl.text.intValue == 0);
+    commentsLbl.hidden = (commentsLbl.text.intValue == 0);
+    beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+   
+    beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
+    
+    //Image
+    
+    UIImageView *imgV = (id)[cell viewWithTag:3];
+    
+    [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
+              placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+    
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0) {
-        return 46;
-    }
-    else if (indexPath.row == beeeps.count+1 && loadNextPage){
+    if (indexPath.row == beeeps.count+1 && loadNextPage){
         return 51;
     }
     else{
@@ -894,45 +873,36 @@
 
 -(void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.row != 0) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [[cell viewWithTag:55]setBackgroundColor:[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1]];
-    }
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+   [[cell viewWithTag:55]setBackgroundColor:[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1]];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    if (indexPath.row == 0) {
-        [self calendarPressed:nil];
-        return;
-    }
 
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
-    viewController.tml = [beeeps objectAtIndex:indexPath.row-1];
+    viewController.tml = [beeeps objectAtIndex:indexPath.row];
     
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
 -(void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.row != 0) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [[cell viewWithTag:55]setBackgroundColor:[UIColor clearColor]];
-    }
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [[cell viewWithTag:55]setBackgroundColor:[UIColor clearColor]];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0;
+    return 46;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    UIView *header=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,5)];
-    header.backgroundColor =[UIColor clearColor];
-    return header;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
+    
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -1486,7 +1456,7 @@
 {
     NSIndexPath* indexPath = [self.tableV indexPathForRowAtPoint:point];
     
-    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row-1];
+    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
     
     switch (selectedIndex) {
         case 0:
@@ -1520,7 +1490,7 @@
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     
 
-    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row-1];
+    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
     viewController.tml = b;
     
     viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
@@ -1532,7 +1502,7 @@
 -(void)likeEventAtIndexPath:(NSIndexPath *)indexpath{
     
         
-    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row-1];
+    Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
     
     NSArray *likes = b.beeep.beeepInfo.likes;
     NSMutableArray *likers = [NSMutableArray array];
@@ -1586,10 +1556,10 @@
 
 -(void)commentEventAtIndexPath:(NSIndexPath *)indexPath{
     
-    Timeline_Object*b = [beeeps objectAtIndex:indexPath.row-1];
+    Timeline_Object*b = [beeeps objectAtIndex:indexPath.row];
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
-    viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row-1];
+    viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
     viewController.comments = [NSMutableArray arrayWithArray: b.beeep.beeepInfo.comments];
     viewController.showKeyboard = YES;
     
@@ -1598,8 +1568,7 @@
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
-    Timeline_Object*b = [beeeps objectAtIndex:indexpath.row-1];
-    
+    Timeline_Object*b = [beeeps objectAtIndex:indexpath.row];
     
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
     viewController.fingerprint = b.event.fingerprint;
@@ -1611,8 +1580,7 @@
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
-
-
+    
 }
 
 

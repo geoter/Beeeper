@@ -27,6 +27,7 @@
 #import "WebBrowserVC.h"
 #import "SearchVC.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import "BeeepedBy.h"
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
@@ -342,6 +343,7 @@
     jsonString = suggestion.what.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
@@ -404,14 +406,14 @@
     
     if (isLiker) {
         
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
         
         //[self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
 
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"like_event.png"];
         
 
@@ -1733,7 +1735,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1761,7 +1763,7 @@
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
 //                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1793,7 +1795,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1824,7 +1826,7 @@
                         
                     //    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
                       
-                        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                         likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                         
                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1865,7 +1867,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1896,7 +1898,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1927,7 +1929,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -2069,6 +2071,24 @@
         [alert show];
         return;
     }
+    
+    @try {
+        for (id beeeper in beeepers) {
+            if ([[beeeper objectForKey:@"id"] isEqualToString:my_id]) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+                return;
+            }
+        }
+    }
+    @catch (NSException *exception) {
+    
+    }
+    @finally {
+    
+    }
+ 
+
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     

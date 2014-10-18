@@ -12,7 +12,7 @@
 @interface Event_Search : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, strong) NSString *internalBaseClassDescription;
-@property (nonatomic, strong) NSArray *comments;
+@property (nonatomic, strong) NSMutableArray *comments;
 @property (nonatomic, strong) NSString *fingerprint;
 @property (nonatomic, assign) double timestamp;
 @property (nonatomic, strong) NSString *imageUrl;

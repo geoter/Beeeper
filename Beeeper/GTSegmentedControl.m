@@ -41,7 +41,7 @@
             optionBtn.backgroundColor = [UIColor clearColor];
             optionBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
             [optionBtn setTitle:option forState:UIControlStateNormal];
-            [optionBtn setTitleColor:[UIColor colorWithRed:183/255.0 green:199/255.0 blue:214/255.0 alpha:1] forState:UIControlStateNormal];
+            [optionBtn setTitleColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1] forState:UIControlStateNormal];
             [optionBtn setTag:i];
             [optionBtn addTarget:customView action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [customView addSubview:optionBtn];
@@ -105,7 +105,7 @@
     for (UIView *v in btn.superview.subviews) {
         if (v != btn && [v isKindOfClass:[UIButton class]]) {
             UIButton *btn = (UIButton *)v;
-            [btn setTitleColor:[UIColor colorWithRed:183/255.0 green:199/255.0 blue:214/255.0 alpha:1] forState:UIControlStateNormal];
+            [btn setTitleColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1] forState:UIControlStateNormal];
         }
     }
     

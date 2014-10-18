@@ -266,10 +266,10 @@
         UILabel *beeepedBy = (id)[cell viewWithTag:4];
         
         nameLbl.text = [what.title capitalizedString];
-        [nameLbl sizeToFitHeight];
+       // [nameLbl sizeToFitHeight];
 
         UIView *bottomV = (id)[cell viewWithTag:666];
-       // bottomV.frame = CGRectMake(110, nameLbl.frame.origin.y+nameLbl.frame.size.height, 196, 51);
+      //  bottomV.frame = CGRectMake(nameLbl.frame.origin.x, nameLbl.frame.origin.y+nameLbl.frame.size.height, bottomV.frame.size.width,bottomV.frame.size.height);
         
         NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -277,7 +277,7 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            venueLbl.text = [loc.venueStation uppercaseString];
+            venueLbl.text = [loc.venueStation capitalizedString];
 
         }
         
@@ -341,7 +341,7 @@
     
     if(section == sections.count) {
         
-        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
+        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 1)];
         header.backgroundColor = [UIColor clearColor];
         return header;
     }
@@ -368,7 +368,7 @@
 
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
     header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, self.tableV.frame.size.width, 46)];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 46)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     

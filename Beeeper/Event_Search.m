@@ -77,7 +77,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
             [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
         }
         
-        self.comments = [NSArray arrayWithArray:parsedComments];
+        self.comments = [NSMutableArray arrayWithArray:parsedComments];
 
             self.fingerprint = [self objectOrNilForKey:kEvent_SearchFingerprint fromDictionary:dict];
             self.timestamp = [[self objectOrNilForKey:kEvent_SearchTimestamp fromDictionary:dict] doubleValue];

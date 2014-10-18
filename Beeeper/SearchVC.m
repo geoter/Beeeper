@@ -447,7 +447,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     area.frame = CGRectMake(37, 190, 108, 32);
     
-    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+   // area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     NSString *jsonString = event.location;
     
@@ -455,13 +455,13 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    area.text = [loc.venueStation uppercaseString];
+    area.text = [loc.venueStation capitalizedString];
     [area sizeToFit];
     area.center = CGPointMake(containerV.center.x, area.center.y);
     area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
     
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
+    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
     
     //now move are to center
     area.textAlignment = NSTextAlignmentCenter;
@@ -651,7 +651,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [events objectAtIndex:path.row];
-    viewController.comments = [NSMutableArray arrayWithArray:event.comments];
+    viewController.comments = event.comments;
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -687,7 +687,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (NSInteger) numberOfMenuItems
 {
-    return 3;
+    return 4;
 }
 
 -(UIImage*) imageForItemAtIndex:(NSInteger)index
@@ -702,6 +702,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             break;
         case 2:
             imageName = @"Suggest_popup_unpressed";
+            break;
+        case 3:
+            imageName = @"Comment_popup_unpressed";
             break;
             
         default:
@@ -724,6 +727,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             break;
         case 2:
             [self suggestEventAtIndexPath:indexPath];
+            break;
+        case 3:
+            [self commentEventAtIndexPath:indexPath];
             break;
             
         default:
@@ -787,7 +793,17 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 
-
+-(void)commentEventAtIndexPath:(NSIndexPath *)indexPath{
+    
+    Event_Search *event = [events objectAtIndex:indexPath.row];
+    
+    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    viewController.event_beeep_object = event;
+    viewController.comments = event.comments;
+    viewController.showKeyboard = YES;
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+}
 
 
 -(void)imageDownloadFinished:(NSNotification *)notif{

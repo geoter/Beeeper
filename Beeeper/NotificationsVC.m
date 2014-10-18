@@ -15,8 +15,6 @@
 @interface NotificationsVC ()
 {
     NSMutableArray *notifications;
-    NSMutableArray *newNotifications;
-    NSMutableArray *oldNotifications;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
@@ -30,7 +28,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.title = @"Notifications";
     
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
@@ -46,7 +44,7 @@
     [self.tableV addSubview:refreshControl];
 
     pendingImagesDict = [NSMutableDictionary dictionary];
-    
+   
     [[BPUser sharedBP]getLocalNotifications:^(BOOL completed,NSArray *objcts){
         
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
@@ -54,6 +52,7 @@
         [self hideLoading];
         
         if (completed && objcts.count > 0) {
+            
             notifications = [NSMutableArray arrayWithArray:objcts];
             
             [self.tableV reloadData];
@@ -62,59 +61,32 @@
             [self showLoading];
         }
     }];
-    
+
 }
 
 -(void)getNotifications{
     
-     self.tableV.decelerationRate = 0.6;
+    // self.tableV.decelerationRate = 0.6;
     
     loadNextPage = NO;
     
-    newNotifications = nil;
-    oldNotifications = nil;
-    
-    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+    [[BPUser sharedBP]getNotificationsWithCompletionBlock:^(BOOL completed,NSArray *notifs){
 
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
         [self hideLoading];
         
         if (completed) {
+          
             notifications = [NSMutableArray array];
-            [notifications addObjectsFromArray:newNotifs];
+            [notifications addObjectsFromArray:notifs];
             
-            if (newNotifs.count + oldNotifs.count == 10) {
+            if (notifs.count == [BPUser sharedBP].notifsPageLimit) {
                 loadNextPage = YES;
             }
             
-            //check for duplicates
-            
-            if (newNotifs.count > 0) {
-                
-                for (Activity_Object *actV in newNotifs) {
-                    NSString *newNotifMD5  = [actV.description MD5];
-                    
-                    for (Activity_Object *oldActV in oldNotifs) {
-                        NSString *oldNotifMD5  = [oldActV.description MD5];
-                        
-                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
-                            [notifications addObject:oldActV];
-                        }
-                    }
-                    
-                }
-
-            }
-            else{
-                [notifications addObjectsFromArray:oldNotifs];
-            }
-            
-            
-            newNotifications = [NSMutableArray arrayWithArray:newNotifs];
-            oldNotifications = [NSMutableArray arrayWithArray:oldNotifs];
-
             if (notifications.count > 0) {
+                
                 self.noNotifsFound.hidden = YES;
             }
             else{
@@ -148,39 +120,17 @@
     
     loadNextPage = NO;
     
-    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *newNotifs,NSArray *oldNotifs){
+    [[BPUser sharedBP]nextNotificationsWithCompletionBlock:^(BOOL completed,NSArray *notifs){
         
         if (completed) {
-            [notifications addObjectsFromArray:newNotifs];
+            
+            [notifications addObjectsFromArray:notifs];
             
             self.noNotifsFound.hidden = notifications.count != 0;
             
-            if (newNotifs.count + oldNotifs.count == 10) {
+            if (notifs.count == [BPUser sharedBP].notifsPageLimit) {
                 loadNextPage = YES;
             }
-            
-            if (newNotifs.count > 0) {
-                
-                for (Activity_Object *actV in newNotifs) {
-                    NSString *newNotifMD5  = [actV.description MD5];
-                    
-                    for (Activity_Object *oldActV in oldNotifs) {
-                        NSString *oldNotifMD5  = [oldActV.description MD5];
-                        
-                        if (![newNotifMD5 isEqualToString:oldNotifMD5] && [notifications indexOfObject:oldActV] == NSNotFound) {
-                            [notifications addObject:oldActV];
-                        }
-                    }
-                    
-                }
-                
-            }
-            else{
-                [notifications addObjectsFromArray:oldNotifs];
-            }
-            
-            [newNotifications addObjectsFromArray:newNotifs];
-            [oldNotifications addObjectsFromArray:oldNotifs];
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }else{
@@ -190,12 +140,27 @@
     }];
 }
 
+-(void)getNewNotifications{
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [[BPUser sharedBP]clearBadgeWithCompletionBlock:^(BOOL completed){
+        if (completed) {
+            [TabbarVC sharedTabbar].notifications = 0;
+        }
+    }];
     
     [self getNotifications];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
 }
 
 
@@ -258,75 +223,83 @@
     txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
 
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
-    
-    if(newNotifications != nil && [newNotifications indexOfObject:activity] != NSNotFound){
-        cell.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
-    }
-    else{
-        cell.backgroundColor = [UIColor whiteColor];
-    }
-    
-    Who *w = [[activity.who firstObject] copy];
-    Whom *wm = [[activity.whom firstObject] copy];
-    
-    //see if who or whom is You
-    
-    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-    
-    if ([my_id isEqualToString:w.whoIdentifier]) {
-        w.name = @"You";
-    }
-    
-    if ([my_id isEqualToString:wm.whomIdentifier]) {
-        wm.name= @"You";
-    }
    
-    double now_timestamp = [[NSDate date] timeIntervalSince1970];
-    
-    NSString *when = [self dailyLanguage:now_timestamp-activity.when];
-    time.text = when;
+    @try {
 
-    NSAttributedString *notification_text = [self textForNotification:activity];
-    txtV.attributedText = notification_text;
+        if(!activity.read){
+            cell.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
+        }
+        else{
+            cell.backgroundColor = [UIColor whiteColor];
+        }
+        
+        Who *w = [[activity.who firstObject] copy];
+        Whom *wm = [[activity.whom firstObject] copy];
+        
+        //see if who or whom is You
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        if ([my_id isEqualToString:w.whoIdentifier]) {
+            w.name = @"You";
+        }
+        
+        if ([my_id isEqualToString:wm.whomIdentifier]) {
+            wm.name= @"You";
+        }
+       
+        double now_timestamp = [[NSDate date] timeIntervalSince1970];
+        
+        NSString *when = [self dailyLanguage:now_timestamp-activity.when];
+        time.text = when;
 
-   //NSString *extension;
-    NSString *imageName;
-    
-   /* if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-    //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
+        NSAttributedString *notification_text = [self textForNotification:activity];
+        txtV.attributedText = notification_text;
+
+       //NSString *extension;
+        NSString *imageName;
+        
+       /* if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
+        //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
+        }
+        else if (activity.eventActivity.count > 0){
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *path = event.imageUrl;
+         //   extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[path MD5]];
+            
+        }
+        else if(activity.beeepInfoActivity.eventActivity != nil){
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+          //  extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
+        }
+        else if ([wm.name isEqualToString:@"You"]){
+          //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+            imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
+        }*/
+        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
+        CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+        
+        int lines = round(textViewSize.height/txtV.font.lineHeight);
+        
+        if (lines == 2) {
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 16, 212, textViewSize.height);
+        }
+        else{
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 20, 212, textViewSize.height);
+        }
     }
-    else if (activity.eventActivity.count > 0){
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *path = event.imageUrl;
-     //   extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@",[path MD5]];
+    @catch (NSException *exception) {
+        NSLog(@"eskaseee");
+    }
+    @finally {
         
     }
-    else if(activity.beeepInfoActivity.eventActivity != nil){
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-      //  extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
-    }
-    else if ([wm.name isEqualToString:@"You"]){
-      //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
-    }*/
-    
-    [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
-                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-    
-    CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-    
-    int lines = round(textViewSize.height/txtV.font.lineHeight);
-    
-    if (lines == 2) {
-        txtV.frame = CGRectMake(txtV.frame.origin.x, 16, 212, textViewSize.height);
-    }
-    else{
-        txtV.frame = CGRectMake(txtV.frame.origin.x, 20, 212, textViewSize.height);
-    }
-    
     
     return cell;
 }
@@ -336,6 +309,12 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+
+    [[BPUser sharedBP]markNotificationRead:activity.internalBaseClassIdentifier completionBlock:^(BOOL completed){
+        if (completed) {
+            [self.tableV reloadData];
+        }
+    }];
     
     if (activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity != nil) {
         
@@ -374,81 +353,109 @@
 }
 
 -(NSAttributedString *)textForNotification:(Activity_Object *)activity{
-
-    Who *w = [[activity.who firstObject] copy];
-    Whom *wm = [[activity.whom firstObject] copy];
     
-    //see if who or whom is You
+    @try {
     
-    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-    
-    if ([my_id isEqualToString:w.whoIdentifier]) {
-        w.name = @"You";
-    }
-    
-    if ([my_id isEqualToString:wm.whomIdentifier]) {
-        wm.name= @"You";
-    }
-    
-    NSString *formattedString;
-    
-    if (wm != nil) {
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[wm.name capitalizedString]];
-    }
-    else if(activity.eventActivity.count > 0){
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [[event.title unicodeEncode]capitalizedString];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
-    }
-    else if(activity.beeepInfoActivity.eventActivity.count >0){
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[NSString stringWithUTF8String:[[event.title capitalizedString] cStringUsingEncoding:[NSString defaultCStringEncoding]]]];
-    }
-    else{
-        formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
-    }
-    
-    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
-    
-    [attText addAttribute:NSFontAttributeName
-                    value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
-                    range:NSMakeRange(0,formattedString.length)];
-    
-    if (w != nil && ![w.name isEqualToString:@"You"]) {
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
-                        range:[formattedString rangeOfString:[w.name capitalizedString]]];
-    }
-    
-    if (wm != nil && ![wm.name isEqualToString:@"You"]) {
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
-                        range:[formattedString rangeOfString:[wm.name capitalizedString]]];
-    }
-    else if(activity.beeepInfoActivity.eventActivity.count >0){
+        Who *w = [[activity.who firstObject] copy];
+        Whom *wm = [[activity.whom firstObject] copy];
         
-        EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+        //see if who or whom is You
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        if ([my_id isEqualToString:w.whoIdentifier]) {
+            w.name = @"You";
+        }
+        
+        if ([my_id isEqualToString:wm.whomIdentifier]) {
+            wm.name= @"You";
+        }
+        
+        NSString *formattedString;
+        
+        if (wm != nil) {
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,[wm.name capitalizedString]];
+        }
+        else if(activity.eventActivity.count > 0){
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *event_title = [[event.title unicodeEncode]capitalizedString];
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
+        }
+        else if(activity.beeepInfoActivity.eventActivity.count >0){
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+            NSString *event_title = [[event.title unicodeEncode]capitalizedString];
+            
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
+        }
+        else{
+            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,activity.what];
+        }
+        
+        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:formattedString];
         
         [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
-                        range:[formattedString rangeOfString:[event.title capitalizedString]]];
+                        value:[UIFont fontWithName:@"HelveticaNeue-Light" size:12]
+                        range:NSMakeRange(0,formattedString.length)];
+        
+        if (w != nil && ![w.name isEqualToString:@"You"]) {
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:[w.name capitalizedString]]];
+        }
+        
+        if (wm != nil && ![wm.name isEqualToString:@"You"]) {
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:[wm.name capitalizedString]]];
+            
+            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
+                NSLog(@"edo eimaste");
+            }
+        }
+        else if(activity.beeepInfoActivity.eventActivity.count >0){
+            
+            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
+            NSString *event_title = [[event.title unicodeEncode] capitalizedString];
+            
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:event_title]];
+            
+            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
+                NSLog(@"edo eimaste");
+            }
+            
+        }
+        else if(activity.eventActivity.count > 0){
+            
+            EventActivity *event = [activity.eventActivity firstObject];
+            NSString *event_title = [[event.title unicodeEncode] capitalizedString];
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:event_title]];
+            
+            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
+                NSLog(@"edo eimaste");
+            }
+        }
+        else{
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:activity.what]];
+            
+            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
+                NSLog(@"edo eimaste");
+            }
+        }
+        
+        return attText;
+    }
+    @catch (NSException *exception) {
+        NSLog(@"edoooo");
+    }
+    @finally {
         
     }
-    else if(activity.eventActivity.count > 0){
-        
-        EventActivity *event = [activity.eventActivity firstObject];
-        NSString *event_title = [[event.title unicodeEncode] capitalizedString];
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
-                        range:[formattedString rangeOfString:event_title]];
-    }
-    else{
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
-                        range:[formattedString rangeOfString:activity.what]];
-    }
-    
-    return attText;
 
 }
 
@@ -463,24 +470,43 @@
         return 40;
     }
     else{
-        NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+        
+        @try {
+           
+            NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+            
+            CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+            
+            float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
+            
+            //        NSLog(@"H: %f",height);
+            
+            return height;
 
-        CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
-
-        float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
-
-        NSLog(@"H: %f",height);
-
-        return height;
+        }
+        @catch (NSException *exception) {
+            NSLog(@"ke dooo");
+        }
+        @finally {
+            
+        }
     }
 }
 
 -(CGSize)frameForText:(NSAttributedString*)text constrainedToSize:(CGSize)size{
     
-    CGRect frame =  [text boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin) context:nil];
+    @try {
+        CGRect frame =  [text boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin) context:nil];
+        
+        // This contains both height and width, but we really care about height.
+        return frame.size;
+    }
+    @catch (NSException *exception) {
     
-    // This contains both height and width, but we really care about height.
-    return frame.size;
+    }
+    @finally {
+    
+    }
 }
 
 -(void)imageDownloadFinished:(NSNotification *)notif{

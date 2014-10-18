@@ -91,15 +91,15 @@
     rowsToReload = [NSMutableArray array];
     pendingImagesDict = [[NSMutableDictionary alloc]init];
     
-    self.collectionV.decelerationRate = 0.6;
+   // self.collectionV.decelerationRate = 0.6;
     
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
-    layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 10;
-    layout.footerHeight = 10;
-    layout.minimumColumnSpacing = 6;
-    layout.minimumInteritemSpacing = 6;
+    layout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 8);
+    layout.headerHeight = 0;
+    layout.footerHeight = 50;
+    layout.minimumColumnSpacing = 8;
+    layout.minimumInteritemSpacing = 8;
     
     [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
          forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
@@ -114,6 +114,8 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
+    [self.collectionV reloadData];
+    
     if (self.initialSearchTerm) {
         
         UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -141,7 +143,7 @@
     
     self.tapG.enabled = NO;
     
-    suggestionValues = [NSArray arrayWithObjects:@"popular",@"sports",@"cinema",@"music",@"TV",@"nightlife",@"radio",@"deals", nil];
+    suggestionValues = [NSArray arrayWithObjects:@"TV",@"movies",@"music",@"deals",@"sports", nil];
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
@@ -149,7 +151,7 @@
     numberOfCommentsV.backgroundColor = [UIColor clearColor];
     
     UILabel *numberOfComments = [[UILabel alloc]initWithFrame:CGRectMake(30, 8, self.tableV.frame.size.width, 25)];
-    numberOfComments.text = [NSString stringWithFormat:@"SUGGESTIONS"];
+    numberOfComments.text = [NSString stringWithFormat:@"POPULAR"];
     numberOfComments.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
     numberOfComments.textAlignment = NSTextAlignmentLeft;
     [numberOfCommentsV addSubview:numberOfComments];
@@ -407,17 +409,17 @@
     UIImageView *imageV = (id)[containerV viewWithTag:3];
     UILabel *titleLbl = (id)[containerV viewWithTag:4];
     
-    monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+   // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
     monthLbl.text = [month uppercaseString];
     
-    dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+    //dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
     dayLbl.text = daynumber;
     dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
     
-    titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+   // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
     //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -445,7 +447,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     area.frame = CGRectMake(37, 190, 108, 32);
     
-    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
+    area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     NSString *jsonString = event.location;
     
@@ -456,10 +458,10 @@
     area.text = [loc.venueStation uppercaseString];
     [area sizeToFit];
     area.center = CGPointMake(containerV.center.x, area.center.y);
-    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
+    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
     
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-    areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
+    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
     
     //now move are to center
     area.textAlignment = NSTextAlignmentCenter;
@@ -473,7 +475,7 @@
     
     beeeps.text = [NSString stringWithFormat:@"%d",(int)event.beeepedBy.count];
     favorites.text = [NSString stringWithFormat:@"%d",(int)event.likes.count];
-    
+    comments.text = [NSString stringWithFormat:@"%d",(int)event.comments.count];
     favorites.hidden = (favorites.text.intValue == 0);
     comments.hidden = (comments.text.intValue == 0);
     beeeps.hidden = (beeeps.text.intValue == 0);
@@ -596,7 +598,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
     //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, 278);
+    return CGSizeMake(148, 307);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //
@@ -649,7 +651,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [events objectAtIndex:path.row];
-//    viewController.comments = [NSMutableArray arrayWithArray:beeep.comments];
+    viewController.comments = [NSMutableArray arrayWithArray:event.comments];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

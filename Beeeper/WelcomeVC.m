@@ -287,7 +287,7 @@
     animatedBGImages = [NSMutableArray array];
     
     @try {
-        for (int i = 0; i <= 2; i++) { //100 is just a big number
+        for (int i = 0; i <= 3; i++) { //100 is just a big number
             NSString *photoName = [NSString stringWithFormat:@"welcome_screen_%d",i];
             
             NSString *path = [[NSBundle mainBundle] pathForResource:photoName ofType:@"png"];

@@ -51,5 +51,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Beeeper uses your location to let your Friends know that this event is nearby.</string>
 </dict>
 </plist>

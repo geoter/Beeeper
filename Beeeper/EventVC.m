@@ -26,6 +26,7 @@
 #import <MessageUI/MessageUI.h>
 #import "WebBrowserVC.h"
 #import "SearchVC.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface EventVC ()<PHFComposeBarViewDelegate,UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>{
 
@@ -44,11 +45,14 @@
     
     NSString *fingerprint;
     NSString *websiteURL;
+    NSString *beeeperWebsiteURL;
+    
     NSMutableString *shareText;
     NSMutableArray* rowsToReload;
     
     BOOL passedEvent;
 }
+@property (nonatomic,strong) NSString *imageURL;
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
 @property (nonatomic,assign) CGRect kInitialViewFrame;
@@ -57,7 +61,7 @@
 @end
 
 @implementation EventVC
-@synthesize kInitialViewFrame,tml;
+@synthesize kInitialViewFrame,tml,imageURL;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -72,6 +76,9 @@
 {
     [super viewDidLoad];
     
+    UINavigationBar* navigationBar = self.navigationController.navigationBar;
+    
+    [navigationBar setBarTintColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
     
     [self showLoading];
     
@@ -239,9 +246,6 @@
     [super viewWillAppear:animated];
     
     
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
-    self.navigationItem.leftBarButtonItem = leftItem;
-    
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
     
@@ -249,7 +253,12 @@
     UIBarButtonItem *btnShare = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"suggest_it_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(suggestIt)];
     UIBarButtonItem *btnMore = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"more_btn_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showMore)];
     
-    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnMore,btnShare,btnLike, nil]];
+     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    
+    [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnShare,btnLike,btnMore, nil]];
+    
+    UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+    [self.navigationItem setRightBarButtonItem:beeepItem];
     
     //Hide beeep it button if coming from My Timeline
     
@@ -315,6 +324,7 @@
     
     NSString *website = suggestion.what.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",suggestion.what.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -335,14 +345,14 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation uppercaseString];
+    venueLbl.text = [loc.venueStation capitalizedString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
     
-    if (self.titleLabel.frame.origin.x < 257) {
-        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    if (self.titleLabel.frame.origin.y < 291) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 291, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
     }
 
     [venueLbl sizeToFit];
@@ -463,11 +473,19 @@
 //        self.monthLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
         self.passedIcon.hidden = NO;
         self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+
+        
         self.passedIcon.hidden = YES;
         self.beeepItButton.hidden = NO;
     }
@@ -480,8 +498,8 @@
     NSString *imageName;
     
     @try {
-        
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:suggestion.what.imageUrl]]
+        imageURL = [[DTO sharedDTO] fixLink:suggestion.what.imageUrl];
+        [imgV sd_setImageWithURL:[NSURL URLWithString:imageURL]
                 placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
     }
     @catch (NSException *exception) {
@@ -539,7 +557,7 @@
     
     NSString *website = ffo.eventFfo.eventDetailsFfo.source;
     websiteURL = website;
-    
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",ffo.eventFfo.eventDetailsFfo.fingerprint];
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
@@ -558,14 +576,14 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation uppercaseString];
+    venueLbl.text = [loc.venueStation capitalizedString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
     
-    if (self.titleLabel.frame.origin.x < 257) {
-        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    if (self.titleLabel.frame.origin.y < 291) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 291, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
     }
     
     [venueLbl sizeToFit];
@@ -615,14 +633,14 @@
     
     if (isLiker) {
         
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
         
 //        [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
 
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
        likeBtn.image = [UIImage imageNamed:@"like_event.png"];
         
        // [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
@@ -689,14 +707,23 @@
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
         self.passedIcon.hidden = NO;
         self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
+        
         self.passedIcon.hidden = YES;
         self.beeepItButton.hidden = NO;
     }
+
     
     //Image
     
@@ -708,8 +735,10 @@
        // extension  = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName  = [NSString stringWithFormat:@"%@",ffo.eventFfo.eventDetailsFfo.imageUrl];
         
-        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
                 placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -762,6 +791,7 @@
 
     website = t.event.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",t.event.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -780,14 +810,14 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation uppercaseString];
+    venueLbl.text = [loc.venueStation capitalizedString];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
     self.titleLabel.center = oldCenter;
     
-    if (self.titleLabel.frame.origin.x < 257) {
-        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+    if (self.titleLabel.frame.origin.y < 291) {
+        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 291, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
     }
     
     [venueLbl sizeToFit];
@@ -840,14 +870,14 @@
     
     if (isLiker) {
         
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
         
        // [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
         
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"like_event.png"];
         
 //        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
@@ -864,14 +894,23 @@
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
         self.passedIcon.hidden = NO;
         self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
+        
         self.passedIcon.hidden = YES;
         self.beeepItButton.hidden = NO;
     }
+
     
     
     @try {
@@ -933,8 +972,9 @@
         //extension  = [[t.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         imageName  = [NSString stringWithFormat:@"%@",t.event.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -990,6 +1030,7 @@
     
     NSString *website = event.eventInfo.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",event.eventInfo.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -1011,14 +1052,14 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation uppercaseString];
+        venueLbl.text = [loc.venueStation capitalizedString];
         
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
         self.titleLabel.center = oldCenter;
         
-        if (self.titleLabel.frame.origin.x < 257) {
-            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        if (self.titleLabel.frame.origin.y < 291) {
+            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 291, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
         }
         
         [venueLbl sizeToFit];
@@ -1067,14 +1108,14 @@
     }
     
     if (isLiker) {
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
         
         //[self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
     }
     else{
         
-        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
         likeBtn.image = [UIImage imageNamed:@"like_event.png"];
         
 //        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
@@ -1096,14 +1137,24 @@
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
         self.passedIcon.hidden = NO;
         self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
+        
         self.passedIcon.hidden = YES;
         self.beeepItButton.hidden = NO;
     }
+
     
     @try {
         if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
@@ -1163,8 +1214,10 @@
         
         imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -1220,6 +1273,7 @@
     
     NSString *website = event.eventInfo.source;
     websiteURL = website;
+    beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",event.eventInfo.fingerprint];
     
     NSURL *url = [NSURL URLWithString:websiteURL];
     
@@ -1240,14 +1294,14 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation uppercaseString];
+        venueLbl.text = [loc.venueStation capitalizedString];
         
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
         self.titleLabel.center = oldCenter;
         
-        if (self.titleLabel.frame.origin.x < 257) {
-            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 257, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        if (self.titleLabel.frame.origin.y < 291) {
+            self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, 291, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
         }
         
         [venueLbl sizeToFit];
@@ -1308,12 +1362,12 @@
             isLiker = [likers indexOfObject:my_id] != NSNotFound;
             
             if (isLiker) {
-                UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                 likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
                 //            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
             }
             else{
-                UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                 likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                 //          [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
             }
@@ -1343,12 +1397,12 @@
         }
         
         if (isLiker) {
-            UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+            UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
             likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
 //            [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
         }
         else{
-            UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+            UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
             likeBtn.image = [UIImage imageNamed:@"like_event.png"];
             //          [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
         }
@@ -1416,11 +1470,19 @@
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
         self.passedIcon.hidden = NO;
         self.beeepItButton.hidden = YES;
         [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
+        
+        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
+        [self.navigationItem setRightBarButtonItem:beeepItem];
+        
+        
         self.passedIcon.hidden = YES;
         self.beeepItButton.hidden = NO;
     }
@@ -1438,8 +1500,9 @@
         
         imageName  = [NSString stringWithFormat:@"%@",event.eventInfo.imageUrl];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imageName]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+        imageURL = [[DTO sharedDTO] fixLink:imageName];
+        [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
+                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
         
     }
     @catch (NSException *exception) {
@@ -1467,6 +1530,13 @@
     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
     [self.tableV reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
    
+    
+    self.tableV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.tableV.layer.shadowOpacity = 0.7;
+    self.tableV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    self.tableV.layer.shadowRadius = 0.8;
+    self.tableV.layer.masksToBounds = NO;
+
 }
 
 
@@ -1506,7 +1576,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     
@@ -1531,7 +1601,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1559,7 +1629,7 @@
                         likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                         
-                        UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                        UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                         likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                         
                         likesLbl.hidden = (likers.count == 0);
@@ -1601,7 +1671,7 @@
                  
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1632,7 +1702,7 @@
                     
                     likesLbl.hidden = (likers.count == 0);
                     
-                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:2];
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
                     likeBtn.image = [UIImage imageNamed:@"like_event.png"];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -2044,7 +2114,7 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
--(void)sendFacebook{
+/*-(void)sendFacebook{
     
     SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
     
@@ -2072,6 +2142,81 @@
     composeController.completionHandler =myBlock;
     
     
+}*/
+
+-(void)sendFacebook{
+    
+    
+    [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
+                                       allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+                                                      FBSessionState state,
+                                                      NSError *error) {
+                                      if (error) {
+                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                              message:error.localizedDescription
+                                                                                             delegate:nil
+                                                                                    cancelButtonTitle:@"OK"
+                                                                                    otherButtonTitles:nil];
+                                          [alertView show];
+                                          
+                                      } else if (session.isOpen) {
+                                          
+                                          
+                                          //            UIImage *img;
+                                          //
+                                          //            if(imageURL == nil){
+                                          //                NSString *base64Image = [self.values objectForKey:@"base64_image"];
+                                          //                NSData *base64Data = [self base64DataFromString:base64Image];
+                                          //
+                                          //                if (base64Data != nil) {
+                                          //                    img = [UIImage imageWithData:base64Data];
+                                          //                }
+                                          //            }
+                                          //            else{
+                                          //                NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
+                                          //
+                                          //                NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                                          //
+                                          //                NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
+                                          //
+                                          //                if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
+                                          //
+                                          //                    img = [UIImage imageWithContentsOfFile:localPath];
+                                          //                }
+                                          //            }
+                                          
+                                          
+                                          // Check if the Facebook app is installed and we can present the share dialog
+                                          FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
+                                          params.link = [NSURL URLWithString:websiteURL];
+                                          NSURL *url = [NSURL URLWithString:imageURL];
+                                          params.picture = url;
+                                          
+                                          
+                                          // If the Facebook app is installed and we can present the share dialog
+                                          if ([FBDialogs canPresentShareDialogWithParams:params]) {
+                                              // Present share dialog
+                                              [FBDialogs presentShareDialogWithLink:params.link
+                                                                            handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                                                if(error) {
+                                                                                    // An error occurred, we need to handle the error
+                                                                                    // See: https://developers.facebook.com/docs/ios/errors
+                                                                                    NSLog(@"Error publishing story: %@", error.description);
+                                                                                } else {
+                                                                                    // Success
+                                                                                    NSLog(@"result %@", results);
+                                                                                }
+                                                                            }];
+                                          } else {
+                                              // Present the feed dialog
+                                              NSLog(@"fdfd");
+                                          }
+                                          
+                                          
+                                          //run your user info request here
+                                      }
+                                  }];
 }
 
 -(void)sendTwitter {

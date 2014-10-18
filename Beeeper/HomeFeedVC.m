@@ -25,18 +25,20 @@
 #import "BorderTextField.h"
 #import "Event_Search.h"
 #import "BeeepedBy.h"
+#import <QuartzCore/QuartzCore.h>"
 
 @interface HomeFeedVC ()<UICollectionViewDataSource,UICollectionViewDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource, GHContextOverlayViewDelegate,MONActivityIndicatorViewDelegate>
 {
     NSMutableArray *textSizes;
-    
     NSMutableArray *beeeps;
     NSMutableArray *events;
-    NSMutableDictionary *pendingImagesDict;
+   
+    GTSegmentedControl *segment;
     
-    NSMutableArray *rowsToReload;
     int selectedIndex;
     BOOL loadNextPage;
+    BOOL initiateData;
+    BOOL getNextPage;
 }
 @end
 
@@ -57,8 +59,6 @@
         return;
     }
     
-    loadNextPage = NO;
-    
     if (selectedIndex == 1) {
         [self getNextFriendsFeed];
     }
@@ -72,8 +72,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    rowsToReload = [NSMutableArray array];
+
+    initiateData = YES;
     
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
@@ -84,7 +84,6 @@
     UILongPressGestureRecognizer* _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:overlay action:@selector(longPressDetected:)];
     [self.collectionV addGestureRecognizer:_longPressRecognizer];
 
-    
     for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
         if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
     }
@@ -96,17 +95,15 @@
     [self.collectionV addSubview:refreshControl];
     self.collectionV.alwaysBounceVertical = YES;
     
-    pendingImagesDict = [[NSMutableDictionary alloc]init];
-    
-    self.collectionV.decelerationRate = 0.6;
+    //self.collectionV.decelerationRate = 0.6;
     
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
-    layout.sectionInset = UIEdgeInsetsMake(3, 8, 3, 8);
-    layout.headerHeight = 45;
+    layout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 8);
+    layout.headerHeight = 40;
     layout.footerHeight = 50;
-    layout.minimumColumnSpacing = 6;
-    layout.minimumInteritemSpacing = 6;
+    layout.minimumColumnSpacing = 8;
+    layout.minimumInteritemSpacing = 8;
 
     [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
         forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
@@ -125,10 +122,10 @@
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(showFindFriends)];
     self.navigationItem.rightBarButtonItem = rightItem;
-    
 }
 
 -(void)refresh{
+    
     if (selectedIndex == 1) {
         [self getFriendsFeed];
     }
@@ -139,70 +136,112 @@
 
 -(void)getFriendsFeed{
     
+    [self showLoading];
+    
     loadNextPage = NO;
     
     [[BPHomeFeed sharedBP]getLocalFriendsFeed:^(BOOL completed,NSArray *objs){
         
-        if (completed) {
-            
-            if (objs.count > 0) {
+        dispatch_async (dispatch_get_main_queue(), ^{
+        
+            if (completed) {
                 
-                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-                [refreshControl endRefreshing];
-                
-                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                events = nil;
-                beeeps = [NSMutableArray arrayWithArray:objs];
-                [self.collectionV reloadData];
-                
+                if (objs.count > 0) {
+                        
+                    UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                    [refreshControl endRefreshing];
+                    
+                    events = nil;
+                    beeeps = [NSMutableArray arrayWithArray:objs];
+                    [self.collectionV reloadData];
+                    
+                    [self hideLoading];
+                }
             }
-        }
+            
+         });
     }];
 
     
     [[BPHomeFeed sharedBP]getFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
-        [self hideLoading];
+        dispatch_async (dispatch_get_main_queue(), ^{
         
-        if (completed) {
-            
             UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
             [refreshControl endRefreshing];
             
-            if (objs.count > 0) {
-                loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
-                self.noBeeepsLabel.hidden = YES;
+            if (completed) {
+                
+                if (objs.count > 0) {
+                    loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
+                    self.noBeeepsLabel.hidden = YES;
+                }
+                else{
+                    
+                    if ([objs isKindOfClass:[NSString class]]) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                        
+                    }
+                    
+                    self.noBeeepsLabel.hidden = NO;
+                }
+                
             }
             else{
-                if ([objs isKindOfClass:[NSString class]]) {
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                    [alert show];
-                    
-                }
-
+                
                 self.noBeeepsLabel.hidden = NO;
+                
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed NOT Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                [alert show];
             }
             
             events = nil;
-            beeeps = [NSMutableArray arrayWithArray:objs];
+            beeeps = [NSMutableArray array];
+            
+            if (objs) {
+                
+                @try {
+                    [beeeps addObjectsFromArray:objs];
+                }
+                @catch (NSException *exception) {
+                    
+                }
+                @finally {
+                    
+                }
+                
+            }
             
             [self.collectionV reloadData];
-        }
+            
+            [self hideLoading];
+        });
     }];
 
 }
 
 -(void)getNextFriendsFeed{
 
+    loadNextPage = NO;
+    
     [[BPHomeFeed sharedBP]nextFriendsFeedWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
+        UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+        [refreshControl endRefreshing];
+        
         if (completed && objs.count >0) {
-            events = nil;
-            [beeeps addObjectsFromArray:objs];
-            loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
-
-            [self.collectionV reloadData];
+            
+            dispatch_async (dispatch_get_main_queue(), ^{
+                
+                events = nil;
+                [beeeps addObjectsFromArray:objs];
+                loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
+                
+                [self.collectionV reloadData];
+            });
         }
+        
     }];
 }
 
@@ -212,28 +251,36 @@
     
     [[EventWS sharedBP]nextAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
+        UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+        [refreshControl endRefreshing];
+        [refreshControl removeFromSuperview];
+        
         if (completed) {
-            
-            if (objs.count != 0) {
+          
+            dispatch_async (dispatch_get_main_queue(), ^{
                 
-                beeeps = nil;
-                [events addObjectsFromArray:objs];
-                
-                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
-                
-                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-            }
-            else{
-                if ([objs isKindOfClass:[NSString class]]) {
+                if (objs.count != 0) {
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                        [alert show];
-                    });
+                    beeeps = nil;
+                    [events addObjectsFromArray:objs];
                     
+                    loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
+                    
+                    [self.collectionV reloadData];
                 }
-            }
+                else{
+                    if ([objs isKindOfClass:[NSString class]]) {
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+
+                            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getHomefeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                            [alert show];
+                        });
+                        
+                    }
+                }
+                
+            });
             
         }
         
@@ -242,66 +289,77 @@
 
 -(void)getHomefeed{
     
+    [self showLoading];
+    
     loadNextPage = NO;
     
     [[NSNotificationCenter defaultCenter]removeObserver:self];
-    [pendingImagesDict removeAllObjects];
     
     [[EventWS sharedBP]getAllLocalEvents:^(BOOL completed,NSArray *objs){
         
-        if (completed) {
-          
-            if (objs.count != 0) {
-                
-                beeeps = nil;
-                events = [NSMutableArray arrayWithArray:objs];
-                
-                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
-                
-                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-                [refreshControl endRefreshing];
-                
-                [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                
-                [self.collectionV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        dispatch_async (dispatch_get_main_queue(), ^{
+    
+            if (completed) {
+              
+                if (objs.count != 0) {
+                   
+                    beeeps = nil;
+                    events = [NSMutableArray arrayWithArray:objs];
+                    
+                    UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                    [refreshControl endRefreshing];
+                    
+                    [self.collectionV reloadData];
+                    
+                    [self hideLoading];
+                }
             }
-        }
+            
+        });
     }];
 
     
     
     [[EventWS sharedBP]getAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
-        UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
-        [refreshControl endRefreshing];
-        
-        [self hideLoading];
-        
         if (completed) {
-            beeeps = nil;
-            events = [NSMutableArray arrayWithArray:objs];
+
+            dispatch_async (dispatch_get_main_queue(), ^{
             
-            if (objs.count != 0) {
-                self.noBeeepsLabel.hidden = YES;
-            }
-            else{
+                UIRefreshControl *refreshControl = (id)[self.collectionV viewWithTag:234];
+                [refreshControl endRefreshing];
                 
-                if ([objs isKindOfClass:[NSString class]]) {
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getAllEvents Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                    [alert show];
+                if (objs.count != 0) {
+                    loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
+                    self.noBeeepsLabel.hidden = YES;
+                }
+                else{
                     
+                    if ([objs isKindOfClass:[NSString class]]) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getAllEvents Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                        
+                    }
+                    
+                    self.noBeeepsLabel.hidden = NO;
+                }
+
+                beeeps = nil;
+                events = [NSMutableArray array];
+                
+                if (objs) {
+                    [events addObjectsFromArray:objs];
                 }
                 
-                self.noBeeepsLabel.hidden = NO;
-            }
-            
-            [self.collectionV reloadData];
+                [self.collectionV reloadData];
+                
+            });
         }
+        
+        [self hideLoading];
+                            
     }];
 }
-
-
-
 
 
 -(void)showFindFriends{
@@ -310,15 +368,20 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-   
-    [self refresh];
     
+    [super viewWillAppear:animated];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
+    
+    if (initiateData) {
+        initiateData = NO;
+        [self getHomefeed];
+    }
+
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -329,9 +392,6 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-   
-    beeeps = nil;
-    pendingImagesDict = nil;
 }
 
 
@@ -357,6 +417,9 @@
     
         UICollectionViewCell * cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
         
+        //        cell.layer.borderWidth = 1.0;
+//        cell.layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.2].CGColor;
+
         Event_Search *event = [events objectAtIndex:indexPath.row];
         
         double now_time = [[NSDate date]timeIntervalSince1970];
@@ -383,17 +446,17 @@
         UIImageView *imageV = (id)[containerV viewWithTag:3];
         UILabel *titleLbl = (id)[containerV viewWithTag:4];
         
-        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+      //  monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
        // monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         monthLbl.text = [month uppercaseString];
         
-        dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+      //  dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
         dayLbl.text = daynumber;
        // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         
         //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
         
-        titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+      //  titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
        // titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         
         //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -408,7 +471,7 @@
         
         titleLbl.text = [event.title capitalizedString];
         [titleLbl sizeToFit];
-        [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 116, titleLbl.frame.size.height)];
+        [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
         
         //    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
         
@@ -421,7 +484,7 @@
         UILabel *area = (id)[containerV viewWithTag:-2];
         area.frame = CGRectMake(37, 190, 108, 32);
         
-        area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
+        area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
         area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
         NSString *jsonString = event.location;
         
@@ -430,7 +493,7 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            area.text = [loc.venueStation uppercaseString];
+            area.text = [loc.venueStation capitalizedString];
             [area sizeToFit];
         }
 
@@ -439,10 +502,10 @@
         }
         
         area.center = CGPointMake(containerV.center.x, area.center.y);
-        area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
+        area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
         
         UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-        areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
+        areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
         
         //now move are to center
         area.textAlignment = NSTextAlignmentCenter;
@@ -513,17 +576,17 @@
             UIImageView *imageV = (id)[containerV viewWithTag:3];
             UILabel *titleLbl = (id)[containerV viewWithTag:4];
             
-            monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+            //monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
             //monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
             monthLbl.text = [month uppercaseString];
             
-            dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+           // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
             dayLbl.text = daynumber;
            // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
             
             //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
 
-            titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+           // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
           //  titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
             
         //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
@@ -538,7 +601,7 @@
            
             titleLbl.text = [event.eventFfo.eventDetailsFfo.title capitalizedString];
             [titleLbl sizeToFit];
-            [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 116, titleLbl.frame.size.height)];
+            [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
             
         //    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
             
@@ -551,29 +614,39 @@
             UILabel *area = (id)[containerV viewWithTag:-2];
             area.frame = CGRectMake(37, 190, 108, 32);
             
-            area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:10];
+            area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
             area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-            NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
+        
+        
+        @try {
             
+            NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
             NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            area.text = [loc.venueStation uppercaseString];
+            area.text = [loc.venueStation capitalizedString];
             [area sizeToFit];
             area.center = CGPointMake(containerV.center.x, area.center.y);
-            area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+2, area.frame.size.width, area.frame.size.height);
-        
+            area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
+            
             if (area.frame.size.width > 130  && now_time > event_timestamp) {
                 [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
             }
-        
+            
             UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-            areaIcon.frame = CGRectMake(area.frame.origin.x-10, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
+            areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+4, areaIcon.frame.size.width, areaIcon.frame.size.height);
             
             //now move are to center
             area.textAlignment = NSTextAlignmentCenter;
+
+        }
+        @catch (NSException *exception) {
+            NSLog(@"ESKASEEE");
+        }
+        @finally {
     
+        }
             
             UILabel *favorites = (id)[containerV viewWithTag:-3];
             UILabel *comments = (id)[containerV viewWithTag:-4];
@@ -641,10 +714,15 @@
         
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
 
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
-        segment.delegate = self;
-        [headerView addSubview:segment];
-        segment.center = headerView.center;
+        if (!segment) {
+            
+            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+            segment.delegate = self;
+            [headerView addSubview:segment];
+            segment.frame = CGRectMake(0, headerView.frame.size.height-segment.frame.size.height, segment.frame.size.width, segment.frame.size.height);
+            segment.center = CGPointMake(headerView.center.x,segment.center.y);
+        }
+        
         reusableview = headerView;
     }
     
@@ -656,12 +734,12 @@
         [actv removeFromSuperview];
 
         if (loadNextPage) {
+            NSLog(@"Add loading");
             UIActivityIndicatorView *activIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 25)];
             activIndicator.tag = 12;
             [headerView addSubview:activIndicator];
             [activIndicator startAnimating];
-            
-            [self nextPage];
+            getNextPage = YES;
         }
 
         reusableview = headerView;
@@ -669,6 +747,15 @@
     }
     
     return reusableview;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+
+        if (getNextPage) {
+            getNextPage = NO;
+            [self nextPage];
+        }
 }
 
 -(void)collectionView:(UICollectionView *)collectionView
@@ -690,7 +777,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, (selectedIndex == 1)?307:270);
+    return CGSizeMake(148, (selectedIndex == 1)?327:303);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //
@@ -924,6 +1011,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(UIImage*) imageForItemAtIndex:(NSInteger)index
 {
     NSString* imageName = nil;
+    
     switch (index) {
         case 0:
             imageName = @"Beeep_popup_unpressed";
@@ -1192,13 +1280,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)showLoading{
     
-    if (self.collectionV.alpha == 0) {
+    if ([self.view viewWithTag:-434]) {
         return;
     }
     
-    self.collectionV.alpha = 0;
-    
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:CGRectMake(0, self.collectionV.frame.origin.y + 40, self.collectionV.frame.size.width, self.collectionV.frame.size.height-40)];
     loadingBGV.backgroundColor = self.view.backgroundColor;
     
     MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
@@ -1206,7 +1292,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     indicatorView.numberOfCircles = 3;
     indicatorView.radius = 8;
     indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
+    indicatorView.center = loadingBGV.center;
     indicatorView.tag = -565;
     
     [loadingBGV addSubview:indicatorView];

@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import <Social/Social.h>
 #import "MONActivityIndicatorView.h"
+#import "WebBrowserVC.h"
 
 @interface ChooseLoginVC ()<UITextFieldDelegate,MONActivityIndicatorViewDelegate,UIActionSheetDelegate>
 {
@@ -40,6 +41,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     if (!IS_IPHONE_5) {
         self.scrollV.frame = CGRectMake(0, 0, 320, self.scrollV.frame.size.height);
@@ -170,8 +173,15 @@
 }
 
 - (IBAction)forgotPassPressed:(id)sender {
-      UIViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ForgotPassVC"];
-    [self.navigationController pushViewController:vc animated:YES];
+  
+    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
+    viewController.title = @"Forgot Password";
+    [self.navigationController pushViewController:viewController animated:YES];
+
+    
+  //  UIViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ForgotPassVC"];
+  //  [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)fbLoginPressed:(id)sender {
@@ -187,8 +197,6 @@
         [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
         return;
     }
-
-   [self showLoading];
 
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
@@ -229,7 +237,7 @@
 
 
                  }
-                 else{
+                 else if(usernames.count == 1){
                  
                      
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
@@ -238,6 +246,17 @@
                      
                      [self attemptFBLogin:email];
                 
+                 }
+                 else{
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings> Facebook and sign in with your Facebook account.." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+
                  }
              }
              else
@@ -381,8 +400,6 @@
         return;
     }
     
-    [self showLoading];
-    
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -397,8 +414,6 @@
                  usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
                  if (usernames.count > 1) {
-                     
-                     [self hideLoading];
                      
                      UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                      popup.tag = 77;
@@ -416,13 +431,23 @@
                      });
 
                  }
-                 else{
+                 else if(usernames.count == 1){
                      
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
                      NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
 
                      [self attemptTwitterLogin:user_id];
+                 }
+                 else{
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twitter and sign in with your Twitter account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+
                  }
             }
              else
@@ -577,71 +602,84 @@
         return;
     }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    dispatch_async (dispatch_get_main_queue(), ^{
     
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
 
-    loadingBGV.alpha = 0;
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-             loadingBGV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-            [indicatorView startAnimating];
-     }
-     ];
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+                 loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+                [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 
 -(void)hideLoading{
-   UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-   MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-   
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-     }
-     ];
+    
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+       
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+         }
+         ];
+    });
 }
 
 -(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
     
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
+   dispatch_async (dispatch_get_main_queue(), ^{
     
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-         
-         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-         [alert show];
-     }
-     ];
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+             [alert show];
+         }
+         ];
+       
+    });
 }
 
 

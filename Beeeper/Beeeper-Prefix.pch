@@ -33,6 +33,7 @@
     #import "Reachability.h"
     #import "SDWebImage/UIImage+GIF.h"
     #import "SDWebImage/UIImageView+WebCache.h"
+    #import "TabbarVC.h"
 
 #define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 #endif

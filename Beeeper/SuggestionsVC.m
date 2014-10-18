@@ -62,6 +62,8 @@
     
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+    
+   // self.tableV.decelerationRate = 0.6;
 
 }
 
@@ -238,6 +240,13 @@
     @try {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        cell.layer.shadowOpacity = 0.4;
+        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
+        cell.layer.shadowRadius = 0.8;
+        cell.layer.masksToBounds = NO;
+        
         NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
         
         Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];
@@ -357,14 +366,14 @@
     
     BOOL isTomorrow = [signature isEqualToString:signatureTmw];
 
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 47)];
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
     header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, 306, 46)];
+    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(7, 0, self.tableV.frame.size.width, 46)];
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     
     if (isToday || isTomorrow) {
-        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 36)];
+        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 36)];
         mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
         mlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
         mlbl.text = (isToday)?@"Today":@"Tomorrow";
@@ -373,14 +382,14 @@
     }
     else{
         
-        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, 306, 18)];
+        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 18)];
         mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
         mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         mlbl.text = [month uppercaseString];
         mlbl.textAlignment = NSTextAlignmentCenter;
         [backV addSubview:mlbl];
         
-        UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, 306, 18)];
+        UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, self.tableV.frame.size.width, 18)];
         dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
         dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
         dlbl.text = daynumber;
@@ -388,9 +397,16 @@
         [backV addSubview:dlbl];
     }
     
-    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
-    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:227/255.0 alpha:1];
-    [header addSubview:headerBottomLine];
+//    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
+//    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:227/255.0 alpha:1];
+//    [header addSubview:headerBottomLine];
+    
+    backV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    backV.layer.shadowOpacity = 0.7;
+    backV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    backV.layer.shadowRadius = 0.8;
+    [backV.layer setShadowPath:[[UIBezierPath
+                                 bezierPathWithRect:backV.bounds] CGPath]];
     
     return header;
 }
@@ -398,7 +414,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
     
-    UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 7)];
+    UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 7)];
     footer.backgroundColor = [UIColor clearColor];
     return footer;
 }

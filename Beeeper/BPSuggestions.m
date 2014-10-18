@@ -99,7 +99,7 @@ static BPSuggestions *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -150,7 +150,7 @@ static BPSuggestions *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:7.0];
+    [request setTimeOutSeconds:13.0];
     
     [request setDelegate:self];
     
@@ -189,6 +189,7 @@ static BPSuggestions *thisWebServices = nil;
     }
     else{
         requestEmptyResultsCounter++;
+        page --;
         
         if (requestEmptyResultsCounter <= 2) {
             loadNextPage = YES;
@@ -333,7 +334,7 @@ static BPSuggestions *thisWebServices = nil;
         for (NSString *user_id in user_ids) {
             int i = [user_ids indexOfObject:user_id];
             if (i == user_ids.count - 1) {
-                [users_JSON_array appendString:user_id];
+                [users_JSON_array appendFormat:@"\"%@\"",user_id];
             }
             else{
                 [users_JSON_array appendFormat:@"\"%@\",",user_id];
@@ -358,7 +359,7 @@ static BPSuggestions *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:7.0];
+        [request setTimeOutSeconds:13.0];
         
         [request setDelegate:self];
         
@@ -383,9 +384,8 @@ static BPSuggestions *thisWebServices = nil;
     NSString *responseString = [request responseString];
     
     @try {
-        NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
-        if ([dict objectForKey:@"success"] ) {
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.suggestEventCompleted(YES,nil);
         }
         else{

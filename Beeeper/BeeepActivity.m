@@ -1,17 +1,18 @@
 //
 //  BeeepActivity.m
 //
-//  Created by George Termentzoglou on 6/11/14
-//  Copyright (c) 2014 georgeterme@gmail.com. All rights reserved.
+//  Created by   on 10/13/14
+//  Copyright (c) 2014 __MyCompanyName__. All rights reserved.
 //
 
 #import "BeeepActivity.h"
 
 
 
-NSString *const kBeeepActivityUserId = @"user_id";
-NSString *const kBeeepActivityBeeepsActivity = @"beeeps";
 NSString *const kBeeepActivityEventTime = @"event_time";
+NSString *const kBeeepActivityBeeepsActivity = @"beeeps";
+NSString *const kBeeepActivityInvalidatePush = @"invalidatePush";
+NSString *const kBeeepActivityUserId = @"user_id";
 
 
 @interface BeeepActivity ()
@@ -22,9 +23,10 @@ NSString *const kBeeepActivityEventTime = @"event_time";
 
 @implementation BeeepActivity
 
-@synthesize userId = _userId;
-@synthesize beeepsActivity = _beeepsActivity;
 @synthesize eventTime = _eventTime;
+@synthesize beeepsActivity = _beeepsActivity;
+@synthesize invalidatePush = _invalidatePush;
+@synthesize userId = _userId;
 
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
@@ -39,7 +41,7 @@ NSString *const kBeeepActivityEventTime = @"event_time";
     // This check serves to make sure that a non-NSDictionary object
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
-            self.userId = [self objectOrNilForKey:kBeeepActivityUserId fromDictionary:dict];
+            self.eventTime = [[self objectOrNilForKey:kBeeepActivityEventTime fromDictionary:dict] doubleValue];
     NSObject *receivedBeeepsActivity = [dict objectForKey:kBeeepActivityBeeepsActivity];
     NSMutableArray *parsedBeeepsActivity = [NSMutableArray array];
     if ([receivedBeeepsActivity isKindOfClass:[NSArray class]]) {
@@ -53,7 +55,8 @@ NSString *const kBeeepActivityEventTime = @"event_time";
     }
 
     self.beeepsActivity = [NSArray arrayWithArray:parsedBeeepsActivity];
-            self.eventTime = [[self objectOrNilForKey:kBeeepActivityEventTime fromDictionary:dict] doubleValue];
+            self.invalidatePush = [self objectOrNilForKey:kBeeepActivityInvalidatePush fromDictionary:dict];
+            self.userId = [self objectOrNilForKey:kBeeepActivityUserId fromDictionary:dict];
 
     }
     
@@ -64,7 +67,7 @@ NSString *const kBeeepActivityEventTime = @"event_time";
 - (NSDictionary *)dictionaryRepresentation
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
-    [mutableDict setValue:self.userId forKey:kBeeepActivityUserId];
+    [mutableDict setValue:[NSNumber numberWithDouble:self.eventTime] forKey:kBeeepActivityEventTime];
     NSMutableArray *tempArrayForBeeepsActivity = [NSMutableArray array];
     for (NSObject *subArrayObject in self.beeepsActivity) {
         if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
@@ -76,7 +79,18 @@ NSString *const kBeeepActivityEventTime = @"event_time";
         }
     }
     [mutableDict setValue:[NSArray arrayWithArray:tempArrayForBeeepsActivity] forKey:kBeeepActivityBeeepsActivity];
-    [mutableDict setValue:[NSNumber numberWithDouble:self.eventTime] forKey:kBeeepActivityEventTime];
+    NSMutableArray *tempArrayForInvalidatePush = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.invalidatePush) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForInvalidatePush addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForInvalidatePush addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForInvalidatePush] forKey:kBeeepActivityInvalidatePush];
+    [mutableDict setValue:self.userId forKey:kBeeepActivityUserId];
 
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
@@ -100,18 +114,20 @@ NSString *const kBeeepActivityEventTime = @"event_time";
 {
     self = [super init];
 
-    self.userId = [aDecoder decodeObjectForKey:kBeeepActivityUserId];
-    self.beeepsActivity = [aDecoder decodeObjectForKey:kBeeepActivityBeeepsActivity];
     self.eventTime = [aDecoder decodeDoubleForKey:kBeeepActivityEventTime];
+    self.beeepsActivity = [aDecoder decodeObjectForKey:kBeeepActivityBeeepsActivity];
+    self.invalidatePush = [aDecoder decodeObjectForKey:kBeeepActivityInvalidatePush];
+    self.userId = [aDecoder decodeObjectForKey:kBeeepActivityUserId];
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 
-    [aCoder encodeObject:_userId forKey:kBeeepActivityUserId];
-    [aCoder encodeObject:_beeepsActivity forKey:kBeeepActivityBeeepsActivity];
     [aCoder encodeDouble:_eventTime forKey:kBeeepActivityEventTime];
+    [aCoder encodeObject:_beeepsActivity forKey:kBeeepActivityBeeepsActivity];
+    [aCoder encodeObject:_invalidatePush forKey:kBeeepActivityInvalidatePush];
+    [aCoder encodeObject:_userId forKey:kBeeepActivityUserId];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -120,9 +136,10 @@ NSString *const kBeeepActivityEventTime = @"event_time";
     
     if (copy) {
 
-        copy.userId = [self.userId copyWithZone:zone];
-        copy.beeepsActivity = [self.beeepsActivity copyWithZone:zone];
         copy.eventTime = self.eventTime;
+        copy.beeepsActivity = [self.beeepsActivity copyWithZone:zone];
+        copy.invalidatePush = [self.invalidatePush copyWithZone:zone];
+        copy.userId = [self.userId copyWithZone:zone];
     }
     
     return copy;

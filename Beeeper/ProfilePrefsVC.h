@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTextfield;
 @property (weak, nonatomic) IBOutlet UITextField *usernameTextfield;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
+@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
 
 - (IBAction)changeProfilePicture:(id)sender;
 - (IBAction)changedGender:(id)sender;

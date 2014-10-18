@@ -21,6 +21,7 @@
 #import "Event_Show_Object.h"
 #import "BPSuggestions.h"
 #import "Reachability.h"
+#import "THDatePickerViewController.h"
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -36,7 +37,7 @@
 }
 @end
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIGestureRecognizerDelegate>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIGestureRecognizerDelegate,THDatePickerDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
@@ -49,8 +50,9 @@
     CGPoint initialCellCenter;
   //  NSMutableArray *sections;
   //  NSMutableDictionary *suggestionsPerSection;
-        NSMutableArray *rowsToReload;
+    NSMutableArray *rowsToReload;
 }
+@property(nonatomic,strong) THDatePickerViewController *datePicker;
 @end
 
 @implementation TimelineVC
@@ -78,11 +80,11 @@
                     loadNextPage = YES;
                 }
                 loading = NO;
-
-                [self.tableV reloadData];
 //                [self groupBeeepsByMonth];
             }
         }
+        
+        [self.tableV reloadData];
     }];
 }
 
@@ -180,10 +182,19 @@
             
             if (completed) {
                 followers = objs.count;
-                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-                if (followersLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                    followersLbl.text = mtext;
+                UIButton *followersBtn = self.followersButton;
+                if (followersBtn != nil) {
+                   
+                    followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    
+                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
+                   
+                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                    [attText addAttribute:NSFontAttributeName
+                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                    
+                    [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
                 }
             }
         }];
@@ -192,10 +203,19 @@
             
             if (completed) {
                 following = objs.count;
-                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-                if (followingLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                    followingLbl.text = mtext;
+                UIButton *followingBtn = self.followingButton;
+                if (followingBtn != nil) {
+                   
+                    followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    
+                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
+                    
+                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                    [attText addAttribute:NSFontAttributeName
+                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
+                    
+                    [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
                 }
                 
             }
@@ -243,75 +263,10 @@
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     
-    @try {
-        
-        
-        [[BPTimeline sharedBP]getLocalTimelineUserID:[self.user objectForKey:@"id"] option:Upcoming WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            if (completed) {
-                beeeps = [NSMutableArray arrayWithArray:objs];
-                
-                if (beeeps.count > 0) {
-                    loading = NO;
-                    [self.tableV reloadData];
-                }
-                
-               // suggestionsPerSection = [NSMutableDictionary dictionary];
-               // sections = [NSMutableArray array];
-                
-//                [self groupBeeepsByMonth];
-                
-            }
-        }];
-        
-        [[BPUser sharedBP]getLocalFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-        
-            if (completed) {
-                followers = objs.count;
-                UILabel *followersLbl = (id)[self.followersButton viewWithTag:45];
-                if (followersLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-                    followersLbl.text = mtext;
-                }
-            }
-        }];
-        
-        [[BPUser sharedBP]getLocalFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            
-            if (completed) {
-                following = objs.count;
-                UILabel *followingLbl = (id)[self.followingButton viewWithTag:45];
-                if (followingLbl != nil) {
-                    NSString *mtext = [NSString stringWithFormat:@"%d Following",following];
-                    followingLbl.text = mtext;
-                }
-                
-            }
-        }];
-        
-        //Follow + /Following button
-        
-        [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            
-            if (completed) {
-                for (NSDictionary *user in objs) {
-                    if ([[user objectForKey:@"id"] isEqualToString:[self.user objectForKey:@"id"]]) {
-                        self.mode = Timeline_Following;
-                    }
-                }
-            }
-        }];
-        
-    }
-    @catch (NSException *exception) {
-        NSLog(@"ELA!");
-    }
-    @finally {
-        
-    }
     
     [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
-    self.tableV.decelerationRate = 0.6;
+    // self.tableV.decelerationRate = 0.6;
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
@@ -370,10 +325,99 @@
 
     self.userCityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     self.usernameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
+    
+    @try {
+        
+        
+        [[BPTimeline sharedBP]getLocalTimelineUserID:[self.user objectForKey:@"id"] option:Upcoming WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            if (completed) {
+                beeeps = [NSMutableArray arrayWithArray:objs];
+                
+                if (beeeps.count > 0) {
+                    loading = NO;
+                    [self.tableV reloadData];
+                }
+                
+                // suggestionsPerSection = [NSMutableDictionary dictionary];
+                // sections = [NSMutableArray array];
+                
+                //                [self groupBeeepsByMonth];
+                
+            }
+        }];
+        
+        [[BPUser sharedBP]getLocalFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                followers = objs.count;
+                UIButton *followersBtn = self.followersButton;
+                if (followersBtn != nil) {
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        
+                        followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                        
+                        NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
+                        
+                        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                        [attText addAttribute:NSFontAttributeName
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                        
+                        [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
+                    });
+                }
+                
+            }
+        }];
+        
+        [[BPUser sharedBP]getLocalFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                following = objs.count;
+                UIButton *followingBtn = self.followingButton;
+                if (followingBtn != nil) {
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        
+                        followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                        
+                        NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
+                        
+                        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                        [attText addAttribute:NSFontAttributeName
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
+                        
+                        [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
+                        
+                    });
+                }
+                
+            }
+        }];
+        
+        //Follow + /Following button
+        
+        [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            if (completed) {
+                for (NSDictionary *user in objs) {
+                    if ([[user objectForKey:@"id"] isEqualToString:[self.user objectForKey:@"id"]]) {
+                        self.mode = Timeline_Following;
+                    }
+                }
+            }
+        }];
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"ELA!");
+    }
+    @finally {
+        
+    }
 }
 
 -(void)setUserInfo{
-    
     
     [self downloadUserImageIfNecessery];
     
@@ -436,7 +480,7 @@
              }
              ];
             
-            self.userCityLabel.text = [user objectForKey:@"city"];
+            self.userCityLabel.text = [[user objectForKey:@"city"] capitalizedString];
             [self.userCityLabel sizeToFit];
             self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
             self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
@@ -498,6 +542,8 @@
         else if (status == ReachableViaWWAN) 
         {
             //3G
+            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
+                                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         }
         
        // }
@@ -514,6 +560,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+
     
     [self.tableV reloadData];
     [self setUserInfo];
@@ -547,20 +594,30 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    self.topV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.topV.layer.shadowOpacity = 0.7;
+    self.topV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    self.topV.layer.shadowRadius = 0.8;
+    self.topV.layer.masksToBounds = NO;
 }
 
 
 -(void)createMenuButtons:(BOOL)animated{
     
+    self.othersTimelineMenuV.hidden = (mode == Timeline_My);
+    self.myTimelineMenuV.hidden = !(mode == Timeline_My);
+    
+    if (mode == Timeline_My) {
+        self.followersButton = (UIButton *)[self.myTimelineMenuV viewWithTag:33];
+        self.followingButton = (UIButton *)[self.myTimelineMenuV viewWithTag:34];
+    }
+    else{
+        self.followersButton = (UIButton *)[self.othersTimelineMenuV viewWithTag:33];
+        self.followingButton = (UIButton *)[self.othersTimelineMenuV viewWithTag:34];
+    }
+    
     for (UIView *v in self.followButton.subviews) {
-        [v removeFromSuperview];
-    }
-    
-    for (UIView *v in self.followersButton.subviews) {
-        [v removeFromSuperview];
-    }
-    
-    for (UIView *v in self.followingButton.subviews) {
         [v removeFromSuperview];
     }
     
@@ -579,17 +636,17 @@
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
         lbl.text = @"Following";
-        lbl.backgroundColor = [UIColor whiteColor]; //[UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
+        lbl.backgroundColor = [UIColor clearColor]; //[UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
         lbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
         lbl.layer.cornerRadius = 2;
         
         self.followButton.layer.cornerRadius = 2;
         [self.followButton addSubview:lbl];
         self.followButton.hidden = NO;
         
-        UIImageView *imgV = [[UIImageView alloc]initWithFrame:CGRectMake(lbl.center.x+38, lbl.center.y-5, 14, 10)];
+        UIImageView *imgV = [[UIImageView alloc]initWithFrame:CGRectMake(lbl.center.x+32, lbl.center.y-5, 14, 10)];
         imgV.image = [UIImage imageNamed:@"tick_following"];
         [self.followButton addSubview:imgV];
        
@@ -598,18 +655,18 @@
         
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
         
         NSMutableAttributedString *txt = [[NSMutableAttributedString alloc] initWithString:@"Follow +"];
         NSRange r = [txt.string rangeOfString:@"+"];
       
         [txt addAttribute:NSFontAttributeName
-                      value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:20]
+                      value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:15]
                       range:r];
         lbl.attributedText = txt;
         
-        lbl.backgroundColor = [UIColor whiteColor];
-        lbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
+        lbl.backgroundColor = [UIColor clearColor];//[UIColor colorWithRed:234/255.0 green:176/255.0 blue:17/255.0 alpha:1];
+        lbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         lbl.textAlignment = NSTextAlignmentCenter;
 
         
@@ -617,55 +674,13 @@
         
         self.followButton.hidden = NO;
        // [self.followButton setBackgroundColor:[]
-        [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
-        [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
+       // [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]] forState:UIControlStateNormal];
+       // [self.followButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:232/255.0 green:209/255.0 blue:3/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
     }
     else{
         self.followButton.hidden = YES;
     }
  
-        
-        //CENTER
-        
-        lbl = [[UILabel alloc]initWithFrame:self.followersButton.bounds];
-        lbl.textColor = [UIColor whiteColor];
-        lbl.numberOfLines = 0;
-        lbl.userInteractionEnabled = NO;
-        lbl.tag = 45;
-        
-        NSString *mtext = [NSString stringWithFormat:@"%d Followers",followers];
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
-        lbl.text = mtext;
-        lbl.textAlignment = NSTextAlignmentCenter;
-        
-        lbl.layer.borderColor = [UIColor whiteColor].CGColor;
-        lbl.layer.borderWidth = 1.5f;
-        lbl.layer.cornerRadius = 2;
-        
-        [self.followersButton addSubview:lbl];
-        [self.followersButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
-        
-        //RIGHT
-        
-        lbl = [[UILabel alloc]initWithFrame:self.followingButton.bounds];
-        lbl.numberOfLines = 0;
-        lbl.userInteractionEnabled = NO;
-        lbl.textColor = [UIColor whiteColor];
-        lbl.tag = 45;
-        
-        NSString *text = [NSString stringWithFormat:@"%d Following",following];
-        
-        lbl.text = text;
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
-        lbl.layer.borderColor = [UIColor whiteColor].CGColor;
-        lbl.layer.borderWidth = 1.5f;
-        lbl.layer.cornerRadius = 2;
-        
-        lbl.textAlignment = NSTextAlignmentCenter;
-        [self.followingButton addSubview:lbl];
-        
-        [self.followingButton setBackgroundImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:198/255.0 green:202/255.0 blue:205/255.0 alpha:1.0]] forState:UIControlStateHighlighted];
-
 
 }
 
@@ -713,23 +728,29 @@
     
     if (indexPath.row == 0) {
         
-        CellIdentifier = @"ToggleCell";
+        CellIdentifier = @"CalendarCell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
-        UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 32)];
+        UIView *whiteAreaV = [cell viewWithTag:12];
         
-        GTSegmentedControl *segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"Upcoming",@"Past", nil] size:CGSizeMake(308, 32) selectedIndex:segmentIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1]];
+        whiteAreaV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        whiteAreaV.layer.shadowOpacity = 0.7;
+        whiteAreaV.layer.shadowOffset = CGSizeMake(0, 0.1);
+        whiteAreaV.layer.shadowRadius = 0.8;
+        [whiteAreaV.layer setShadowPath:[[UIBezierPath
+                                    bezierPathWithRect:whiteAreaV.bounds] CGPath]];
         
-        segment.delegate = self;
-        [headerView addSubview:segment];
-        segment.center = CGPointMake(160, 18);
-        [cell addSubview:headerView];
     }
     else{
+
         CellIdentifier =  @"Cell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+                
+        if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
+            initialCellCenter = [cell viewWithTag:66].center;
+        }
         
         if (cell.gestureRecognizers.count == 0) {
             UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
@@ -741,19 +762,22 @@
         cell.backgroundColor = [UIColor clearColor];
         
         UILabel *mLbl = (id)[cell viewWithTag:1];
-        mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+      //  mLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
         UILabel *dLbl = (id)[cell viewWithTag:2];
-        dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
+        //dLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:25];
         
         UILabel *titleLbl = (id)[cell viewWithTag:4];
-        titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+       // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+
+        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
         
         //    [cell viewWithTag:66].layer.masksToBounds = NO;
         //    [cell viewWithTag:66].layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.3].CGColor;
         //    [cell viewWithTag:66].layer.borderWidth = 0.5;
         
-        UILabel *reminderLabel = (id)[cell viewWithTag:-6];
+        UILabel *timeLabel = (id)[cell viewWithTag:55];
+        
         UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
         UIButton *beepItbutton = (id)[cell viewWithTag:-8];
         
@@ -801,13 +825,15 @@
         NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
         NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
         
+        timeLabel.text = hour;
+        
         UILabel *dayLbl = (id)[cell viewWithTag:2];
         UILabel *monthLbl = (id)[cell viewWithTag:1];
         
         dayLbl.text = daynumber;
-        dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
+       // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
         monthLbl.text = [month uppercaseString];
-        monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+       // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
         float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
         
@@ -822,7 +848,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation uppercaseString];
+        venueLbl.text = [loc.venueStation capitalizedString];
         
         //Likes,Beeeps,Comments
         UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
@@ -847,9 +873,8 @@
         
         [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
                   placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
-        
-    }
     
+    }
     
     return cell;
 }
@@ -857,29 +882,33 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.row == 0) {
-        return 40;
+        return 46;
     }
     else if (indexPath.row == beeeps.count+1 && loadNextPage){
         return 51;
     }
     else{
-        return 113;
+        return 80;
     }
 }
 
 -(void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [[cell viewWithTag:55]setBackgroundColor:[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1]];
+    if (indexPath.row != 0) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [[cell viewWithTag:55]setBackgroundColor:[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1]];
+    }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row == 0) {
+        [self calendarPressed:nil];
         return;
     }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
     viewController.tml = [beeeps objectAtIndex:indexPath.row-1];
@@ -888,8 +917,22 @@
 }
 
 -(void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [[cell viewWithTag:55]setBackgroundColor:[UIColor clearColor]];
+    
+    if (indexPath.row != 0) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [[cell viewWithTag:55]setBackgroundColor:[UIColor clearColor]];
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    
+    UIView *header=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,5)];
+    header.backgroundColor =[UIColor clearColor];
+    return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -904,7 +947,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
-    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,320.0,50.0)];
+    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,50.0)];
     footer.backgroundColor =[UIColor clearColor];
     UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
     lbl.text = (loading)?@"Loading...":@"There are no beeeps available.";
@@ -914,8 +957,20 @@
     [footer addSubview:lbl];
     
     return footer;
-    
-    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+    if (self.mode == Timeline_My) {
+         return YES;
+    }
+    return NO;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
 }
 
 - (IBAction)handleCellPan:(UIPanGestureRecognizer *)recognizer {
@@ -1008,6 +1063,44 @@
 }
 
 #pragma mark - Actions
+
+- (IBAction)calendarPressed:(id)sender {
+   
+    if(!self.datePicker)
+        self.datePicker = [THDatePickerViewController datePicker];
+    self.datePicker.date = [NSDate date];
+    self.datePicker.delegate = self;
+    [self.datePicker setAllowClearDate:NO];
+    [self.datePicker setAutoCloseOnSelectDate:YES];
+    [self.datePicker setDisableFutureSelection:YES];
+    [self.datePicker setSelectedBackgroundColor:[UIColor colorWithRed:125/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]];
+    [self.datePicker setCurrentDateColor:[UIColor colorWithRed:242/255.0 green:121/255.0 blue:53/255.0 alpha:1.0]];
+    
+    [self.datePicker setDateHasItemsCallback:^BOOL(NSDate *date) {
+        int tmp = (arc4random() % 30)+1;
+        if(tmp % 5 == 0)
+            return YES;
+        return NO;
+    }];
+   // [self.datePicker slideUpInView:self.view withModalColor:[UIColor lightGrayColor]];
+    [self presentSemiViewController:self.datePicker withOptions:@{
+                                                                  KNSemiModalOptionKeys.pushParentBack    : @(NO),
+                                                                  KNSemiModalOptionKeys.animationDuration : @(1.0),
+                                                                  KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
+                                                                  }];
+}
+
+-(void)datePickerDonePressed:(THDatePickerViewController *)datePicker{
+    [self dismissSemiModalViewWithCompletion:^(void){
+        
+    }];
+}
+
+-(void)datePickerCancelPressed:(THDatePickerViewController *)datePicker{
+    [self dismissSemiModalViewWithCompletion:^(void){
+        
+    }];
+}
 
 - (IBAction)backPressed:(id)sender {
     [self goBack];
@@ -1350,7 +1443,13 @@
 -(BOOL) shouldShowMenuAtPoint:(CGPoint)point
 {
     NSIndexPath* indexPath = [self.tableV indexPathForRowAtPoint:point];
+    
+    if (indexPath.row == 0) {
+        return NO;
+    }
+    
     UITableViewCell* cell = [self.tableV cellForRowAtIndexPath:indexPath];
+ 
     
     return cell != nil;
 }

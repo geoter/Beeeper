@@ -18,8 +18,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
 @property (weak, nonatomic) IBOutlet UIView *profileImageBorderV;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
+
 @property (weak, nonatomic) IBOutlet UIButton *followersButton;
 @property (weak, nonatomic) IBOutlet UIButton *followingButton;
+
 @property (weak, nonatomic) IBOutlet UIView *topV;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
@@ -33,6 +35,11 @@
 @property (nonatomic,assign) BOOL showBackButton;
 @property (nonatomic,assign) int mode;
 @property (nonatomic,strong) NSDictionary *user; //for others' profile
+@property (weak, nonatomic) IBOutlet UIView *myTimelineMenuV;
+@property (weak, nonatomic) IBOutlet UIView *othersTimelineMenuV;
+@property (weak, nonatomic) IBOutlet UIView *topBGV;
+
+- (IBAction)calendarPressed:(id)sender;
 
 - (IBAction)backPressed:(id)sender;
 - (IBAction)beeepItPressed:(id)sender;

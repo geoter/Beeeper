@@ -10,7 +10,7 @@
 #import "TimelineVC.h"
 #import "JSBadgeView.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "UIView+Badge.h"
 
 @interface TabbarVC ()
 {
@@ -21,9 +21,17 @@
 @implementation TabbarVC
 @synthesize notifications =_notifications;
 
+static TabbarVC *thisWebServices = nil;
+
 -(void)setNotifications:(int)notifications{
     _notifications = notifications;
-    [self updateNotificationsBadge];
+
+    if (notifications > 0) {
+        [self showBadgeIcon];
+    }
+    else{
+        [self hideBadgeIcon];
+    }
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -45,7 +53,9 @@
     }
     
     [[BPUser sharedBP]sendDeviceToken];
-    [[BPUser sharedBP]sendDemoPush:5];
+    //[[BPUser sharedBP]sendDemoPush:50];
+    
+    [self pushReceived];
     
     [self updateNotificationsBadge];
     
@@ -54,7 +64,7 @@
     
     [self tabbarButtonTapped:btn];
     
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidAppear:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
@@ -65,52 +75,82 @@
 
 }
 
++ (TabbarVC *)sharedTabbar{
+    
+    if (thisWebServices != nil) {
+        return thisWebServices;
+    }
+    else{
+        return [[TabbarVC alloc]init];
+    }
+    
+    return nil;
+}
+
+
 -(void)updateNotificationsBadge{
     
-    
-    [[BPUser sharedBP]getNewNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [[BPUser sharedBP]newNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
             
-            _notifications = (int)objcts.count;
+//            JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
+//            badgeView.badgeText = [NSString stringWithFormat:@"%d",[BPUser sharedBP].badgeNumber];
             
+            UIView *b;
             
-            if (_notifications <= 0) {
-                
-                [UIView animateWithDuration:0.2f
-                                 animations:^
-                 {
-                     self.notificationsBadgeV.alpha = 0;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     
-                 }
-                 ];
+            if (![self.notificationsBadgeV.superview viewWithTag:34567]) {
+                b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
+                b.badge.outlineWidth = 0.0;
+                b.badge.badgeColor = [UIColor redColor];
+                b.tag = 34567;
+            }
+            
+            b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
+            
+            [self.notificationsBadgeV.superview addSubview:b];
+            
+            if ([BPUser sharedBP].badgeNumber > 0) {
+                [self showBadgeIcon];
             }
             else{
-                
-                JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
-                badgeView.badgeText = [NSString stringWithFormat:@"%d",self.notifications];
-                
-                [UIView animateWithDuration:0.2f
-                                 animations:^
-                 {
-                     self.notificationsBadgeV.alpha = 1;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     
-                 }
-                 ];
+                [self hideBadgeIcon];
             }
-            
-            [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:30];
 
         }
+        
+        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:15];
     }];
     
    }
+
+-(void)showBadgeIcon{
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         self.notificationsBadgeV.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         
+     }
+     ];
+}
+
+-(void)hideBadgeIcon{
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         self.notificationsBadgeV.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         
+     }
+     ];
+}
 
 -(void)hideTabbar{
 
@@ -131,21 +171,14 @@
 
 -(void)showTabbar{
     
-    [UIView animateWithDuration:0.4f
+    [UIView animateWithDuration:0.5f
                      animations:^
      {
          self.tabBar.frame = CGRectMake(0, self.view.frame.size.height-self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
      }
                      completion:^(BOOL finished)
      {
-         
-         [UIView animateWithDuration:0.4f
-                          animations:^
-          {
-                    self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);
-          }
-                          completion:^(BOOL finished)
-          {}];
+            self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);
      }
      ];
 }
@@ -158,6 +191,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -167,7 +201,10 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-   
+
+}
+
+-(void)pushReceived{
     [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
 }
 
@@ -177,11 +214,8 @@
     
     if (beeepID != nil) {
         
-        
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
-        viewController.tml = beeepID;
-        
-        NSLog(@"%@",self.navigationController.viewControllers);
+        viewController.tml = [NSString stringWithString:beeepID];
         
         [self.navigationController pushViewController:viewController animated:YES];
         

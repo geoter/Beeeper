@@ -54,7 +54,7 @@
     [dict setObject:self.firstNameTextfield.text forKey:@"name"];
     [dict setObject:self.lastNameTextfield.text forKey:@"lastname"];
     [dict setObject:[user objectForKey:@"timezone"] forKey:@"timezone"];
-    [dict setObject:[user objectForKey:@"email"] forKey:@"email"];
+    [dict setObject:self.emailTextField.text forKey:@"email"];
 //    [dict setObject:[user objectForKey:@"password"] forKey:@"password"];
     
     switch (self.segmentControl.selectedSegmentIndex)
@@ -188,6 +188,8 @@
         self.firstNameTextfield.text = [[user objectForKey:@"name"] capitalizedString];
         self.lastNameTextfield.text = [[user objectForKey:@"lastname"] capitalizedString];
         self.usernameTextfield.text = [[user objectForKey:@"username"] capitalizedString];
+        self.emailTextField.text = [user objectForKey:@"email"];
+        
         self.segmentControl.selectedSegmentIndex = ([user objectForKey:@"sex"] != nil && ![[user objectForKey:@"sex"] isKindOfClass:[NSNull class]] && [[user objectForKey:@"sex"] intValue] == 1)?0:1;
         
         NSString *city = [[user objectForKey:@"city"] capitalizedString];

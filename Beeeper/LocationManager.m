@@ -22,7 +22,7 @@
     self = [super init];
     if (self != nil) {
         self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self; 
+        self.locationManager.delegate = self;
         self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
         locationsCounter = 0;
     }
@@ -75,6 +75,11 @@
     locationsCounter = 0;
     
     if([CLLocationManager locationServicesEnabled]){
+        
+        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
+        
         [self.locationManager startUpdatingLocation];
     }
     else{

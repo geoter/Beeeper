@@ -24,6 +24,12 @@
 - (void)drawRect:(CGRect)rect
 {
 
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(currentContext);
+    CGContextSetShadowWithColor(currentContext, CGSizeMake(0, 0.1), 0.8, [[UIColor colorWithWhite:0.667  alpha:0.7] CGColor]);
+    CGContextSetFillColorWithColor(currentContext, [UIColor redColor].CGColor);
+    CGContextRestoreGState(currentContext);
+    
 //    UIColor * shadowColor = [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:0.5];
 //
 //    CGContextRef currentContext = UIGraphicsGetCurrentContext();

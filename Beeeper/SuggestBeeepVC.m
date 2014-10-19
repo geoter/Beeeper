@@ -14,13 +14,13 @@
 {
     NSMutableArray *people;
     NSMutableDictionary *pendingImagesDict;
-    NSMutableArray *selectedPeople;
     NSArray *filteredPeople;
     NSMutableArray *rowsToReload;
 }
 @end
 
 @implementation SuggestBeeepVC
+@synthesize selectedPeople;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -42,7 +42,11 @@
     [self adjustFonts];
     
     rowsToReload = [NSMutableArray array];
-    selectedPeople = [NSMutableArray array];
+    
+    if(selectedPeople == nil){
+        selectedPeople = [NSMutableArray array];
+    }
+    
     pendingImagesDict = [NSMutableDictionary dictionary];
     
     UIColor *color = [UIColor lightTextColor];
@@ -50,6 +54,11 @@
     
     [self getFollowers];
 
+    if (self.sendNotificationWhenFinished) {
+        [self.topRightButton setTitle:@"Done" forState:UIControlStateNormal];
+        [self.topRightButton removeTarget:self action:@selector(sendPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.topRightButton addTarget:self action:@selector(donePressed:) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 -(void)getFollowers{
@@ -157,6 +166,12 @@
 }
 
 - (IBAction)donePressed:(id)sender {
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"Suggest Followers Selected" object:nil userInfo:[NSDictionary dictionaryWithObject:selectedPeople forKey:@"followers"]];
+    [self closePressed:nil];
+}
+
+- (IBAction)sendPressed:(id)sender {
+    
     @try {
         NSMutableArray *users_ids = [NSMutableArray array];
         
@@ -181,9 +196,8 @@
         [alert show];
     }
     @finally {
-    
+        
     }
- 
 }
 
 -(void)showInView:(UIView *)v{
@@ -282,7 +296,7 @@
     //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
     
-    if ([selectedPeople indexOfObject:user] != NSNotFound) {
+    if ([self isSelected:user]) {
         [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
     }
     else{
@@ -293,7 +307,19 @@
     return cell;
 }
 
-
+-(BOOL)isSelected:(NSDictionary *)dict{
+    
+    NSString *user_id = [dict objectForKey:@"id"];
+    NSArray *ids = [selectedPeople valueForKey:@"id"];
+    
+    for (NSString *u_id in ids) {
+        if ([u_id isEqualToString:user_id]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -302,7 +328,7 @@
 
     NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
 
-    if ([selectedPeople indexOfObject:user] == NSNotFound) {
+    if (![self isSelected:user]) {
         [selectedPeople addObject:user];
         tickedV.alpha = 0;
         tickedV.hidden = NO;
@@ -356,6 +382,10 @@
          ];
 
     }
+}
+
+-(void)manageUser:(NSDictionary *)dict{
+    
 }
 
 @end

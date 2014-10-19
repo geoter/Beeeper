@@ -20,6 +20,8 @@
 #import <Social/Social.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "BPActivity.h"
+#import "TKRoundedView.h"
+#import "BPSuggestions.h"
 
 @interface BeeepItVC ()
 {
@@ -32,6 +34,7 @@
     NSString *beeepDate;
     NSString *tinyURL;
     NSString *fingerprint;
+    NSMutableArray *followers;
 }
 @end
 
@@ -55,13 +58,26 @@
 {
     [super viewDidLoad];
 
-    self.suggestButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
-    self.suggestButton.layer.borderWidth = 1;
-    self.suggestButton.layer.cornerRadius = 5;
+//    self.suggestButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
+//    self.suggestButton.layer.borderWidth = 1;
+//    self.suggestButton.layer.cornerRadius = 5;
 
-    self.beeepTimeButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
-    self.beeepTimeButton.layer.borderWidth = 1;
-    self.beeepTimeButton.layer.cornerRadius = 5;
+    TKRoundedView *beeepTimeBGV = (TKRoundedView *)[self.view viewWithTag:1111];
+    beeepTimeBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    beeepTimeBGV.borderWidth = 1.0f;
+    beeepTimeBGV.cornerRadius = 6;
+    beeepTimeBGV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
+    
+    TKRoundedView *suggestBGV = (TKRoundedView *)[self.view viewWithTag:1112];
+    suggestBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    suggestBGV.borderWidth = 1.0f;
+    suggestBGV.cornerRadius = 6;
+    
+//    self.beeepTimeButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
+//    self.beeepTimeButton.layer.borderWidth = 1;
+//    self.beeepTimeButton.layer.cornerRadius = 5;
     
     self.fbShareV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
     self.fbShareV.layer.borderWidth = 1;
@@ -77,6 +93,7 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(close:) name:@"CloseBeeepItVC" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(followersSelected:) name:@"Suggest Followers Selected" object:nil];
     
     BeeepTimeVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
@@ -368,8 +385,35 @@
     beeepTime = [notif.userInfo objectForKey:@"Beeep Time"];
     beepTimeSeconds = [[notif.userInfo objectForKey:@"Seconds"]intValue];
     
-    [self.beeepTimeButton setTitle:beeepTime forState:UIControlStateNormal];
-    self.beeepTimeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+    self.selectTimeLabel.text = beeepTime;
+    self.selectTimeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+    self.selectTimeLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    
+}
+
+-(void)followersSelected:(NSNotification *)notif{
+   followers = [NSMutableArray arrayWithArray:[notif.userInfo objectForKey:@"followers"]];
+   
+    self.suggestedLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+    self.suggestedLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    self.suggestedLabel.text = @"";
+    
+    for (NSDictionary *beeeper in followers) {
+        NSString *name = [beeeper objectForKey:@"name"];
+        NSString *surname = [beeeper objectForKey:@"lastname"];
+        
+        if ([name isKindOfClass:[NSString class]] && name.length > 0) {
+            self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingString:[name capitalizedString]];
+        }
+
+        if ([surname isKindOfClass:[NSString class]] && surname.length > 0) {
+            self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingFormat:@" %@",[surname capitalizedString]];
+        }
+        
+        if ([followers indexOfObject:beeeper] != followers.count-1) {
+            self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingString:@", "];
+        }
+    }
     
     
 }
@@ -404,40 +448,50 @@
 }
 
 - (IBAction)fbShare:(UISwitch *)sender {
-    UIView *superV = sender.superview;
-    
-    if (sender.on) {
-        [self sendFacebook];
-        UIImageView *icon = (id)[superV viewWithTag:1];
-        [icon setImage:[UIImage imageNamed:@"facebook_icon"]];
-        UILabel *lbl = (id)[superV viewWithTag:2];
-        lbl.textColor = [UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1];
+    [self switchValueChanged:sender];
+}
+
+-(void)switchValueChanged:(UISwitch *)switchV{
+   
+    if (switchV == self.fbSwitch) {
+        UIView *superV = switchV.superview;
+        
+        if (switchV.on) {
+            [self sendFacebook];
+            UIImageView *icon = (id)[superV viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"facebook_icon"]];
+            UILabel *lbl = (id)[superV viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1];
+        }
+        else{
+            UIImageView *icon = (id)[superV viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"facebook_icon_gray"]];
+            UILabel *lbl = (id)[superV viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+        }
     }
     else{
-        UIImageView *icon = (id)[superV viewWithTag:1];
-        [icon setImage:[UIImage imageNamed:@"facebook_icon_gray"]];
-        UILabel *lbl = (id)[superV viewWithTag:2];
-        lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+        
+        UIView *superV = switchV.superview;
+        
+        if (switchV.on) {
+            [self sendTwitter];
+            UIImageView *icon = (id)[superV viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"twitter_icon"]];
+            UILabel *lbl = (id)[superV viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:70/255.0 green:154/255.0 blue:233/255.0 alpha:1];
+        }
+        else{
+            UIImageView *icon = (id)[superV viewWithTag:1];
+            [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
+            UILabel *lbl = (id)[superV viewWithTag:2];
+            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
+        }
     }
-
 }
 
 - (IBAction)twitterShare:(UISwitch *)sender {
-    UIView *superV = sender.superview;
-    
-    if (sender.on) {
-        [self sendTwitter];
-        UIImageView *icon = (id)[superV viewWithTag:1];
-        [icon setImage:[UIImage imageNamed:@"twitter_icon"]];
-        UILabel *lbl = (id)[superV viewWithTag:2];
-        lbl.textColor = [UIColor colorWithRed:70/255.0 green:154/255.0 blue:233/255.0 alpha:1];
-    }
-    else{
-        UIImageView *icon = (id)[superV viewWithTag:1];
-        [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
-        UILabel *lbl = (id)[superV viewWithTag:2];
-        lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
-    }
+    [self switchValueChanged:sender];
 }
 
 -(void)sendFacebookOld{
@@ -581,6 +635,8 @@
                                                         cancelButtonTitle:@"OK"
                                                         otherButtonTitles:nil];
               [alertView show];
+              self.fbSwitch.on = NO;
+              [self switchValueChanged:self.fbSwitch];
               
           } else if (session.isOpen) {
               
@@ -624,7 +680,19 @@
                                                     if(error) {
                                                         // An error occurred, we need to handle the error
                                                         // See: https://developers.facebook.com/docs/ios/errors
+                                                        
+                                                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                            message:error.localizedDescription
+                                                                                                           delegate:nil
+                                                                                                  cancelButtonTitle:@"OK"
+                                                                                                  otherButtonTitles:nil];
+                                                        [alertView show];
+                                                        
                                                         NSLog(@"Error publishing story: %@", error.description);
+                                                        self.fbSwitch.on = NO;
+                                                        
+                                                        [self switchValueChanged:self.fbSwitch];
+                                                        
                                                     } else {
                                                         // Success
                                                         NSLog(@"result %@", results);
@@ -670,12 +738,8 @@
              
              SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
                  if (result == SLComposeViewControllerResultCancelled) {
-                     UIImageView *icon = (id)[self.twitterSwitch.superview viewWithTag:1];
-                     [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
-                     UILabel *lbl = (id)[self.twitterSwitch.superview viewWithTag:2];
-                     lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
                      self.twitterSwitch.on = NO;
-                     
+                     [self switchValueChanged:self.twitterSwitch];
                      
                  } else
                      
@@ -750,7 +814,7 @@
         [[BPCreate sharedBP]beeepCreate:fingerPrint beeep_time:beepTime completionBlock:^(BOOL completed,NSDictionary *objs){
             if (completed) {
                 
-                if ([objs isKindOfClass:[NSString class]]) {
+                if ([objs isKindOfClass:[NSDictionary class]]) {
                     
                     @try {
                         UILocalNotification *localNotification = [[UILocalNotification alloc] init];
@@ -770,6 +834,31 @@
     
                     }
                     
+                    
+                    @try {
+                        NSMutableArray *users_ids = [NSMutableArray array];
+                        
+                        for (NSDictionary *user in followers) {
+                            [users_ids addObject:[user objectForKey:@"id"]];
+                        }
+                        
+                        [[BPSuggestions sharedBP]suggestEvent:fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
+                            if (completed) {
+                                NSLog(@"Suggestion send");
+                            }
+                            else{
+                                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was created but suggestions failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                            }
+                        }];
+                    }
+                    @catch (NSException *exception) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Exception Error" message:@"Beeep was created but suggestions failed." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    }
+                    @finally {
+                        
+                    }
 
                 }
                 
@@ -825,6 +914,11 @@
 
 - (IBAction)suggestItPressed:(id)sender {
     SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    viewController.sendNotificationWhenFinished = YES;
+    
+    if (followers != nil && followers.count != 0) {
+        viewController.selectedPeople = [NSMutableArray arrayWithArray:followers];
+    }
     
     NSString  *fingerPrint;
 

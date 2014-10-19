@@ -20,6 +20,8 @@
 		5E09B5741923BFC800AF5DE8 /* BPUsersLookup.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E09B5731923BFC800AF5DE8 /* BPUsersLookup.m */; };
 		5E09B5781924B05800AF5DE8 /* BPHomeFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E09B5771924B05800AF5DE8 /* BPHomeFeed.m */; };
 		5E09B58719261AFF00AF5DE8 /* EventWS.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E09B58619261AFF00AF5DE8 /* EventWS.m */; };
+		5E0FD46D19F31FD40055E7EA /* Beeep_it_btn_long.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E0FD46B19F31FD40055E7EA /* Beeep_it_btn_long.png */; };
+		5E0FD46E19F31FD40055E7EA /* Beeep_it_btn_long@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E0FD46C19F31FD40055E7EA /* Beeep_it_btn_long@2x.png */; };
 		5E1D5645192F316000962F94 /* MyDateTimePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1D5644192F316000962F94 /* MyDateTimePicker.m */; };
 		5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1D5646192F616300962F94 /* AddressBook.framework */; };
 		5E35C55F19C9A92B00D39D6B /* GoogleCustomSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E35C55E19C9A92B00D39D6B /* GoogleCustomSearchVC.m */; };
@@ -57,6 +59,7 @@
 		5E58956B1975794900FDA837 /* yellowBackV.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5E58956A1975794900FDA837 /* yellowBackV.jpg */; };
 		5E58956E1975950200FDA837 /* JSBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E58956D1975950100FDA837 /* JSBadgeView.m */; };
 		5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E9D2DA3192DDCF700A765C9 /* BPCreate.m */; };
+		5EA2D4AE19F42DDD000977A4 /* TKRoundedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA2D4AD19F42DDD000977A4 /* TKRoundedView.m */; };
 		5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */; };
 		5EA7FAE7195407E00033C061 /* beeeper-logo-Splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */; };
 		5EA7FAEA19575E080033C061 /* MissingFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA7FAE919575E080033C061 /* MissingFields.m */; };
@@ -550,6 +553,8 @@
 		5E09B5771924B05800AF5DE8 /* BPHomeFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPHomeFeed.m; sourceTree = "<group>"; };
 		5E09B58519261AFF00AF5DE8 /* EventWS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventWS.h; sourceTree = "<group>"; };
 		5E09B58619261AFF00AF5DE8 /* EventWS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventWS.m; sourceTree = "<group>"; };
+		5E0FD46B19F31FD40055E7EA /* Beeep_it_btn_long.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Beeep_it_btn_long.png; sourceTree = "<group>"; };
+		5E0FD46C19F31FD40055E7EA /* Beeep_it_btn_long@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Beeep_it_btn_long@2x.png"; sourceTree = "<group>"; };
 		5E1D5643192F316000962F94 /* MyDateTimePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDateTimePicker.h; sourceTree = "<group>"; };
 		5E1D5644192F316000962F94 /* MyDateTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDateTimePicker.m; sourceTree = "<group>"; };
 		5E1D5646192F616300962F94 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -606,6 +611,8 @@
 		5E58956D1975950100FDA837 /* JSBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSBadgeView.m; sourceTree = "<group>"; };
 		5E9D2DA2192DDCF700A765C9 /* BPCreate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPCreate.h; sourceTree = "<group>"; };
 		5E9D2DA3192DDCF700A765C9 /* BPCreate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BPCreate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		5EA2D4AC19F42DDD000977A4 /* TKRoundedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKRoundedView.h; sourceTree = "<group>"; };
+		5EA2D4AD19F42DDD000977A4 /* TKRoundedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKRoundedView.m; sourceTree = "<group>"; };
 		5EA7FAE4195407E00033C061 /* beeeper-logo-Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash.png"; sourceTree = "<group>"; };
 		5EA7FAE5195407E00033C061 /* beeeper-logo-Splash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeper-logo-Splash@2x.png"; sourceTree = "<group>"; };
 		5EA7FAE819575E080033C061 /* MissingFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MissingFields.h; sourceTree = "<group>"; };
@@ -1385,6 +1392,8 @@
 		5EA7FAF419595A9E0033C061 /* R */ = {
 			isa = PBXGroup;
 			children = (
+				5E0FD46B19F31FD40055E7EA /* Beeep_it_btn_long.png */,
+				5E0FD46C19F31FD40055E7EA /* Beeep_it_btn_long@2x.png */,
 				CE3D18EF19B9FADE003CA382 /* Beeep_it_btn.png */,
 				CE3D18F019B9FADE003CA382 /* Beeep_it_btn@2x.png */,
 				5E58956A1975794900FDA837 /* yellowBackV.jpg */,
@@ -1816,6 +1825,8 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				5EA2D4AC19F42DDD000977A4 /* TKRoundedView.h */,
+				5EA2D4AD19F42DDD000977A4 /* TKRoundedView.m */,
 				63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */,
 				63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */,
 				63AE28C419F14E46004EB040 /* THCalendarDatePicker */,
@@ -2779,6 +2790,7 @@
 				CE0C882E18D0C56200BA548F /* facebook_logo_small.png in Resources */,
 				CE08DD0D193748FE00B090BE /* like_event.png in Resources */,
 				CEFDE82D18ED77BD00E500A9 /* Home_feed_icon2.png in Resources */,
+				5E0FD46D19F31FD40055E7EA /* Beeep_it_btn_long.png in Resources */,
 				CE0C883F18D0C7B300BA548F /* plus_btn@2x.png in Resources */,
 				CE29EE3A18D9CADB0001EC43 /* container_image_2.png in Resources */,
 				CE9C731A196D909E004AE8C6 /* user_icon_180x180@2x.png in Resources */,
@@ -2924,6 +2936,7 @@
 				CE0C881B18D0BE1300BA548F /* option_0_gray@2x.png in Resources */,
 				CE7CFAED18B797C10044C9AC /* MessageEntryInputField@2x.png in Resources */,
 				5EA7FAF219594E910033C061 /* suggest_unselected@2x.png in Resources */,
+				5E0FD46E19F31FD40055E7EA /* Beeep_it_btn_long@2x.png in Resources */,
 				CE038421195D73DB00C4BC52 /* create-event-close-buton.png in Resources */,
 				962E3DA7194CBD4700A0DD87 /* search_icon_gray@2x.png in Resources */,
 				CE35D1DD18D07E890086C26A /* icon-twitter2@2x.png in Resources */,
@@ -3022,6 +3035,7 @@
 				969591E81948A8A900526AA0 /* EventFfo.m in Sources */,
 				9637AA5818C0E7B800651BD8 /* ASIDataCompressor.m in Sources */,
 				CEA64F2118B39F4F00B7ECF5 /* AppDelegate.m in Sources */,
+				5EA2D4AE19F42DDD000977A4 /* TKRoundedView.m in Sources */,
 				CEEE3ED418C9E26900665C21 /* WelcomeVC.m in Sources */,
 				CE02EB9918EC24CC00B5674C /* CHTCollectionViewWaterfallHeader.m in Sources */,
 				CE080C8718B62E47007E2066 /* RMDateSelectionViewController.m in Sources */,

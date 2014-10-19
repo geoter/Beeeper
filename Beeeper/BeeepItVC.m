@@ -55,9 +55,13 @@
 {
     [super viewDidLoad];
 
-    self.suggestButton.layer.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1].CGColor;
+    self.suggestButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
     self.suggestButton.layer.borderWidth = 1;
     self.suggestButton.layer.cornerRadius = 5;
+
+    self.beeepTimeButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
+    self.beeepTimeButton.layer.borderWidth = 1;
+    self.beeepTimeButton.layer.cornerRadius = 5;
     
     self.fbShareV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
     self.fbShareV.layer.borderWidth = 1;
@@ -365,6 +369,9 @@
     beepTimeSeconds = [[notif.userInfo objectForKey:@"Seconds"]intValue];
     
     [self.beeepTimeButton setTitle:beeepTime forState:UIControlStateNormal];
+    self.beeepTimeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning

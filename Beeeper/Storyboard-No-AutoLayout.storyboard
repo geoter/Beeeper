@@ -1054,10 +1054,10 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Tti-Ec-ass">
-                                        <rect key="frame" x="169" y="498" width="131" height="40"/>
+                                        <rect key="frame" x="26" y="498" width="268" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <color key="backgroundColor" red="0.56078431370000004" green="0.70588235290000001" blue="0.79215686269999996" alpha="0.0" colorSpace="calibratedRGB"/>
-                                        <state key="normal" image="Beeep_it_btn.png">
+                                        <state key="normal" image="Beeep_it_btn_long.png">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1102,15 +1102,54 @@
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kjN-Mq-rZL">
+                                        <rect key="frame" x="19" y="197" width="283" height="39"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-LightItalic" family="Helvetica Neue" pointSize="12"/>
+                                        <inset key="titleEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Select when you want to be reminded">
+                                            <color key="titleColor" red="0.792156862745098" green="0.81176470588235294" blue="0.82352941176470584" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="beeepTimeSelected:" destination="eqk-dq-t58" eventType="touchUpInside" id="ORr-jY-OKh"/>
+                                        </connections>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="venue-icon-black.png" id="FcD-Os-vth">
+                                        <rect key="frame" x="90" y="132" width="8" height="11"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="SUGGEST IT" minimumFontSize="17" id="MK9-hg-aR9">
+                                        <rect key="frame" x="20" y="238" width="262" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="SXM-Ty-Bwy">
+                                        <rect key="frame" x="20" y="269" width="283" height="39"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-LightItalic" family="Helvetica Neue" pointSize="12"/>
+                                        <inset key="titleEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Select followers to suggest the event">
+                                            <color key="titleColor" red="0.79215686269999996" green="0.81176470590000005" blue="0.82352941180000006" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="suggestItPressed:" destination="eqk-dq-t58" eventType="touchUpInside" id="sK1-R6-D6k"/>
+                                        </connections>
+                                    </button>
                                     <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="SHARE TO" minimumFontSize="17" id="2zB-97-AgG">
-                                        <rect key="frame" x="20" y="251" width="262" height="32"/>
+                                        <rect key="frame" x="20" y="320" width="262" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <view contentMode="scaleToFill" id="k6b-FO-ySb">
-                                        <rect key="frame" x="19" y="284" width="283" height="40"/>
+                                        <rect key="frame" x="19" y="353" width="283" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
                                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" image="facebook_icon_gray.png" id="p1s-b8-eU9">
@@ -1136,7 +1175,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <view contentMode="scaleToFill" id="KFA-LV-RSJ">
-                                        <rect key="frame" x="19" y="325" width="283" height="40"/>
+                                        <rect key="frame" x="19" y="394" width="283" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
                                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" image="twitter_icon_gray.png" id="2aC-UE-53g">
@@ -1162,8 +1201,8 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Prf-pp-zdI">
-                                        <rect key="frame" x="19" y="374" width="264" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="19" y="443" width="264" height="24"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <state key="normal" image="checkbox_empty.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1172,43 +1211,11 @@
                                         </connections>
                                     </button>
                                     <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="10" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hide from followers" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bVf-oO-k5b">
-                                        <rect key="frame" x="51" y="375" width="149" height="21"/>
+                                        <rect key="frame" x="51" y="444" width="149" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kjN-Mq-rZL">
-                                        <rect key="frame" x="19" y="197" width="283" height="39"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.87450980392156863" green="0.8901960784313725" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
-                                        <state key="normal" title="Select time">
-                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="beeepTimeSelected:" destination="eqk-dq-t58" eventType="touchUpInside" id="ORr-jY-OKh"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="HIB-fc-lbh">
-                                        <rect key="frame" x="23" y="498" width="130" height="40"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                        <state key="normal" title="Suggest it">
-                                            <color key="titleColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" red="0.068201864919354843" green="0.89019614458084106" blue="0.90196084976196289" alpha="0.0" colorSpace="deviceRGB"/>
-                                        </state>
-                                        <state key="highlighted">
-                                            <color key="titleColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="suggestItPressed:" destination="eqk-dq-t58" eventType="touchUpInside" id="BJl-2m-dis"/>
-                                        </connections>
-                                    </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="venue-icon-black.png" id="FcD-Os-vth">
-                                        <rect key="frame" x="90" y="132" width="8" height="11"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </imageView>
                                 </subviews>
                             </scrollView>
                         </subviews>
@@ -1219,7 +1226,7 @@
                         <outlet property="fbShareV" destination="k6b-FO-ySb" id="U8R-1o-ecq"/>
                         <outlet property="fbSwitch" destination="k9u-CF-xrg" id="IhG-fh-udl"/>
                         <outlet property="scrollV" destination="7B2-FY-gh3" id="A6M-wR-xE0"/>
-                        <outlet property="suggestButton" destination="HIB-fc-lbh" id="EwL-MU-n2Y"/>
+                        <outlet property="suggestButton" destination="SXM-Ty-Bwy" id="Brc-1v-TX8"/>
                         <outlet property="twitterSwitch" destination="YqG-Ki-d6L" id="un2-5D-dvr"/>
                         <outlet property="twitterV" destination="KFA-LV-RSJ" id="2fa-hK-frz"/>
                         <outlet property="venueIcon" destination="FcD-Os-vth" id="Jw5-95-c6i"/>
@@ -4246,7 +4253,7 @@
     </scenes>
     <resources>
         <image name="Add_new_beeep_btn.png" width="49" height="45"/>
-        <image name="Beeep_it_btn.png" width="131" height="40"/>
+        <image name="Beeep_it_btn_long.png" width="268" height="39"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="activityBtn.png" width="14" height="14"/>
         <image name="add_photo.png" width="99" height="102"/>

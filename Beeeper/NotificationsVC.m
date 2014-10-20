@@ -355,7 +355,7 @@
 -(NSAttributedString *)textForNotification:(Activity_Object *)activity{
     
     @try {
-    
+        
         Who *w = [[activity.who firstObject] copy];
         Whom *wm = [[activity.whom firstObject] copy];
         
@@ -370,6 +370,7 @@
         if ([my_id isEqualToString:wm.whomIdentifier]) {
             wm.name= @"You";
         }
+
         
         NSString *formattedString;
         

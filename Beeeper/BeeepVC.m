@@ -44,6 +44,30 @@
 {
     [super viewDidLoad];
 
+    self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+    self.titleBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    self.titleBGV.borderWidth = 1.0f;
+    self.titleBGV.cornerRadius = 6;
+    self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+
+    self.whereBGV.roundedCorners = TKRoundedCornerNone;
+    self.whereBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    self.whereBGV.borderWidth = 1.0f;
+    self.whereBGV.cornerRadius = 6;
+    self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
+    self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+    self.whenBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    self.whenBGV.borderWidth = 1.0f;
+    self.whenBGV.cornerRadius = 6;
+    self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
+    self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
+    self.addPhotoBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    self.addPhotoBGV.borderWidth = 1.0f;
+    self.addPhotoBGV.cornerRadius = 6;
+    self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
     values = [NSMutableDictionary dictionary];
     
     if ([DTO sharedDTO].userPlace == nil) {
@@ -65,7 +89,6 @@
 
     
     datePicker = [[MyDateTimePicker alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 260)];
-    datePicker.tag = 99;
     datePicker.backgroundColor = [UIColor whiteColor];
     
     [DZNPhotoPickerController registerService:DZNPhotoPickerControllerServiceGoogleImages
@@ -144,35 +167,12 @@
     [self close:nil];
 }
 
--(void)adjustFonts{
-    for (UIView *v in self.containerScrollV.subviews) {
-        if ([v isKindOfClass:[UITextField class]]) {
-            UITextField *txtF = (UITextField *)v;
-            
-            switch (txtF.tag) {
-                case 1:
-                case 2:
-                case 3:
-                {
-                    txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
-                }
-                break;
-                case 4:
-                case 5:{
-                    txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
-                }
-                default:
-                    break;
-            }
-        }
-    }
-}
-
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    
     [datePicker setHidden:YES animated:YES];
     [super viewWillDisappear:animated];
 }
@@ -193,13 +193,32 @@
     
     if (textField.tag == 2) { //pick date
         
+        UIView *backV = [[UIView alloc]initWithFrame:self.view.bounds];
+        backV.tag = 92;
+        backV.backgroundColor = [ UIColor colorWithWhite:0 alpha:0];
+
         datePicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 260);
-        [self.view addSubview:datePicker];
+        [backV addSubview:datePicker];
+        
+        [self.view addSubview:backV];
+        
+        [UIView animateWithDuration:0.4f
+                         animations:^
+         {
+            backV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+         }
+                         completion:^(BOOL finished)
+         {
+             
+         }
+         ];
+        
         [datePicker setHidden:NO animated:YES];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideDatePicker) name:@"DatePickerDone" object:nil];
         [activeTXTF resignFirstResponder];
         activeTXTF = nil;
         
+ 
         return NO;
     }
     
@@ -218,7 +237,7 @@
     
     if (typedStr.length == 0) {
         textField.textAlignment = NSTextAlignmentLeft;
-        
+        textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
         //remove value
         
         switch (textField.tag) {
@@ -266,6 +285,9 @@
         }
     }
 
+    textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+    textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    
     return YES;
 }
 
@@ -428,10 +450,8 @@
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
     
     [self.containerScrollV setContentOffset:CGPointMake(0, 200) animated:YES];
-    textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-    textView.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
     
-    if ([textView.text isEqualToString:@"HASHTAGS (OPTIONAL)"]) {
+    if ([textView.text isEqualToString:@"Hashtags (optional)"]) {
         textView.text = @"#";
     }
     
@@ -484,29 +504,48 @@
 }
 
 -(void)hideDatePicker{
-    MyDateTimePicker *picker = (MyDateTimePicker*)[self.view viewWithTag:99];
-    [picker setHidden:YES animated:YES];
+    UIView *pickerBGV = (id)[self.view viewWithTag:92];
+    [datePicker setHidden:YES animated:YES];
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         pickerBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
+     }
+                     completion:^(BOOL finished)
+     {
+         [datePicker removeFromSuperview];
+         [pickerBGV removeFromSuperview];
+     }
+     ];
+    
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"DatePickerDone" object:nil];
     
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"dd/MM/yyyy-HH:mm"];
     
     
-    for (UIView *v in self.containerScrollV.subviews) {
-        if ([v isKindOfClass:[UITextField class]] && [v tag]==2) {
-            [df setDateFormat:@"dd/MM/yyyy-HH:mm-ZZ"];
-            NSString *date = [NSString stringWithFormat:@"%@",[df stringFromDate:picker.date]];
+    for (UIView *v1 in self.containerScrollV.subviews) {
+        
+        for (UIView *v2 in v1.subviews) {
             
-            NSTimeInterval timestamp = [picker.date timeIntervalSince1970];
-            float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
-            [df setDateFormat:@"dd/MM/yyyy HH:mm ZZ"];
-            
-            [values setObject:[NSString stringWithFormat:@"%d",(int)timestamp] forKey:@"timestamp"];
-            [values setObject:[NSString stringWithFormat:@"%d",(int)timezoneoffset] forKey:@"utcoffset"];
-            
-            [(UITextField *)v setText:[NSString stringWithFormat:@"%@",[df stringFromDate:picker.date]]];
-            
-            [self validTextfield:v];
+            if ([v2 isKindOfClass:[UITextField class]] && [v2 tag]==2) {
+                [df setDateFormat:@"dd/MM/yyyy-HH:mm-ZZ"];
+                NSString *date = [NSString stringWithFormat:@"%@",[df stringFromDate:datePicker.date]];
+                
+                NSTimeInterval timestamp = [datePicker.date timeIntervalSince1970];
+                float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
+                [df setDateFormat:@"dd/MM/yyyy HH:mm ZZ"];
+                
+                [values setObject:[NSString stringWithFormat:@"%d",(int)timestamp] forKey:@"timestamp"];
+                [values setObject:[NSString stringWithFormat:@"%d",(int)timezoneoffset] forKey:@"utcoffset"];
+                
+                [(UITextField *)v2 setText:[NSString stringWithFormat:@"%@",[df stringFromDate:datePicker.date]]];
+                
+                [(UITextField *)v2 setTextColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+                
+                [self validTextfield:(UITextField *)v2];
+            }
         }
     }
     
@@ -696,6 +735,10 @@
     
     if (base64Image) {
         [values setObject:base64Image forKey:@"base64_image"];
+       
+        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+        chosenPhotoBtn.layer.borderColor = [UIColor clearColor].CGColor;
+        chosenPhotoBtn.layer.borderWidth = 0.0f;
     }
     else if (![values objectForKey:@"image_url"]){
         UIButton *choosePhotoBtn = (id)[self.scrollV viewWithTag:7];
@@ -729,12 +772,14 @@
 
 }
 
--(void)invalidTextfield:(BorderTextField *)txtF{
+-(void)invalidTextfield:(UITextField *)txtF{
+    
+    TKRoundedView *backV = (id)txtF.superview;
+    [self.containerScrollV bringSubviewToFront:backV];
     
     [UIView animateWithDuration:0.3f
                      animations:^
-     {    txtF.layer.borderColor = [UIColor redColor].CGColor;
-         txtF.layer.borderWidth = 1.0f;
+     {    backV.borderColor = [UIColor redColor];
      }
                      completion:^(BOOL finished)
      {
@@ -742,12 +787,15 @@
      ];
 }
 
--(void)validTextfield:(BorderTextField *)txtF{
+-(void)validTextfield:(UITextField *)txtF{
+    
+    TKRoundedView *backV = (id)txtF.superview;
+    [self.containerScrollV sendSubviewToBack:backV];
     
     [UIView animateWithDuration:0.3f
                      animations:^
-     {    txtF.layer.borderColor = [UIColor clearColor].CGColor;
-         txtF.layer.borderWidth = 0.0f;
+     {
+        backV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
      }
                      completion:^(BOOL finished)
      {
@@ -766,6 +814,13 @@
         else{
             sender.layer.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1].CGColor;
             sender.layer.borderWidth = 1.0f;
+            sender.layer.cornerRadius = 6;
+            
+            self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
+            self.addPhotoBGV.borderColor = [UIColor clearColor];
+            self.addPhotoBGV.borderWidth = 0.0f;
+            self.addPhotoBGV.cornerRadius = 6;
+            self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
         }
     }
   

@@ -400,15 +400,15 @@
     
     for (NSDictionary *beeeper in followers) {
         NSString *name = [beeeper objectForKey:@"name"];
-        NSString *surname = [beeeper objectForKey:@"lastname"];
+//        NSString *surname = [beeeper objectForKey:@"lastname"];
         
         if ([name isKindOfClass:[NSString class]] && name.length > 0) {
             self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingString:[name capitalizedString]];
         }
 
-        if ([surname isKindOfClass:[NSString class]] && surname.length > 0) {
+       /* if ([surname isKindOfClass:[NSString class]] && surname.length > 0) {
             self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingFormat:@" %@",[surname capitalizedString]];
-        }
+        }*/
         
         if ([followers indexOfObject:beeeper] != followers.count-1) {
             self.suggestedLabel.text = [self.suggestedLabel.text stringByAppendingString:@", "];

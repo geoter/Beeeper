@@ -8,16 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import "BorderTextField.h"
+#import "TKRoundedView.h"
 
 @interface BeeepVC : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIPageControl *imagesPageControl;
-@property (weak, nonatomic) IBOutlet BorderTextField *titleTxtF;
-@property (weak, nonatomic) IBOutlet BorderTextField *dateTxtF;
-@property (weak, nonatomic) IBOutlet BorderTextField *venueTxtF;
+@property (weak, nonatomic) IBOutlet UITextField *titleTxtF;
+@property (weak, nonatomic) IBOutlet UITextField *dateTxtF;
+@property (weak, nonatomic) IBOutlet UITextField *venueTxtF;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 @property (weak, nonatomic) IBOutlet UIScrollView *containerScrollV;
 @property (weak, nonatomic) IBOutlet UIView *tagsV;
+@property (weak, nonatomic) IBOutlet TKRoundedView *titleBGV;
+@property (weak, nonatomic) IBOutlet TKRoundedView *whereBGV;
+@property (weak, nonatomic) IBOutlet TKRoundedView *whenBGV;
+@property (weak, nonatomic) IBOutlet TKRoundedView *addPhotoBGV;
+
 - (IBAction)releaseKeyborad:(id)sender;
 
 - (IBAction)close:(id)sender;

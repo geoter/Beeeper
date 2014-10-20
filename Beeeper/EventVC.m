@@ -512,7 +512,10 @@
     }
     
     [self hideLoading];
-
+    
+    if (self.redirectToComments) {
+        [self showComments:nil];
+    }
 
 }
 
@@ -750,6 +753,10 @@
     }
 
     [self hideLoading];
+    
+    if (self.redirectToComments) {
+        [self showComments:nil];
+    }
 }
 
 -(void)showEventWithTimelineObject{
@@ -987,6 +994,10 @@
     }
 
     [self hideLoading];
+    
+    if (self.redirectToComments) {
+        [self showComments:nil];
+    }
 }
 
 -(void)showEventForEventLookUpObject{
@@ -1230,6 +1241,10 @@
     
     
     [self hideLoading];
+    
+    if (self.redirectToComments) {
+        [self showComments:nil];
+    }
 }
 
 
@@ -1515,6 +1530,10 @@
     }
     
     [self hideLoading];
+    
+    if (self.redirectToComments) {
+        [self showComments:nil];
+    }
 }
 
 

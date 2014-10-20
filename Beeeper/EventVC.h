@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *beeepItButton;
 @property (weak, nonatomic) IBOutlet UIImageView *passedIcon;
 
+@property (nonatomic,assign) BOOL redirectToComments;
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;
 

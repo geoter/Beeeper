@@ -18,6 +18,7 @@
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
+    BOOL firstTime;
 }
 @end
 
@@ -29,6 +30,7 @@
 {
     [super viewDidLoad];
     
+    firstTime = YES;
     self.title = @"Notifications";
     
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
@@ -86,7 +88,7 @@
             }
             
             if (notifications.count > 0) {
-                
+                firstTime = NO;
                 self.noNotifsFound.hidden = YES;
             }
             else{
@@ -153,7 +155,10 @@
         }
     }];
     
-    [self getNotifications];
+    if (firstTime) {
+        [self getNotifications];
+    }
+    
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
 }
@@ -321,7 +326,7 @@
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
         
         viewController.tml = activity;
-        
+        viewController.redirectToComments = ([activity.did rangeOfString:@"comment"].location != NSNotFound);
         [self.navigationController pushViewController:viewController animated:YES];
     }
     else{

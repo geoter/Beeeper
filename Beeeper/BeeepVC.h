@@ -28,7 +28,6 @@
 
 - (IBAction)close:(id)sender;
 - (IBAction)nextPressed:(id)sender;
-- (IBAction)imageSelected:(id)sender;
 - (IBAction)addPhotoPressed:(id)sender;
 
 @end

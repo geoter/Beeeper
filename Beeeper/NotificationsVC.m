@@ -380,7 +380,14 @@
         else if(activity.eventActivity.count > 0){
             EventActivity *event = [activity.eventActivity firstObject];
             NSString *event_title = [[event.title unicodeEncode]capitalizedString];
-            formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
+            
+            if ([activity.did isEqualToString:@"triggered"]) {
+                double now_timestamp = [[NSDate date] timeIntervalSince1970];
+                 formattedString = [NSString stringWithFormat:@"%@ is starting in %@",event_title,[self dailyLanguage:now_timestamp - activity.when]];
+            }
+            else{
+                formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
+            }
         }
         else if(activity.beeepInfoActivity.eventActivity.count >0){
             EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];

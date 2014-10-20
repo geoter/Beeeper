@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface GTPushButton : UIButton
-
+@property (nonatomic,strong) UIColor *selectionColor;
 @end

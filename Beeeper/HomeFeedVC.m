@@ -34,6 +34,7 @@
     NSMutableArray *events;
    
     GTSegmentedControl *segment;
+    GHContextMenuView* overlay;
     
     int selectedIndex;
     BOOL loadNextPage;
@@ -89,7 +90,7 @@
 
     initiateData = YES;
     
-    GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
+    overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;
     

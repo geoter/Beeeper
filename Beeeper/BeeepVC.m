@@ -736,21 +736,14 @@
     if (base64Image) {
         [values setObject:base64Image forKey:@"base64_image"];
        
-        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
-        chosenPhotoBtn.layer.borderColor = [UIColor clearColor].CGColor;
-        chosenPhotoBtn.layer.borderWidth = 0.0f;
+        self.addPhotoBGV.borderColor = [UIColor clearColor];
     }
     else if (![values objectForKey:@"image_url"]){
-        UIButton *choosePhotoBtn = (id)[self.scrollV viewWithTag:7];
-        choosePhotoBtn.layer.borderColor = [UIColor redColor].CGColor;
-        choosePhotoBtn.layer.borderWidth = 1.0f;
+        self.addPhotoBGV.borderColor = [UIColor colorWithRed:220/255.0 green:61/255.0 blue:61/255.0 alpha:1];
         mpike = YES;
     }
     else{
-        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
-        chosenPhotoBtn.layer.borderColor = [UIColor clearColor].CGColor;
-        chosenPhotoBtn.layer.borderWidth = 0.0f;
-    
+        self.addPhotoBGV.borderColor = [UIColor clearColor];
     }
     
 
@@ -804,26 +797,9 @@
 
 }
 
-- (IBAction)imageSelected:(UIButton *)sender {
+- (void)imageSelected{
   
-    
-    for (UIButton *btn in self.scrollV.subviews) {
-        if (btn != sender) {
-            btn.layer.borderWidth = 0.0f;
-        }
-        else{
-            sender.layer.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1].CGColor;
-            sender.layer.borderWidth = 1.0f;
-            sender.layer.cornerRadius = 6;
-            
-            self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
-            self.addPhotoBGV.borderColor = [UIColor clearColor];
-            self.addPhotoBGV.borderWidth = 0.0f;
-            self.addPhotoBGV.cornerRadius = 6;
-            self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-        }
-    }
-  
+    self.addPhotoBGV.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
 }
 
 
@@ -949,12 +925,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         NSURL *image_url = [info_values objectForKey:@"source_url"];
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-        UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+        UIButton *chosenPhotoBtn = (id)[self.addPhotoBGV viewWithTag:6];
         [chosenPhotoBtn setImage:img forState:UIControlStateNormal];
-        chosenPhotoBtn.hidden = NO;
         
-        UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
-        addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
@@ -968,7 +941,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
              [values setObject:[[DTO sharedDTO] urlencode:image_url.absoluteString] forKey:@"image_url"];
         }
         
-        [self imageSelected:chosenPhotoBtn];
+        [self imageSelected];
     }
     @catch (NSException *exception) {
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong,please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -1036,13 +1009,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (void)imagePicker:(UIImagePickerController *)imagePicker pickedImage:(UIImage *)image{
 
     NSLog(@"%@",NSStringFromCGSize(image.size));
-    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    UIButton *chosenPhotoBtn = (id)[self.addPhotoBGV viewWithTag:6];
     [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
     chosenPhotoBtn.hidden = NO;
     [chosenPhotoBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
  
-    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
-    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
@@ -1051,7 +1022,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
     base64Image = [self base64forData:imageData];
     
-    [self imageSelected:chosenPhotoBtn];
+    [self imageSelected];
 }
 
 
@@ -1082,20 +1053,19 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo{
   
-    UIButton *chosenPhotoBtn = (id)[self.scrollV viewWithTag:6];
+    UIButton *chosenPhotoBtn = (id)[self.addPhotoBGV viewWithTag:6];
     [chosenPhotoBtn setImage:image forState:UIControlStateNormal];
     [chosenPhotoBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
     chosenPhotoBtn.hidden = NO;
     
-    UIButton *addPhotoBtn = (id)[self.scrollV viewWithTag:7];
-    addPhotoBtn.center = CGPointMake(chosenPhotoBtn.center.x + chosenPhotoBtn.frame.size.width +10, 50);
+  
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
     base64Image = [self base64forData:imageData];
     
-    [self imageSelected:chosenPhotoBtn];
+    [self imageSelected];
 
 }
 

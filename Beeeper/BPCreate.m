@@ -142,9 +142,8 @@ static BPCreate *thisWebServices = nil;
         @try {
             
             NSString *responseString = [request responseString];
-            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
             
-            self.completed(YES,beeepers);
+            self.completed(([responseString rangeOfString:@"success"].location != NSNotFound),responseString);
         }
         @catch (NSException *exception) {
             self.completed(NO,nil);

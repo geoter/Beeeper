@@ -16,7 +16,12 @@
 - (void)drawRect:(CGRect)rect {
    
     [super drawRect:rect];
-    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:225/255.0 green:226/255.0 blue:226/255.0 alpha:1]] forState:UIControlStateHighlighted];
+   
+    if (self.selectionColor == nil) {
+        self.selectionColor = [UIColor colorWithRed:225/255.0 green:226/255.0 blue:226/255.0 alpha:1];
+    }
+    
+    [self setBackgroundImage:[self imageWithColor:self.selectionColor] forState:UIControlStateHighlighted];
     
 }
 

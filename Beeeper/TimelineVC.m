@@ -22,6 +22,8 @@
 #import "BPSuggestions.h"
 #import "Reachability.h"
 #import "THDatePickerViewController.h"
+#import "GTPushButton.h"
+#import "BPCreate.h"
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -360,7 +362,7 @@
                         
                         NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
                         [attText addAttribute:NSFontAttributeName
-                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
                                         range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
                         
                         [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
@@ -384,7 +386,7 @@
                         
                         NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
                         [attText addAttribute:NSFontAttributeName
-                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
                                         range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
                         
                         [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
@@ -449,6 +451,28 @@
         [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
         
+        UIButton *totalBeeepsBtn;
+        if (mode == Timeline_My) {
+            totalBeeepsBtn = (UIButton *)[self.myTimelineMenuV viewWithTag:32];
+        }
+        else{
+            totalBeeepsBtn = (UIButton *)[self.othersTimelineMenuV viewWithTag:32];
+        }
+        
+        totalBeeepsBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        id beeeps = [user objectForKey:@"beeep_count"];
+        
+        NSString *mtext = [NSString stringWithFormat:@"%@\nTotal Beeeps",beeeps];
+        
+        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+        [attText addAttribute:NSFontAttributeName
+                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%@",beeeps]]];
+        
+        [totalBeeepsBtn setAttributedTitle:attText forState: UIControlStateNormal];
+        
+        
         if ([user objectForKey:@"city"] == nil) {
           
              mpike = YES;
@@ -484,6 +508,7 @@
             [self.userCityLabel sizeToFit];
             self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
             self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
+            
         }
     }
     
@@ -607,6 +632,7 @@
     
     self.othersTimelineMenuV.hidden = (mode == Timeline_My);
     self.myTimelineMenuV.hidden = !(mode == Timeline_My);
+    
     
     if (mode == Timeline_My) {
         self.followersButton = (UIButton *)[self.myTimelineMenuV viewWithTag:33];
@@ -900,9 +926,36 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 46)];
+    headerV.backgroundColor = [UIColor colorWithRed:212/255.0 green:216/255.0 blue:217/255.0 alpha:1];
     
-    return cell;
+    UIView *bgV = [[UIView alloc]initWithFrame:CGRectMake(0, 5, headerV.frame.size.width, headerV.frame.size.height-10)];
+    [bgV setBackgroundColor:[UIColor whiteColor]];
+    [headerV addSubview:bgV];
+    
+    UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, headerV.frame.size.height)];
+    textLbl.textAlignment = NSTextAlignmentLeft;
+    textLbl.textColor = [UIColor colorWithRed:113/255.0 green:120/255.0 blue:127/255.0 alpha:1];
+    textLbl.text = @"All Beeeps";
+    textLbl.tag = 1;
+    textLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+    [headerV addSubview:textLbl];
+    
+    UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar_btn.png"]];
+    imgV.center = textLbl.center;
+    imgV.frame = CGRectMake(textLbl.frame.origin.x-25, imgV.frame.origin.y, imgV.frame.size.width, imgV.frame.size.height);
+    imgV.tag = 2;
+    [headerV addSubview:imgV];
+    
+    GTPushButton *btn = [GTPushButton buttonWithType:UIButtonTypeCustom];
+    btn.selectionColor = [UIColor colorWithRed:225/255.0 green:226/255.0 blue:226/255.0 alpha:0.4];
+    btn.frame = headerV.bounds;
+    btn.backgroundColor = [UIColor clearColor];
+    btn.tag = 3;
+    [btn addTarget:self action:@selector(calendarPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [headerV addSubview:btn];
+    
+    return headerV;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -941,6 +994,28 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return UITableViewCellEditingStyleDelete;
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        ; // Delete.
+    
+    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
+    [[BPCreate sharedBP]beeepDelete:b.event.fingerprint timestamp:b.beeep.beeepInfo.timestamp weight:b.beeep.beeepInfo.weight completionBlock:^(BOOL completed,id objct){
+        if (completed) {
+            dispatch_async (dispatch_get_main_queue(), ^{
+                
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Deleted!"];
+                
+                [beeeps removeObject:b];
+                [self.tableV reloadData];
+    
+
+            });
+        }
+    }];
 }
 
 - (IBAction)handleCellPan:(UIPanGestureRecognizer *)recognizer {
@@ -1034,8 +1109,8 @@
 
 #pragma mark - Actions
 
-- (IBAction)calendarPressed:(id)sender {
-   
+- (IBAction)calendarPressed:(UIButton *)sender {
+    
     if(!self.datePicker)
         self.datePicker = [THDatePickerViewController datePicker];
     self.datePicker.date = [NSDate date];

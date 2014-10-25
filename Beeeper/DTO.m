@@ -274,7 +274,7 @@ static DTO *thisDTO = nil;
 
 #pragma mark - Database
 
-- (void)sendBugLog{
+-(void)uploadBugFile{
     
      [self createAndCheckDatabase];
 
@@ -288,15 +288,20 @@ static DTO *thisDTO = nil;
     [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
     [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
     [request addPostValue:@"Beeeper" forKey:@"from_name"];
-    [request addPostValue:@"georgeterme@gmail.com" forKey:@"to"];
+    [request addPostValue:@"georgeterme@gmail.com;" forKey:@"to"];
     [request addPostValue:appFile forKey:@"file"];
     [request setFile:appFile forKey:@"file"];
     
     [request setCompletionBlock:^{
-       
+    
         NSString *responseString = [request responseString];
         
-        [[TabbarVC sharedTabbar]showAlert:@"Bus Log sent" text:@"Thank you for your feedback! We hope you will not need to use this feature again!"];
+        if ([responseString rangeOfString:@"error"].location != NSNotFound) {
+            [[TabbarVC sharedTabbar]showAlert:@"Bug Log Failed" text:@"Uploading failed"];
+        }
+        else{
+            [self sendBugLog:responseString];
+        }
         
     }];
     [request setFailedBlock:^{
@@ -311,9 +316,55 @@ static DTO *thisDTO = nil;
         
 }
 
+- (void)sendBugLog:(NSString *)responseString{
+    
+    NSURL *url = [NSURL URLWithString:@"https://api.elasticemail.com/mailer/send"];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
+    [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
+    [request addPostValue:@"Beeeper" forKey:@"from_name"];
+    [request addPostValue:@"Bugs Report iOS" forKey:@"subject"];
+    [request addPostValue:@"This is a bugs report sent from the app." forKey:@"body_text"];
+    [request addPostValue:@"georgeterme@gmail.com" forKey:@"to"];
+    [request addPostValue:responseString forKey:@"attachments"];
+    
+    
+    [request setCompletionBlock:^{
+        
+        NSString *responseString = [request responseString];
+        
+        [[TabbarVC sharedTabbar]showAlert:@"Bus Log sent" text:@"Thank you for your feedback! We hope you will not need to use this feature again!"];
+        
+    }];
+    [request setFailedBlock:^{
+        NSError *error = [request error];
+        
+        [[TabbarVC sharedTabbar]showAlert:@"Bug Log Failed" text:@"error.localizedDescription"];
+        
+        NSLog(@"Upload Error: %@", error.localizedDescription);
+    }];
+    
+    [request startAsynchronous];
+}
+
 - (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json{
 
-    NSLog(@"ADDED BUGGG!!!!!!!!!!!!!!!!");
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+      [[TabbarVC sharedTabbar]showAlert:@"No Internet Connection or Connection Lost/Weak" text:@"Please make sure you are connected to the Internet."];
+        return NO;
+    }
+    
+    
+    NSLog(@"ADDED BUGGG!!!!!!!!!!!!!!!!: %@-%@-%@",what,where,json);
     
     FMDatabase *db = [self getDatabase];
     

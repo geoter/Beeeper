@@ -58,7 +58,7 @@ static BPActivity *thisWebServices = nil;
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"activity-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
     NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
     
-    [self parseResponseString:json WithCompletionBlock:compbloc];
+    [self parseLocalResponseString:json WithCompletionBlock:compbloc];
 
 }
 
@@ -246,6 +246,38 @@ static BPActivity *thisWebServices = nil;
     
     if (bs.count == 0) {
         [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"bpactivity/parseResponseString" json:responseString];
+    }
+    
+    compbloc(YES,bs);
+}
+
+-(void)parseLocalResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (responseString.length == 0 || beeeps == nil || beeeps.count == 0) { //something went wrong
+        
+         compbloc(NO,nil);
+        return;
+    }
+    
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (NSString *b in beeeps) {
+        
+        NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        Activity_Object *activity = [Activity_Object modelObjectWithDictionary:activity_item];
+        
+        //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
+        //        [operationQueue addOperation:invocationOperation];
+        
+        [bs addObject:activity];
     }
     
     compbloc(YES,bs);

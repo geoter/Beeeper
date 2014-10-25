@@ -20,6 +20,8 @@
     
    // [self clearDocumentsFolder];
     
+   //  [[DTO sharedDTO]addBugLog:@"test what" where:@"BPCreate/test what" json:nil];
+    
     [self createEditableCopyOfPlistIfNeeded];
     
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];

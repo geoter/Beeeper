@@ -97,6 +97,6 @@
 }
 
 - (IBAction)sendBugsReport:(id)sender {
-    [[DTO sharedDTO]sendBugLog];
+    [[DTO sharedDTO]uploadBugFile];
 }
 @end

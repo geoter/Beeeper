@@ -78,9 +78,12 @@
                         }
                     }
                     following = true_following;
-                    [self.tableV reloadData];
-                    [self hideLoading];
                 }
+                
+                [self.tableV reloadData];
+                
+                [self hideLoading];
+                
             }
             else{
                 [self hideLoading];
@@ -108,10 +111,10 @@
                      }
                      
                      following = true_following;
-                     
-                     [self.tableV reloadData];
-                     [self hideLoading];
                  }
+                 
+                 [self.tableV reloadData];
+                 [self hideLoading];
              }
          }];
      }
@@ -390,26 +393,41 @@
 
 -(void)showLoading{
     
-    self.tableV.alpha = 0;
-
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = self.view.backgroundColor;
+    if ([self.view viewWithTag:-434]) {
+        return;
+    }
     
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = self.view.backgroundColor;
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
+        
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    
-    [indicatorView startAnimating];
-
 }
 
 -(void)hideLoading{

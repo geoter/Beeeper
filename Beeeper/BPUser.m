@@ -726,37 +726,28 @@ static BPUser *thisWebServices = nil;
 
 -(void)followersReceived:(ASIHTTPRequest *)request{
 
-    
     NSString *responseString = [request responseString];
+    
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    if (users.count != 0) {
+    if ([users isKindOfClass:[NSArray class]]) {
         
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"followers-%@",_userID]];
         NSError *error;
-        BOOL success  = [responseString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
-        //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
-        
-        
-        
-//        for (NSDictionary *user in users) {
-//            NSString *imagePath = [user objectForKey:@"image_path"];
-//            [[DTO sharedDTO]downloadImageFromURL:imagePath];
-//        }
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
         self.followers_completed(YES,users);
-
     }
     else{
         
-        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUser/followersReceived" json:responseString];
+        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUser/followersReceived->followersFailed" json:responseString];
         
         [self followersFailed:request];
     }
-    
     
 }
 
@@ -860,9 +851,11 @@ static BPUser *thisWebServices = nil;
 -(void)followingReceived:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
     NSArray *users = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    if (users.count > 0) {
+    if ([users isKindOfClass:[NSArray class]]) {
+        
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"following-%@",_userID]];
@@ -879,6 +872,7 @@ static BPUser *thisWebServices = nil;
         
         [self followingFailed:request];
     }
+    
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
 
@@ -1433,8 +1427,8 @@ static BPUser *thisWebServices = nil;
         }
     }
 
-    if (bs.count == 0) {
-        [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/newNotificationsReceived" json:responseString];
+    if (bs.count == 0) {//comment out because its too frequent and normal to get 0 when not more
+        //[[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/newNotificationsReceived" json:responseString];
     }
     
     self.newNotificationsCompleted(YES,bs);

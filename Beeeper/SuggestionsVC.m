@@ -55,6 +55,8 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
+    [self getLocalSuggestions];
+    
     [self getSuggestions];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -65,6 +67,24 @@
     
    // self.tableV.decelerationRate = 0.6;
 
+}
+
+-(void)getLocalSuggestions{
+
+    [self showLoading];
+    
+    [[BPSuggestions sharedBP]getLocalSuggestions:^(BOOL completed,NSArray *objcts){
+        
+        if (completed && objcts != nil) {
+            
+            suggestions = [NSMutableArray arrayWithArray:objcts];
+            [self groupSuggestionsByMonth];
+            [self hideLoading];
+        }
+        else{
+            [self showLoading];
+        }
+    }];
 }
 
 -(void)nextPage{
@@ -507,46 +527,65 @@
 
 -(void)showLoading{
     
-    self.tableV.alpha = 0;
+    if ([self.view viewWithTag:-434]) {
+        return;
+    }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = self.view.backgroundColor;
-    
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
-    
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    
-    [indicatorView startAnimating];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
+        
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 
 -(void)hideLoading{
-    
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-         self.tableV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-         
-     }
-     ];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+             self.tableV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+         }
+         ];
+           
+        });
+   
 }
 
 

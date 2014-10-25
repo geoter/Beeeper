@@ -15,8 +15,6 @@ static BPUsersLookup *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        operationQueue = [[NSOperationQueue alloc] init];
-        operationQueue.maxConcurrentOperationCount = 3;
     }
     return(self);
 }
@@ -36,12 +34,14 @@ static BPUsersLookup *thisWebServices = nil;
 
 
 -(void)usersLookup:(NSArray *)users_ids completionBlock:(completed)compbloc{
-  
+    
     self.completed = compbloc;
+    
+    userIDs = [NSArray arrayWithArray:users_ids];
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/lookup"];
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    request = [ASIFormDataRequest requestWithURL:requestURL];
     
     NSMutableString *idsJSON = [[NSMutableString alloc]initWithString:@"["];
     
@@ -79,9 +79,15 @@ static BPUsersLookup *thisWebServices = nil;
 }
 
 -(void)userLookupFinished:(ASIHTTPRequest *)request{
+  
     NSString *responseString = [request responseString];
 
     NSArray *usersArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (![usersArray isKindOfClass:[NSArray class]]) {
+        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUsersLookup/userLookupFinished" json:responseString];
+        [self userLookupFailed:request];
+    }
     
     NSMutableArray *users = [NSMutableArray array];
 
@@ -90,14 +96,9 @@ static BPUsersLookup *thisWebServices = nil;
         NSDictionary *user = [userArray firstObject];
         [users addObject:user];
         
-//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:user];
-//        [operationQueue addOperation:invocationOperation];
-
     }
     
-    if (users.count == 0) {
-        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUsersLookup/userLookupFinished" json:responseString];
-    }
+    
     
     self.completed(YES,users);
 }

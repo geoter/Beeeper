@@ -62,7 +62,7 @@ static BPTimeline *thisWebServices = nil;
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",user_id,order]];
     NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
     
-    [self parseResponseString:json WithCompletionBlock:compbloc];
+    [self parseLocalResponseString:json WithCompletionBlock:compbloc];
 
 }
 
@@ -188,7 +188,7 @@ static BPTimeline *thisWebServices = nil;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    if (beeeps.count > 0) {
+    if ([beeeps isKindOfClass:[NSArray class]]) {
         
         requestEmptyResultsCounter = 0;
         
@@ -247,9 +247,28 @@ static BPTimeline *thisWebServices = nil;
     self.completed(NO,@"nextTimelineFailed");
 }
 
+-(void)parseLocalResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (NSDictionary *b in beeeps) {
+        
+        Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
+        
+        [bs addObject:beeep];
+    }
+    
+    
+    compbloc(YES,bs);
+}
+
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
    
-    if (responseString == nil || responseString.length == 0) {
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (responseString == nil || responseString.length == 0 || ![beeeps isKindOfClass:[NSArray class]]) {
         
         [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"BPTimeline/parseResponseString" json:responseString];
         
@@ -259,23 +278,12 @@ static BPTimeline *thisWebServices = nil;
         [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:compbloc];
     }
     
-    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
-    if (beeeps.count == 0) {
-         [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPTimeline/parseResponseString" json:responseString];
-    }
-    
     NSMutableArray *bs = [NSMutableArray array];
     
     for (NSDictionary *b in beeeps) {
         Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
-        
-//        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:beeep];
-//        [operationQueue addOperation:invocationOperation];
-        
         [bs addObject:beeep];
     }
-    
     
     compbloc(YES,bs);
 }

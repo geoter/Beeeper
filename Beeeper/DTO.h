@@ -27,6 +27,7 @@ typedef void(^completed)(BOOL,id);
 @property (nonatomic,strong) NSString *databaseName;
 @property (nonatomic,strong) NSString *databasePath;
 
+- (void)uploadBugFile;
 - (void)sendBugLog;
 - (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json;
 - (NSString *)fixLink:(NSString *)link;

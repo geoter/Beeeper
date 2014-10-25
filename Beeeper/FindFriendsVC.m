@@ -256,7 +256,7 @@
 -(void)showLoading{
     
     dispatch_async (dispatch_get_main_queue(), ^{
-
+        
         if (loadingView != nil) {
             [loadingView removeFromSuperview];
             loadingView = nil;
@@ -268,11 +268,11 @@
         
         [loadingView addSubview:activityIndicator];
         activityIndicator.center =loadingView.center;
-
+        
         [self.view addSubview:loadingView];
         [self.view bringSubviewToFront:loadingView];
         [activityIndicator startAnimating];
-       
+        
     });
 }
 

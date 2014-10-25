@@ -699,7 +699,7 @@ static EventWS *thisWebServices = nil;
     }
 
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    NSLog(@"First: %@",requestURL.absoluteString);
+   // NSLog(@"First: %@",requestURL.absoluteString);
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
     
     [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];

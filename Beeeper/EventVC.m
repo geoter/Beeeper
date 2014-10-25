@@ -52,6 +52,8 @@
     NSMutableArray* rowsToReload;
     
     BOOL passedEvent;
+    
+    BOOL viewAppeared;
 }
 @property (nonatomic,strong) NSString *imageURL;
 @property (readonly, nonatomic) UIView *container;
@@ -92,7 +94,6 @@
     self.navigationController.navigationBar.backItem.title = @"";
 
     pendingImagesDict = [NSMutableDictionary dictionary];
-    
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         Timeline_Object *t = tml;
@@ -208,20 +209,6 @@
     
     self.scrollV.contentSize = CGSizeMake(320, 871);
     
-//    self.monthLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
-//    self.dayNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:41];
-//    self.dayLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
-//    self.hourLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
-//    
-//    self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:26];
-//    self.venueLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
-//    
-//    self.codeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:13];
-//    self.codeNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-//    self.websiteLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-//    self.tagsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:12];
-    
-    
    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
     
     self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
@@ -240,6 +227,10 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    self.redirectToComments = NO;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -559,7 +550,7 @@
     [self hideLoading];
     
     if (self.redirectToComments) {
-        [self showComments:nil];
+        [self showCommentsWillDelay];
     }
 
 }
@@ -847,7 +838,7 @@
     [self hideLoading];
     
     if (self.redirectToComments) {
-        [self showComments:nil];
+        [self showCommentsWillDelay];
     }
 }
 
@@ -1139,7 +1130,7 @@
     [self hideLoading];
     
     if (self.redirectToComments) {
-        [self showComments:nil];
+        [self showCommentsWillDelay];
     }
 }
 
@@ -1434,7 +1425,7 @@
     [self hideLoading];
     
     if (self.redirectToComments) {
-        [self showComments:nil];
+        [self showCommentsWillDelay];
     }
 }
 
@@ -1771,7 +1762,7 @@
     [self hideLoading];
     
     if (self.redirectToComments) {
-        [self showComments:nil];
+        [self showCommentsWillDelay];
     }
 }
 
@@ -1783,6 +1774,8 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    viewAppeared = YES;
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
 
@@ -2379,6 +2372,16 @@
 
 }
 
+-(void)showCommentsWillDelay{
+    if (viewAppeared && self.redirectToComments) {
+        self.redirectToComments = NO;
+        [self showComments:nil];
+    }
+    else{
+        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:0.3];
+    }
+}
+
 - (IBAction)showBeeeps:(id)sender {
     FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
@@ -2954,25 +2957,40 @@
 
 -(void)showLoading{
     
-    self.tableV.alpha = 0;
+    if ([self.view viewWithTag:-434]) {
+        return;
+    }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = self.view.backgroundColor;
-    
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
-    
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    
-    [indicatorView startAnimating];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
+        
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 

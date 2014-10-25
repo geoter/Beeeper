@@ -30,11 +30,18 @@
     [super viewDidLoad];
     rowsToReload = [NSMutableArray array];
     
+    [self showLoading];
+    
     [[BPActivity sharedBP]getLocalActivityWithCompletionBlock:^(BOOL completed,NSArray *objs){
         
-        if (completed) {
+        if (completed && objs.count > 0) {
+
+            
             activities = [NSMutableArray arrayWithArray:objs];
             [self groupActivitiesByMonth];
+            
+            [self hideLoading];
+            
             
             //            UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 10, 30)];
             //            numberLbl.text = [NSString stringWithFormat:@"%d",activities.count];
@@ -235,6 +242,8 @@
     [super viewWillAppear:animated];
     
     self.title = @"Activity";
+    self.navigationController.navigationBar.topItem.title = self.title;
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -591,25 +600,40 @@
 
 -(void)showLoading{
     
-    self.tableV.alpha = 0;
+    if ([self.view viewWithTag:-434]) {
+        return;
+    }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = self.view.backgroundColor;
-    
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
-    
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    
-    [indicatorView startAnimating];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
+        
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 

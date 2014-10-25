@@ -463,35 +463,17 @@
         
         id beeeps = [user objectForKey:@"beeep_count"];
         
-        NSString *mtext = [NSString stringWithFormat:@"%@\nTotal Beeeps",beeeps];
+        NSString *mtext = [NSString stringWithFormat:@"%@\nTotal Beeeps",(beeeps != nil)?beeeps:@"0"];
         
         NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
         [attText addAttribute:NSFontAttributeName
                         value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
-                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%@",beeeps]]];
+                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%@",(beeeps != nil)?beeeps:@"0"]]];
         
         [totalBeeepsBtn setAttributedTitle:attText forState: UIControlStateNormal];
         
         
-        if ([user objectForKey:@"city"] == nil) {
-          
-             mpike = YES;
-            
-            [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
-                
-                [self hideLoading];
-                if (completed && objs.count >0) {
-                    NSDictionary *userDict = [objs firstObject];
-                    self.user = userDict;
-                    [self setUserInfo];
-                }
-                else{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No user found" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-                }
-            }];
-        }
-        else{
+        if ([user objectForKey:@"city"] != nil) {
             
             [UIView animateWithDuration:0.3f
                      animations:^
@@ -501,6 +483,7 @@
              }
                      completion:^(BOOL finished)
              {
+                 
              }
              ];
             
@@ -509,6 +492,20 @@
             self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
             self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
             
+        }
+        else{
+            
+            [UIView animateWithDuration:0.3f
+                             animations:^
+             {
+                 self.userCityLabel.alpha = 0;
+                 self.pinIcon.alpha = 0;
+             }
+                             completion:^(BOOL finished)
+             {
+                 
+             }
+             ];
         }
     }
     
@@ -1371,29 +1368,40 @@
 
 -(void)showLoading{
     
-    if (self.tableV.alpha == 0) {
+    if ([self.view viewWithTag:-434]) {
         return;
     }
     
-    self.tableV.alpha = 0;
-    
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-    loadingBGV.backgroundColor = self.view.backgroundColor;
-    
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
-    
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    
-    [indicatorView startAnimating];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        
+        MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+        indicatorView.delegate = self;
+        indicatorView.numberOfCircles = 3;
+        indicatorView.radius = 8;
+        indicatorView.internalSpacing = 1;
+        indicatorView.center = self.view.center;
+        indicatorView.tag = -565;
+        
+        loadingBGV.alpha = 0;
+        [loadingBGV addSubview:indicatorView];
+        loadingBGV.tag = -434;
+        [self.view addSubview:loadingBGV];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [indicatorView startAnimating];
+         }
+         ];
+        
+    });
     
 }
 

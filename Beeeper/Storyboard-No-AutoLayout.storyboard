@@ -3215,6 +3215,13 @@ photo</string>
                                                                 <action selector="showEventBeepers:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="Uub-Em-hCr"/>
                                                             </connections>
                                                         </button>
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QLf-3d-eJq">
+                                                            <rect key="frame" x="79" y="276" width="25" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                            <color key="textColor" red="0.85490202900000001" green="0.87450987099999999" blue="0.88627457620000005" alpha="1" colorSpace="deviceRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                         <button contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="RyK-Ts-hwf">
                                                             <rect key="frame" x="59" y="275" width="39" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
@@ -3226,13 +3233,6 @@ photo</string>
                                                                 <action selector="showEventComments:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="dQG-ik-fUz"/>
                                                             </connections>
                                                         </button>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QLf-3d-eJq">
-                                                            <rect key="frame" x="79" y="276" width="25" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                            <color key="textColor" red="0.85490202900000001" green="0.87450987099999999" blue="0.88627457620000005" alpha="1" colorSpace="deviceRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="180" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="P4y-Xn-PlJ">
                                                             <rect key="frame" x="38" y="276" width="25" height="21"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
@@ -3241,7 +3241,7 @@ photo</string>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <button contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="CJ7-Sd-huc">
-                                                            <rect key="frame" x="9" y="275" width="44" height="22"/>
+                                                            <rect key="frame" x="9" y="275" width="49" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                             <inset key="contentEdgeInsets" minX="11" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                             <state key="normal" image="like_icon.png">

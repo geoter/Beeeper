@@ -64,7 +64,7 @@ static BPHomeFeed *thisWebServices = nil;
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"FriendsFeed-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
     NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
     
-    [self parseResponseString:json WithCompletionBlock:compbloc];
+    [self parseLocalResponseString:json WithCompletionBlock:compbloc];
 }
 
 -(void)getFriendsFeedWithCompletionBlock:(completed)compbloc{
@@ -246,6 +246,34 @@ static BPHomeFeed *thisWebServices = nil;
     compbloc(YES,bs);
 }
 
+
+-(void)parseLocalResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,@"Response is NIL");
+    }
+    
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (NSDictionary *b in beeeps) {
+        Friendsfeed_Object *ffo = [Friendsfeed_Object modelObjectWithDictionary:b];
+        
+        //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:ffo];
+        //        [operationQueue addOperation:invocationOperation];
+        
+        if ([beeeps indexOfObject:b] == beeeps.count-1) { //FEED LENGTH
+            feedLength = [[NSString stringWithFormat:@"%@",[b objectForKey:@"feed_length"]] intValue];
+        }
+        else{
+            [bs addObject:ffo];
+        }
+        
+    }
+    
+    compbloc(YES,bs);
+}
 
 -(void)friendsFeedFailed:(ASIHTTPRequest *)request{
     

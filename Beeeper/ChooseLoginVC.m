@@ -353,7 +353,7 @@
             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
         }
         else{
-            if (uid != nil && number_of_attempts < 10) {
+            if (uid != nil && number_of_attempts < 3) {
                 [self attemptTwitterLogin:uid];
                 number_of_attempts ++;
             }
@@ -380,7 +380,7 @@
             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
         }
         else{
-            if (uid != nil && number_of_attempts < 10) {
+            if (uid != nil && number_of_attempts < 3) {
                 [self attemptFBLogin:uid];
                 number_of_attempts ++;
             }

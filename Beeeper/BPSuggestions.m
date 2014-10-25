@@ -61,7 +61,7 @@ static BPSuggestions *thisWebServices = nil;
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
     NSString *json =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
     
-    [self parseResponseString:json WithCompletionBlock:compbloc];
+    [self parseLocalResponseString:json WithCompletionBlock:compbloc];
 }
 
 -(void)nextSuggestionsWithCompletionBlock:(completed)compbloc{
@@ -280,6 +280,35 @@ static BPSuggestions *thisWebServices = nil;
     self.completed(YES,bs);
 
 }
+
+-(void)parseLocalResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (responseString.length == 0 || beeeps == nil) { //something went wrong
+        self.localCompleted(NO,nil);
+        return;
+    }
+    
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    //    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
+    NSMutableArray *bs = [NSMutableArray array];
+    
+    for (NSDictionary *b in beeeps) {
+        
+        Suggestion_Object *activity = [Suggestion_Object modelObjectWithDictionary:b];
+        
+        if (activity.what.title != nil) {
+            [bs addObject:activity];
+        }
+    }
+    
+    self.localCompleted(YES,bs);
+    
+}
+
 
 -(void)downloadImage:(Suggestion_Object *)object{
     

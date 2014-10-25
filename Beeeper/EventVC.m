@@ -78,12 +78,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+        
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
+    
+    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+    indicatorView.delegate = self;
+    indicatorView.numberOfCircles = 3;
+    indicatorView.radius = 8;
+    indicatorView.internalSpacing = 1;
+    indicatorView.center = self.view.center;
+    indicatorView.tag = -565;
+    [loadingBGV addSubview:indicatorView];
+    loadingBGV.tag = -434;
+    [self.view addSubview:loadingBGV];
+    [self.view bringSubviewToFront:loadingBGV];
+    
+    [indicatorView startAnimating];
+
     
     UINavigationBar* navigationBar = self.navigationController.navigationBar;
     
     [navigationBar setBarTintColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
-    
-    [self showLoading];
     
     rowsToReload = [NSMutableArray array];
     
@@ -94,118 +110,6 @@
     self.navigationController.navigationBar.backItem.title = @"";
 
     pendingImagesDict = [NSMutableDictionary dictionary];
-    
-    if ([tml isKindOfClass:[Timeline_Object class]]) {
-        Timeline_Object *t = tml;
-        fingerprint = t.event.fingerprint;
-        comments = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.comments];
-    }
-    else if ([tml isKindOfClass:[Activity_Object class]]){
-        
-        Activity_Object *activity = tml;
-
-        
-        if (activity.beeepInfoActivity.beeepActivity.count > 0) {
-            
-            fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
-            
-            [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
-                if (completed) {
-                    beeep_Objct = beeep;
-                    comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
-                    
-                    if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
-                        [self showEventWithBeeep];
-                    }
-                }
-                else{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
-                }
-            }];
-
-        }
-        
-        if(activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity.count >0){
-            
-            fingerprint = (fingerprint == nil)?[[activity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]:fingerprint;
-            
-            [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
-                if (completed) {
-                    event_show_Objct = event;
-                    if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
-                          [self showEventWithBeeep];
-                    }
-                }
-                else{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
-                }
-            }];
-        }
-
-    }
-    else if ([tml isKindOfClass:[Event_Search class]]){
-        
-        Event_Search *event = tml;
-        fingerprint = event.fingerprint;
-        
-        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
-            if (completed) {
-                event_show_Objct = event;
-                [self showEventForEventLookUpObject];
-            }
-            else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
-        }];
-
-    }else if ([tml isKindOfClass:[Suggestion_Object class]]){
-        
-        Suggestion_Object *eventObj = tml;
-        fingerprint = eventObj.what.fingerprint;
-        
-        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
-            if (completed) {
-                event_show_Objct = event;
-                [self showEventWithSuggestion];
-            }
-            else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
-        }];
-        
-    }
-    else if ([tml isKindOfClass:[NSString class]]){ //Notification
-       
-        [[DTO sharedDTO]getBeeep:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
-            if (completed) {
-                
-                fingerprint = beeep.fingerprint;
-
-                beeep_Objct = beeep;
-                
-                [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
-                    if (completed) {
-                        event_show_Objct = event;
-                        [self showEventWithBeeep];
-                    }
-                    else{
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                        [alert show];
-                    }
-                }];
-
-            }
-            else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
-        }];
-
-    }
     
     self.scrollV.contentSize = CGSizeMake(320, 871);
     
@@ -237,6 +141,7 @@
     
     [super viewWillAppear:animated];
     
+    [self downloadInfoAndShowEvent];
     
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
@@ -249,7 +154,123 @@
     
     [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnShare,btnLike,btnMore, nil]];
     
-    //Hide beeep it button if coming from My Timeline
+}
+
+-(void)downloadInfoAndShowEvent{
+    
+    if ([tml isKindOfClass:[Timeline_Object class]]) {
+        Timeline_Object *t = tml;
+        fingerprint = t.event.fingerprint;
+        comments = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.comments];
+    }
+    else if ([tml isKindOfClass:[Activity_Object class]]){
+        
+        Activity_Object *activity = tml;
+        
+        
+        if (activity.beeepInfoActivity.beeepActivity.count > 0) {
+            
+            fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
+            
+            [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
+                if (completed) {
+                    beeep_Objct = beeep;
+                    comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
+                    
+                    if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
+                        [self showEventWithBeeep];
+                    }
+                }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                }
+            }];
+            
+        }
+        
+        if(activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity.count >0){
+            
+            fingerprint = (fingerprint == nil)?[[activity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]:fingerprint;
+            
+            [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                if (completed) {
+                    event_show_Objct = event;
+                    if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
+                        [self showEventWithBeeep];
+                    }
+                }
+                else{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                }
+            }];
+        }
+        
+    }
+    else if ([tml isKindOfClass:[Event_Search class]]){
+        
+        Event_Search *event = tml;
+        fingerprint = event.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventForEventLookUpObject];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+        
+    }
+    else if ([tml isKindOfClass:[Suggestion_Object class]]){
+        
+        Suggestion_Object *eventObj = tml;
+        fingerprint = eventObj.what.fingerprint;
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                event_show_Objct = event;
+                [self showEventWithSuggestion];
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+        
+    }
+    else if ([tml isKindOfClass:[NSString class]]){ //Notification
+        
+        [[DTO sharedDTO]getBeeep:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
+            if (completed) {
+                
+                fingerprint = beeep.fingerprint;
+                
+                beeep_Objct = beeep;
+                
+                [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                    if (completed) {
+                        event_show_Objct = event;
+                        [self showEventWithBeeep];
+                    }
+                    else{
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    }
+                }];
+                
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+        
+    }
+    
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         [self showEventWithTimelineObject];
@@ -1065,11 +1086,6 @@
 
     
     }
-
-    
-
-    
-  
     
     //Tags
     
@@ -2964,7 +2980,7 @@
     dispatch_async (dispatch_get_main_queue(), ^{
         
         UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
         indicatorView.delegate = self;
@@ -2978,6 +2994,7 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
+        [self.view bringSubviewToFront:loadingBGV];
         
         [UIView animateWithDuration:0.3f
                          animations:^
@@ -2996,22 +3013,24 @@
 
 -(void)hideLoading{
     
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-         self.tableV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-         
-     }
-     ];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+             self.tableV.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+         }
+         ];
+    });
 }
 
 

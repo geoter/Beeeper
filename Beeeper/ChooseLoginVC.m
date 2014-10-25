@@ -625,6 +625,7 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
+        [self.view bringSubviewToFront:loadingBGV];
         
         [UIView animateWithDuration:0.3f
                          animations:^

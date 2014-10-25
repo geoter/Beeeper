@@ -26,6 +26,7 @@
 {
     [super viewDidLoad];
     
+
     if (self.mode == 1) {
         self.title = @"Followers";
     }
@@ -52,8 +53,24 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 
-    [self showLoading];
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    loadingBGV.backgroundColor = self.view.backgroundColor;
     
+    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
+    indicatorView.delegate = self;
+    indicatorView.numberOfCircles = 3;
+    indicatorView.radius = 8;
+    indicatorView.internalSpacing = 1;
+    indicatorView.center = self.view.center;
+    indicatorView.tag = -565;
+
+    [loadingBGV addSubview:indicatorView];
+    loadingBGV.tag = -434;
+    [self.view addSubview:loadingBGV];
+    [self.view bringSubviewToFront:loadingBGV];
+    loadingBGV.alpha = 1;
+    [indicatorView startAnimating];
+   
      if (self.mode == FollowersMode) {
          
         [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
@@ -414,7 +431,8 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
-        
+        [self.view bringSubviewToFront:loadingBGV];
+      
         [UIView animateWithDuration:0.3f
                          animations:^
          {

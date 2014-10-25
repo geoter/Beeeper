@@ -55,10 +55,6 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self getLocalSuggestions];
-    
-    [self getSuggestions];
-    
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
     
@@ -69,20 +65,18 @@
 
 }
 
+
 -(void)getLocalSuggestions{
 
     [self showLoading];
     
     [[BPSuggestions sharedBP]getLocalSuggestions:^(BOOL completed,NSArray *objcts){
         
-        if (completed && objcts != nil) {
+        if (completed && objcts.count > 0) {
             
             suggestions = [NSMutableArray arrayWithArray:objcts];
             [self groupSuggestionsByMonth];
             [self hideLoading];
-        }
-        else{
-            [self showLoading];
         }
     }];
 }
@@ -107,21 +101,21 @@
 
 -(void)getSuggestions{
     
-    
-    [self showLoading];
-    
     [[BPSuggestions sharedBP]getSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
         [refreshControl endRefreshing];
-        [self hideLoading];
         
         if (completed) {
             
             if (objcts.count > 0) {
                 
+                suggestions = [NSMutableArray arrayWithArray:objcts];
+                [self groupSuggestionsByMonth];
+                
                 self.noSuggestionsLabel.hidden = YES;
                 self.tableV.hidden = NO;
+                
             }
             else{
                 self.noSuggestionsLabel.hidden = NO;
@@ -137,20 +131,22 @@
                 }
                 
             }
-
             
-            suggestions = [NSMutableArray arrayWithArray:objcts];
-            [self groupSuggestionsByMonth];
+            [self hideLoading];
         }
         else{
             self.noSuggestionsLabel.hidden = NO;
             
+            [self hideLoading];
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getSuggestions not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
                 [alert show];
                 
             });
         }
+        
+
     }];
 
 }
@@ -210,6 +206,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [self getLocalSuggestions];
+    
+    [self getSuggestions];
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -534,7 +534,7 @@
     dispatch_async (dispatch_get_main_queue(), ^{
         
         UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
         indicatorView.delegate = self;
@@ -548,6 +548,7 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
+        [self.view bringSubviewToFront:loadingBGV];
         
         [UIView animateWithDuration:0.3f
                          animations:^

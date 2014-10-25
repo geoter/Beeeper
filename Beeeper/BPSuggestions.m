@@ -172,8 +172,8 @@ static BPSuggestions *thisWebServices = nil;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    if (beeeps.count > 0) {
-        
+    if ([beeeps isKindOfClass:[NSArray class]]) {
+            
         requestEmptyResultsCounter = 0;
         loadNextPage = YES;
         
@@ -202,6 +202,8 @@ static BPSuggestions *thisWebServices = nil;
             self.completed(YES,nil);
         }
     }
+    
+    
 
     
 }

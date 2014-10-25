@@ -1375,7 +1375,7 @@
     dispatch_async (dispatch_get_main_queue(), ^{
         
         UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
         indicatorView.delegate = self;
@@ -1389,6 +1389,7 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
+        [self.view bringSubviewToFront:loadingBGV];
         
         [UIView animateWithDuration:0.3f
                          animations:^
@@ -1407,22 +1408,23 @@
 
 -(void)hideLoading{
     
-    UIView *loadingBGV = (id)[self.view viewWithTag:-434];
-    MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
-    [indicatorView stopAnimating];
-    
-    [UIView animateWithDuration:0.3f
-                     animations:^
-     {
-         loadingBGV.alpha = 0;
-         self.tableV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         [loadingBGV removeFromSuperview];
-         
-     }
-     ];
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+         }
+         ];
+    });
 }
 
 
@@ -1497,12 +1499,7 @@
 {
     NSIndexPath* indexPath = [self.tableV indexPathForRowAtPoint:point];
     
-    if (indexPath.row == 0) {
-        return NO;
-    }
-    
     UITableViewCell* cell = [self.tableV cellForRowAtIndexPath:indexPath];
- 
     
     return cell != nil;
 }

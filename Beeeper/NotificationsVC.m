@@ -594,7 +594,7 @@
         self.tableV.alpha = 0;
         
         UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
-        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
         indicatorView.delegate = self;
@@ -608,6 +608,7 @@
         [loadingBGV addSubview:indicatorView];
         loadingBGV.tag = -434;
         [self.view addSubview:loadingBGV];
+        [self.view bringSubviewToFront:loadingBGV];
         
         [UIView animateWithDuration:0.3f
                          animations:^

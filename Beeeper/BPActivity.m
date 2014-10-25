@@ -181,6 +181,9 @@ static BPActivity *thisWebServices = nil;
         [self parseResponseString:responseString WithCompletionBlock:self.activity_completed];
     }
     else{
+        
+        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"bpactivity/activityFinished ->sending to activityFailed" json:responseString];
+        
         [self activityFailed:request];
     }
 
@@ -189,10 +192,13 @@ static BPActivity *thisWebServices = nil;
 -(void)activityFailed:(ASIHTTPRequest *)request{
     
     NSLog(@"FAILES REQUEST->ACTIVITY");
-    
+
+    NSString *responseString  = [request responseString];
     requestFailedCounter++;
     
-    if (requestFailedCounter < 5) {
+     [[DTO sharedDTO]addBugLog:@"activityFailed" where:@"bpactivity/activityFailed" json:responseString];
+    
+    if (requestFailedCounter < 10) {
         [self getActivityWithCompletionBlock:self.activity_completed];
     }
     else{
@@ -204,6 +210,9 @@ static BPActivity *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     if (responseString == nil) {
+        
+        [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"bpactivity/parseResponseString" json:responseString];
+        
         compbloc(NO,@"Response String is NIL");
     }
 
@@ -211,6 +220,9 @@ static BPActivity *thisWebServices = nil;
     
     if (responseString.length == 0 || beeeps == nil) { //something went wrong
         NSLog(@"Empty");
+        
+         [[DTO sharedDTO]addBugLog:@"responseString.length == 0 || beeeps == nil" where:@"bpactivity/parseResponseString" json:responseString];
+        
         [self getActivityWithCompletionBlock:self.activity_completed];
         return;
     }
@@ -230,6 +242,10 @@ static BPActivity *thisWebServices = nil;
 //        [operationQueue addOperation:invocationOperation];
         
         [bs addObject:activity];
+    }
+    
+    if (bs.count == 0) {
+        [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"bpactivity/parseResponseString" json:responseString];
     }
     
     compbloc(YES,bs);
@@ -348,10 +364,14 @@ static BPActivity *thisWebServices = nil;
             self.event_completed(YES,event);
         }
         else{
+            [[DTO sharedDTO]addBugLog:@"eventArray.count == 0" where:@"bpactivity/eventReceived" json:responseString];
+            
             self.event_completed(NO,[NSString stringWithFormat:@"eventReceived but failed in [NSArray class]: %@",responseString]);
         }
     }
     else{
+        [[DTO sharedDTO]addBugLog:@"else" where:@"bpactivity/eventReceived" json:responseString];
+        
         self.event_completed(NO,[NSString stringWithFormat:@"eventReceived but failed in else: %@",responseString]);
     }
     
@@ -362,6 +382,8 @@ static BPActivity *thisWebServices = nil;
 -(void)eventFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"eventFailed" where:@"bpactivity/eventFailed" json:responseString];
     self.event_completed(NO,nil);
 }
 
@@ -444,6 +466,9 @@ static BPActivity *thisWebServices = nil;
         self.beeep_completed(YES,beeep);
     }
     else{
+        
+        [[DTO sharedDTO]addBugLog:@"else" where:@"bpactivity/beeepFromActivityFinished" json:responseString];
+        
         self.beeep_completed(NO,[NSString stringWithFormat:@"BeeepFromActivityFinished but failed: %@",responseString]);
     }
    
@@ -452,6 +477,9 @@ static BPActivity *thisWebServices = nil;
 -(void)beeepFromActivityFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"beeepFromActivityFailed" where:@"bpactivity/beeepFromActivityFailed" json:responseString];
+    
     self.beeep_completed(NO,@"BeeepFromActivityFailed");
 }
 

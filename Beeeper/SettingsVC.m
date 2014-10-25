@@ -95,4 +95,8 @@
     UIViewController *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TermsVC"];
     [self.navigationController pushViewController:vC animated:YES];
 }
+
+- (IBAction)sendBugsReport:(id)sender {
+    [[DTO sharedDTO]sendBugLog];
+}
 @end

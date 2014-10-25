@@ -13,5 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 - (IBAction)showAbout:(id)sender;
 - (IBAction)showTerms:(id)sender;
+- (IBAction)sendBugsReport:(id)sender;
 
 @end

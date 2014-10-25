@@ -92,6 +92,9 @@ static EventWS *thisWebServices = nil;
 
     }
     @catch (NSException *exception) {
+        
+         [[DTO sharedDTO]addBugLog:@"postComment CATCH" where:@"EventWS/postComment" json:commentText];
+        
         self.comment_completed(NO,@"postComment CATCH");
     }
     @finally {
@@ -107,6 +110,9 @@ static EventWS *thisWebServices = nil;
 
 -(void)postCommentFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"postCommentFailed" where:@"EventWS/postCommentFailed" json:responseString];
+    
     self.comment_completed(NO,[NSString stringWithFormat:@"postCommentFailed: %@",responseString]);
 }
 
@@ -160,6 +166,9 @@ static EventWS *thisWebServices = nil;
 
 -(void)postEventCommentFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"postEventCommentFailed" where:@"EventWS/postEventCommentFailed" json:responseString];
+    
      self.comment_completed(NO,[NSString stringWithFormat:@"postEventCommentFailed: %@",responseString]);
 }
 
@@ -211,6 +220,8 @@ static EventWS *thisWebServices = nil;
             self.like_beeep_completed(YES,nil);
         }
         else{
+            [[DTO sharedDTO]addBugLog:@"else" where:@"EventWS/like_Beeep_Received" json:responseString];
+            
             self.like_beeep_completed(NO,response);
         }
     }
@@ -226,6 +237,8 @@ static EventWS *thisWebServices = nil;
 -(void)like_Beeep_Failed :(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"like_Beeep_Failed" where:@"EventWS/like_Beeep_Failed" json:responseString];
     
     self.like_beeep_completed(NO,[NSString stringWithFormat:@"like_Beeep_Failed: %@",responseString]);
     
@@ -275,10 +288,16 @@ static EventWS *thisWebServices = nil;
             self.like_beeep_completed(YES,nil);
         }
         else{
+            
+            [[DTO sharedDTO]addBugLog:@"else" where:@"EventWS/unlike_Beeep_Received" json:responseString];
+            
             self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Received else: %@",responseString]);
         }
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"catch" where:@"EventWS/unlike_Beeep_Received" json:responseString];
+        
         self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Received catch: %@",responseString]);
     }
     @finally {
@@ -290,6 +309,8 @@ static EventWS *thisWebServices = nil;
 -(void)unlike_Beeep_Failed :(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"unlike_Beeep_Failed" where:@"EventWS/unlike_Beeep_Failed" json:responseString];
     
     self.like_beeep_completed(NO,[NSString stringWithFormat:@"unlike_Beeep_Failed: %@",responseString]);
     
@@ -338,6 +359,9 @@ static EventWS *thisWebServices = nil;
             self.like_event_completed(YES,nil);
         }
         else{
+            
+            [[DTO sharedDTO]addBugLog:@"else" where:@"EventWS/like_Event_Received" json:responseString];
+            
             self.like_event_completed(NO,[NSString stringWithFormat:@"like_Event_Received else: %@",responseString]);
         }
     }
@@ -353,6 +377,8 @@ static EventWS *thisWebServices = nil;
 -(void)like_Event_Failed :(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"like_Event_Failed" where:@"EventWS/like_Event_Failed" json:responseString];
     
     self.like_event_completed(NO,[NSString stringWithFormat:@"like_Event_Failed: %@",responseString]);
     
@@ -400,10 +426,16 @@ static EventWS *thisWebServices = nil;
             self.like_event_completed(YES,nil);
         }
         else{
+            
+            [[DTO sharedDTO]addBugLog:@"else" where:@"EventWS/unlike_Event_Received" json:responseString];
+            
             self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Received else: %@",responseString]);
         }
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"@catch" where:@"EventWS/unlike_Event_Received" json:responseString];
+        
         self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Received catch: %@",responseString]);
     }
     @finally {
@@ -415,6 +447,8 @@ static EventWS *thisWebServices = nil;
 -(void)unlike_Event_Failed :(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"unlike_Event_Failed" where:@"EventWS/unlike_Event_Failed" json:responseString];
     
     self.like_event_completed(NO,[NSString stringWithFormat:@"unlike_Event_Failed: %@",responseString]);
     
@@ -474,12 +508,18 @@ static EventWS *thisWebServices = nil;
     
     NSArray *keywords = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
+    if (keywords == 0) {
+        [[DTO sharedDTO]addBugLog:@"keywords == 0" where:@"EventWS/searchKeywordFinished" json:responseString];
+    }
+    
     self.searchKeyword_completed(YES,keywords);
 }
 
 -(void)searchKeywordFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"searchKeywordFailed" where:@"EventWS/searchKeywordFailed" json:responseString];
     
     self.searchKeyword_completed(NO,[NSString stringWithFormat:@"searchKeywordFailed:%@",responseString]);
 }
@@ -551,6 +591,9 @@ static EventWS *thisWebServices = nil;
     NSMutableArray *events = [NSMutableArray array];
     
     if (eventsArray.count ==0) {
+        
+        [[DTO sharedDTO]addBugLog:@"eventsArray.count == 0" where:@"EventWS/searchEventFinished" json:responseString];
+        
         self.searchEvent_completed(NO,[NSString stringWithFormat:@"Events == 0: %@",responseString]);
         return;
     }
@@ -571,6 +614,8 @@ static EventWS *thisWebServices = nil;
 -(void)searchEventFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"searchEventFailed" where:@"EventWS/searchEventFailed" json:responseString];
     
     self.searchEvent_completed(NO,[NSString stringWithFormat:@"searchEventFailed: %@",responseString]);
 }
@@ -693,6 +738,8 @@ static EventWS *thisWebServices = nil;
     
     if (eventsArray.count == 0) {
         
+        [[DTO sharedDTO]addBugLog:@"eventsArray.count == 0" where:@"EventWS/getAllEventsFinished" json:responseString];
+        
         requestEmptyResultsCounter++;
         all_events_page --;
         
@@ -700,6 +747,7 @@ static EventWS *thisWebServices = nil;
             [self nextAllEventsWithCompletionBlock:self.get_All_Events_completed];
         }
         else{
+            
             self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFinished But eventsArray == 0: %@",responseString]);
         }
         return;
@@ -732,6 +780,8 @@ static EventWS *thisWebServices = nil;
 -(void)getAllEventsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"getAllEventsFailed" where:@"EventWS/getAllEventsFailed" json:responseString];
     
     self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFailed: %@",responseString]);
 }
@@ -805,6 +855,8 @@ static EventWS *thisWebServices = nil;
     
     if (eventsArray.count ==0) {
         
+        [[DTO sharedDTO]addBugLog:@"eventsArray.count ==0" where:@"EventWS/getNextAllEventsFinished" json:responseString];
+        
         requestEmptyResultsCounter++;
         all_events_page --;
         
@@ -843,6 +895,8 @@ static EventWS *thisWebServices = nil;
 -(void)getNextAllEventsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"getNextAllEventsFailed" where:@"EventWS/getNextAllEventsFailed" json:responseString];
     
     self.get_All_Events_completed(NO,[NSString stringWithFormat:@"getAllEventsFailed: %@",responseString]);
 }
@@ -981,6 +1035,9 @@ static EventWS *thisWebServices = nil;
             self.getEvent_completed(YES,event);
         }
         else{
+            
+            [[DTO sharedDTO]addBugLog:@"eventArray.count == 0" where:@"EventWS/eventReceived" json:responseString];
+            
             self.getEvent_completed(NO,nil);
         }
     }
@@ -995,6 +1052,9 @@ static EventWS *thisWebServices = nil;
 -(void)eventFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+     [[DTO sharedDTO]addBugLog:@"eventFailed" where:@"EventWS/eventFailed" json:responseString];
+    
     self.getEvent_completed(NO,nil);
 }
 

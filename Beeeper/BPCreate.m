@@ -83,6 +83,8 @@ static BPCreate *thisWebServices = nil;
         }
         else{
             
+             [[DTO sharedDTO]addBugLog:@"[dict objectForKey:@beeep] == nil" where:@"BPCreate/beeepCreateFinished" json:responseString];
+            
             NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
             
             NSArray *errors = [dict objectForKey:@"errors"];
@@ -98,6 +100,9 @@ static BPCreate *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"catch" where:@"BPCreate/beeepCreateFinished" json:responseString];
+        
         self.completed(NO,@"beeepCreateFinished Catch error");
     }
     @finally {
@@ -107,7 +112,10 @@ static BPCreate *thisWebServices = nil;
 }
 
 -(void)beeepCreateFailed:(ASIHTTPRequest *)request{
+  
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"beeepCreateFailed" where:@"BPCreate/beeepCreateFailed" json:responseString];
     
     self.completed(NO,nil);
     
@@ -242,6 +250,9 @@ static BPCreate *thisWebServices = nil;
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
         if ([[dict allKeys] containsObject:@"errors"]) {
+          
+             [[DTO sharedDTO]addBugLog:@"errors" where:@"BPCreate/eventCreateFinished" json:responseString];
+            
             self.completed(NO,nil);
             return;
         }
@@ -271,6 +282,8 @@ static BPCreate *thisWebServices = nil;
 -(void)eventCreateFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
 
+    [[DTO sharedDTO]addBugLog:@"eventCreateFailed" where:@"BPCreate/eventCreateFailed" json:responseString];
+    
     self.completed(NO,@"eventCreateFailed");
 }
 

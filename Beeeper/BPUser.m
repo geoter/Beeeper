@@ -55,12 +55,17 @@
 @end
 
 @implementation BPUser
-@synthesize notifsPageLimit,badgeNumber;
+@synthesize notifsPageLimit,badgeNumber=_badgeNumber;
 
 static NSString *consumerKey = @"14ed757eefb1a284ba6f3e7e9989ec87052429ce1";
 static NSString *consumerSecret = @"e92496b00f2abc454891c8d3c54017b8";
 
 static BPUser *thisWebServices = nil;
+
+-(void)setBadgeNumber:(int)badgeNumber{
+    _badgeNumber = badgeNumber;
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+}
 
 -(id)init{
     self = [super init];
@@ -168,6 +173,11 @@ static BPUser *thisWebServices = nil;
 }
 
 -(void)signupFailed:(ASIHTTPRequest *)request{
+    
+    NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"signupFailed" where:@"BPUser/signupFailed" json:responseString];
+    
     self.completed(NO,@"signupFailed");
 }
 
@@ -227,6 +237,9 @@ static BPUser *thisWebServices = nil;
         [self updateUser];
     }
     else{
+       
+        [[DTO sharedDTO]addBugLog:@"else" where:@"BPUser/setUserSettingsFinished" json:responseString];
+        
         NSDictionary * response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
         NSArray *errors = [response objectForKey:@"errors"];
@@ -243,6 +256,9 @@ static BPUser *thisWebServices = nil;
 -(void)setUserSettingsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"setUserSettingsFailed" where:@"BPUser/setUserSettingsFailed" json:responseString];
+    
     self.setUserSettingsCompleted(NO,[NSString stringWithFormat:@"setUserSettingsFailed: %@",responseString]);
 }
 
@@ -293,6 +309,9 @@ static BPUser *thisWebServices = nil;
       NSDictionary *error = [errors firstObject];
         
         if (error != nil) {
+           
+            [[DTO sharedDTO]addBugLog:@"error != nil" where:@"BPUser/fbSignupReceived" json:responseString];
+            
             self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
         }
         else{
@@ -309,6 +328,9 @@ static BPUser *thisWebServices = nil;
         
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"@catch" where:@"BPUser/fbSignupReceived" json:responseString];
+        
         self.fbSignUpCompleted(NO,@"fbSignupReceived catch");
 
     }
@@ -322,7 +344,9 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    self.fbSignUpCompleted(NO,[NSString stringWithFormat:@"fbSignupFailed",responseString]);
+    [[DTO sharedDTO]addBugLog:@"fbSignupFailed" where:@"BPUser/fbSignupFailed" json:responseString];
+    
+    self.fbSignUpCompleted(NO,[NSString stringWithFormat:@"Facebook Signup Failed: \n%@",responseString]);
     
 }
 
@@ -490,6 +514,8 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = [[request responseString] stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
     
     if (responseString.length == 0) {
+        
+        [[DTO sharedDTO]addBugLog:@"responseString.length == 0" where:@"BPUser/updateUserReceived" json:responseString];
                return;
     }
     responseString = [[responseString substringToIndex:[responseString length]-1]substringFromIndex:1];
@@ -513,6 +539,8 @@ static BPUser *thisWebServices = nil;
 
 -(void)updateUserFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"updateUserFailed" where:@"BPUser/updateUserFailed" json:responseString];
 }
 
 
@@ -543,6 +571,9 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = [[request responseString] stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
 
     if (responseString.length == 0) {
+        
+        [[DTO sharedDTO]addBugLog:@"responseString.length == 0" where:@"BPUser/userInfoReceived" json:responseString];
+        
         self.completed(NO,nil);
         return;
     }
@@ -556,6 +587,9 @@ static BPUser *thisWebServices = nil;
 
 -(void)userInfoFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"userInfoFailed" where:@"BPUser/userInfoFailed" json:responseString];
+    
     self.completed(NO,nil);
 }
 
@@ -717,6 +751,9 @@ static BPUser *thisWebServices = nil;
 
     }
     else{
+        
+        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUser/followersReceived" json:responseString];
+        
         [self followersFailed:request];
     }
     
@@ -726,6 +763,8 @@ static BPUser *thisWebServices = nil;
 -(void)followersFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"followersFailed" where:@"BPUser/followersFailed" json:responseString];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -835,6 +874,9 @@ static BPUser *thisWebServices = nil;
         self.following_completed(YES,users);
     }
     else{
+        
+        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUser/followingReceived->followingFailed" json:responseString];
+        
         [self followingFailed:request];
     }
     
@@ -846,6 +888,8 @@ static BPUser *thisWebServices = nil;
 -(void)followingFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"followingFailed" where:@"BPUser/followingFailed" json:responseString];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -1112,7 +1156,7 @@ static BPUser *thisWebServices = nil;
                 }
                 else{
                     NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
-                    badgeNumber = badge.intValue;
+                    self.badgeNumber = badge.intValue;
                 }
             }
             @catch (NSException *exception) {
@@ -1142,10 +1186,14 @@ static BPUser *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        
+         [[DTO sharedDTO]addBugLog:@"@catch" where:@"BPUser/notificationsReceived" json:responseString];
     }
     @finally {
         
+    }
+    
+    if (bs.count == 0) {
+            [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/notificationsReceived" json:responseString];
     }
     
     self.notifications_completed(YES,bs);
@@ -1161,6 +1209,8 @@ static BPUser *thisWebServices = nil;
 //    if (page_new>0) {
 //        page_new--;
 //    }
+    
+    [[DTO sharedDTO]addBugLog:@"notificationsFailed" where:@"BPUser/notificationsFailed" json:responseString];
     
     self.notifications_completed(NO,nil);
     
@@ -1239,7 +1289,7 @@ static BPUser *thisWebServices = nil;
                 }
                 else{
                     NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
-                    badgeNumber = badge.intValue;
+                    self.badgeNumber = badge.intValue;
                 }
             }
             @catch (NSException *exception) {
@@ -1269,18 +1319,23 @@ static BPUser *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        
+         [[DTO sharedDTO]addBugLog:@"@catch" where:@"BPUser/nextNotificationsReceived" json:responseString];
     }
     @finally {
         
     }
     
+    if (bs.count == 0) {
+         [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/nextNotificationsReceived" json:responseString];
+    }
     self.notifications_completed(YES,bs);
 }
 
 -(void)nextNotificationsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"nextNotificationsFailed" where:@"BPUser/nextNotificationsFailed" json:responseString];
     
     self.notifications_completed(NO,nil);
     
@@ -1361,7 +1416,7 @@ static BPUser *thisWebServices = nil;
                 else{
                     NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
                     if(badge.intValue != -1){
-                        badgeNumber = badge.intValue;
+                        self.badgeNumber = badge.intValue;
                     }
                 }
             }
@@ -1378,12 +1433,18 @@ static BPUser *thisWebServices = nil;
         }
     }
 
+    if (bs.count == 0) {
+        [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/newNotificationsReceived" json:responseString];
+    }
+    
     self.newNotificationsCompleted(YES,bs);
 }
 
 -(void)newNotificationsFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"newNotificationsFailed" where:@"BPUser/newNotificationsFailed" json:responseString];
     
     self.newNotificationsCompleted(NO,nil);
     
@@ -1413,7 +1474,7 @@ static BPUser *thisWebServices = nil;
     [request setCompletionBlock:^{
         
         @try {
-            badgeNumber = 0;
+            self.badgeNumber = 0;
             self.clearBadge_completed(YES);
         }
         @catch (NSException *exception) {
@@ -1523,6 +1584,10 @@ static BPUser *thisWebServices = nil;
             NSString *responseString = [request responseString];
             NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
             
+            if (beeepers.count == 0) {
+                 [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromFB_IDs" json:responseString];
+            }
+            
             self.beeepersFromFBCompleted(YES,beeepers);
         }
         @catch (NSException *exception) {
@@ -1536,6 +1601,9 @@ static BPUser *thisWebServices = nil;
     
     [request setFailedBlock:^{
         NSString *responseString = [request responseString];
+        
+        [[DTO sharedDTO]addBugLog:@"request_failed" where:@"BPUser/beeepersFromFB_IDs" json:responseString];
+        
         self.beeepersFromFBCompleted(NO,nil);
     }];
     
@@ -1568,14 +1636,23 @@ static BPUser *thisWebServices = nil;
     
     [request setCompletionBlock:^{
         
+        
+        NSString *responseString = [request responseString];
+        
         @try {
             
-            NSString *responseString = [request responseString];
             NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            if (beeepers.count == 0) {
+                 [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromTW_IDs" json:responseString];
+            }
             
             self.beeepersFromTWCompleted(YES,beeepers);
         }
         @catch (NSException *exception) {
+            
+            [[DTO sharedDTO]addBugLog:@"@catch" where:@"BPUser/beeepersFromTW_IDs" json:responseString];
+            
             self.beeepersFromTWCompleted(NO,nil);
         }
         @finally {
@@ -1586,6 +1663,9 @@ static BPUser *thisWebServices = nil;
     
     [request setFailedBlock:^{
         NSString *responseString = [request responseString];
+        
+         [[DTO sharedDTO]addBugLog:@"failed" where:@"BPUser/beeepersFromTW_IDs" json:responseString];
+        
         self.beeepersFromTWCompleted(NO,nil);
     }];
     

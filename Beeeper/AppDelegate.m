@@ -11,6 +11,7 @@
 
 @implementation AppDelegate
 
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -49,6 +50,7 @@
             [[DTO sharedDTO]setNotificationBeeepID:[dictionary objectForKey:@"w"]];
         }
     }
+    
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
 //    
@@ -325,6 +327,8 @@
         NSAssert1(0, @"Failed to create writable Plist file with message '%@'.", [error localizedDescription]);
     }
 }
+
+
 
 
 @end

@@ -18,7 +18,8 @@ static BPTimeline *thisWebServices = nil;
     NSString *userID;
     NSString *order;
     NSOperationQueue *operationQueue;
-
+    int option;
+    int requestEmptyResultsCounter;
 }
 @end
 
@@ -33,6 +34,7 @@ static BPTimeline *thisWebServices = nil;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
+        requestEmptyResultsCounter = 0;
     }
     return(self);
 }
@@ -64,9 +66,10 @@ static BPTimeline *thisWebServices = nil;
 
 }
 
--(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+-(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)optionn WithCompletionBlock:(completed)compbloc{
  
     order = (option == Upcoming)?@"ASC":@"DESC";
+    option = optionn;
     userID = user_id;
     
     timeline_page++;
@@ -124,6 +127,7 @@ static BPTimeline *thisWebServices = nil;
 -(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
     
     timeline_page = 0;
+    requestEmptyResultsCounter = 0;
     
     order = (option == Upcoming)?@"ASC":@"DESC";
     userID = user_id;
@@ -185,6 +189,9 @@ static BPTimeline *thisWebServices = nil;
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
     if (beeeps.count > 0) {
+        
+        requestEmptyResultsCounter = 0;
+        
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
@@ -196,13 +203,28 @@ static BPTimeline *thisWebServices = nil;
         [self parseResponseString:responseString WithCompletionBlock:self.completed];
     }
     else{
-        self.completed(YES,nil);
+        
+        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPTimeline/timelineFinished" json:responseString];
+        
+        requestEmptyResultsCounter++;
+        timeline_page --;
+        
+        if (requestEmptyResultsCounter <= 10) {
+            [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:self.completed];
+        }
+        else{
+            [self timelineFailed:request];
+        }
     }
 }
 
 -(void)timelineFailed:(ASIHTTPRequest *)request{
     
     timeline_page--;
+    
+    NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"timelineFailed" where:@"BPTimeline/timelineFailed" json:responseString];
     
     self.completed(NO,@"timelineFailed");
 }
@@ -217,18 +239,31 @@ static BPTimeline *thisWebServices = nil;
 -(void)nextTimelineFailed:(ASIHTTPRequest *)request{
     
     timeline_page--;
+
+    NSString *responseString = [request responseString];
+    
+    [[DTO sharedDTO]addBugLog:@"nextTimelineFailed" where:@"BPTimeline/nextTimelineFailed" json:responseString];
     
     self.completed(NO,@"nextTimelineFailed");
 }
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
    
-    if (responseString == nil) {
+    if (responseString == nil || responseString.length == 0) {
+        
+        [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"BPTimeline/parseResponseString" json:responseString];
+        
         compbloc(NO,@"Response is nil");
         timeline_page--;
+        
+        [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:compbloc];
     }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (beeeps.count == 0) {
+         [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPTimeline/parseResponseString" json:responseString];
+    }
     
     NSMutableArray *bs = [NSMutableArray array];
     
@@ -240,6 +275,7 @@ static BPTimeline *thisWebServices = nil;
         
         [bs addObject:beeep];
     }
+    
     
     compbloc(YES,bs);
 }

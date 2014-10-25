@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="k3l-OE-1u0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Choose LoginVC-->
@@ -226,10 +227,10 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggest it" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QPO-7z-rka">
-                                        <rect key="frame" x="0.0" y="30" width="320" height="30"/>
+                                        <rect key="frame" x="0.0" y="35" width="320" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" id="HCW-q5-yxI">
@@ -241,22 +242,22 @@
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                                 <textInputTraits key="textInputTraits"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="Ixw-pc-jCj" id="mxv-7z-daM"/>
                                                 </connections>
                                             </textField>
                                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="search_icon_white.png" id="YnG-mG-ylC">
-                                                <rect key="frame" x="6" y="6" width="13" height="12"/>
+                                                <rect key="frame" x="6" y="10" width="13" height="12"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" red="0.85490196078431369" green="0.87450980392156863" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                                     </view>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="47" sectionHeaderHeight="22" sectionFooterHeight="22" id="GdU-oy-xMG">
-                                        <rect key="frame" x="14" y="122" width="293" height="446"/>
+                                        <rect key="frame" x="14" y="130" width="293" height="438"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <view key="tableHeaderView" contentMode="scaleToFill" id="2sl-SU-s4b">
@@ -280,7 +281,7 @@
                                                             <rect key="frame" x="81" y="5" width="212" height="33"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="13"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="suggest_unselected.png" id="Hcx-8d-pCq">
@@ -299,9 +300,10 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="SwP-YN-RBZ">
                                         <rect key="frame" x="262" y="12" width="58" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
                                         <state key="normal" title="Send">
-                                            <color key="titleColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="sendPressed:" destination="Ixw-pc-jCj" eventType="touchUpInside" id="rzj-lQ-Dec"/>
@@ -416,7 +418,7 @@
                                             <rect key="frame" x="0.0" y="8" width="304" height="487"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="No tags available" textAlignment="center" id="bZj-el-Vzn">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="No tags available" textAlignment="center" selectable="NO" id="bZj-el-Vzn">
                                                     <rect key="frame" x="4" y="417" width="302" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1330,7 +1332,7 @@ photo</string>
                                                         </connections>
                                                     </textField>
                                                     <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="search_icon_2.png" id="Sgp-q1-yRO">
-                                                        <rect key="frame" x="3" y="7" width="13" height="12"/>
+                                                        <rect key="frame" x="3" y="9" width="13" height="12"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </imageView>
                                                 </subviews>
@@ -2743,6 +2745,23 @@ photo</string>
                                         <color key="textColor" red="0.55294117649999996" green="0.58823529409999997" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zae-Mg-WYU">
+                                        <rect key="frame" x="18" y="437" width="285" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.77647058820000003" green="0.44435475882926495" blue="0.43334642153272274" alpha="1" colorSpace="calibratedRGB"/>
+                                        <state key="normal" title="Send Bugs Report">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="sendBugsReport:" destination="78b-sP-fAQ" eventType="touchUpInside" id="jYl-vk-Rhm"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="size" keyPath="contentSize">
@@ -2852,7 +2871,7 @@ photo</string>
                                                             <rect key="frame" x="15" y="149" width="119" height="62"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                             <color key="backgroundColor" red="1" green="1" blue="0.3674395161290322" alpha="0.0" colorSpace="calibratedRGB"/>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="15"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
                                                             <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -2937,7 +2956,7 @@ photo</string>
                                                                     <color key="backgroundColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="deviceRGB"/>
                                                                 </view>
                                                                 <imageView userInteractionEnabled="NO" tag="34" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="CmF-FH-rMI">
-                                                                    <rect key="frame" x="2" y="3" width="30" height="30"/>
+                                                                    <rect key="frame" x="0.0" y="3" width="33" height="33"/>
                                                                 </imageView>
                                                                 <button opaque="NO" tag="36" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" id="WFO-4G-yAz">
                                                                     <rect key="frame" x="0.0" y="0.0" width="147" height="37"/>
@@ -3029,7 +3048,7 @@ photo</string>
                                                             <rect key="frame" x="15" y="149" width="119" height="62"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                             <color key="backgroundColor" red="1" green="1" blue="0.36743951609999997" alpha="0.0" colorSpace="calibratedRGB"/>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="15"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
                                                             <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -3175,7 +3194,7 @@ photo</string>
                                                             <rect key="frame" x="15" y="149" width="119" height="62"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                             <color key="backgroundColor" red="1" green="1" blue="0.36743951609999997" alpha="0.0" colorSpace="calibratedRGB"/>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="15"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
                                                             <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="deviceRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -4140,7 +4159,7 @@ photo</string>
                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="102" id="Uv8-iv-xtT">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="92" id="Uv8-iv-xtT">
                                         <rect key="frame" x="0.0" y="93" width="320" height="102"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Uv8-iv-xtT" id="doJ-ZJ-WVd">
@@ -4148,7 +4167,7 @@ photo</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view clipsSubviews="YES" tag="66" contentMode="scaleToFill" id="C3F-Ce-Dwo">
-                                                    <rect key="frame" x="0.0" y="0.0" width="306" height="101"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="306" height="91"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="APR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="W4p-a5-1u9">
@@ -4166,11 +4185,11 @@ photo</string>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nba_494_384.png" id="m3N-fT-1yK">
-                                                            <rect key="frame" x="0.0" y="0.0" width="123" height="101"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="111" height="91"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
                                                         <view tag="666" contentMode="scaleToFill" id="6QW-N1-zbd">
-                                                            <rect key="frame" x="129" y="0.0" width="176" height="101"/>
+                                                            <rect key="frame" x="119" y="-1" width="176" height="101"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                             <subviews>
                                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Venue" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DCa-od-9og">
@@ -4210,16 +4229,16 @@ photo</string>
                                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
+                                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="right" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detroit Pistols VS Detroit Pistols VS Detroit Pistols" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="geX-Ww-FQQ">
+                                                                    <rect key="frame" x="0.0" y="1" width="177" height="24"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
+                                                                    <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
                                                             </subviews>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         </view>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="right" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detroit Pistols VS Detroit Pistols VS Detroit Pistols" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="geX-Ww-FQQ">
-                                                            <rect key="frame" x="129" y="2" width="177" height="24"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
-                                                            <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                     </subviews>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </view>

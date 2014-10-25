@@ -19,7 +19,7 @@ static DTO *thisDTO = nil;
 @end
 
 @implementation DTO
-
+@synthesize databaseName,databasePath;
 
 -(id)init{
     self = [super init];
@@ -28,6 +28,15 @@ static DTO *thisDTO = nil;
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
         pendingUrls = [NSMutableArray array];
+        
+        //get device locale if no language selected,Default for GR,EN is english
+        NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString *documentDir = [documentPaths objectAtIndex:0];
+        
+        self.databaseName = @"beeeper_log.sqlite3";
+        
+        self.databasePath = [documentDir stringByAppendingPathComponent:[NSString stringWithFormat:@"beeeper_log.sqlite3"]];
+        
     }
     return(self);
     
@@ -55,7 +64,6 @@ static DTO *thisDTO = nil;
                                             kCFStringEncodingUTF8);
     return [NSString stringWithFormat:@"%@", safeString];
 }
-
 
 - (void)downloadImageFromURL:(NSString *)url{
     
@@ -264,5 +272,107 @@ static DTO *thisDTO = nil;
     return image;
 }
 
+#pragma mark - Database
+
+- (void)sendBugLog{
+    
+     [self createAndCheckDatabase];
+
+    NSString *appFile = databasePath;
+    
+    NSURL *url = [NSURL URLWithString:@"https://api.elasticemail.com/attachments/upload"];
+    
+    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
+    [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
+    [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
+    [request addPostValue:@"Beeeper" forKey:@"from_name"];
+    [request addPostValue:@"georgeterme@gmail.com" forKey:@"to"];
+    [request addPostValue:appFile forKey:@"file"];
+    [request setFile:appFile forKey:@"file"];
+    
+    [request setCompletionBlock:^{
+       
+        NSString *responseString = [request responseString];
+        
+        [[TabbarVC sharedTabbar]showAlert:@"Bus Log sent" text:@"Thank you for your feedback! We hope you will not need to use this feature again!"];
+        
+    }];
+    [request setFailedBlock:^{
+        NSError *error = [request error];
+        
+        [[TabbarVC sharedTabbar]showAlert:@"Bug Log Failed" text:@"error.localizedDescription"];
+        
+        NSLog(@"Upload Error: %@", error.localizedDescription);
+    }];
+    
+    [request startAsynchronous];
+        
+}
+
+- (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json{
+
+    NSLog(@"ADDED BUGGG!!!!!!!!!!!!!!!!");
+    
+    FMDatabase *db = [self getDatabase];
+    
+    NSMutableString *query = [NSMutableString stringWithString:@"INSERT INTO errors ("];
+    
+    //insert only those on table
+    NSString *tableColumnsSQL = [NSString stringWithFormat:@"pragma table_info('errors')"];
+    FMResultSet *columns = [db executeQuery:tableColumnsSQL];
+    
+    while ([columns next]) {
+        NSDictionary *dict = [columns resultDictionary];
+        [query appendFormat:@"'%@',",[dict objectForKey:@"name"]];
+    }
+    
+    [query deleteCharactersInRange:NSMakeRange(query.length-1, 1)];
+    [query appendString:@") VALUES ("];
+    
+    [query appendFormat:@"%f,",[[NSDate date] timeIntervalSince1970]];
+    [query appendFormat:@"'%@',",what];
+    [query appendFormat:@"'%@',",where];
+    [query appendFormat:@"'%@',",([json isKindOfClass:[NSString class]] && json != nil)?json:@""];
+    
+    NSString *model = [[UIDevice currentDevice] model];
+    NSString *iOSVersion = [[UIDevice currentDevice] systemVersion];
+    
+    [query appendFormat:@"'%@',",model];
+    [query appendFormat:@"'%@'",iOSVersion];
+    [query appendString:@");"];
+    
+    BOOL success =  [db executeUpdate:query,nil];
+    
+    [db close];
+
+    return success;
+}
+
+-(FMDatabase *)getDatabase{
+    
+    [self createAndCheckDatabase];
+    
+    FMDatabase *db = [FMDatabase databaseWithPath:databasePath];
+    
+    [db open];
+    
+    return db;
+}
+
+-(void) createAndCheckDatabase
+{
+    BOOL success;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    success = [fileManager fileExistsAtPath:databasePath];
+    
+    if(success) return;
+    
+    NSString *databasePathFromApp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:self.databaseName];
+    
+    [fileManager copyItemAtPath:databasePathFromApp toPath:databasePath error:nil];
+}
 
 @end

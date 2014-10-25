@@ -21,7 +21,7 @@
 - (void)hideBadgeIcon;
 - (IBAction)addBeeepPressed:(id)sender;
 - (IBAction)tabbarButtonTapped:(id)sender;
-
+- (void)showAlert:(NSString *)title text:(NSString *)text;
 - (id)init;
 + (TabbarVC *)sharedTabbar;
 

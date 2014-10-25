@@ -95,11 +95,18 @@ static BPUsersLookup *thisWebServices = nil;
 
     }
     
+    if (users.count == 0) {
+        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUsersLookup/userLookupFinished" json:responseString];
+    }
+    
     self.completed(YES,users);
 }
 
 -(void)userLookupFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
+    
+     [[DTO sharedDTO]addBugLog:@"userLookupFailed" where:@"BPUsersLookup/userLookupFailed" json:responseString];
+    
     self.completed(NO,[NSString stringWithFormat:@"userLookupFailed: %@",responseString]);
 }
 

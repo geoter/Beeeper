@@ -25,7 +25,7 @@ static TabbarVC *thisWebServices = nil;
 
 -(void)setNotifications:(int)notifications{
     _notifications = notifications;
-
+    
     if (notifications > 0) {
         [self showBadgeIcon];
     }
@@ -348,6 +348,16 @@ static TabbarVC *thisWebServices = nil;
                          [backV removeFromSuperview];
                      }];
     
+}
+
+- (void)showAlert:(NSString *)title text:(NSString *)text{
+  
+    dispatch_async (dispatch_get_main_queue(), ^{
+           
+       UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:text delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+       [alert show];
+    });
+
 }
 
 @end

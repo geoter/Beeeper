@@ -191,7 +191,9 @@ static BPSuggestions *thisWebServices = nil;
         requestEmptyResultsCounter++;
         page --;
         
-        if (requestEmptyResultsCounter <= 2) {
+        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"suggestionsFinished" json:responseString];
+        
+        if (requestEmptyResultsCounter <= 10) {
             loadNextPage = YES;
             [self nextSuggestionsWithCompletionBlock:self.completed];
         }
@@ -213,14 +215,18 @@ static BPSuggestions *thisWebServices = nil;
     
     @try {
         NSString *responseString = [request responseString];
+        
+        [[DTO sharedDTO]addBugLog:@"suggestionsFailed" where:@"suggestionsFailed" json:responseString];
+        
         NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
 
     }
     @catch (NSException *exception) {
-        
+        [[DTO sharedDTO]addBugLog:@"suggestionsFailed" where:@"suggestionsFailed" json:@""];
     }
     @finally {
-        if (requestFailedCounter < 5) {
+        
+        if (requestFailedCounter < 10) {
             [self getSuggestionsWithCompletionBlock:self.completed];
         }
         else{
@@ -233,6 +239,7 @@ static BPSuggestions *thisWebServices = nil;
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
     if (responseString == nil) {
+        [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"suggestions/parseResponseString" json:@""];
         compbloc(NO,@"Response is nil");
     }
     
@@ -240,6 +247,7 @@ static BPSuggestions *thisWebServices = nil;
     
     if (responseString.length == 0 || beeeps == nil) { //something went wrong
         NSLog(@"Empty");
+        [[DTO sharedDTO]addBugLog:@"responseString.length == 0 || beeeps == nil" where:@"suggestions/parseResponseString" json:responseString];
         [self getSuggestionsWithCompletionBlock:self.completed];
         return;
     }
@@ -259,7 +267,14 @@ static BPSuggestions *thisWebServices = nil;
         if (activity.what.title != nil) {
            [bs addObject:activity];
         }
+        else{
+          [[DTO sharedDTO]addBugLog:@"activity.what.title == nil" where:@"suggestions/parseResponseString" json:[activity description]];
+        }
         
+    }
+    
+    if (bs.count == 0) {
+         [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"suggestions/parseResponseString" json:responseString];
     }
     
     self.completed(YES,bs);
@@ -371,6 +386,9 @@ static BPSuggestions *thisWebServices = nil;
         
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"suggestEvent CATCH" where:@"suggestions/suggestEvent" json:[user_ids description]];
+        
         self.suggestEventCompleted(NO,@"suggestEvent CATCH");
     }
     @finally {
@@ -389,11 +407,17 @@ static BPSuggestions *thisWebServices = nil;
             self.suggestEventCompleted(YES,nil);
         }
         else{
+            
+            [[DTO sharedDTO]addBugLog:@"suggestEventFinished but failed" where:@"suggestions/suggestEventFinished" json:responseString];
+            
             self.suggestEventCompleted(NO,[NSString stringWithFormat:@"suggestEventFinished but failed: %@",responseString]);
         }
 
     }
     @catch (NSException *exception) {
+        
+        [[DTO sharedDTO]addBugLog:@"suggestEventFinished" where:@"suggestions/suggestEventFinished" json:responseString];
+        
            self.suggestEventCompleted(NO,@"suggestEventFinished CATCH");
     }
     @finally {
@@ -404,7 +428,10 @@ static BPSuggestions *thisWebServices = nil;
 -(void)suggestEventFailed:(ASIHTTPRequest *)request{
     
     NSString *responseString = [request responseString];
-       self.suggestEventCompleted(NO,@"suggestEventFailed");
+    
+    [[DTO sharedDTO]addBugLog:@"suggestEventFailed" where:@"suggestions/suggestEventFailed" json:responseString];
+    
+    self.suggestEventCompleted(NO,@"suggestEventFailed");
     
 }
 

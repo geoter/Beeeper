@@ -14,7 +14,7 @@
 		<string>https://github.com/geoter/Beeeper.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Beeeper.xcodeproj/project.xcworkspace</string>
+	<string>Beeeper.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>0E737723ECD891F3DEDBAC5BA9E515CC1B83C1BB</key>

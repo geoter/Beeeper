@@ -17,6 +17,7 @@
     NSMutableArray *animatedBGImages;
     BOOL cancelAllAnimations;
     BOOL firstTime;
+
 }
 @end
 
@@ -265,6 +266,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     cancelAllAnimations = YES;
+    
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [super viewWillDisappear:animated];
 }

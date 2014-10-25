@@ -150,6 +150,12 @@
     
     [self hideLoading];
     
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[TabbarVC class]]) {
+            return;
+        }
+    }
+    
     UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
     
     [self.navigationController pushViewController:menuVC animated:YES];

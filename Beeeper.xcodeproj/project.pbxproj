@@ -28,14 +28,6 @@
 		5E35C56319C9AA3A00D39D6B /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E35C56219C9AA3A00D39D6B /* AsyncImageView.m */; };
 		5E3C24FD198BFA5500096329 /* beeepItPassed.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FB198BFA5500096329 /* beeepItPassed.png */; };
 		5E3C24FE198BFA5500096329 /* beeepItPassed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */; };
-		5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8801960981C00DB2E6F /* CoreData.framework */; };
-		5E51B8831960982300DB2E6F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8821960982300DB2E6F /* CoreLocation.framework */; };
-		5E51B8851960982A00DB2E6F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8841960982A00DB2E6F /* CoreText.framework */; };
-		5E51B8871960983700DB2E6F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8861960983700DB2E6F /* ImageIO.framework */; };
-		5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B8881960984600DB2E6F /* libc++.dylib */; };
-		5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B88A1960985400DB2E6F /* libicucore.dylib */; };
-		5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B88C1960986500DB2E6F /* OpenGLES.framework */; };
-		5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E51B89719609A9200DB2E6F /* MapKit.framework */; };
 		5E51B89B19613FD300DB2E6F /* BorderTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B89A19613FD300DB2E6F /* BorderTextField.m */; };
 		5E51B8C219614C7900DB2E6F /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8B719614C7900DB2E6F /* GKCropBorderView.m */; };
 		5E51B8C319614C7900DB2E6F /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E51B8B919614C7900DB2E6F /* GKImageCropOverlayView.m */; };
@@ -105,6 +97,25 @@
 		63AE28D619F15334004EB040 /* calendar_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D419F15334004EB040 /* calendar_btn.png */; };
 		63AE28D719F15334004EB040 /* calendar_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D519F15334004EB040 /* calendar_btn@2x.png */; };
 		63B5A20A19DD918A0001903D /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63B5A20919DD918A0001903D /* Settings.plist */; };
+		63C27CE119FA8D9A00564583 /* beeeped_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDD19FA8D9A00564583 /* beeeped_white.png */; };
+		63C27CE219FA8D9A00564583 /* beeeped_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDE19FA8D9A00564583 /* beeeped_white@2x.png */; };
+		63C27CE319FA8D9A00564583 /* beeepit_outlined.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDF19FA8D9A00564583 /* beeepit_outlined.png */; };
+		63C27CE419FA8D9A00564583 /* beeepit_outlined@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CE019FA8D9A00564583 /* beeepit_outlined@2x.png */; };
+		63C27CE619FB8BFE00564583 /* beeeper_log.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CE519FB8BFE00564583 /* beeeper_log.sqlite3 */; };
+		63C27CF319FB8C7800564583 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C27CE919FB8C7800564583 /* FMDatabase.m */; };
+		63C27CF419FB8C7800564583 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C27CEB19FB8C7800564583 /* FMDatabaseAdditions.m */; };
+		63C27CF519FB8C7800564583 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C27CED19FB8C7800564583 /* FMDatabasePool.m */; };
+		63C27CF619FB8C7800564583 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C27CEF19FB8C7800564583 /* FMDatabaseQueue.m */; };
+		63C27CF719FB8C7800564583 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C27CF219FB8C7800564583 /* FMResultSet.m */; };
+		63C27CFC19FB92DF00564583 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27CFB19FB92DF00564583 /* libsqlite3.dylib */; };
+		63C27CFE19FB92E800564583 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27CFD19FB92E800564583 /* CoreData.framework */; };
+		63C27D0019FB92F100564583 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27CFF19FB92F100564583 /* MessageUI.framework */; };
+		63C27D0219FB92FF00564583 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0119FB92FF00564583 /* MapKit.framework */; };
+		63C27D0419FB930900564583 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0319FB930900564583 /* OpenGLES.framework */; };
+		63C27D0619FB931600564583 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0519FB931600564583 /* libicucore.dylib */; };
+		63C27D0819FB931F00564583 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0719FB931F00564583 /* libc++.dylib */; };
+		63C27D0A19FB933400564583 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0919FB933400564583 /* CoreText.framework */; };
+		63C27D0C19FB933A00564583 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C27D0B19FB933A00564583 /* CoreLocation.framework */; };
 		63CB8CEB19DB096B0005E88E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */; };
 		63CB8D0E19DB15890005E88E /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8CEE19DB15890005E88E /* MKAnnotationView+WebCache.m */; };
 		63CB8D0F19DB15890005E88E /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8CF019DB15890005E88E /* NSData+ImageContentType.m */; };
@@ -255,7 +266,6 @@
 		CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE08DD1919379A0700B090BE /* yellow-tabbar-timeline@2x.png */; };
 		CE0B5BB1196411960075B13B /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B5BAE196411960075B13B /* SVGeocoder.m */; };
 		CE0B5BB2196411960075B13B /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B5BB0196411960075B13B /* SVPlacemark.m */; };
-		CE0B5BB81964279A0075B13B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE0B5BB71964279A0075B13B /* MessageUI.framework */; };
 		CE0C880A18D0BCBC00BA548F /* option_0.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C880818D0BCBC00BA548F /* option_0.png */; };
 		CE0C880B18D0BCBC00BA548F /* option_0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C880918D0BCBC00BA548F /* option_0@2x.png */; };
 		CE0C880E18D0BCD300BA548F /* option_1.png in Resources */ = {isa = PBXBuildFile; fileRef = CE0C880C18D0BCD300BA548F /* option_1.png */; };
@@ -565,14 +575,6 @@
 		5E35C56219C9AA3A00D39D6B /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
 		5E3C24FB198BFA5500096329 /* beeepItPassed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItPassed.png; sourceTree = "<group>"; };
 		5E3C24FC198BFA5500096329 /* beeepItPassed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepItPassed@2x.png"; sourceTree = "<group>"; };
-		5E51B8801960981C00DB2E6F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		5E51B8821960982300DB2E6F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		5E51B8841960982A00DB2E6F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		5E51B8861960983700DB2E6F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		5E51B8881960984600DB2E6F /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		5E51B88A1960985400DB2E6F /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
-		5E51B88C1960986500DB2E6F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		5E51B89719609A9200DB2E6F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		5E51B89919613FD300DB2E6F /* BorderTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BorderTextField.h; sourceTree = "<group>"; };
 		5E51B89A19613FD300DB2E6F /* BorderTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BorderTextField.m; sourceTree = "<group>"; };
 		5E51B8B619614C7900DB2E6F /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKCropBorderView.h; sourceTree = "<group>"; };
@@ -683,6 +685,31 @@
 		63AE28D419F15334004EB040 /* calendar_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar_btn.png; sourceTree = "<group>"; };
 		63AE28D519F15334004EB040 /* calendar_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar_btn@2x.png"; sourceTree = "<group>"; };
 		63B5A20919DD918A0001903D /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		63C27CDD19FA8D9A00564583 /* beeeped_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeeped_white.png; sourceTree = "<group>"; };
+		63C27CDE19FA8D9A00564583 /* beeeped_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeped_white@2x.png"; sourceTree = "<group>"; };
+		63C27CDF19FA8D9A00564583 /* beeepit_outlined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepit_outlined.png; sourceTree = "<group>"; };
+		63C27CE019FA8D9A00564583 /* beeepit_outlined@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepit_outlined@2x.png"; sourceTree = "<group>"; };
+		63C27CE519FB8BFE00564583 /* beeeper_log.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; path = beeeper_log.sqlite3; sourceTree = "<group>"; };
+		63C27CE819FB8C7800564583 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		63C27CE919FB8C7800564583 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		63C27CEA19FB8C7800564583 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		63C27CEB19FB8C7800564583 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		63C27CEC19FB8C7800564583 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		63C27CED19FB8C7800564583 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		63C27CEE19FB8C7800564583 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		63C27CEF19FB8C7800564583 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		63C27CF019FB8C7800564583 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		63C27CF119FB8C7800564583 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		63C27CF219FB8C7800564583 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		63C27CFB19FB92DF00564583 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		63C27CFD19FB92E800564583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		63C27CFF19FB92F100564583 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		63C27D0119FB92FF00564583 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		63C27D0319FB930900564583 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		63C27D0519FB931600564583 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		63C27D0719FB931F00564583 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		63C27D0919FB933400564583 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		63C27D0B19FB933A00564583 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		63CB8CED19DB15890005E88E /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		63CB8CEE19DB15890005E88E /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
@@ -921,7 +948,6 @@
 		CE0B5BAE196411960075B13B /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
 		CE0B5BAF196411960075B13B /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
 		CE0B5BB0196411960075B13B /* SVPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPlacemark.m; sourceTree = "<group>"; };
-		CE0B5BB71964279A0075B13B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		CE0C880818D0BCBC00BA548F /* option_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_0.png; sourceTree = "<group>"; };
 		CE0C880918D0BCBC00BA548F /* option_0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "option_0@2x.png"; sourceTree = "<group>"; };
 		CE0C880C18D0BCD300BA548F /* option_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_1.png; sourceTree = "<group>"; };
@@ -1254,20 +1280,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63C27D0C19FB933A00564583 /* CoreLocation.framework in Frameworks */,
+				63C27D0A19FB933400564583 /* CoreText.framework in Frameworks */,
 				5EAC993419D8204B00B438FE /* ImageIO.framework in Frameworks */,
-				CE0B5BB81964279A0075B13B /* MessageUI.framework in Frameworks */,
-				5E51B89819609A9200DB2E6F /* MapKit.framework in Frameworks */,
+				63C27D0819FB931F00564583 /* libc++.dylib in Frameworks */,
+				63C27D0619FB931600564583 /* libicucore.dylib in Frameworks */,
+				63C27D0419FB930900564583 /* OpenGLES.framework in Frameworks */,
+				63C27D0219FB92FF00564583 /* MapKit.framework in Frameworks */,
+				63C27D0019FB92F100564583 /* MessageUI.framework in Frameworks */,
+				63C27CFE19FB92E800564583 /* CoreData.framework in Frameworks */,
+				63C27CFC19FB92DF00564583 /* libsqlite3.dylib in Frameworks */,
 				9638F88218D47E8B007394AC /* QuartzCore.framework in Frameworks */,
-				5E51B88D1960986500DB2E6F /* OpenGLES.framework in Frameworks */,
 				9637AA6018C0E8E000651BD8 /* libz.dylib in Frameworks */,
 				5ECC9F6E197D9E7C004748CF /* GoogleMaps.framework in Frameworks */,
-				5E51B88B1960985400DB2E6F /* libicucore.dylib in Frameworks */,
-				5E51B8891960984600DB2E6F /* libc++.dylib in Frameworks */,
-				5E51B8871960983700DB2E6F /* ImageIO.framework in Frameworks */,
 				9638F87818D47E4B007394AC /* GLKit.framework in Frameworks */,
-				5E51B8851960982A00DB2E6F /* CoreText.framework in Frameworks */,
-				5E51B8831960982300DB2E6F /* CoreLocation.framework in Frameworks */,
-				5E51B8811960981C00DB2E6F /* CoreData.framework in Frameworks */,
 				9638F87018D47E33007394AC /* AVFoundation.framework in Frameworks */,
 				5E1D5647192F616300962F94 /* AddressBook.framework in Frameworks */,
 				9637AA6618C0E90C00651BD8 /* CFNetwork.framework in Frameworks */,
@@ -1446,6 +1472,24 @@
 				63AE28CB19F14E46004EB040 /* THDatePickerViewController.xib */,
 			);
 			path = THCalendarDatePicker;
+			sourceTree = "<group>";
+		};
+		63C27CE719FB8C6B00564583 /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				63C27CE819FB8C7800564583 /* FMDatabase.h */,
+				63C27CE919FB8C7800564583 /* FMDatabase.m */,
+				63C27CEA19FB8C7800564583 /* FMDatabaseAdditions.h */,
+				63C27CEB19FB8C7800564583 /* FMDatabaseAdditions.m */,
+				63C27CEC19FB8C7800564583 /* FMDatabasePool.h */,
+				63C27CED19FB8C7800564583 /* FMDatabasePool.m */,
+				63C27CEE19FB8C7800564583 /* FMDatabaseQueue.h */,
+				63C27CEF19FB8C7800564583 /* FMDatabaseQueue.m */,
+				63C27CF019FB8C7800564583 /* FMDB.h */,
+				63C27CF119FB8C7800564583 /* FMResultSet.h */,
+				63C27CF219FB8C7800564583 /* FMResultSet.m */,
+			);
+			name = FMDB;
 			sourceTree = "<group>";
 		};
 		63CB8CEC19DB15890005E88E /* SDWebImage */ = {
@@ -1825,6 +1869,7 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				63C27CE719FB8C6B00564583 /* FMDB */,
 				5EA2D4AC19F42DDD000977A4 /* TKRoundedView.h */,
 				5EA2D4AD19F42DDD000977A4 /* TKRoundedView.m */,
 				63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */,
@@ -2281,6 +2326,15 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63C27D0B19FB933A00564583 /* CoreLocation.framework */,
+				63C27D0919FB933400564583 /* CoreText.framework */,
+				63C27D0719FB931F00564583 /* libc++.dylib */,
+				63C27D0519FB931600564583 /* libicucore.dylib */,
+				63C27D0319FB930900564583 /* OpenGLES.framework */,
+				63C27D0119FB92FF00564583 /* MapKit.framework */,
+				63C27CFF19FB92F100564583 /* MessageUI.framework */,
+				63C27CFD19FB92E800564583 /* CoreData.framework */,
+				63C27CFB19FB92DF00564583 /* libsqlite3.dylib */,
 				63CB8CEA19DB096B0005E88E /* FacebookSDK.framework */,
 				5EAC993319D8204B00B438FE /* ImageIO.framework */,
 				5ECC9F6F197D9E86004748CF /* GoogleMaps.bundle */,
@@ -2308,6 +2362,7 @@
 		CEA64F1618B39F4F00B7ECF5 /* Beeeper */ = {
 			isa = PBXGroup;
 			children = (
+				63C27CE519FB8BFE00564583 /* beeeper_log.sqlite3 */,
 				9637AA3B18C0E77200651BD8 /* WS */,
 				CEA64F1F18B39F4F00B7ECF5 /* AppDelegate.h */,
 				CEA64F2018B39F4F00B7ECF5 /* AppDelegate.m */,
@@ -2549,6 +2604,10 @@
 		CEF263AC18DC7F000047510D /* R */ = {
 			isa = PBXGroup;
 			children = (
+				63C27CDD19FA8D9A00564583 /* beeeped_white.png */,
+				63C27CDE19FA8D9A00564583 /* beeeped_white@2x.png */,
+				63C27CDF19FA8D9A00564583 /* beeepit_outlined.png */,
+				63C27CE019FA8D9A00564583 /* beeepit_outlined@2x.png */,
 				632BB28819E46C63003CD50A /* Passed_white.png */,
 				632BB28919E46C63003CD50A /* Passed_white@2x.png */,
 				632BB28419E46A63003CD50A /* beeep_it_white.png */,
@@ -2702,6 +2761,7 @@
 				CE25F9EF18B6761300D8B858 /* NotificationBackgroundMessage.png in Resources */,
 				9615E8E6192DC43B0099B3E0 /* pin_icon_white.png in Resources */,
 				5EA7FAE6195407E00033C061 /* beeeper-logo-Splash.png in Resources */,
+				63C27CE319FA8D9A00564583 /* beeepit_outlined.png in Resources */,
 				9615E8B6192DB57C0099B3E0 /* tabbar-notif@2x.png in Resources */,
 				969591F1194A142C00526AA0 /* liked_icon_event@2x.png in Resources */,
 				CE25F9F418B6761300D8B858 /* NotificationBackgroundSuccessIcon@2x.png in Resources */,
@@ -2768,6 +2828,7 @@
 				CEF2639F18DC59A10047510D /* 10.png in Resources */,
 				CEF263BF18DC7F080047510D /* likes_icon_event.png in Resources */,
 				CEF263A518DC59A10047510D /* 16.jpg in Resources */,
+				63C27CE419FA8D9A00564583 /* beeepit_outlined@2x.png in Resources */,
 				CE0C881618D0BD2B00BA548F /* option_2.png in Resources */,
 				CE25F9FA18B6761300D8B858 /* NotificationButtonBackground@2x.png in Resources */,
 				CEFDE82C18ED77BD00E500A9 /* friends_suggestions_icon@2x.png in Resources */,
@@ -2793,6 +2854,7 @@
 				5E0FD46D19F31FD40055E7EA /* Beeep_it_btn_long.png in Resources */,
 				CE0C883F18D0C7B300BA548F /* plus_btn@2x.png in Resources */,
 				CE29EE3A18D9CADB0001EC43 /* container_image_2.png in Resources */,
+				63C27CE219FA8D9A00564583 /* beeeped_white@2x.png in Resources */,
 				CE9C731A196D909E004AE8C6 /* user_icon_180x180@2x.png in Resources */,
 				CE529C5C18DB0FEE00900EB6 /* picture_5.png in Resources */,
 				CEF263C418DC7F080047510D /* more_btn_event@2x.png in Resources */,
@@ -2854,6 +2916,7 @@
 				CE08DD2019379A0700B090BE /* yellow-tabbar-timeline.png in Resources */,
 				5EA7FAF019594E910033C061 /* suggest_unselected.png in Resources */,
 				CEFDE82518ED77BD00E500A9 /* Activity_icon.png in Resources */,
+				63C27CE119FA8D9A00564583 /* beeeped_white.png in Resources */,
 				CE0C882218D0BE5A00BA548F /* option_2_gray.png in Resources */,
 				CE25F9F118B6761300D8B858 /* NotificationBackgroundSuccess.png in Resources */,
 				CE2BA447193E23C3004D63C3 /* empty-selection0cirlce-suggestit@2x.png in Resources */,
@@ -2895,6 +2958,7 @@
 				CE29EE3118D9CADB0001EC43 /* beeeper_logo@2x.png in Resources */,
 				CE0C882318D0BE5A00BA548F /* option_2_gray@2x.png in Resources */,
 				CE0C881E18D0BE3200BA548F /* option_1_gray.png in Resources */,
+				63C27CE619FB8BFE00564583 /* beeeper_log.sqlite3 in Resources */,
 				CE02EC3E18EC7D0A00B5674C /* search_icon_2.png in Resources */,
 				9615E8B4192DB57C0099B3E0 /* tabbar-home@2x.png in Resources */,
 				CEF2638318DC46680047510D /* SVProgressHUD.bundle in Resources */,
@@ -3053,12 +3117,14 @@
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
 				63CB8D1819DB15890005E88E /* UIImage+GIF.m in Sources */,
 				63CB8D1D19DB15890005E88E /* UIView+WebCacheOperation.m in Sources */,
+				63C27CF419FB8C7800564583 /* FMDatabaseAdditions.m in Sources */,
 				CEA64F4918B3A71400B7ECF5 /* LoginVC.m in Sources */,
 				5EBAFA9519C1962F0093D6BA /* WebBrowserVC.m in Sources */,
 				5E51B8C419614C7900DB2E6F /* GKImageCropView.m in Sources */,
 				CE02EC3218EC64D800B5674C /* AFPropertyListRequestOperation.m in Sources */,
 				9637AA3A18C0E73200651BD8 /* Base64Transcoder.c in Sources */,
 				CEF263AA18DC68390047510D /* BeeepTimeVC.m in Sources */,
+				63C27CF719FB8C7800564583 /* FMResultSet.m in Sources */,
 				CE25F9C618B66A1100D8B858 /* SettingsVC.m in Sources */,
 				CE36F7AC18D2033000A9E917 /* CommentsVC.m in Sources */,
 				5E09B5741923BFC800AF5DE8 /* BPUsersLookup.m in Sources */,
@@ -3086,6 +3152,7 @@
 				63CB8D1519DB15890005E88E /* SDWebImageManager.m in Sources */,
 				63CB8D0F19DB15890005E88E /* NSData+ImageContentType.m in Sources */,
 				CE02EBCC18EC624D00B5674C /* UIImagePickerController+Block.m in Sources */,
+				63C27CF619FB8C7800564583 /* FMDatabaseQueue.m in Sources */,
 				5E51DF091965A5840061AE2A /* SPGooglePlacesAutocompleteQuery.m in Sources */,
 				5E09B55B192216C800AF5DE8 /* Likes.m in Sources */,
 				5E9D2DA4192DDCF700A765C9 /* BPCreate.m in Sources */,
@@ -3132,6 +3199,7 @@
 				633E992E19ED1F740067BD56 /* ActivityCellView.m in Sources */,
 				CE02EBCA18EC624D00B5674C /* DZNPhotoServiceConstants.m in Sources */,
 				6356324219EC519C0001D4AE /* Activity_Object.m in Sources */,
+				63C27CF519FB8C7800564583 /* FMDatabasePool.m in Sources */,
 				63AE28CF19F14E46004EB040 /* THDatePickerViewController.m in Sources */,
 				5E51DF0B1965A5840061AE2A /* SPGooglePlacesPlaceDetailQuery.m in Sources */,
 				633E992B19ED16EE0067BD56 /* TimelineCellView.m in Sources */,
@@ -3168,6 +3236,7 @@
 				CE02EC2D18EC64D800B5674C /* AFHTTPClient.m in Sources */,
 				CE02EBC318EC624D00B5674C /* DZNPhotoDisplayViewController.m in Sources */,
 				CE36F7B418D2035F00A9E917 /* PHFComposeBarView_TextView.m in Sources */,
+				63C27CF319FB8C7800564583 /* FMDatabase.m in Sources */,
 				CE02EBC218EC624D00B5674C /* DZNPhotoDisplayViewCell.m in Sources */,
 				CE36F7B618D2035F00A9E917 /* PHFComposeBarView_Button.m in Sources */,
 				6356324619EC519C0001D4AE /* CommentsActivity.m in Sources */,
@@ -3309,8 +3378,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3324,7 +3393,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
+				PROVISIONING_PROFILE = "a3cbcc12-4a55-48d2-8b73-09f699924038";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3334,8 +3403,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3349,7 +3418,7 @@
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
+				PROVISIONING_PROFILE = "a3cbcc12-4a55-48d2-8b73-09f699924038";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

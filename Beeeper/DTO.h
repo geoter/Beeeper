@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Beeep_Object.h"
 #import "EventVC.h"
+#import "FMDatabase.h"
 
 typedef void(^completed)(BOOL,id);
 
@@ -23,6 +24,11 @@ typedef void(^completed)(BOOL,id);
 @property(nonatomic,strong) CLLocation *userLocation;
 @property(nonatomic,strong) CLPlacemark *userPlace;
 
+@property (nonatomic,strong) NSString *databaseName;
+@property (nonatomic,strong) NSString *databasePath;
+
+- (void)sendBugLog;
+- (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json;
 - (NSString *)fixLink:(NSString *)link;
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;

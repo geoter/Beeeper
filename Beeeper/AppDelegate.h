@@ -19,4 +19,7 @@
 - (void)sessionStateChanged:(FBSession *)session state:(FBSessionState) state error:(NSError *)error;
 - (void)userLoggedIn;
 - (void)userLoggedOut;
+
+
+
 @end

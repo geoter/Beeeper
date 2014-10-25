@@ -258,9 +258,6 @@
     
     [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnShare,btnLike,btnMore, nil]];
     
-    UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-    [self.navigationItem setRightBarButtonItem:beeepItem];
-    
     //Hide beeep it button if coming from My Timeline
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
@@ -419,20 +416,6 @@
 
 //        [self.likesButton setImage:[UIImage imageNamed:@"liked_event"] forState:UIControlStateNormal];
     }
-    
-    @try {
-        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @catch (NSException *exception) {
-        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @finally {
-        
-    }
 
     
     //Tags
@@ -478,18 +461,80 @@
         UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
         [self.navigationItem setRightBarButtonItem:beeepItem];
         
-        self.passedIcon.hidden = NO;
-        self.beeepItButton.hidden = YES;
-        [self.beeepItButton setUserInteractionEnabled:NO];
+//        self.passedIcon.hidden = NO;
+//        self.beeepItButton.hidden = YES;
+//        [self.beeepItButton setUserInteractionEnabled:NO];
     }
     else{
         
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
-
+        @try {
+            if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] == NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else{
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+        }
+        @catch (NSException *exception) {
+            if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            
+        }
+        @finally {
+            
+        }
         
-        self.passedIcon.hidden = YES;
-        self.beeepItButton.hidden = NO;
+
     }
     
     //Image
@@ -656,20 +701,6 @@
     self.commentsLabel.hidden = (comments.count == 0);
     self.beeepsLabel.hidden = (beeepers.count == 0);
     
-    @try {
-        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @catch (NSException *exception) {
-        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @finally {
-        
-    }
-
     
     //Tags
     
@@ -721,12 +752,73 @@
     }
     else{
         
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
+        @try {
+            if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] == NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else{
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+        }
+        @catch (NSException *exception) {
+            if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            
+        }
+        @finally {
+            
+        }
         
-        
-        self.passedIcon.hidden = YES;
-        self.beeepItButton.hidden = NO;
     }
 
     
@@ -912,29 +1004,80 @@
     }
     else{
         
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
+        @try {
+            if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] == NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else{
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+        }
+        @catch (NSException *exception) {
+            if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            
+        }
+        @finally {
+            
+        }
         
-        
-        self.passedIcon.hidden = YES;
-        self.beeepItButton.hidden = NO;
+
+    
     }
 
     
+
     
-    @try {
-        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @catch (NSException *exception) {
-        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @finally {
-        
-    }
   
     
     //Tags
@@ -1160,28 +1303,76 @@
     }
     else{
         
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
+        @try {
+            if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] == NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else{
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+        }
+        @catch (NSException *exception) {
+            if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            
+        }
+        @finally {
+            
+        }
         
-        
-        self.passedIcon.hidden = YES;
-        self.beeepItButton.hidden = NO;
+
     }
 
-    
-    @try {
-        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @catch (NSException *exception) {
-        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @finally {
-        
-    }
 
     
     //Tags
@@ -1431,20 +1622,6 @@
 
     }
 
-    @try {
-        if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @catch (NSException *exception) {
-        if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
-            self.beeepItButton.hidden = YES;
-        }
-    }
-    @finally {
-        
-    }
-
     
     //Tags
     
@@ -1496,12 +1673,74 @@
     }
     else{
         
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"beeep_it_white"] style:UIBarButtonItemStyleBordered target:self action:@selector(beeepItPressed:)];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
+        @try {
+            if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] == NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else if (beeepers && [[beeepers valueForKey:@"id"] indexOfObject:my_id] != NSNotFound) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+                
+            }
+            else{
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+        }
+        @catch (NSException *exception) {
+            if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
+                self.beeepItButton.hidden = YES;
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
+                
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
+                [btn sizeToFit];
+                [btn addTarget:self action:@selector(beeepItPressed:) forControlEvents:UIControlEventTouchUpInside];
+                
+                UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc]initWithCustomView:btn];
+                [self.navigationItem setRightBarButtonItem:beeepItem];
+                
+            }
+            
+        }
+        @finally {
+            
+        }
         
-        
-        self.passedIcon.hidden = YES;
-        self.beeepItButton.hidden = NO;
+
     }
     
     //Image

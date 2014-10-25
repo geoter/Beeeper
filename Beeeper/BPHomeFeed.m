@@ -198,10 +198,12 @@ static BPHomeFeed *thisWebServices = nil;
     }
     else{
         
+        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPHomeFeed/friendsFeedFinished" json:responseString];
+        
         requestEmptyResultsCounter++;
         page --;
         
-        if (requestEmptyResultsCounter == 2) {
+        if (requestEmptyResultsCounter == 10) {
             [self nextFriendsFeedWithCompletionBlock:self.completed];
         }
         else{
@@ -237,6 +239,10 @@ static BPHomeFeed *thisWebServices = nil;
         
     }
     
+    if (beeeps.count == 0) {
+        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPHomeFeed/parseResponseString" json:responseString];
+    }
+    
     compbloc(YES,bs);
 }
 
@@ -245,7 +251,9 @@ static BPHomeFeed *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-     self.completed(NO,@"friendsFeedFailed");
+    [[DTO sharedDTO]addBugLog:@"friendsFeedFailed" where:@"BPHomeFeed/friendsFeedFailed" json:responseString];
+    
+    self.completed(NO,@"friendsFeedFailed");
 }
 
 

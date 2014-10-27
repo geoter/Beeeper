@@ -31,7 +31,6 @@
     [super viewDidLoad];
     
     firstTime = YES;
-    self.title = @"Notifications";
     
 //    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
 //        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
@@ -147,7 +146,11 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
+    
+    self.title = @"Notifications";
+    self.navigationController.navigationBar.topItem.title = self.title;
     
     for (UIButton *btn in self.tabBar.subviews) {
         
@@ -165,7 +168,6 @@
     
     [[BPUser sharedBP]clearBadgeWithCompletionBlock:^(BOOL completed){
         if (completed) {
-            [TabbarVC sharedTabbar].notifications = 0;
         }
     }];
     
@@ -278,27 +280,6 @@
        //NSString *extension;
         NSString *imageName;
         
-       /* if ([w.name isEqualToString:@"You"] && activity.eventActivity.count == 0 && activity.beeepInfoActivity.eventActivity == nil) {
-        //    extension = [[wm.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[wm.imagePath MD5]];
-        }
-        else if (activity.eventActivity.count > 0){
-            EventActivity *event = [activity.eventActivity firstObject];
-            NSString *path = event.imageUrl;
-         //   extension = [[path.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[path MD5]];
-            
-        }
-        else if(activity.beeepInfoActivity.eventActivity != nil){
-            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-          //  extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[event.imageUrl MD5]];
-        }
-        else if ([wm.name isEqualToString:@"You"]){
-          //  extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            imageName = [NSString stringWithFormat:@"%@",[w.imagePath MD5]];
-        }*/
-        
         [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
                      placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         
@@ -331,6 +312,7 @@
 
     [[BPUser sharedBP]markNotificationRead:activity.internalBaseClassIdentifier completionBlock:^(BOOL completed){
         if (completed) {
+            activity.read = YES;
             [self.tableV reloadData];
         }
     }];

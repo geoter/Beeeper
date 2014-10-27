@@ -577,20 +577,18 @@
         self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
         [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
         self.backBtn.hidden = NO;
+        
+        self.tabBar.hidden = YES;
+        self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, self.view.frame.size.height-self.tableV.frame.origin.y);
     }
     else{
+        [self showBadgeIcon];
         self.settingsIcon.hidden = NO;
         self.addFriendIcon.hidden = NO;
     }
     
     [self.tableV reloadData];
     [self setUserInfo];
-    
-    if (self.mode == Timeline_My && !self.showBackButton) {
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
-    }else{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:nil];
-    }
     
     [self.tableV reloadData];
     
@@ -606,11 +604,6 @@
         else{
             btn.selected = YES;
         }
-    }
-    
-    if (mode != Timeline_My || self.navigationController.viewControllers.count != 1) {
-        self.tabBar.hidden = YES;
-        self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, self.view.frame.size.height-self.tableV.frame.origin.y);
     }
     
 //    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
@@ -1740,6 +1733,52 @@
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+}
+
+-(void)showBadgeIcon{
+    
+    if ([BPUser sharedBP].badgeNumber <= 0) {
+        [self hideBadgeIcon];
+        return;
+    }
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
+    b.badge.outlineWidth = 1.0;
+    b.badge.badgeColor = [UIColor redColor];
+    b.tag = 34567;
+    b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
+    [self.notificationsBadgeV.superview addSubview:b];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 1;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //
+    //     }
+    //     ];
+}
+
+-(void)hideBadgeIcon{
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    [[self.notificationsBadgeV.superview viewWithTag:34567]removeFromSuperview];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 0;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //
+    //     }
+    //     ];
 }
 
 #pragma mark - Group by date

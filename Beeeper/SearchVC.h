@@ -16,7 +16,8 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
 @property (nonatomic,strong) NSString *initialSearchTerm;
 @property (weak, nonatomic) IBOutlet UIView *tabBar;
-
+@property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
+@property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
 
 - (IBAction)cancelPressed:(id)sender;
 - (IBAction)releaseSearch:(id)sender;

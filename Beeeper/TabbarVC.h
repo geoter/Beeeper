@@ -10,12 +10,13 @@
 
 @interface TabbarVC : UIViewController
 @property (weak, nonatomic) IBOutlet UIView *containerVC;
-@property (weak, nonatomic) IBOutlet UIView *tabBar;
+
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (strong, nonatomic) IBOutlet UILabel *notificationLabel;
-@property (nonatomic,assign)  int notifications;
-@property (nonatomic,assign) BOOL showsSplashOnLoad;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
+
+@property (nonatomic,assign) BOOL showsSplashOnLoad;
+
 
 - (void)updateNotificationsBadge;
 - (void)hideBadgeIcon;

@@ -41,6 +41,9 @@
 @property (weak, nonatomic) IBOutlet UIView *topBGV;
 @property (weak, nonatomic) IBOutlet UIView *tabBar;
 
+@property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
+@property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
+
 - (IBAction)calendarPressed:(id)sender;
 - (IBAction)addFriend:(id)sender;
 

@@ -11,9 +11,11 @@
 @interface HomeFeedVC : UIViewController
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
 @property (weak, nonatomic) IBOutlet UILabel *noBeeepsLabel;
-@property (weak, nonatomic) IBOutlet UIView *tabBar;
 
-- (IBAction)beeepPressed:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *tabBar;
+@property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
+@property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
+
 - (IBAction)eventBeeepPressed:(id)sender;
 - (IBAction)showUser:(id)sender;
 

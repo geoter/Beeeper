@@ -8,9 +8,7 @@
 
 #import "TabbarVC.h"
 #import "TimelineVC.h"
-#import "JSBadgeView.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UIView+Badge.h"
 
 @interface TabbarVC ()<UINavigationControllerDelegate>
 {
@@ -19,20 +17,8 @@
 @end
 
 @implementation TabbarVC
-@synthesize notifications =_notifications;
 
 static TabbarVC *thisWebServices = nil;
-
--(void)setNotifications:(int)notifications{
-    _notifications = notifications;
-    
-    if (notifications > 0) {
-        [self showBadgeIcon];
-    }
-    else{
-        [self hideBadgeIcon];
-    }
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -69,9 +55,7 @@ static TabbarVC *thisWebServices = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
-    //[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
-  //  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
-    
+
     //for timeline Follow + / Following Delay
     
     [[BPUser sharedBP]getFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){}];
@@ -92,96 +76,10 @@ static TabbarVC *thisWebServices = nil;
     
     [[BPUser sharedBP]newNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
-        if (completed) {
-            
-//            JSBadgeView *badgeView = [[JSBadgeView alloc] initWithParentView:self.notificationsBadgeV alignment:JSBadgeViewAlignmentTopRight];
-//            badgeView.badgeText = [NSString stringWithFormat:@"%d",[BPUser sharedBP].badgeNumber];
-            
-            UIView *b;
-            
-            if (![self.notificationsBadgeV.superview viewWithTag:34567]) {
-                b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
-                b.badge.outlineWidth = 0.0;
-                b.badge.badgeColor = [UIColor redColor];
-                b.tag = 34567;
-            }
-            
-            b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
-            
-            [self.notificationsBadgeV.superview addSubview:b];
-            
-            if ([BPUser sharedBP].badgeNumber > 0) {
-                [self showBadgeIcon];
-            }
-            else{
-                [self hideBadgeIcon];
-            }
-
-        }
-        
         [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:15];
     }];
     
    }
-
--(void)showBadgeIcon{
-    
-    [UIView animateWithDuration:0.2f
-                     animations:^
-     {
-         self.notificationsBadgeV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
-}
-
--(void)hideBadgeIcon{
-    
-    [UIView animateWithDuration:0.2f
-                     animations:^
-     {
-         self.notificationsBadgeV.alpha = 0;
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
-}
-
--(void)hideTabbar{
-
-    self.containerVC.frame = self.view.bounds;
-    
-    [UIView animateWithDuration:0.7f
-                     animations:^
-     {
-         
-         self.tabBar.frame = CGRectMake(0, self.view.frame.size.height+20, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         
-     }
-     ];
-  }
-
--(void)showTabbar{
-    
-    [UIView animateWithDuration:0.5f
-                     animations:^
-     {
-         self.tabBar.frame = CGRectMake(0, self.view.frame.size.height-self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-            self.containerVC.frame = CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height-self.tabBar.frame.size.height);
-     }
-     ];
-}
 
 - (void)didReceiveMemoryWarning
 {

@@ -1578,6 +1578,8 @@ photo</string>
                     </view>
                     <connections>
                         <outlet property="collectionV" destination="gRc-oM-eWO" id="Tot-1U-OmR"/>
+                        <outlet property="notificationsBadgeV" destination="4WM-hJ-VxV" id="H1e-m9-rjJ"/>
+                        <outlet property="notificationsButton" destination="ePb-in-Uy9" id="1dc-T7-TQg"/>
                         <outlet property="searchTextField" destination="GMA-Ma-Iu6" id="GDA-SJ-g90"/>
                         <outlet property="tabBar" destination="cVq-Td-8YT" id="aBD-62-Mh9"/>
                         <outlet property="tableV" destination="GsC-JU-WNi" id="I4u-ih-tXU"/>
@@ -2919,9 +2921,6 @@ photo</string>
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                             <state key="disabled" backgroundImage="beeepit_btn_disabled.png"/>
-                                                            <connections>
-                                                                <action selector="eventBeeepPressed:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="hKK-7D-Lu8"/>
-                                                            </connections>
                                                         </button>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="180" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9zK-bg-DuU">
                                                             <rect key="frame" x="40" y="270" width="25" height="21"/>
@@ -3295,7 +3294,6 @@ photo</string>
                                         <state key="highlighted" image="yellow-tabbar-notif.png"/>
                                         <connections>
                                             <action selector="tabbarButtonTapped:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="IIQ-AX-sMa"/>
-                                            <action selector="tabbarButtonTapped:" destination="oql-i0-dYH" eventType="touchUpInside" id="XVN-0L-Nfh"/>
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" id="1LY-lS-rjN">
@@ -3357,6 +3355,8 @@ photo</string>
                     <connections>
                         <outlet property="collectionV" destination="CZJ-PB-hDl" id="Ja3-B9-oHD"/>
                         <outlet property="noBeeepsLabel" destination="ecA-ym-Rs0" id="PF9-y2-spg"/>
+                        <outlet property="notificationsBadgeV" destination="LRD-JR-MdM" id="ZpI-n4-6RK"/>
+                        <outlet property="notificationsButton" destination="SEL-70-Iax" id="7dm-H3-d42"/>
                         <outlet property="tabBar" destination="4cx-NJ-qW6" id="px6-ju-nKM"/>
                     </connections>
                 </viewController>
@@ -4147,6 +4147,8 @@ photo</string>
                         <outlet property="backBtn" destination="qg4-mN-KX1" id="00y-Uc-P8y"/>
                         <outlet property="followButton" destination="qoi-3H-D8O" id="hdx-wn-wDD"/>
                         <outlet property="myTimelineMenuV" destination="i45-52-CGQ" id="Say-46-3Qv"/>
+                        <outlet property="notificationsBadgeV" destination="dBC-Z6-xgc" id="aAm-wy-WRM"/>
+                        <outlet property="notificationsButton" destination="RDB-c3-ZYr" id="2ag-9w-JUT"/>
                         <outlet property="othersTimelineMenuV" destination="Lot-aT-yFS" id="7gC-hl-6yQ"/>
                         <outlet property="pinIcon" destination="2zE-lG-FdC" id="mR1-TA-YKH"/>
                         <outlet property="profileImage" destination="FWz-V2-aUA" id="CI2-IF-RaR"/>

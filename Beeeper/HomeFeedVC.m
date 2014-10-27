@@ -88,7 +88,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     initiateData = YES;
     
     overlay = [[GHContextMenuView alloc] init];
@@ -381,6 +381,7 @@
     
     [super viewWillAppear:animated];
 
+    [self showBadgeIcon];
     
     for (UIButton *btn in self.tabBar.subviews) {
         
@@ -418,6 +419,7 @@
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:nil object: nil];
 }
 
 
@@ -832,28 +834,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return frame.size;
 }
 
-- (IBAction)beeepPressed:(id)sender {
-
-    
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepVC"];
-    
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    [self.view addSubview:viewController.view];
-    [self addChildViewController:viewController];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-
-     }
-     ];
-    
-     [self.navigationController setNavigationBarHidden:YES animated:YES];
-}
 
 - (IBAction)eventBeeepPressed:(UIButton *)sender {
     
@@ -1384,6 +1364,52 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+}
+
+-(void)showBadgeIcon{
+    
+    if ([BPUser sharedBP].badgeNumber <= 0) {
+        [self hideBadgeIcon];
+        return;
+    }
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
+    b.badge.outlineWidth = 1.0;
+    b.badge.badgeColor = [UIColor redColor];
+    b.tag = 34567;
+    b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
+    [self.notificationsBadgeV.superview addSubview:b];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 1;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //
+    //     }
+    //     ];
+}
+
+-(void)hideBadgeIcon{
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    [[self.notificationsBadgeV.superview viewWithTag:34567]removeFromSuperview];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 0;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //         
+    //     }
+    //     ];
 }
 
 @end

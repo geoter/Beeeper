@@ -77,6 +77,8 @@
         [self resetSearch];
     }
     
+    [self showBadgeIcon];
+    
     [self.searchTextField addTarget:self action:@selector(searchStringChanged:) forControlEvents:UIControlEventEditingChanged];
     
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
@@ -143,10 +145,13 @@
             btn.selected = YES;
         }
     }
+    
+    [self showBadgeIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:nil object: nil];
 }
 
 -(void)goBack{
@@ -859,6 +864,52 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+}
+
+-(void)showBadgeIcon{
+    
+    if ([BPUser sharedBP].badgeNumber <= 0) {
+        [self hideBadgeIcon];
+        return;
+    }
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
+    b.badge.outlineWidth = 1.0;
+    b.badge.badgeColor = [UIColor redColor];
+    b.tag = 34567;
+    b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
+    [self.notificationsBadgeV.superview addSubview:b];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 1;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //
+    //     }
+    //     ];
+}
+
+-(void)hideBadgeIcon{
+    
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    
+    [[self.notificationsBadgeV.superview viewWithTag:34567]removeFromSuperview];
+    
+    //    [UIView animateWithDuration:0.2f
+    //                     animations:^
+    //     {
+    //         self.notificationsBadgeV.alpha = 0;
+    //     }
+    //                     completion:^(BOOL finished)
+    //     {
+    //
+    //     }
+    //     ];
 }
 
 @end

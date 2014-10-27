@@ -2396,7 +2396,7 @@
         [self showComments:nil];
     }
     else{
-        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:0.3];
+        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:1];
     }
 }
 

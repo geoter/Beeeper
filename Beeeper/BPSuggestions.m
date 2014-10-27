@@ -173,17 +173,8 @@ static BPSuggestions *thisWebServices = nil;
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
     if ([beeeps isKindOfClass:[NSArray class]]) {
-            
-        requestEmptyResultsCounter = 0;
+        
         loadNextPage = YES;
-        
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
-        NSError *error;
-        
-        BOOL succeed = [responseString writeToFile:filePath
-                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
         [self parseResponseString:responseString WithCompletionBlock:self.completed];
     }
@@ -191,7 +182,7 @@ static BPSuggestions *thisWebServices = nil;
         requestEmptyResultsCounter++;
         page --;
         
-        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"suggestionsFinished" json:responseString];
+        [[DTO sharedDTO]addBugLog:@"![beeeps isKindOfClass:[NSArray class]]" where:@"suggestionsFinished" json:responseString];
         
         if (requestEmptyResultsCounter <= 10) {
             loadNextPage = YES;
@@ -248,9 +239,26 @@ static BPSuggestions *thisWebServices = nil;
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     if (responseString.length == 0 || beeeps == nil) { //something went wrong
+       
         NSLog(@"Empty");
         [[DTO sharedDTO]addBugLog:@"responseString.length == 0 || beeeps == nil" where:@"suggestions/parseResponseString" json:responseString];
-        [self getSuggestionsWithCompletionBlock:self.completed];
+         page--;
+        
+        [self nextSuggestionsWithCompletionBlock:self.completed];
+        return;
+    }
+    else if (beeeps.count == 0){
+       
+        requestEmptyResultsCounter ++;
+        
+        if (requestEmptyResultsCounter < 3) {
+            [self nextSuggestionsWithCompletionBlock:self.completed];
+        }
+        else{
+            loadNextPage = NO;
+            self.completed(YES,nil);
+        }
+
         return;
     }
     
@@ -270,13 +278,22 @@ static BPSuggestions *thisWebServices = nil;
            [bs addObject:activity];
         }
         else{
-          [[DTO sharedDTO]addBugLog:@"activity.what.title == nil" where:@"suggestions/parseResponseString" json:[activity description]];
+          [[DTO sharedDTO]addBugLog:@"activity.what.title == nil" where:@"suggestions/parseResponseString" json:[b description]];
         }
         
     }
     
-    if (bs.count == 0) {
-         [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"suggestions/parseResponseString" json:responseString];
+    requestEmptyResultsCounter = 0;
+    
+    if (page == 0) {
+       
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"suggestions-%@",[[BPUser sharedBP].user objectForKey:@"id"]]];
+        NSError *error;
+        
+        BOOL succeed = [responseString writeToFile:filePath
+                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
     }
     
     self.completed(YES,bs);

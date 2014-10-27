@@ -200,12 +200,13 @@ static CGFloat kDZNPhotoDisplayMinimumBarHeight = 44.0;
     if (!_loadButton)
     {
         _loadButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_loadButton setTitle:NSLocalizedString(@"Load More", nil) forState:UIControlStateNormal];
+        //[_loadButton setTitle:NSLocalizedString(@"Load More", nil) forState:UIControlStateNormal];
+        [_loadButton setTitle:@"" forState:UIControlStateNormal];
         [_loadButton setTitleColor:[UIColor clearColor] forState:UIControlStateNormal];
         [_loadButton addTarget:self action:@selector(downloadData) forControlEvents:UIControlEventTouchUpInside];
         [_loadButton.titleLabel setFont:[UIFont systemFontOfSize:17.0]];
         [_loadButton setBackgroundColor:self.collectionView.backgroundView.backgroundColor];
-        
+        [_loadButton setUserInteractionEnabled:NO];
         [_loadButton addSubview:self.activityIndicator];
     }
     return _loadButton;

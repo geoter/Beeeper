@@ -235,7 +235,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;
@@ -274,19 +274,6 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     
-    
-    if (self.mode != Timeline_My || self.showBackButton) {
-        UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
-        self.navigationItem.leftBarButtonItem = leftItem;
-        
-        self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
-        [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
-        self.backBtn.hidden = NO;
-    }
-    else{
-        self.settingsIcon.hidden = NO;
-//        self.importIcon.hidden = NO;
-    }
     
 //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
 //    self.navigationItem.leftBarButtonItem = leftItem;
@@ -582,7 +569,19 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-
+    
+    if (self.mode != Timeline_My || self.showBackButton) {
+        UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+        self.navigationItem.leftBarButtonItem = leftItem;
+        
+        self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+        [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+        self.backBtn.hidden = NO;
+    }
+    else{
+        self.settingsIcon.hidden = NO;
+        self.addFriendIcon.hidden = NO;
+    }
     
     [self.tableV reloadData];
     [self setUserInfo];
@@ -593,8 +592,26 @@
         [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:nil];
     }
     
-    
     [self.tableV reloadData];
+    
+    for (UIButton *btn in self.tabBar.subviews) {
+        
+        if (![btn isKindOfClass:[UIButton class]]) {
+            continue;
+        }
+        
+        if (btn.tag != 3) {
+            btn.selected = NO;
+        }
+        else{
+            btn.selected = YES;
+        }
+    }
+    
+    if (mode != Timeline_My || self.navigationController.viewControllers.count != 1) {
+        self.tabBar.hidden = YES;
+        self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, self.view.frame.size.height-self.tableV.frame.origin.y);
+    }
     
 //    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 //        
@@ -890,7 +907,7 @@
         return 51;
     }
     else{
-        return 80;
+        return 81;
     }
 }
 
@@ -926,9 +943,16 @@
     UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 46)];
     headerV.backgroundColor = [UIColor colorWithRed:212/255.0 green:216/255.0 blue:217/255.0 alpha:1];
     
-    UIView *bgV = [[UIView alloc]initWithFrame:CGRectMake(0, 5, headerV.frame.size.width, headerV.frame.size.height-10)];
+    UIView *bgV = [[UIView alloc]initWithFrame:CGRectMake(0, 1, headerV.frame.size.width, headerV.frame.size.height-4)];
     [bgV setBackgroundColor:[UIColor whiteColor]];
     [headerV addSubview:bgV];
+    
+    bgV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    bgV.layer.shadowOpacity = 0.7;
+    bgV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    bgV.layer.shadowRadius = 0.8;
+    [bgV.layer setShadowPath:[[UIBezierPath
+                                bezierPathWithRect:bgV.bounds] CGPath]];
     
     UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, headerV.frame.size.height)];
     textLbl.textAlignment = NSTextAlignmentLeft;
@@ -937,6 +961,7 @@
     textLbl.tag = 1;
     textLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     [headerV addSubview:textLbl];
+    
     
     UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar_btn.png"]];
     imgV.center = textLbl.center;
@@ -1130,6 +1155,12 @@
                                                                   KNSemiModalOptionKeys.animationDuration : @(1.0),
                                                                   KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
                                                                   }];
+}
+
+- (IBAction)addFriend:(id)sender {
+    
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 -(void)datePickerDonePressed:(THDatePickerViewController *)datePicker{
@@ -1468,7 +1499,7 @@
     if (overdueTimeInterval<0)
         overdueTimeInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval)/60;
+    NSInteger minutes = round(overdueTimeInterval/60);
     NSInteger hours   = minutes/60;
     NSInteger days    = hours/24;
     NSInteger months  = days/30;
@@ -1477,17 +1508,17 @@
     NSString* overdueMessage;
     
     if (years>0){
-        overdueMessage = [NSString stringWithFormat:@"%d years before", (years)];
+        overdueMessage = [NSString stringWithFormat:@"%d %@ before", (years),(years == 1)?@"year":@"years"];
     }else if (months>0){
-        overdueMessage = [NSString stringWithFormat:@"%d months before", (months)];
+        overdueMessage = [NSString stringWithFormat:@"%d %@ before", (months),(months == 1)?@"month":@"months"];
     }else if (days>0){
-        overdueMessage = [NSString stringWithFormat:@"%d days before", (days)];
+        overdueMessage = [NSString stringWithFormat:@"%d %@ before", (days),(days == 1)?@"day":@"days"];
     }else if (hours>0){
-        overdueMessage = [NSString stringWithFormat:@"%d hours before", (hours)];
+        overdueMessage = [NSString stringWithFormat:@"%d %@ before", (hours),(hours == 1)?@"hour":@"hours"];
     }else if (minutes>0){
-        overdueMessage = [NSString stringWithFormat:@"%d minutes before", (minutes)];
+        overdueMessage = [NSString stringWithFormat:@"%d %@ before", (minutes),(minutes == 1)?@"minute":@"minutes"];
     }else if (overdueTimeInterval<60){
-        overdueMessage = [NSString stringWithFormat:@"On Time"];
+        overdueMessage = [NSString stringWithFormat:@"On Event Time"];
     }
     
     return overdueMessage;
@@ -1506,29 +1537,50 @@
 
 - (NSInteger) numberOfMenuItems
 {
-    return 4;
+    return (mode == Timeline_My)?3:4;
 }
 
 -(UIImage*) imageForItemAtIndex:(NSInteger)index
 {
     NSString* imageName = nil;
-    switch (index) {
-        case 0:
-            imageName = @"Beeep_popup_unpressed";
-            break;
-        case 1:
-            imageName = @"Like_popup_unpressed";
-            break;
-        case 2:
-            imageName = @"Suggest_popup_unpressed";
-            break;
-        case 3:
-            imageName = @"Comment_popup_unpressed";
-            break;
-            
-        default:
-            break;
+   
+    if (mode == Timeline_My) {
+        switch (index) {
+            case 0:
+                imageName = @"Like_popup_unpressed";
+                break;
+            case 1:
+                imageName = @"Suggest_popup_unpressed";
+                break;
+            case 2:
+                imageName = @"Comment_popup_unpressed";
+                break;
+                
+            default:
+                break;
+        }
     }
+    else{
+    
+        switch (index) {
+            case 0:
+                imageName = @"Beeep_popup_unpressed";
+                break;
+            case 1:
+                imageName = @"Like_popup_unpressed";
+                break;
+            case 2:
+                imageName = @"Suggest_popup_unpressed";
+                break;
+            case 3:
+                imageName = @"Comment_popup_unpressed";
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
     return [UIImage imageNamed:imageName];
 }
 
@@ -1538,24 +1590,42 @@
     
     Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
     
-    switch (selectedIndex) {
-        case 0:
-            [self beeepEventAtIndexPath:indexPath];
-            break;
-        case 1:
-            [self likeEventAtIndexPath:indexPath];
-            break;
-        case 2:
-            [self suggestEventAtIndexPath:indexPath];
-            break;
-        case 3:
-            [self commentEventAtIndexPath:indexPath];
-            break;
-            
-        default:
-            break;
+    if (mode == Timeline_My) {
+       
+        switch (selectedIndex) {
+            case 0:
+                [self likeEventAtIndexPath:indexPath];
+                break;
+            case 1:
+                [self suggestEventAtIndexPath:indexPath];
+                break;
+            case 2:
+                [self commentEventAtIndexPath:indexPath];
+                break;
+                
+            default:
+                break;
+        }
     }
-    
+    else{
+        switch (selectedIndex) {
+            case 0:
+                [self beeepEventAtIndexPath:indexPath];
+                break;
+            case 1:
+                [self likeEventAtIndexPath:indexPath];
+                break;
+            case 2:
+                [self suggestEventAtIndexPath:indexPath];
+                break;
+            case 3:
+                [self commentEventAtIndexPath:indexPath];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 -(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
@@ -1663,6 +1733,14 @@
     
 }
 
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender{
+    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+}
+
+- (IBAction)addNewBeeep:(id)sender {
+    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+}
 
 #pragma mark - Group by date
 

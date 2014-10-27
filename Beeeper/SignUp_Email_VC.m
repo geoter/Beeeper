@@ -9,6 +9,7 @@
 #import "SignUp_Email_VC.h"
 #import "MissingFields.h"
 #import "LocationManager.h"
+#import "TKRoundedView.h"
 
 @interface SignUp_Email_VC ()
 {
@@ -55,12 +56,16 @@
 }
 
 -(void)hideKeyboard:(UITapGestureRecognizer *)g{
-    for (UIView *v in self.scrollV.subviews) {
-        if ([v isKindOfClass:[UITextField class]]) {
-            UITextField *txtF = (id)v;
-            [txtF resignFirstResponder];
+    for (UIView *subSuper in [self.scrollV subviews]) {
+        
+        for (UIView *sub in subSuper.subviews) {
+            
+            if ([sub isKindOfClass:[UITextField class]]) {
+                [(UITextField *)sub resignFirstResponder];
+            }
         }
     }
+    
     [self.scrollV setContentOffset:CGPointZero animated:YES];
 }
 
@@ -79,27 +84,58 @@
         return;
     }
     
-    for (UIView *sub in [self.scrollV subviews]) {
-        if ([sub isKindOfClass:[UITextField class]]) {
-            switch (sub.tag) {
-                case 1:{
-                    [values setObject:[(UITextField *)sub text] forKey:@"name"];
-                    break;
+    UITextField *nameTxtF;
+    UITextField *lastNameTxtF;
+    UITextField *emailTxtF;
+    UITextField *passwordTxtF;
+    
+    for (UIView *subSuper in [self.scrollV subviews]) {
+      
+        if (![subSuper isKindOfClass:[TKRoundedView class]]) {
+            continue;
+        }
+        
+        ((TKRoundedView *)subSuper).roundedCorners = TKRoundedCornerNone;
+        ((TKRoundedView *)subSuper).borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+        ((TKRoundedView *)subSuper).borderWidth = 1.0f;
+        ((TKRoundedView *)subSuper).cornerRadius = 0;
+        ((TKRoundedView *)subSuper).drawnBordersSides = TKDrawnBorderSidesAll;
+        
+        for (UIView *sub in subSuper.subviews) {
+            
+            if ([sub isKindOfClass:[UITextField class]]) {
+                switch (sub.tag) {
+                    case 1:{
+                        nameTxtF = (UITextField *)sub;
+                        if ([(UITextField *)sub text].length > 0) {
+                            [values setObject:[(UITextField *)sub text] forKey:@"name"];
+                        }
+                        break;
+                    }
+                    case 2:{
+                        lastNameTxtF = (UITextField *)sub;
+                        if ([(UITextField *)sub text].length > 0) {
+                            [values setObject:[(UITextField *)sub text] forKey:@"lastname"];
+                        }
+                        break;
+                    }
+                    case 3:{
+                        emailTxtF = (UITextField *)sub;
+                        if ([(UITextField *)sub text].length > 0) {
+                            [values setObject:[(UITextField *)sub text] forKey:@"email"];
+                        }
+                        break;
+                    }
+                    case 4:{
+                        passwordTxtF = (UITextField *)sub;
+                        if ([(UITextField *)sub text].length > 0) {
+                            [values setObject:[(UITextField *)sub text] forKey:@"password"];
+                        }
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                case 2:{
-                    [values setObject:[(UITextField *)sub text] forKey:@"lastname"];
-                    break;
-                }
-                case 3:{
-                    [values setObject:[(UITextField *)sub text] forKey:@"email"];
-                    break;
-                }
-                case 4:
-                    [values setObject:[(UITextField *)sub text] forKey:@"password"];
-                    break;
-                
-                default:
-                    break;
             }
         }
     }
@@ -111,6 +147,42 @@
     hasSex = ([values objectForKey:@"gender"] != nil);
     hasPassword = ([values objectForKey:@"password"] != nil);
 
+    if (hasFirstName) {
+        [self validTextfield:nameTxtF];
+    }
+    else{
+        [self invalidTextfield:nameTxtF];
+    }
+    
+    if (hasLastName) {
+        [self validTextfield:lastNameTxtF];
+    }
+    else{
+        [self invalidTextfield:lastNameTxtF];
+    }
+
+    if (hasEmail) {
+        [self validTextfield:emailTxtF];
+    }
+    else{
+        [self invalidTextfield:emailTxtF];
+    }
+    
+    if (hasPassword) {
+        [self validTextfield:passwordTxtF];
+    }
+    else{
+        [self invalidTextfield:passwordTxtF];
+    }
+    
+    if (!hasFirstName || !hasLastName || !hasEmail || !hasPassword) {
+       
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you entered all required information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        
+        return;
+    }
+    
     NSInteger minutesFromGMT = [[NSTimeZone localTimeZone] secondsFromGMT]/60;
     [values setObject:[NSString stringWithFormat:@"%d",minutesFromGMT] forKey:@"timezone"];
     
@@ -291,6 +363,36 @@
         sender.tag = 0;
         agreeTerms = NO;
     }
+}
+
+-(void)invalidTextfield:(UITextField *)txtF{
+    
+    TKRoundedView *backV = (id)txtF.superview;
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {    backV.borderColor = [UIColor redColor];
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+}
+
+-(void)validTextfield:(UITextField *)txtF{
+    
+    TKRoundedView *backV = (id)txtF.superview;
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         backV.borderColor = [UIColor clearColor];
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+    
 }
 
 #pragma mark - UITextfield

@@ -321,7 +321,19 @@ static BPUser *thisWebServices = nil;
                     self.fbSignUpCompleted(completed,user);
                 }
                 else{
-                    self.fbSignUpCompleted(NO,@"fbSignupReceived Completed == NO");
+                    @try {
+                        
+                        NSDictionary *errorDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+                        
+                        NSArray *errors = [errorDict objectForKey:@"errors"];
+                        
+                        NSDictionary *error = [errors firstObject];
+                        
+                        self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
+                    }
+                    @catch (NSException *exception) {
+                        self.fbSignUpCompleted(NO,@"fbSignupReceived Completed == NO");
+                    }
                 }
             }];
         }
@@ -2191,7 +2203,7 @@ static BPUser *thisWebServices = nil;
 
 -(void)accessTokenFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
-    self.completed(NO,nil);
+    self.completed(NO,responseString);
 }
 
 -(NSString *)accessTokenSignature{

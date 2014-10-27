@@ -86,21 +86,19 @@
     for (NSString *fieldName in self.misssingfields) {
         NSString *fieldPlaceHolder = [self.misssingfields objectForKey:fieldName];
         UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(28, 50*i+((IS_IPHONE_5)?50:30), 264, 40)];
-        textF.textColor = [UIColor whiteColor];//[UIColor colorWithRed:163/255.0 green:172/255.0 blue:177/255.0 alpha:1];
+        textF.textColor = [UIColor blackColor];
         [textF.UserInfo setObject:fieldName forKey:@"key"];
         textF.tag = i;
         textF.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
         textF.delegate = self;
+        textF.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
         textF.returnKeyType = (i != self.misssingfields.count-1)?UIReturnKeyNext:UIReturnKeyDone;
-        UIColor *color = [UIColor whiteColor];
+        UIColor *color = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:214/255.0 alpha:1];
         textF.attributedPlaceholder = [[NSAttributedString alloc] initWithString:fieldPlaceHolder attributes:@{NSForegroundColorAttributeName: color}];
-        textF.backgroundColor = [UIColor clearColor];
-        UIView *v = [[UIView alloc]initWithFrame:CGRectMake(28, textF.frame.origin.y+textF.frame.size.height-2, 264, 1)];
-        v.backgroundColor = [UIColor colorWithWhite:1 alpha:0.4];//[UIColor colorWithRed:163/255.0 green:172/255.0 blue:177/255.0 alpha:1];
-        v.tag = 100+i;
+        textF.backgroundColor = [UIColor whiteColor];
+       
         [self.scrollV addSubview:textF];
         self.scrollV.contentSize = CGSizeMake(320, textF.frame.origin.y+textF.frame.size.height + 10);
-        [self.scrollV addSubview:v];
         i++;
     }
     
@@ -117,8 +115,6 @@
 }
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
-    textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder attributes:@{NSForegroundColorAttributeName: textField.textColor}];
     
     UIView *v = [self.scrollV viewWithTag:100+textField.tag];
     v.backgroundColor = textField.textColor;
@@ -134,9 +130,6 @@
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField{
-
-    textField.textColor = [UIColor whiteColor];
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder attributes:@{NSForegroundColorAttributeName: textField.textColor}];
     
     UIView *v = [self.scrollV viewWithTag:100+textField.tag];
     v.backgroundColor = textField.textColor;
@@ -144,8 +137,6 @@
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
-    textField.textColor = [UIColor whiteColor];
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder attributes:@{NSForegroundColorAttributeName: textField.textColor}];
 
     UIView *v = [self.scrollV viewWithTag:100+textField.tag];
     v.backgroundColor = textField.textColor;
@@ -245,9 +236,9 @@
 
 - (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
       circleBackgroundColorAtIndex:(NSUInteger)index {
-    CGFloat red   = 166/255.0;
-    CGFloat green = 166/255.0;
-    CGFloat blue  = 166/255.0;
+    CGFloat red   = 240/255.0;
+    CGFloat green = 208/255.0;
+    CGFloat blue  = 0/255.0;
     CGFloat alpha = 1.0f;
     return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }

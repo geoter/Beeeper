@@ -149,6 +149,20 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    for (UIButton *btn in self.tabBar.subviews) {
+        
+        if (![btn isKindOfClass:[UIButton class]]) {
+            continue;
+        }
+        
+        if (btn.tag != 4) {
+            btn.selected = NO;
+        }
+        else{
+            btn.selected = YES;
+        }
+    }
+    
     [[BPUser sharedBP]clearBadgeWithCompletionBlock:^(BOOL completed){
         if (completed) {
             [TabbarVC sharedTabbar].notifications = 0;
@@ -558,7 +572,7 @@
     if (overdueTimeInterval<0)
         overdueTimeInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval)/60;
+    NSInteger minutes = round(overdueTimeInterval/60);
     NSInteger hours   = minutes/60;
     NSInteger days    = hours/24;
     NSInteger months  = days/30;
@@ -660,6 +674,15 @@
 }
 
 
+- (IBAction)tabbarButtonTapped:(UIButton *)sender{
+    
+    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+}
+
+
+- (IBAction)addNewBeeep:(id)sender {
+    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+}
 
 
 @end

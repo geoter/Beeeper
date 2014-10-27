@@ -657,7 +657,7 @@
     if (overdueTimeInterval<0)
         overdueTimeInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval)/60;
+    NSInteger minutes = round(overdueTimeInterval/60);
     NSInteger hours   = minutes/60;
     NSInteger days    = hours/24;
     NSInteger months  = days/30;

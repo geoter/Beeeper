@@ -20,8 +20,11 @@
 @property (weak, nonatomic) IBOutlet UISwitch *twitterSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *suggestButton;
 @property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *selectTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *suggestedLabel;
+@property (weak, nonatomic) IBOutlet UITextView *venueLabel;
 
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;

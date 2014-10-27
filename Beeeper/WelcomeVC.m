@@ -32,8 +32,6 @@
     return self;
 }
 
-
-
 -(IBAction)logout:(UIStoryboardSegue *)segue{
    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

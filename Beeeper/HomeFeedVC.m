@@ -45,6 +45,7 @@
 
 @implementation HomeFeedVC
 
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -380,6 +381,20 @@
     
     [super viewWillAppear:animated];
 
+    
+    for (UIButton *btn in self.tabBar.subviews) {
+        
+        if (![btn isKindOfClass:[UIButton class]]) {
+            continue;
+        }
+        
+        if (btn.tag != 1) {
+            btn.selected = NO;
+        }
+        else{
+            btn.selected = YES;
+        }
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -1361,6 +1376,14 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     else{
         [self getHomefeed];
     }
+}
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender{
+    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+}
+
+- (IBAction)addNewBeeep:(id)sender {
+    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
 }
 
 @end

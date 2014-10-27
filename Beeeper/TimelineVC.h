@@ -32,14 +32,17 @@
 @property (weak, nonatomic) IBOutlet UIButton *settingsIcon;
 @property (weak, nonatomic) IBOutlet UIButton *importIcon;
 
+@property (weak, nonatomic) IBOutlet UIButton *addFriendIcon;
 @property (nonatomic,assign) BOOL showBackButton;
 @property (nonatomic,assign) int mode;
 @property (nonatomic,strong) NSDictionary *user; //for others' profile
 @property (weak, nonatomic) IBOutlet UIView *myTimelineMenuV;
 @property (weak, nonatomic) IBOutlet UIView *othersTimelineMenuV;
 @property (weak, nonatomic) IBOutlet UIView *topBGV;
+@property (weak, nonatomic) IBOutlet UIView *tabBar;
 
 - (IBAction)calendarPressed:(id)sender;
+- (IBAction)addFriend:(id)sender;
 
 - (IBAction)backPressed:(id)sender;
 - (IBAction)beeepItPressed:(id)sender;
@@ -56,4 +59,8 @@
 
 - (IBAction)showSuggestions:(id)sender;
 - (IBAction)showActivity:(id)sender;
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender;
+- (IBAction)addNewBeeep:(id)sender;
+
 @end

@@ -11,6 +11,7 @@
 @interface HomeFeedVC : UIViewController
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
 @property (weak, nonatomic) IBOutlet UILabel *noBeeepsLabel;
+@property (weak, nonatomic) IBOutlet UIView *tabBar;
 
 - (IBAction)beeepPressed:(id)sender;
 - (IBAction)eventBeeepPressed:(id)sender;
@@ -24,4 +25,6 @@
 - (IBAction)showEventComments:(id)sender;
 - (IBAction)showEventBeepers:(id)sender;
 
+- (IBAction)tabbarButtonTapped:(UIButton *)sender;
+- (IBAction)addNewBeeep:(id)sender;
 @end

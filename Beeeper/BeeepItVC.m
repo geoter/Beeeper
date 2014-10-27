@@ -50,10 +50,6 @@
     return self;
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -303,47 +299,16 @@
             [shareText appendFormat:@"\nWhere: %@",venue];
         }
         
-        for (UIView *v in self.scrollV.subviews) {
-            if ([v isKindOfClass:[UILabel class]]) {
-                UILabel *txtV = (UILabel *)v;
-                
-                switch (txtV.tag) {
-                    case 1:
-                    {
-                        txtV.text = (title)?title:@"n/a";
-                    }
-                        break;
-                    case 3:
-                    {
-                        txtV.text = (venue)?venue:@"n/a";
-                        [txtV sizeToFit];
-                        txtV.center = CGPointMake(self.view.center.x, txtV.center.y);
-                        self.venueIcon.frame = CGRectMake(txtV.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
-                    }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            
-            if ([v isKindOfClass:[UITextView class]]) {
-                UITextView *txtV = (UITextView *)v;
-                
-                switch (txtV.tag) {
-                    case 3:
-                    {
-                        txtV.text = (venue)?venue:@"n/a";
-                        [txtV sizeToFit];
-                        txtV.center = CGPointMake(self.view.center.x, txtV.center.y);
-                        self.venueIcon.frame = CGRectMake(txtV.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
-                    }
-                        break;
-                    default:
-                        break;
-                }
-            }
+        
+        self.titleLabel.text = (title)?title:@"n/a";
+        [self.titleLabel sizeToFit];
+        self.titleLabel.center = CGPointMake(self.scrollV.center.x, self.titleLabel.center.y);
+        self.venueLabel.text = (venue)?venue:@"n/a";
+        [self.venueLabel sizeToFit];
+        self.venueLabel.center = CGPointMake(self.scrollV.center.x+3,self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 15);
+        self.venueIcon.center = self.venueLabel.center;
+        self.venueIcon.frame = CGRectMake(self.venueLabel.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
 
-        }
         
         NSString *imageUrl;
         if ([tml isKindOfClass:[Timeline_Object class]]) {

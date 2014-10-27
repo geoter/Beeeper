@@ -15,11 +15,15 @@
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapG;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionV;
 @property (nonatomic,strong) NSString *initialSearchTerm;
+@property (weak, nonatomic) IBOutlet UIView *tabBar;
 
 
 - (IBAction)cancelPressed:(id)sender;
 - (IBAction)releaseSearch:(id)sender;
 
+- (IBAction)addNewBeeep:(id)sender;
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender;
 +(void)showInVC:(UIViewController *)vc withSeachTerm:(NSString *)term;
 
 @end

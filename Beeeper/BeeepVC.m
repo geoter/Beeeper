@@ -443,10 +443,6 @@
     return YES;
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
     
     [self.containerScrollV setContentOffset:CGPointMake(0, 200) animated:YES];
@@ -496,7 +492,7 @@
     if (textView.text.length == 0) {
         [values removeObjectForKey:@"keywords"];
 
-        textView.text = @"HASHTAGS (OPTIONAL)";
+        textView.text = @"Hashtags (optional)";
         
         textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
     }

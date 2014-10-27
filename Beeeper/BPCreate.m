@@ -125,7 +125,7 @@ static BPCreate *thisWebServices = nil;
 
     self.completed = compbloc;
     
-    NSString *postStr = [NSString stringWithFormat:@"{\"fingerpring\":\"%@\",\"timestamp\":\"%@\",\"weight\":\"%@\"}",fingerprint,timestamp,weight];
+    NSString *postStr = [NSString stringWithFormat:@"{\"fingerprint\":\"%@\",\"timestamp\":\"%@\",\"weight\":\"%@\"}",fingerprint,timestamp,weight];
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/delete"];
     

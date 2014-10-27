@@ -65,7 +65,6 @@
 
 }
 
-
 -(void)getLocalSuggestions{
 
     [self showLoading];
@@ -83,17 +82,34 @@
 
 -(void)nextPage{
     
-    
     [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         if (completed) {
             if (objcts && objcts.count>0) {
-                [suggestions addObjectsFromArray:objcts];
+                
+                for (Suggestion_Object *sugg in objcts) {
+                    
+                    BOOL uparxei = NO;
+                    
+                    for (Suggestion_Object *suggO in suggestions) {
+                        if (sugg.when == suggO.when) {
+                            uparxei = YES;
+                        }
+                    }
+                    
+                    if (!uparxei) {
+                        [suggestions addObject:sugg];
+                    }
+                }
+                
                 [self groupSuggestionsByMonth];
             }
             else{
                 [self.tableV reloadData];
             }
+        }
+        else{
+            [self.tableV reloadData];
         }
     }];
 
@@ -150,6 +166,7 @@
     }];
 
 }
+
 
 -(void)groupSuggestionsByMonth{
     
@@ -371,20 +388,20 @@
     NSString *month = [components objectAtIndex:0];
     NSString *daynumber = [components objectAtIndex:1];
     
-    //Today
-    NSDate *date = [NSDate date];
-    NSDateFormatter *formatter  = [[NSDateFormatter alloc]init];
-    [formatter setDateFormat:@"MMM#d#YYYY"];
-    NSString *signatureToday = [formatter stringFromDate:date];
-    
-    BOOL isToday = [signature isEqualToString:signatureToday];
-    
-    //Tommorrow
-    
-    NSDate *dateTmw = [date dateByAddingTimeInterval:60*60*24];
-    NSString *signatureTmw = [formatter stringFromDate:dateTmw];
-    
-    BOOL isTomorrow = [signature isEqualToString:signatureTmw];
+//    //Today
+//    NSDate *date = [NSDate date];
+//    NSDateFormatter *formatter  = [[NSDateFormatter alloc]init];
+//    [formatter setDateFormat:@"MMM#d#YYYY"];
+//    NSString *signatureToday = [formatter stringFromDate:date];
+//    
+//    BOOL isToday = [signature isEqualToString:signatureToday];
+//    
+//    //Tommorrow
+//    
+//    NSDate *dateTmw = [date dateByAddingTimeInterval:60*60*24];
+//    NSString *signatureTmw = [formatter stringFromDate:dateTmw];
+//    
+//    BOOL isTomorrow = [signature isEqualToString:signatureTmw];
 
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
     header.backgroundColor = [UIColor clearColor];
@@ -392,16 +409,16 @@
     [backV setBackgroundColor:[UIColor whiteColor]];
     [header addSubview:backV];
     
-    if (isToday || isTomorrow) {
-        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 36)];
-        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-        mlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
-        mlbl.text = (isToday)?@"Today":@"Tomorrow";
-        mlbl.textAlignment = NSTextAlignmentCenter;
-        [backV addSubview:mlbl];
-    }
-    else{
-        
+//    if (isToday || isTomorrow) {
+//        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 36)];
+//        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
+//        mlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
+//        mlbl.text = (isToday)?@"Today":@"Tomorrow";
+//        mlbl.textAlignment = NSTextAlignmentCenter;
+//        [backV addSubview:mlbl];
+//    }
+//    else{
+    
         UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 18)];
         mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
         mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
@@ -415,7 +432,7 @@
         dlbl.text = daynumber;
         dlbl.textAlignment = NSTextAlignmentCenter;
         [backV addSubview:dlbl];
-    }
+//    }
     
 //    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
 //    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:227/255.0 alpha:1];

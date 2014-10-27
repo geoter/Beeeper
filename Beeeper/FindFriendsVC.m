@@ -64,7 +64,11 @@
     
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
-
+    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    self.navigationItem.hidesBackButton = YES;
+    self.navigationController.navigationBar.backItem.title = @"";
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     //self.tableView.decelerationRate = 0.6;
@@ -121,17 +125,6 @@
 
     page = 0;
     loadNextPage = YES;
-
-    
-    loadingView = [[UIView alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
-    [loadingView setBackgroundColor:[UIColor clearColor]];
-    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
-    [loadingView addSubview:activityIndicator];
-    activityIndicator.center =loadingView.center;
-    [self.view addSubview:loadingView];
-    [self.view bringSubviewToFront:loadingView];
-    [activityIndicator startAnimating];
     
     [self getPeople:@"" WithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
@@ -705,11 +698,18 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    NSLog(@"%.2f",self.tableV.frame.origin.y + self.tableV.tableHeaderView.frame.size.height);
+    NSLog(@"%.2f",self.tableV.frame.size.height-self.tableV.tableHeaderView.frame.size.height);
     
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    self.navigationItem.hidesBackButton = YES;
-    self.navigationController.navigationBar.backItem.title = @"";
+    loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, self.tableV.frame.origin.y + self.tableV.tableHeaderView.frame.size.height, self.view.frame.size.width, self.tableV.frame.size.height-self.tableV.tableHeaderView.frame.size.height)];
+    [loadingView setBackgroundColor:[UIColor whiteColor]];
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [loadingView addSubview:activityIndicator];
+    activityIndicator.center = loadingView.center;
+    [self.view addSubview:loadingView];
+    [self.view bringSubviewToFront:loadingView];
+    [activityIndicator startAnimating];
 }
 
 

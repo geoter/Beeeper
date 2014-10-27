@@ -19,10 +19,8 @@
     [super setHighlighted:highlighted];
     
     if (highlighted) {
-        self.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
-        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+       
     }
-    
 }
 
 
@@ -49,15 +47,32 @@
     self.scrollV.contentSize = CGSizeMake(320, 568);
     
     for (UIButton *b in self.scrollV.subviews) {
-        if ([b isKindOfClass:[UIButton class]]) {
+        if ([b isKindOfClass:[UIButton class]] && b.tag != 77) {
+            [b addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
+            [b addTarget:self action:@selector(touchCancel:) forControlEvents:UIControlEventTouchDragExit];
             [b setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
         }
     }
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
+- (IBAction)touchDown:(id)sender
+{
+    UIButton *b = (UIButton*)sender;
+
+    b.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    [b setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [b setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+    [b setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
 }
+
+- (IBAction)touchCancel:(id)sender
+{
+    UIButton *b = (UIButton*)sender;
+    
+    b.backgroundColor = [UIColor whiteColor];
+    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -91,6 +106,8 @@
 - (IBAction)buttonClicked:(UIButton *)sender {
     
     //self.checkMark.frame = CGRectMake(270, sender.frame.origin.y+8, 25, 24);
+    
+    self.view.userInteractionEnabled = NO;
     
     self.closeExits = NO;
     

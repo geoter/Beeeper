@@ -451,6 +451,7 @@
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         self.tagsField.text = [correctString unicodeEncode];
+        self.tagsField.textAlignment = NSTextAlignmentCenter;
         
     }
     @catch (NSException *exception) {
@@ -735,7 +736,7 @@
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         self.tagsField.text = [correctString unicodeEncode];
-        
+        self.tagsField.textAlignment = NSTextAlignmentCenter;
     }
     @catch (NSException *exception) {
         NSLog(@"NO TAGS");
@@ -1110,7 +1111,7 @@
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         self.tagsField.text = [correctString unicodeEncode];
-        
+        self.tagsField.textAlignment = NSTextAlignmentCenter;
     }
     @catch (NSException *exception) {
         NSLog(@"NO TAGS");
@@ -1403,7 +1404,7 @@
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         self.tagsField.text = [correctString unicodeEncode];
-        
+        self.tagsField.textAlignment = NSTextAlignmentCenter;
     }
     @catch (NSException *exception) {
         NSLog(@"NO TAGS");
@@ -1651,6 +1652,7 @@
         
         NSString *correctString = [formattedTags stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         self.tagsField.text = [correctString unicodeEncode];
+        self.tagsField.textAlignment = NSTextAlignmentCenter;
         
     }
     @catch (NSException *exception) {

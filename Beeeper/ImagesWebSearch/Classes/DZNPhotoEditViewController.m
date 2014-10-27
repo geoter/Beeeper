@@ -592,10 +592,6 @@ DZNPhotoAspect photoAspectFromSize(CGSize aspectRatio)
 
 #pragma mark - View Auto-Rotation
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
 
 - (NSUInteger)supportedInterfaceOrientations
 {

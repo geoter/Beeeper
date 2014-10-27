@@ -46,6 +46,7 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -120,13 +121,22 @@
                  
                  if (usernames.count > 1) {
                      
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:nil];
+                     
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                     popup.tag = 77;
                      
                      for (NSString *name in usernames) {
                          [popup addButtonWithTitle:name];
                      }
                      
-                     [popup showInView:self.view];
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+
 
                  }
                  else{
@@ -177,15 +187,22 @@
                  usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
                  
                  if (usernames.count > 1) {
-                     
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:@"Cancel" otherButtonTitles:nil];
+                    
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
                      popup.tag = 77;
                      
                      for (NSString *name in usernames) {
                          [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
                      }
                      
-                     [popup showInView:self.view];
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+
                  }
                  else{
                      [self twLoginwithAccount:0];
@@ -197,7 +214,7 @@
                      NSLog(@"User Has disabled your app from settings...");
                      
                      UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Beeeper disabled" message:@"Please make sure Beeeper is allowed to use your Twitter accounts." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
-                     [alert show];
+                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                  }
                  else
                  {
@@ -217,6 +234,11 @@
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (actionSheet.cancelButtonIndex == buttonIndex) {
+        return;
+    }
+    
     if (actionSheet.tag == 77) { // twitter
         [self twLoginwithAccount:buttonIndex];
     }

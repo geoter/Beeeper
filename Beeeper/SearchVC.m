@@ -129,6 +129,20 @@
         [[NSNotificationCenter defaultCenter]postNotificationName:@"ShowTabbar" object:nil];
     }
 
+    
+    for (UIButton *btn in self.tabBar.subviews) {
+        
+        if (![btn isKindOfClass:[UIButton class]]) {
+            continue;
+        }
+        
+        if (btn.tag != 2) {
+            btn.selected = NO;
+        }
+        else{
+            btn.selected = YES;
+        }
+    }
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -835,6 +849,16 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
     
     
+}
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender{
+    
+    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+}
+
+
+- (IBAction)addNewBeeep:(id)sender {
+    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
 }
 
 @end

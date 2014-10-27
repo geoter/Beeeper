@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+Badge.h"
 
-@interface TabbarVC ()
+@interface TabbarVC ()<UINavigationControllerDelegate>
 {
 
 }
@@ -43,9 +43,12 @@ static TabbarVC *thisWebServices = nil;
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    thisWebServices = self;
     
     if (self.showsSplashOnLoad) {
         [self showSplashScreen];
@@ -66,8 +69,8 @@ static TabbarVC *thisWebServices = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
+    //[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideTabbar) name:@"HideTabbar" object:nil];
+  //  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showTabbar) name:@"ShowTabbar" object:nil];
     
     //for timeline Follow + / Following Delay
     
@@ -80,10 +83,7 @@ static TabbarVC *thisWebServices = nil;
     if (thisWebServices != nil) {
         return thisWebServices;
     }
-    else{
-        return [[TabbarVC alloc]init];
-    }
-    
+
     return nil;
 }
 
@@ -197,6 +197,7 @@ static TabbarVC *thisWebServices = nil;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -260,20 +261,6 @@ static TabbarVC *thisWebServices = nil;
 - (IBAction)tabbarButtonTapped:(UIButton *)sender {
     
     
-    for (UIButton *btn in self.tabBar.subviews) {
-        
-        if (![btn isKindOfClass:[UIButton class]]) {
-            continue;
-        }
-        
-        if (btn.tag != sender.tag) {
-            btn.selected = NO;
-        }
-        else{
-            btn.selected = YES;
-        }
-    }
-    
     UIViewController *vC;
     
     switch (sender.tag) {
@@ -302,6 +289,7 @@ static TabbarVC *thisWebServices = nil;
     UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vC];
     navVC.navigationBar.translucent = NO;
     navVC.view.frame = self.containerVC.frame;
+    navVC.delegate = self;
     
     for (UIView *view in [[[navVC.navigationBar subviews] objectAtIndex:0] subviews]) {
         if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
@@ -315,6 +303,7 @@ static TabbarVC *thisWebServices = nil;
     
     [self addChildViewController:navVC];
     [self.containerVC addSubview:navVC.view];
+    [self.containerVC bringSubviewToFront:navVC.view];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }

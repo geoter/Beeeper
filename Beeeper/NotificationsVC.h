@@ -11,5 +11,10 @@
 @interface NotificationsVC : UIViewController
 @property (strong, nonatomic) IBOutlet UITableView *tableV;
 @property (weak, nonatomic) IBOutlet UILabel *noNotifsFound;
+@property (weak, nonatomic) IBOutlet UIView *tabBar;
+
+
+- (IBAction)tabbarButtonTapped:(UIButton *)sender;
+- (IBAction)addNewBeeep:(id)sender;
 
 @end

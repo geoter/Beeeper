@@ -23,6 +23,7 @@ typedef void(^markRead_completed)(BOOL);
 @property (copy) void(^following_completed)(BOOL,id);
 @property (copy) void(^is_following_completed)(BOOL,id);
 @property (copy) void(^notifications_completed)(BOOL,id);
+@property (copy) void(^next_notifications_completed)(BOOL,id);
 @property (copy) void(^clearBadge_completed)(BOOL);
 @property (copy) void(^markRead_completed)(BOOL);
 

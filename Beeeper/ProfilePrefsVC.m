@@ -233,14 +233,17 @@
             imagePath = [imagePath stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
             NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:imagePath]]];
             UIImage *img = [[UIImage alloc] initWithData:data];
-            
-            [self saveImage:img withFileName:imageName inDirectory:localPath];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                /* This is the main thread again, where we set the tableView's image to
-                 be what we just fetched. */
-                self.profileImage.image = img;
-            });
+            if (img != nil) {
+                
+                [self saveImage:img withFileName:imageName inDirectory:localPath];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    /* This is the main thread again, where we set the tableView's image to
+                     be what we just fetched. */
+                    self.profileImage.image = img;
+                });
+        
+            }
         });
     }
 }
@@ -462,11 +465,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
             self.navigationItem.rightBarButtonItem = rightButton;
             
             selectedImage = img;
-            
+         
+            changedImage = YES;
+            self.profileImage.image = img;
         }
-        
-        changedImage = YES;
-        self.profileImage.image = img;
         
     }
     @catch (NSException *exception) {
@@ -586,10 +588,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                                         style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
         
         self.navigationItem.rightBarButtonItem = rightButton;
+        
+        changedImage = YES;
+        self.profileImage.image = image;
     }
-    
-    changedImage = YES;
-    self.profileImage.image = image;
 
 }
 
@@ -616,10 +618,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                                         style:UIBarButtonItemStyleDone target:self action:@selector(savePressed) ];
         
         self.navigationItem.rightBarButtonItem = rightButton;
+        
+        changedImage = YES;
+        self.profileImage.image = image;
     }
-    
-    changedImage = YES;
-    self.profileImage.image = image;
     
 }
 

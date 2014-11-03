@@ -183,48 +183,29 @@
             
             if (completed) {
                 
-                if (objs.count > 0) {
+                if ([objs isKindOfClass:[NSArray class]]) {
+                   
                     loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
-                    self.noBeeepsLabel.hidden = YES;
-                }
-                else{
+                    self.noBeeepsLabel.hidden = (objs.count != 0);
                     
-                    if ([objs isKindOfClass:[NSString class]]) {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs.count == 0" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    events = nil;
+                    beeeps = [NSMutableArray array];
+                }
+                else if ([objs isKindOfClass:[NSString class]]) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs is not NSArray class" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
                         [alert show];
-                        
-                    }
                     
-                    self.noBeeepsLabel.hidden = NO;
                 }
+                
+                [self refreshCollectionView];
                 
             }
             else{
                 
-                self.noBeeepsLabel.hidden = NO;
-                
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed NOT Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
                 [alert show];
             }
-            
-            events = nil;
-            beeeps = [NSMutableArray array];
-            
-            if (objs) {
-                
-                @try {
-                    [beeeps addObjectsFromArray:objs];
-                }
-                @catch (NSException *exception) {
-                    
-                }
-                @finally {
-                    
-                }
-                
-            }
-            
-            [self refreshCollectionView];
+
             
             [self hideLoading];
         });
@@ -373,7 +354,7 @@
 
 
 -(void)showFindFriends{
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -1290,7 +1271,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         return;
     }
     
-    UIView *loadingBGV = [[UIView alloc]initWithFrame:CGRectMake(0, self.collectionV.frame.origin.y + 40, self.collectionV.frame.size.width, self.collectionV.frame.size.height-40)];
+    self.noBeeepsLabel.hidden = YES;
+    
+    UIView *loadingBGV = [[UIView alloc]initWithFrame:CGRectMake(0, self.collectionV.frame.origin.y, self.collectionV.frame.size.width, self.collectionV.frame.size.height)];
     loadingBGV.backgroundColor = self.view.backgroundColor;
     
     MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];

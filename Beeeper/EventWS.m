@@ -80,7 +80,7 @@ static EventWS *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:13.0];
+        [request setTimeOutSeconds:20.0];
         
         [request setDelegate:self];
         
@@ -139,7 +139,7 @@ static EventWS *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:13.0];
+        [request setTimeOutSeconds:20.0];
         
         [request setDelegate:self];
         
@@ -195,7 +195,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -264,7 +264,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -336,7 +336,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -403,7 +403,7 @@ static EventWS *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -488,7 +488,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -568,7 +568,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -660,7 +660,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -714,7 +714,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -831,7 +831,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1002,7 +1002,7 @@ static EventWS *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     

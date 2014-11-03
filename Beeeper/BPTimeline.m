@@ -110,7 +110,7 @@ static BPTimeline *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -124,7 +124,7 @@ static BPTimeline *thisWebServices = nil;
 
 }
 
--(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc{
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)option timeStamp:(NSTimeInterval)time WithCompletionBlock:(completed)compbloc{
     
     timeline_page = 0;
     requestEmptyResultsCounter = 0;
@@ -132,7 +132,7 @@ static BPTimeline *thisWebServices = nil;
     order = (option == Upcoming)?@"ASC":@"DESC";
     userID = user_id;
     
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
+    NSTimeInterval timeStamp = (time == 0)?[[NSDate date]timeIntervalSince1970]:time;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup?"];
@@ -168,7 +168,7 @@ static BPTimeline *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -204,7 +204,7 @@ static BPTimeline *thisWebServices = nil;
     }
     else{
         
-        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPTimeline/timelineFinished" json:responseString];
+        [[DTO sharedDTO]addBugLog:@"![beeeps isKindOfClass:[NSArray class]]" where:@"BPTimeline/timelineFinished" json:responseString];
         
         requestEmptyResultsCounter++;
         timeline_page --;
@@ -248,6 +248,11 @@ static BPTimeline *thisWebServices = nil;
 }
 
 -(void)parseLocalResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+    
+    if (responseString == nil) {
+        compbloc(NO,nil);
+        return;
+    }
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     

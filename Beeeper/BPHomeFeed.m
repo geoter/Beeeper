@@ -107,7 +107,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -160,7 +160,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -181,7 +181,7 @@ static BPHomeFeed *thisWebServices = nil;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    if (beeeps.count > 0) {
+    if ([beeeps isKindOfClass:[NSArray class]]) {
         
         if (page == 0) {
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

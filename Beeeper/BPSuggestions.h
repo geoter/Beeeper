@@ -17,6 +17,7 @@ typedef void(^completed)(BOOL,id);
 -(void)nextSuggestionsWithCompletionBlock:(completed)compbloc;
 -(void)getLocalSuggestions:(completed)compbloc;
 -(void)suggestEvent:(NSString *)fingerprint toUsers:(NSArray *)user_ids withCompletionBlock:(completed)compbloc;
+-(void)nextSuggestionsResetWithCompletionBlock:(completed)compbloc;
 
 @property (copy) void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;

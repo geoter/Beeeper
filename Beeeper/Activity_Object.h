@@ -22,6 +22,7 @@
 @property (nonatomic, assign) BOOL read;
 @property (nonatomic, assign) double when;
 @property (nonatomic, strong) BeeepInfoActivity *beeepInfoActivity;
+@property (nonatomic, strong) NSArray *beeepNotifications;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

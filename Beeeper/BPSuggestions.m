@@ -64,6 +64,14 @@ static BPSuggestions *thisWebServices = nil;
     [self parseLocalResponseString:json WithCompletionBlock:compbloc];
 }
 
+-(void)nextSuggestionsResetWithCompletionBlock:(completed)compbloc{
+    
+    page--;
+    
+    [self nextSuggestionsWithCompletionBlock:compbloc];
+    
+}
+
 -(void)nextSuggestionsWithCompletionBlock:(completed)compbloc{
     
     page++;
@@ -99,7 +107,7 @@ static BPSuggestions *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -150,7 +158,7 @@ static BPSuggestions *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -190,7 +198,7 @@ static BPSuggestions *thisWebServices = nil;
         }
         else{
             loadNextPage = NO;
-            self.completed(YES,nil);
+            self.completed(NO,nil);
         }
     }
     
@@ -248,10 +256,11 @@ static BPSuggestions *thisWebServices = nil;
         return;
     }
     else if (beeeps.count == 0){
-       
-        requestEmptyResultsCounter ++;
         
         if (requestEmptyResultsCounter < 3) {
+            
+            requestEmptyResultsCounter ++;
+            
             [self nextSuggestionsWithCompletionBlock:self.completed];
         }
         else{
@@ -422,7 +431,7 @@ static BPSuggestions *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:13.0];
+        [request setTimeOutSeconds:20.0];
         
         [request setDelegate:self];
         
@@ -482,6 +491,8 @@ static BPSuggestions *thisWebServices = nil;
     self.suggestEventCompleted(NO,@"suggestEventFailed");
     
 }
+
+
 
 -(void)saveImage:(UIImage *)image withFileName:(NSString *)imageName inDirectory:(NSString *)directoryPath {
     

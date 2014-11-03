@@ -8,6 +8,7 @@
 
 #import "DTO.h"
 #import "Beeep_Object.h"
+#import "BPSuggestions.h"
 
 static DTO *thisDTO = nil;
 
@@ -15,6 +16,11 @@ static DTO *thisDTO = nil;
 {
     NSOperationQueue *operationQueue;
     NSMutableArray *pendingUrls;
+    
+    int suggestionsCount;
+    int suggestionsEmptyCount;
+    
+    BOOL wasInternetReachable;
 }
 @end
 
@@ -210,7 +216,7 @@ static DTO *thisDTO = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -357,10 +363,14 @@ static DTO *thisDTO = nil;
     
     NetworkStatus status = [reachability currentReachabilityStatus];
     
-    if(status == NotReachable)
+    if(status == NotReachable && !wasInternetReachable)
     {
+      wasInternetReachable = YES;
       [[TabbarVC sharedTabbar]showAlert:@"No Internet Connection or Connection Lost/Weak" text:@"Please make sure you are connected to the Internet."];
         return NO;
+    }
+    else{
+        wasInternetReachable = NO;
     }
     
     
@@ -424,6 +434,38 @@ static DTO *thisDTO = nil;
     NSString *databasePathFromApp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:self.databaseName];
     
     [fileManager copyItemAtPath:databasePathFromApp toPath:databasePath error:nil];
+}
+
+#pragma mark -  Suggestions
+
+-(void)getSuggestions{
+    
+    suggestionsCount = 0;
+    
+    [[BPSuggestions sharedBP]getSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        if (completed) {
+            suggestionsCount += objcts.count;
+            [self getNextSuggestions];
+        }
+    }];
+}
+
+-(void)getNextSuggestions{
+    
+    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+        
+        if (completed) {
+            if ([objcts isKindOfClass:[NSArray class]]) {
+                suggestionsCount +=objcts.count;
+                [self getNextSuggestions];
+            }
+            else if(objcts == nil && [BPSuggestions sharedBP].loadNextPage == NO){
+                self.suggestionBadgeNumber = suggestionsCount;
+                self.suggestionBadgeNumberFinished = YES;
+            }
+        }
+    }];
+    
 }
 
 @end

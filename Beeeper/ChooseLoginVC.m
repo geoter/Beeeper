@@ -35,7 +35,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-   
+    
 	[self adjustFonts];
 }
 
@@ -180,7 +180,7 @@
 }
 
 - (IBAction)forgotPassPressed:(id)sender {
-  
+    
     WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
     viewController.title = @"Forgot Password";
@@ -387,7 +387,7 @@
             }
             else{
                 number_of_attempts = 0;
-                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
+                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
             }
         }
         

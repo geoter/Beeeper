@@ -97,7 +97,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -146,7 +146,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -165,9 +165,13 @@ static BPActivity *thisWebServices = nil;
     requestFailedCounter = 0;
     
     NSString *responseString = [request responseString];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
-    if (beeeps.count >0) {
+    if ([beeeps isKindOfClass:[NSArray class]]) {
       
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
@@ -232,11 +236,18 @@ static BPActivity *thisWebServices = nil;
     
     NSMutableArray *bs = [NSMutableArray array];
     
-    for (NSString *b in beeeps) {
+    for (id b in beeeps) {
+
+        Activity_Object *activity;
         
-        NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        
-        Activity_Object *activity = [Activity_Object modelObjectWithDictionary:activity_item];
+        if ([b isKindOfClass:[NSString class]]) {
+            NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            activity = [Activity_Object modelObjectWithDictionary:activity_item];
+        }
+        else{
+            activity = [Activity_Object modelObjectWithDictionary:b];
+        }
         
 //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
 //        [operationQueue addOperation:invocationOperation];
@@ -268,12 +279,18 @@ static BPActivity *thisWebServices = nil;
     
     NSMutableArray *bs = [NSMutableArray array];
     
-    for (NSString *b in beeeps) {
+    for (id b in beeeps) {
         
-        NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        Activity_Object *activity;
         
-        Activity_Object *activity = [Activity_Object modelObjectWithDictionary:activity_item];
-        
+        if ([b isKindOfClass:[NSString class]]) {
+            NSDictionary *activity_item = [b objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            activity = [Activity_Object modelObjectWithDictionary:activity_item];
+        }
+        else{
+            activity = [Activity_Object modelObjectWithDictionary:b];
+        }
         //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
         //        [operationQueue addOperation:invocationOperation];
         
@@ -312,7 +329,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -363,7 +380,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -466,7 +483,7 @@ static BPActivity *thisWebServices = nil;
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     

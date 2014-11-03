@@ -91,7 +91,7 @@
 
 -(void)getActivity{
     
-    loadNextPage = YES;
+    loadNextPage = NO;
     
     [[BPActivity sharedBP]getActivityWithCompletionBlock:^(BOOL completed,NSArray *objcts){
 
@@ -102,6 +102,7 @@
         if (completed) {
             
             activities = [NSMutableArray arrayWithArray:objcts];
+            loadNextPage = (objcts.count == [BPActivity sharedBP].pageLimit);
             
             if (activities.count > 0) {
                 self.noActivityFound.hidden = YES;
@@ -285,7 +286,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(indexPath.section == sections.count) {
+    if(indexPath.section == sections.count && loadNextPage) {
 
         static NSString *CellIdentifier = @"LoadMoreCell";
         

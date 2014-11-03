@@ -31,6 +31,8 @@
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
     
+    [self.navigationController.navigationBar setBarTintColor: [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+    
      [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 

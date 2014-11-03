@@ -23,11 +23,13 @@
 @property (weak, nonatomic) IBOutlet TKRoundedView *whereBGV;
 @property (weak, nonatomic) IBOutlet TKRoundedView *whenBGV;
 @property (weak, nonatomic) IBOutlet TKRoundedView *addPhotoBGV;
+@property (weak, nonatomic) IBOutlet TKRoundedView *tagsBGV;
 
 - (IBAction)releaseKeyborad:(id)sender;
 
 - (IBAction)close:(id)sender;
 - (IBAction)nextPressed:(id)sender;
 - (IBAction)addPhotoPressed:(id)sender;
+- (IBAction)tagSelected:(id)sender;
 
 @end

@@ -34,6 +34,8 @@ static TabbarVC *thisWebServices = nil;
 {
     [super viewDidLoad];
     
+    [[DTO sharedDTO]getSuggestions];
+    
     thisWebServices = self;
     
     if (self.showsSplashOnLoad) {
@@ -195,13 +197,15 @@ static TabbarVC *thisWebServices = nil;
 
     
     for (UIViewController *child in self.childViewControllers) {
-        [child removeFromParentViewController];
         [child.view removeFromSuperview];
+        [child removeFromParentViewController];
     }
     
     [self addChildViewController:navVC];
     [self.containerVC addSubview:navVC.view];
     [self.containerVC bringSubviewToFront:navVC.view];
+    
+    
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }

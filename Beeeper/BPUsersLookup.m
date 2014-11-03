@@ -66,7 +66,7 @@ static BPUsersLookup *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -85,8 +85,10 @@ static BPUsersLookup *thisWebServices = nil;
     NSArray *usersArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
     if (![usersArray isKindOfClass:[NSArray class]]) {
-        [[DTO sharedDTO]addBugLog:@"users.count == 0" where:@"BPUsersLookup/userLookupFinished" json:responseString];
+        [[DTO sharedDTO]addBugLog:@"![usersArray isKindOfClass:[NSArray class]]" where:@"BPUsersLookup/userLookupFinished" json:responseString];
         [self userLookupFailed:request];
+        
+        return;
     }
     
     NSMutableArray *users = [NSMutableArray array];

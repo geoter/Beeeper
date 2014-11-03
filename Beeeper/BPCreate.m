@@ -57,7 +57,7 @@ static BPCreate *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -141,7 +141,7 @@ static BPCreate *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
 
@@ -184,7 +184,7 @@ static BPCreate *thisWebServices = nil;
         
         NSArray *fingerprint_keys = [NSArray arrayWithObjects:@"title",@"timestamp",@"station", nil];
         //fingerprint -> title,timestamp,venue
-        NSMutableArray *array = [NSMutableArray array];
+       // NSMutableArray *array = [NSMutableArray array];
         NSMutableString *fingerPrint_Input = [[NSMutableString alloc]init];
         
         for (NSString *key in values.allKeys) {
@@ -192,14 +192,16 @@ static BPCreate *thisWebServices = nil;
             if ([fingerprint_keys indexOfObject:key] != NSNotFound) {
                 NSString *value = [values objectForKey:key];
                 NSLog(@"%@->%@",key,value );
+                
                 NSString *str = [NSString stringWithFormat:@"%@",[value lowercaseString]];
                 [fingerPrint_Input appendString:str];
-                [array addObject:str];
+                //[array addObject:str];
+
             }
         }
         
         NSSortDescriptor * sortDesc = [[NSSortDescriptor alloc] initWithKey:@"self" ascending:YES];
-        [array sortUsingDescriptors:[NSArray arrayWithObject:sortDesc]];
+       // [array sortUsingDescriptors:[NSArray arrayWithObject:sortDesc]];
         
         id fingerprint = [self encodeWithHmacsha256:fingerPrint_Input];
         
@@ -214,8 +216,18 @@ static BPCreate *thisWebServices = nil;
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
 
         for (NSString *key in values.allKeys) {
+            
+            if ([key isEqualToString:@"title"] || [key isEqualToString:@"station"]) {
+                NSString *title = [[DTO sharedDTO] urlencode:[values objectForKey:key]];
+                
+                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:title] forKey:key]];
+                [request setPostValue:title forKey:key];
+
+            }
+            else{
                 [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[values objectForKey:key]] forKey:key]];
                 [request setPostValue:[values objectForKey:key] forKey:key];
+            }
         }
         
         [request setPostValue:fingerprint forKey:@"fingerprint"];
@@ -224,7 +236,7 @@ static BPCreate *thisWebServices = nil;
         
         [request setRequestMethod:@"POST"];
         
-        [request setTimeOutSeconds:13.0];
+        [request setTimeOutSeconds:20.0];
         
         [request setDelegate:self];
         
@@ -263,7 +275,7 @@ static BPCreate *thisWebServices = nil;
         NSString *imageURL = [valuesDict objectForKey:@"image_url"];
         [valuesDict setObject:[dict objectForKey:@"fingerprint"] forKey:@"fingerprint"];
         [valuesDict setObject:[dict objectForKey:@"title"] forKey:@"title"];
-        
+
         if (![imageURL isEqualToString:imgUrl]) {//event already exists
             self.completed(YES,@[valuesDict,@"The event you are trying to create already exists with a different photo."]);
         }
@@ -334,7 +346,7 @@ static BPCreate *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     

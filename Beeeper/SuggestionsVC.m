@@ -117,6 +117,8 @@
 
 -(void)getSuggestions{
     
+    [self showLoading];
+    
     [[BPSuggestions sharedBP]getSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
         UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
@@ -224,7 +226,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self getLocalSuggestions];
+   // [self getLocalSuggestions];
     
     [self getSuggestions];
     
@@ -259,7 +261,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (indexPath.section == sections.count) {
+    if (indexPath.section == sections.count && suggestions.count > 0) {
         
         static NSString *CellIdentifier = @"LoadMoreCell";
         

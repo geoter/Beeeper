@@ -17,6 +17,7 @@
 #import "BPCreate.h"
 #import "GoogleCustomSearchVC.h"
 
+
 @class BorderTextField;
 @interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate>
 {
@@ -24,6 +25,7 @@
     MyDateTimePicker *datePicker;
     UITextField *activeTXTF;
     LocationManager *locManager;
+    NSMutableArray *predefinedTags;
 }
 @property(nonatomic,strong) NSString *base64Image;
 @end
@@ -44,29 +46,37 @@
 {
     [super viewDidLoad];
 
+    predefinedTags = [NSMutableArray array];
+    
     self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    self.titleBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
-    self.titleBGV.borderWidth = 1.0f;
+    self.titleBGV.borderColor = [UIColor whiteColor];
+    self.titleBGV.borderWidth = 0.0f;
     self.titleBGV.cornerRadius = 6;
     self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
 
     self.whereBGV.roundedCorners = TKRoundedCornerNone;
-    self.whereBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
-    self.whereBGV.borderWidth = 1.0f;
+    self.whereBGV.borderColor = [UIColor whiteColor];
+    self.whereBGV.borderWidth = 0.0f;
     self.whereBGV.cornerRadius = 6;
     self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-    self.whenBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
-    self.whenBGV.borderWidth = 1.0f;
+    self.whenBGV.borderColor = [UIColor whiteColor];
+    self.whenBGV.borderWidth = 0.0f;
     self.whenBGV.cornerRadius = 6;
     self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
-    self.addPhotoBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    self.addPhotoBGV.borderColor = [UIColor whiteColor];
     self.addPhotoBGV.borderWidth = 1.0f;
     self.addPhotoBGV.cornerRadius = 6;
     self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
+    self.tagsBGV.roundedCorners = TKRoundedCornerAll;
+    self.tagsBGV.borderColor = [UIColor whiteColor];
+    self.tagsBGV.borderWidth = 0.0f;
+    self.tagsBGV.cornerRadius = 6;
+    self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     values = [NSMutableDictionary dictionary];
     
@@ -82,11 +92,6 @@
         [self getLocationInfo:[DTO sharedDTO].userPlace];
     }
     
-    self.tagsV.layer.borderColor = [UIColor colorWithRed:221/255.0 green:224/255.0 blue:226/255.0 alpha:1].CGColor;
-    self.tagsV.layer.borderWidth = 1;
-    self.tagsV.layer.masksToBounds = YES;
-    self.tagsV.layer.cornerRadius = 2;
-
     
     datePicker = [[MyDateTimePicker alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 260)];
     datePicker.backgroundColor = [UIColor whiteColor];
@@ -133,7 +138,19 @@
     city = placemark.locality;
     country = placemark.country;
     state  = placemark.administrativeArea;
-    adress = [[placemark addressDictionary] objectForKey:(NSString *)kABPersonAddressStreetKey];
+    NSDictionary *dict = [placemark addressDictionary];
+    
+    @try {
+        adress = [dict objectForKey:(NSString *)kABPersonAddressStreetKey];
+    }
+    @catch (NSException *exception) {
+        adress = @"";
+    }
+    @finally {
+        
+    }
+    
+    
     latitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
     longitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
     
@@ -169,6 +186,11 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -445,9 +467,9 @@
 
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
     
-    [self.containerScrollV setContentOffset:CGPointMake(0, 200) animated:YES];
+    [self.containerScrollV setContentOffset:CGPointMake(0, 170) animated:YES];
     
-    if ([textView.text isEqualToString:@"Hashtags (optional)"]) {
+    if ([textView.text isEqualToString:@"Other"]) {
         textView.text = @"#";
     }
     
@@ -489,14 +511,23 @@
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView{
-    if (textView.text.length == 0) {
+  
+    if (textView.text.length == 0 || [textView.text isEqualToString:@"#"]) {
         [values removeObjectForKey:@"keywords"];
 
-        textView.text = @"Hashtags (optional)";
+        textView.text = @"Other";
         
-        textView.textColor = [UIColor colorWithRed:83/255.0 green:86/255.0 blue:89/255.0 alpha:1];
+        textView.textColor = [UIColor colorWithRed:184/255.0 green:185/255.0 blue:186/255.0 alpha:1];
     }
     
+    NSString *lastCharacter = [textView.text substringWithRange:NSMakeRange([textView.text length]-1, 1)];
+
+    NSMutableString *mutableStr =[[NSMutableString alloc]initWithString:textView.text];
+    
+    if ([lastCharacter isEqualToString:@"#"]) {
+        [mutableStr deleteCharactersInRange:NSMakeRange([textView.text length]-2, 2)];
+        textView.text = mutableStr;
+    }
 }
 
 -(void)hideDatePicker{
@@ -557,30 +588,13 @@
 
 - (IBAction)releaseKeyborad:(id)sender {
    
-    for (UIView *v in self.containerScrollV.subviews) {
-        if ([v isKindOfClass:[UITextField class]]) {
-            UITextField *txtF = (UITextField *)v;
-            [txtF resignFirstResponder];
-        }
-        else if (v == self.tagsV){
-            
-            for (UIView *subV in self.tagsV.subviews) {
-                if ([subV isKindOfClass:[UITextField class]]) {
-                    UITextField *txtF = (UITextField *)subV;
-                    [txtF resignFirstResponder];
-                }
-                else if ([subV isKindOfClass:[UITextView class]]){
-                    UITextView *txtV = (id)subV;
-                    [txtV resignFirstResponder];
-                }
-            }
-
-        }
-        else if ([v isKindOfClass:[UITextView class]]){
-            UITextView *txtV = (id)v;
-            [txtV resignFirstResponder];
-        }
+    for (UIView *subV in self.tagsV.subviews) {
+        UITextView *txtV = (id)subV;
+        [txtV resignFirstResponder];
     }
+    
+    [[self.titleBGV viewWithTag:1] resignFirstResponder];
+    [[self.whereBGV viewWithTag:3] resignFirstResponder];
 
     [self.containerScrollV setContentOffset:CGPointZero animated:YES];
 }
@@ -608,8 +622,13 @@
  
     //adjust format of keywords
     @try {
-       
+    
         NSMutableString *keywords = [[NSMutableString alloc]init];
+        
+        for (NSString *tag in predefinedTags) {
+             [keywords appendFormat:@"%@,",[tag stringByReplacingOccurrencesOfString:@"#" withString:@""]];
+        }
+    
         NSString *keywords_comma  = [values objectForKey:@"keywords"];
         
         if (keywords_comma) {
@@ -617,14 +636,30 @@
             
             for (NSString *word in words)  {
                 NSString *formatted_word = [word stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-                [keywords appendFormat:@"%@,",formatted_word];
+                if (formatted_word.length != 0) {
+                    NSString *trimmedSpaces = [self string:formatted_word ByTrimmingTrailingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    [keywords appendFormat:@"%@,",trimmedSpaces];
+                }
             }
-            [keywords deleteCharactersInRange:NSMakeRange([keywords length]-1, 1)];
-            [keywords deleteCharactersInRange:NSMakeRange(0, 1)];
         
-            [values setObject:keywords forKey:@"keywords"];
         }
         
+        if (keywords.length > 0) {
+            
+            NSString *lastCharacter = [keywords substringWithRange:NSMakeRange([keywords length]-1, 1)];
+            
+            if ([lastCharacter isEqualToString:@","]) {
+                [keywords deleteCharactersInRange:NSMakeRange([keywords length]-1, 1)];
+            }
+            
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Hashtags" message:@"Please select at least one Hashtag or select Other to type your own hashtags" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        
+        [values setObject:keywords forKey:@"keywords"];
       
         [values setObject:[[DTO sharedDTO] urlencode:@"http://www.beeeper.com"] forKey:@"src"];
         
@@ -639,6 +674,10 @@
             [activityInd startAnimating];
             
             [[BPCreate sharedBP]eventCreate:values completionBlock:^(BOOL completed,id objs){
+                
+                [activityInd stopAnimating];
+                [activityInd removeFromSuperview];
+                [sender setTitle:@"NEXT" forState:UIControlStateNormal];
                 
                 if (completed) {
                     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
@@ -674,8 +713,16 @@
                 }
                 else{
                     
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
+                    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+                    [reachability startNotifier];
+                    
+                    NetworkStatus status = [reachability currentReachabilityStatus];
+                    
+                    if(status != NotReachable)
+                    {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    }
                 }
                 
                 [activityInd removeFromSuperview];
@@ -706,10 +753,10 @@
     }
     else{
         
-        NSString *title = [values objectForKey:@"title"];
-        title = [[DTO sharedDTO] urlencode:title];
-        [values setObject:title forKey:@"title"];
-        
+//        NSString *title = [values objectForKey:@"title"];
+//        title = [[DTO sharedDTO] urlencode:title];
+//        [values setObject:title forKey:@"title"];
+//        
         [self validTextfield:self.titleTxtF];
     }
     if (![values objectForKey:@"timestamp"]) {
@@ -744,7 +791,7 @@
     
 
     
-    BOOL haskeywords = ([values objectForKey:@"keywords"] != nil);
+    BOOL haskeywords = ([values objectForKey:@"keywords"] != nil || predefinedTags.count > 0);
     
     if (haskeywords) {
         if (values.allKeys.count == 13) {
@@ -766,6 +813,8 @@
     TKRoundedView *backV = (id)txtF.superview;
     [self.containerScrollV bringSubviewToFront:backV];
     
+    backV.borderWidth = 1.0;
+    
     [UIView animateWithDuration:0.3f
                      animations:^
      {    backV.borderColor = [UIColor redColor];
@@ -784,7 +833,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^
      {
-        backV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+        backV.borderColor = [UIColor whiteColor];
      }
                      completion:^(BOOL finished)
      {
@@ -810,6 +859,20 @@
     }
     
     
+}
+
+- (IBAction)tagSelected:(UIButton *)sender {
+   
+    NSString *tag = [sender titleForState:UIControlStateNormal];
+    
+    if ([predefinedTags indexOfObject:tag] == NSNotFound) {
+        [predefinedTags addObject:tag];
+        [sender setTitleColor:[UIColor colorWithRed:54/255.0 green:60/255.0 blue:78/255.0 alpha:1] forState:UIControlStateNormal];
+    }
+    else{
+        [predefinedTags removeObject:tag];
+        [sender setTitleColor:[UIColor colorWithRed:207/255.0 green:208/255.0 blue:209/255.0 alpha:1] forState:UIControlStateNormal];
+    }
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -896,22 +959,6 @@
         }
 
     }
-}
-
-
-
--(void)imagePickerController:
-(UIImagePickerController *)picker
-didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    [self userPickedPhoto:info];
-    [picker dismissViewControllerAnimated:YES completion:NULL];
-}
-
--(void)imagePickerControllerDidCancel:
-(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(void)userPickedPhoto:(NSDictionary *)info{
@@ -1039,8 +1086,21 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     picker.cancellationBlock = ^(UIImagePickerController *picker) {
      //   [self dismissController:picker];
     };*/
-    
  
+}
+
+-(void)imagePickerController:
+(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self userPickedPhoto:info];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)imagePickerControllerDidCancel:
+(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 
@@ -1065,7 +1125,20 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 }
 
-
+- (NSString *)string:(NSString *)str ByTrimmingTrailingCharactersInSet:(NSCharacterSet *)characterSet {
+    NSUInteger location = 0;
+    NSUInteger length = [str length];
+    unichar charBuffer[length];
+    [str getCharacters:charBuffer];
+    
+    for (length; length > 0; length--) {
+        if (![characterSet characterIsMember:charBuffer[length - 1]]) {
+            break;
+        }
+    }
+    
+    return [str substringWithRange:NSMakeRange(location, length - location)];
+}
 
 
 

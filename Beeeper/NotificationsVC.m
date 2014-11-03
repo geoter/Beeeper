@@ -10,7 +10,7 @@
 #import "Activity_Object.h"
 #import "EventVC.h"
 #import "TimelineVC.h"
-
+#import "BeeepNotifications.h"
 
 @interface NotificationsVC ()
 {
@@ -92,7 +92,7 @@
             }
             else{
 
-                self.noNotifsFound.hidden = YES;
+                self.noNotifsFound.hidden = NO;
                 
                 [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                 
@@ -109,6 +109,11 @@
             BOOL succeed = [notificationsData writeToFile:filePath atomically:YES];
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        }
+        else{
+            if ([notifs isKindOfClass:[NSString class]]) {
+                [[TabbarVC sharedTabbar]showAlert:@"Error" text:(NSString *)notifs];
+            }
         }
     }];
 }
@@ -212,7 +217,7 @@
     static NSString *CellIdentifier;
     UITableViewCell *cell;
     
-    if (loadNextPage && indexPath.row == notifications.count) {
+    if (loadNextPage && indexPath.row == notifications.count && notifications.count > 0) {
         
         CellIdentifier = @"LoadMoreCell";
         
@@ -280,8 +285,17 @@
        //NSString *extension;
         NSString *imageName;
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+        if ([activity.did isEqualToString:@"triggered"]) {
+            
+            EventActivity *event = [activity.eventActivity firstObject];
+            
+            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
+                    placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]]];
+        }
+        else{
+            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
                      placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        }
         
         CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
         
@@ -383,8 +397,11 @@
             NSString *event_title = [[event.title unicodeEncode]capitalizedString];
             
             if ([activity.did isEqualToString:@"triggered"]) {
-                double now_timestamp = [[NSDate date] timeIntervalSince1970];
-                 formattedString = [NSString stringWithFormat:@"%@ is starting in %@",event_title,[self dailyLanguage:now_timestamp - activity.when]];
+                BeeepNotifications *beeepNotif = [activity.beeepNotifications firstObject];
+                BeeepsActivity *beeep = [beeepNotif.beeepObject firstObject];
+
+                double starts_in_timestamp = beeep.eventTime -beeep.timestamp;
+                 formattedString = [NSString stringWithFormat:@"%@ is starting in %@",event_title,[self dailyLanguageLong:starts_in_timestamp]];
             }
             else{
                 formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
@@ -443,18 +460,12 @@
                             value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                             range:[formattedString rangeOfString:event_title]];
             
-            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
-                NSLog(@"edo eimaste");
-            }
         }
         else{
             [attText addAttribute:NSFontAttributeName
                             value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                             range:[formattedString rangeOfString:activity.what]];
             
-            if ([activity.internalBaseClassIdentifier isEqualToString:@"543d29de1ddd13ce40968cb7"]) {
-                NSLog(@"edo eimaste");
-            }
         }
         
         return attText;
@@ -579,6 +590,37 @@
     return overdueMessage;
 }
 
+-(NSString*)dailyLanguageLong:(NSTimeInterval) overdueTimeInterval{
+    
+    if (overdueTimeInterval<0)
+        overdueTimeInterval*=-1;
+    
+    NSInteger minutes = round(overdueTimeInterval/60);
+    NSInteger hours   = minutes/60;
+    NSInteger days    = hours/24;
+    NSInteger months  = days/30;
+    NSInteger years   = months/12;
+    
+    NSString* overdueMessage;
+    
+    if (years>0){
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (years), (years==1?@"year":@"years")];
+    }else if (months>0){
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (months), (months==1?@"month":@"months")];
+    }else if (days>0){
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (days), (days==1?@"day":@"days")];
+    }else if (hours>0){
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (hours), (hours==1?@"hour":@"hours")];
+    }else if (minutes>0){
+        overdueMessage = [NSString stringWithFormat:@"%d%@", (minutes), (minutes==1?@"minute":@"minutes")];
+    }else if (overdueTimeInterval<60){
+        overdueMessage = [NSString stringWithFormat:@"a few seconds"];
+    }
+    
+    return overdueMessage;
+}
+
+
 -(void)showLoading{
     
     if ([self.view viewWithTag:-434]) {
@@ -589,7 +631,7 @@
         
         self.tableV.alpha = 0;
         
-        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, self.tableV.frame.size.height)];
         loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
@@ -597,7 +639,7 @@
         indicatorView.numberOfCircles = 3;
         indicatorView.radius = 8;
         indicatorView.internalSpacing = 1;
-        indicatorView.center = self.view.center;
+        indicatorView.center = loadingBGV.center;
         indicatorView.tag = -565;
         
         loadingBGV.alpha = 0;
@@ -623,7 +665,7 @@
 
 
 -(void)hideLoading{
-    
+
     UIView *loadingBGV = (id)[self.view viewWithTag:-434];
     MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
     [indicatorView stopAnimating];

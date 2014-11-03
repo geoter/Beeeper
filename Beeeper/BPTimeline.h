@@ -15,7 +15,7 @@ typedef void(^completed)(BOOL,id);
 
 @interface BPTimeline : NSObject
 
--(void)getTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)option timeStamp:(NSTimeInterval)time WithCompletionBlock:(completed)compbloc;
 -(void)getLocalTimelineUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
 -(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)option WithCompletionBlock:(completed)compbloc;
 

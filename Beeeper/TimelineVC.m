@@ -21,9 +21,10 @@
 #import "Event_Show_Object.h"
 #import "BPSuggestions.h"
 #import "Reachability.h"
-#import "THDatePickerViewController.h"
 #import "GTPushButton.h"
 #import "BPCreate.h"
+#import "CalendarView.h"
+#import "ChooseDatePopupVC.h"
 
 @interface UILabel (Resize)
 - (void)sizeToFitHeight;
@@ -39,7 +40,7 @@
 }
 @end
 
-@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIGestureRecognizerDelegate,THDatePickerDelegate>
+@interface TimelineVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,GTSegmentedControlDelegate,MONActivityIndicatorViewDelegate,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIGestureRecognizerDelegate,ChooseDatePopupVCDelegate,CalendarViewDelegate>
 {
     NSMutableArray *beeeps;
     NSMutableDictionary *pendingImagesDict;
@@ -53,12 +54,20 @@
   //  NSMutableArray *sections;
   //  NSMutableDictionary *suggestionsPerSection;
     NSMutableArray *rowsToReload;
+    UIView *calendarBGV;
+    UIView *calendarContainer;
+    
+    UIView *headerVMovingView;
+    UILabel *headerTextLabel;
+    BOOL headerVMovingViewShowing;
+    ChooseDatePopupVC *chooseDatePopupVC;
+    int chooseDaySelectedIndex;
 }
-@property(nonatomic,strong) THDatePickerViewController *datePicker;
+@property (nonatomic,strong) NSDate *selectedDate;
 @end
 
 @implementation TimelineVC
-@synthesize mode,user;
+@synthesize mode,user,selectedDate;
 
 -(void)nextPage{
     
@@ -91,6 +100,12 @@
 }
 
 -(void)getTimeline:(NSString *)userID option:(int)option{
+    
+    if (userID == nil) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"User error" message:@"User is empty" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     
     @try {
         
@@ -136,7 +151,7 @@
 
         @try {
             
-            [[BPTimeline sharedBP]getTimelineForUserID:userID option:option WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            [[BPTimeline sharedBP]getTimelineForUserID:userID option:option timeStamp:0 WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 
                 UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
                 [refreshControl endRefreshing];
@@ -157,7 +172,7 @@
                     }
                     
                     [self.tableV reloadData];
-                    
+                    [self.tableV setContentOffset:CGPointZero animated:YES];
                   //  suggestionsPerSection = [NSMutableDictionary dictionary];
                    // sections = [NSMutableArray array];
                  //   [self groupBeeepsByMonth];
@@ -225,7 +240,7 @@
 
     }
     @catch (NSException *exception) {
-        NSLog(@"ELAKI!");
+        NSLog(@"ELAKI!:%@",exception.description);
     }
     @finally {
         
@@ -274,6 +289,10 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     
+    
+    if (mode == Timeline_My) {
+        [self showSuggestionsBadge];
+    }
     
 //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
 //    self.navigationItem.leftBarButtonItem = leftItem;
@@ -417,6 +436,12 @@
          mpike = YES;
         
          [self showLoading];
+        
+        if (user == nil) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"User == nil" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+            return;
+        }
         
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
@@ -587,7 +612,6 @@
         self.addFriendIcon.hidden = NO;
     }
     
-    [self.tableV reloadData];
     [self setUserInfo];
     
     [self.tableV reloadData];
@@ -620,6 +644,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [super viewWillDisappear:animated];
 }
 
@@ -762,6 +787,10 @@
     
     CellIdentifier =  @"Cell";
     
+    if (indexPath.row == 0) {
+        CellIdentifier = @"CellTopBorder";
+    }
+    
     cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
             
     if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
@@ -899,6 +928,9 @@
     if (indexPath.row == beeeps.count+1 && loadNextPage){
         return 51;
     }
+    else if (indexPath.row == 0){
+        return 85;
+    }
     else{
         return 81;
     }
@@ -928,17 +960,48 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 46;
+    return 36;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 46)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 36)];
     headerV.backgroundColor = [UIColor colorWithRed:212/255.0 green:216/255.0 blue:217/255.0 alpha:1];
     
-    UIView *bgV = [[UIView alloc]initWithFrame:CGRectMake(0, 1, headerV.frame.size.width, headerV.frame.size.height-4)];
+    UIView *buttonV = [[UIView alloc]initWithFrame:CGRectMake(0, 1, headerV.frame.size.width, headerV.frame.size.height-4)];
+    [buttonV setBackgroundColor:[UIColor whiteColor]];
+    [headerV addSubview:buttonV];
+    
+//    UIButton *upcomingbtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, buttonV.frame.size.width/3, buttonV.frame.size.height)];
+//    upcomingbtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+//    [upcomingbtn setTitle:@"Upcoming" forState:UIControlStateNormal];
+//    [upcomingbtn setBackgroundColor:[UIColor whiteColor]];
+//    [upcomingbtn setTitleColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1] forState:UIControlStateNormal];
+//    
+//    [buttonV addSubview:upcomingbtn];
+//
+//    UIButton *pastbtn = [[UIButton alloc]initWithFrame:CGRectMake(upcomingbtn.frame.size.width, 0, buttonV.frame.size.width/3, buttonV.frame.size.height)];
+//    pastbtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+//    [pastbtn setTitle:@"Past" forState:UIControlStateNormal];
+//    [pastbtn setBackgroundColor:[UIColor whiteColor]];
+//    [pastbtn setTitleColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1] forState:UIControlStateNormal];
+//    
+//    [buttonV addSubview:pastbtn];
+//
+//    UIButton *calendarbtn = [[UIButton alloc]initWithFrame:CGRectMake(pastbtn.frame.origin.x + pastbtn.frame.size.width,0, buttonV.frame.size.width/3, buttonV.frame.size.height)];
+//    calendarbtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+//    [calendarbtn setTitle:@"Choose Date" forState:UIControlStateNormal];
+//    [calendarbtn setBackgroundColor:[UIColor whiteColor]];
+//    [calendarbtn setTitleColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1] forState:UIControlStateNormal];
+//    
+//    [buttonV addSubview:calendarbtn];
+    
+    
+    UIView *bgV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, headerV.frame.size.width, headerV.frame.size.height)];
     [bgV setBackgroundColor:[UIColor whiteColor]];
     [headerV addSubview:bgV];
+    
+    headerVMovingView = bgV;
     
     bgV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
     bgV.layer.shadowOpacity = 0.7;
@@ -947,26 +1010,65 @@
     [bgV.layer setShadowPath:[[UIBezierPath
                                 bezierPathWithRect:bgV.bounds] CGPath]];
     
-    UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, headerV.frame.size.height)];
+    UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, bgV.frame.size.height)];
     textLbl.textAlignment = NSTextAlignmentLeft;
     textLbl.textColor = [UIColor colorWithRed:113/255.0 green:120/255.0 blue:127/255.0 alpha:1];
-    textLbl.text = @"All Beeeps";
+
+    
+    switch (chooseDaySelectedIndex) {
+        case 0:
+            textLbl.text = @"Upcoming";
+            break;
+        case 1:
+            textLbl.text = @"Past";
+            break;
+        case 2:{
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+            dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+            dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+            [dateFormatter setDateFormat:@"MMM YYYY"];
+            NSString *dateStr = [dateFormatter stringFromDate:selectedDate];
+            
+            if([dateStr isKindOfClass:[NSString class]] && dateStr.length > 0){
+                textLbl.text =  dateStr;
+            }
+            else{
+                textLbl.text = @"Choose Date";
+            }
+            
+            break;
+        }
+        default:
+            break;
+    }
+    
+    
     textLbl.tag = 1;
     textLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
-    [headerV addSubview:textLbl];
+    [textLbl sizeToFit];
+    textLbl.center = bgV.center;
+    [bgV addSubview:textLbl];
     
+    headerTextLabel = textLbl;
+    
+    UIImageView *arrow = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar-arrow.png"]];
+    arrow.center = textLbl.center;
+    arrow.frame = CGRectMake(textLbl.frame.origin.x+textLbl.frame.size.width+3, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
+    arrow.tag = 2;
+    [bgV addSubview:arrow];
     
     UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar_btn.png"]];
     imgV.center = textLbl.center;
-    imgV.frame = CGRectMake(textLbl.frame.origin.x-25, imgV.frame.origin.y, imgV.frame.size.width, imgV.frame.size.height);
-    imgV.tag = 2;
-    [headerV addSubview:imgV];
+    imgV.frame = CGRectMake(16, imgV.frame.origin.y, imgV.frame.size.width, imgV.frame.size.height);
+    imgV.tag = 3;
+    [bgV addSubview:imgV];
     
     GTPushButton *btn = [GTPushButton buttonWithType:UIButtonTypeCustom];
     btn.selectionColor = [UIColor colorWithRed:225/255.0 green:226/255.0 blue:226/255.0 alpha:0.4];
     btn.frame = headerV.bounds;
     btn.backgroundColor = [UIColor clearColor];
-    btn.tag = 3;
+    btn.tag = 4;
     [btn addTarget:self action:@selector(calendarPressed:) forControlEvents:UIControlEventTouchUpInside];
     [headerV addSubview:btn];
     
@@ -1124,49 +1226,13 @@
 
 #pragma mark - Actions
 
-- (IBAction)calendarPressed:(UIButton *)sender {
-    
-    if(!self.datePicker)
-        self.datePicker = [THDatePickerViewController datePicker];
-    self.datePicker.date = [NSDate date];
-    self.datePicker.delegate = self;
-    [self.datePicker setAllowClearDate:NO];
-    [self.datePicker setAutoCloseOnSelectDate:YES];
-    [self.datePicker setDisableFutureSelection:YES];
-    [self.datePicker setSelectedBackgroundColor:[UIColor colorWithRed:125/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]];
-    [self.datePicker setCurrentDateColor:[UIColor colorWithRed:242/255.0 green:121/255.0 blue:53/255.0 alpha:1.0]];
-    
-    [self.datePicker setDateHasItemsCallback:^BOOL(NSDate *date) {
-        int tmp = (arc4random() % 30)+1;
-        if(tmp % 5 == 0)
-            return YES;
-        return NO;
-    }];
-   // [self.datePicker slideUpInView:self.view withModalColor:[UIColor lightGrayColor]];
-    [self presentSemiViewController:self.datePicker withOptions:@{
-                                                                  KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                                  KNSemiModalOptionKeys.animationDuration : @(1.0),
-                                                                  KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-                                                                  }];
-}
 
 - (IBAction)addFriend:(id)sender {
     
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
--(void)datePickerDonePressed:(THDatePickerViewController *)datePicker{
-    [self dismissSemiModalViewWithCompletion:^(void){
-        
-    }];
-}
-
--(void)datePickerCancelPressed:(THDatePickerViewController *)datePicker{
-    [self dismissSemiModalViewWithCompletion:^(void){
-        
-    }];
-}
 
 - (IBAction)backPressed:(id)sender {
     [self goBack];
@@ -1398,7 +1464,9 @@
     
     dispatch_async (dispatch_get_main_queue(), ^{
         
-        UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+        CGFloat height = self.view.frame.size.height-((self.mode != Timeline_My || self.showBackButton)?0:self.tabBar.frame.size.height);
+        
+        UIView *loadingBGV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, height)];
         loadingBGV.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
         
         MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
@@ -1406,7 +1474,7 @@
         indicatorView.numberOfCircles = 3;
         indicatorView.radius = 8;
         indicatorView.internalSpacing = 1;
-        indicatorView.center = self.view.center;
+        indicatorView.center = loadingBGV.center;
         indicatorView.tag = -565;
         
         loadingBGV.alpha = 0;
@@ -1742,7 +1810,7 @@
         return;
     }
     
-    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:2];
     
     UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
     b.badge.outlineWidth = 1.0;
@@ -1765,7 +1833,7 @@
 
 -(void)hideBadgeIcon{
     
-    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
+    [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:2];
     
     [[self.notificationsBadgeV.superview viewWithTag:34567]removeFromSuperview];
     
@@ -1779,6 +1847,319 @@
     //
     //     }
     //     ];
+}
+
+
+
+-(void)showSuggestionsBadge{
+    
+    if (![DTO sharedDTO].suggestionBadgeNumberFinished) {
+        [self performSelector:@selector(showSuggestionsBadge) withObject:nil afterDelay:1.0];
+    }
+    
+    UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.suggestionsButton.frame.origin.x+5+self.suggestionsButton.frame.size.width/2,self.suggestionsButton.frame.origin.y+13,5,5)];
+    b.badge.outlineWidth = 1.0;
+    b.badge.badgeColor = [UIColor redColor];
+    b.tag = 34567;
+    b.badge.badgeValue = [DTO sharedDTO].suggestionBadgeNumber;
+    [self.suggestionsButton.superview addSubview:b];
+}
+
+#pragma mark - Choose Date Popup
+
+-(void)closeDatePopup:(int)index{
+
+    if(index >= 0){
+       
+        switch (index) {
+            case 0:
+                headerTextLabel.text = @"Upcoming";
+                break;
+            case 1:
+                headerTextLabel.text = @"Past";
+                break;
+            case 2:
+                headerTextLabel.text = @"Choose Date";
+                break;
+            default:
+                break;
+        }
+        
+        [headerTextLabel sizeToFit];
+        headerTextLabel.center = headerTextLabel.superview.center;
+        
+        UIImageView *arrow = (id)[headerTextLabel.superview viewWithTag:2];
+        arrow.center = headerTextLabel.center;
+        arrow.frame = CGRectMake(headerTextLabel.frame.origin.x+headerTextLabel.frame.size.width+3, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
+        
+        [UIView animateWithDuration:0.4f
+                         animations:^
+         {
+             
+             headerTextLabel.alpha = 1;
+             
+             arrow.alpha = 1;
+         }
+                         completion:^(BOOL finished){}];
+    
+    }
+    
+    [UIView animateWithDuration:0.5f
+                     animations:^
+     {
+         chooseDatePopupVC.view.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         [chooseDatePopupVC.view removeFromSuperview];
+         [chooseDatePopupVC removeFromParentViewController];
+     }
+     ];
+
+}
+
+-(void)datePopupIndexOptionSelected:(int)index{
+    
+    
+    if (index == 0) { //upcoming
+        
+        chooseDaySelectedIndex = index;
+        
+        [self closeDatePopup:index];
+        [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    }
+    else if(index == 1){ //past
+       
+        chooseDaySelectedIndex = index;
+        
+        [self closeDatePopup:index];
+        [self getTimeline:[self.user objectForKey:@"id"] option:Past];
+    }
+    else if(index == -1){ //tapG
+        [self closeDatePopup:chooseDaySelectedIndex];
+        [self getTimeline:[self.user objectForKey:@"id"] option:Past];
+    }
+    else{
+        chooseDaySelectedIndex = index;
+        selectedDate = chooseDatePopupVC.selectedDate;
+        [self closeDatePopup:-1];
+        [self releaseCalendar:nil];
+    }
+}
+
+- (IBAction)calendarPressed:(UIButton *)sender {
+    
+    chooseDatePopupVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ChooseDatePopupVC"];
+    chooseDatePopupVC.view.frame = self.view.bounds;
+    chooseDatePopupVC.delegate = self;
+    
+    if([headerTextLabel.text isEqualToString:@"Upcoming"]){
+        chooseDatePopupVC.option = 0;
+    }
+    else if([headerTextLabel.text isEqualToString:@"Past"]){
+        chooseDatePopupVC.option = 1;
+    }
+    else {
+        chooseDatePopupVC.option = 2;
+    }
+    
+    chooseDatePopupVC.view.alpha = 0;
+    [self.view addSubview:chooseDatePopupVC.view];
+    [self addChildViewController:chooseDatePopupVC];
+    
+    //define Popup Y
+    
+    CGPoint pointInView = [headerTextLabel.superview convertPoint:headerTextLabel.frame.origin toView:self.view];
+    
+    chooseDatePopupVC.popupVContainer.frame = CGRectMake(0, pointInView.y, chooseDatePopupVC.view.frame.size.width, chooseDatePopupVC.view.frame.size.height);
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         chooseDatePopupVC.view.alpha = 1;
+     }
+                     completion:^(BOOL finished)
+     {
+         headerTextLabel.alpha = 0;
+         UIImageView *arrow = (id)[headerTextLabel.superview viewWithTag:2];
+         arrow.alpha = 0;
+     }
+     ];
+    
+    //[self animateHeaderMovingPartHide];
+    
+    // [self showCalendar];
+}
+
+-(void)animateHeaderMovingPartShow{
+    
+    headerVMovingViewShowing = YES;
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        [UIView animateWithDuration:0.7f
+                         animations:^
+         {
+             //headerVMovingView.frame = CGRectMake(0, headerVMovingView.frame.origin.y, headerVMovingView.frame.size.width, headerVMovingView.frame.size.height);
+             headerVMovingView.alpha = 1;
+         }
+                         completion:^(BOOL finished)
+         {
+             
+         }];
+        
+    });
+}
+
+-(void)animateHeaderMovingPartHide{
+    
+    headerVMovingViewShowing = NO;
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        [UIView animateWithDuration:0.7f
+                         animations:^
+         {
+             //headerVMovingView.frame = CGRectMake(-headerVMovingView.frame.size.width, headerVMovingView.frame.origin.y, headerVMovingView.frame.size.width, headerVMovingView.frame.size.height);
+             headerVMovingView.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+         }
+         ];
+        
+    });
+    
+}
+
+-(void)showCalendar{
+    
+    calendarBGV = [[UIView alloc]initWithFrame:self.view.bounds];
+    calendarBGV.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+    calendarBGV.alpha = 0;
+    
+    UITapGestureRecognizer *tapg = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(releaseCalendar:)];
+    [calendarBGV addGestureRecognizer:tapg];
+    
+    CalendarView *cv = [[CalendarView alloc] initWithPosition:0.0 y:10.0];
+    [cv setMode:1];
+    cv.calendarDelegate = self;
+    
+    calendarContainer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, calendarBGV.frame.size.width, cv.frame.size.height+10)];
+    [calendarContainer setBackgroundColor:[UIColor whiteColor]];
+    cv.center = CGPointMake(calendarContainer.center.x+5,cv.center.y+5);
+    [calendarContainer addSubview:cv];
+    
+    calendarContainer.frame = CGRectMake(0, calendarBGV.frame.size.height, calendarBGV.frame.size.width, calendarContainer.frame.size.height);
+    
+    [calendarBGV addSubview:calendarContainer];
+    
+    [self.view addSubview:calendarBGV];
+
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         calendarBGV.alpha = 1;
+         calendarContainer.frame = CGRectMake(0, calendarBGV.frame.size.height-calendarContainer.frame.size.height, calendarBGV.frame.size.width, calendarContainer.frame.size.height);
+     }
+                     completion:^(BOOL finished)
+     {
+         
+     }
+     ];
+}
+
+-(void)releaseCalendar:(UITapGestureRecognizer *)tapG{
+   
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+//    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+//    dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+//    [dateFormatter setDateFormat:@"MMM YYYY"];
+//    headerTextLabel.text = [dateFormatter stringFromDate:selectedDate];
+//    
+//    [headerTextLabel sizeToFit];
+//    headerTextLabel.center = headerTextLabel.superview.center;
+//    
+//    UIImageView *arrow = [headerTextLabel.superview viewWithTag:2];
+//    arrow.center = headerTextLabel.center;
+//    arrow.frame = CGRectMake(headerTextLabel.frame.origin.x+headerTextLabel.frame.size.width+3, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
+
+    [self.tableV reloadData]; //refresh choose date title to add current date
+    
+    if(selectedDate != nil){
+    
+        @try {
+            
+            [[BPTimeline sharedBP]getTimelineForUserID:[user objectForKey:@"id"] option:0 timeStamp:[selectedDate timeIntervalSince1970] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                
+                UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+                [refreshControl endRefreshing];
+                
+                if (completed) {
+                    
+                    loading = NO;
+                    
+                    if (objs) {
+                        beeeps = [NSMutableArray arrayWithArray:objs];
+                    }
+                    
+                    if (beeeps.count == 10) {
+                        loadNextPage = YES;
+                    }
+                    else{
+                        loadNextPage = NO;
+                    }
+                    [self.tableV setContentOffset:CGPointZero animated:YES];
+                    [self.tableV reloadData];
+                    
+                    //  suggestionsPerSection = [NSMutableDictionary dictionary];
+                    // sections = [NSMutableArray array];
+                    //   [self groupBeeepsByMonth];
+                }
+                else{
+                    if ([objs isKindOfClass:[NSString class]]) {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                        [alert show];
+                        
+                    }
+                }
+            }];
+            
+        }
+        @catch (NSException *exception) {
+            NSLog(@"ELA!");
+        }
+        @finally {
+            
+        }
+    }
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         calendarBGV.alpha = 0;
+         calendarContainer.frame = CGRectMake(0, calendarBGV.frame.size.height, calendarContainer.frame.size.width, calendarContainer.frame.size.height);
+     }
+                     completion:^(BOOL finished)
+     {
+         [calendarContainer removeFromSuperview];
+         [calendarBGV removeFromSuperview];
+     }
+     ];
+}
+
+#pragma mark - Calendar Delegate
+
+- (void)didChangeCalendarDate:(NSDate *)date{
+    selectedDate = date;
+}
+
+- (void)didDoubleTapCalendar:(NSDate *)date withType:(NSInteger)type{
+
+    selectedDate = date;
+    
+    [self releaseCalendar:nil];
 }
 
 #pragma mark - Group by date

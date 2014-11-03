@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTPushButton.h"
 
 #define Timeline_My 1
 #define Timeline_Following 2
@@ -27,7 +28,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
 @property (weak, nonatomic) IBOutlet UILabel *userCityLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *pinIcon;
-@property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *settingsIcon;
 @property (weak, nonatomic) IBOutlet UIButton *importIcon;
@@ -40,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIView *othersTimelineMenuV;
 @property (weak, nonatomic) IBOutlet UIView *topBGV;
 @property (weak, nonatomic) IBOutlet UIView *tabBar;
+@property (weak, nonatomic) IBOutlet GTPushButton *suggestionsButton;
 
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;

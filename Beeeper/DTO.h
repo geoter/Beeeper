@@ -23,10 +23,13 @@ typedef void(^completed)(BOOL,id);
 
 @property(nonatomic,strong) CLLocation *userLocation;
 @property(nonatomic,strong) CLPlacemark *userPlace;
-
+@property (nonatomic,assign) int suggestionBadgeNumber;
+@property (nonatomic,assign) BOOL suggestionBadgeNumberFinished;
 @property (nonatomic,strong) NSString *databaseName;
 @property (nonatomic,strong) NSString *databasePath;
 
+
+- (void)getSuggestions;
 - (void)uploadBugFile;
 - (void)sendBugLog;
 - (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json;

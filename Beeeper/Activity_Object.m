@@ -6,8 +6,7 @@
 //
 
 #import "Activity_Object.h"
-
-
+#import "BeeepNotifications.h"
 
 NSString *const kActivity_ObjectWhom = @"whom";
 NSString *const kActivity_ObjectDid = @"did";
@@ -18,6 +17,7 @@ NSString *const kActivity_ObjectWho = @"who";
 NSString *const kActivity_ObjectRead = @"read";
 NSString *const kActivity_ObjectWhen = @"when";
 NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
+NSString *const kBaseClassBeeepNotifications = @"beeep";
 
 
 @interface Activity_Object ()
@@ -37,7 +37,7 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
 @synthesize read = _read;
 @synthesize when = _when;
 @synthesize beeepInfoActivity = _beeepInfoActivity;
-
+@synthesize beeepNotifications = _beeepNotifications;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
@@ -96,6 +96,20 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
             self.read = [[self objectOrNilForKey:kActivity_ObjectRead fromDictionary:dict] boolValue];
             self.when = [[self objectOrNilForKey:kActivity_ObjectWhen fromDictionary:dict] doubleValue];
             self.beeepInfoActivity = [BeeepInfoActivity modelObjectWithDictionary:[dict objectForKey:kActivity_ObjectBeeepInfoActivity]];
+        
+        NSObject *receivedBeeepNotifications = [dict objectForKey:kBaseClassBeeepNotifications];
+        NSMutableArray *parsedBeeepNotifications = [NSMutableArray array];
+        if ([receivedBeeepNotifications isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *item in (NSArray *)receivedBeeepNotifications) {
+                if ([item isKindOfClass:[NSDictionary class]]) {
+                    [parsedBeeepNotifications addObject:[BeeepNotifications modelObjectWithDictionary:item]];
+                }
+            }
+        } else if ([receivedBeeepNotifications isKindOfClass:[NSDictionary class]]) {
+            [parsedBeeepNotifications addObject:[BeeepNotifications modelObjectWithDictionary:(NSDictionary *)receivedBeeepNotifications]];
+        }
+        
+        self.beeepNotifications = [NSArray arrayWithArray:parsedBeeepNotifications];
 
     }
     
@@ -106,6 +120,19 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
 - (NSDictionary *)dictionaryRepresentation
 {
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
+    
+    NSMutableArray *tempArrayForBeeepNotifications = [NSMutableArray array];
+    for (NSObject *subArrayObject in self.beeepNotifications) {
+        if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
+            // This class is a model object
+            [tempArrayForBeeepNotifications addObject:[subArrayObject performSelector:@selector(dictionaryRepresentation)]];
+        } else {
+            // Generic object
+            [tempArrayForBeeepNotifications addObject:subArrayObject];
+        }
+    }
+    [mutableDict setValue:[NSArray arrayWithArray:tempArrayForBeeepNotifications] forKey:kBaseClassBeeepNotifications];
+    
     NSMutableArray *tempArrayForWhom = [NSMutableArray array];
     for (NSObject *subArrayObject in self.whom) {
         if([subArrayObject respondsToSelector:@selector(dictionaryRepresentation)]) {
@@ -167,7 +194,8 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super init];
-
+    
+    self.beeepNotifications = [aDecoder decodeObjectForKey:kBaseClassBeeepNotifications];
     self.whom = [aDecoder decodeObjectForKey:kActivity_ObjectWhom];
     self.did = [aDecoder decodeObjectForKey:kActivity_ObjectDid];
     self.internalBaseClassIdentifier = [aDecoder decodeObjectForKey:kActivity_ObjectId];
@@ -182,7 +210,7 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-
+    [aCoder encodeObject:_beeepNotifications forKey:kBaseClassBeeepNotifications];
     [aCoder encodeObject:_whom forKey:kActivity_ObjectWhom];
     [aCoder encodeObject:_did forKey:kActivity_ObjectDid];
     [aCoder encodeObject:_internalBaseClassIdentifier forKey:kActivity_ObjectId];
@@ -199,7 +227,7 @@ NSString *const kActivity_ObjectBeeepInfoActivity = @"beeep_info";
     Activity_Object *copy = [[Activity_Object alloc] init];
     
     if (copy) {
-
+        copy.beeepNotifications = [self.beeepNotifications copyWithZone:zone];
         copy.whom = [self.whom copyWithZone:zone];
         copy.did = [self.did copyWithZone:zone];
         copy.internalBaseClassIdentifier = [self.internalBaseClassIdentifier copyWithZone:zone];

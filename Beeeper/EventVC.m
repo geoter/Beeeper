@@ -958,7 +958,7 @@
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     self.likesLabel.hidden = (likers.count == 0);
     
-    if (!comments) {
+    if (comments) {
         commentsLbl.text = [NSString stringWithFormat:@"%d",(int)t.beeep.beeepInfo.comments.count];
     }
     

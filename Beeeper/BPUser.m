@@ -137,7 +137,7 @@ static BPUser *thisWebServices = nil;
 
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -283,7 +283,7 @@ static BPUser *thisWebServices = nil;
 
     [[request UserInfo]setObject:info forKey:@"info"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -415,7 +415,7 @@ static BPUser *thisWebServices = nil;
     
     [request setDidFailSelector:@selector(demoPushFailed:)];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -476,7 +476,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -509,7 +509,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -566,7 +566,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -592,6 +592,15 @@ static BPUser *thisWebServices = nil;
     responseString = [[responseString substringToIndex:[responseString length]-1]substringFromIndex:1];
     
     NSArray *responseArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (![responseArray isKindOfClass:[NSArray class]]) {
+        
+        [[DTO sharedDTO]addBugLog:@"responseArray == nil" where:@"BPUser/userInfoReceived" json:responseString];
+        
+        self.completed(NO,nil);
+        return;
+    }
+    
     self.user = responseArray.firstObject;
     
     self.completed(YES,responseString);
@@ -679,7 +688,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -724,7 +733,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -807,7 +816,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -848,7 +857,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -931,7 +940,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -973,7 +982,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1028,7 +1037,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1118,7 +1127,7 @@ static BPUser *thisWebServices = nil;
 //    
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1140,6 +1149,12 @@ static BPUser *thisWebServices = nil;
     
     
     NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (![notificationsArray isKindOfClass:[NSArray class]]) {
+        [[DTO sharedDTO]addBugLog:@"![notificationsArray isKindOfClass:[NSArray class]]->notifictionsFailed" where:@"BPUser/notificationsReceived" json:responseString];
+        [self notificationsFailed:nil];
+        return;
+    }
     
     NSMutableArray *bs = [NSMutableArray array];
     
@@ -1198,9 +1213,6 @@ static BPUser *thisWebServices = nil;
         
     }
     
-    if (bs.count == 0) {
-            [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/notificationsReceived" json:responseString];
-    }
     
     self.notifications_completed(YES,bs);
     
@@ -1218,7 +1230,7 @@ static BPUser *thisWebServices = nil;
     
     [[DTO sharedDTO]addBugLog:@"notificationsFailed" where:@"BPUser/notificationsFailed" json:responseString];
     
-    self.notifications_completed(NO,nil);
+    self.notifications_completed(NO,@"Request failed.Please slide to reload.");
     
 }
 
@@ -1242,7 +1254,7 @@ static BPUser *thisWebServices = nil;
         }
     }
     
-    self.notifications_completed = compbloc;
+    self.next_notifications_completed = compbloc;
     
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     
@@ -1252,7 +1264,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1271,8 +1283,13 @@ static BPUser *thisWebServices = nil;
     responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
     responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
-    
     NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (![notificationsArray isKindOfClass:[NSArray class]]) {
+        [[DTO sharedDTO]addBugLog:@"![notificationsArray isKindOfClass:[NSArray class]]" where:@"BPUser/nextNotificationsReceived" json:responseString];
+        [self nextNotificationsFailed:nil];
+        return;
+    }
     
     NSMutableArray *bs = [NSMutableArray array];
     
@@ -1330,11 +1347,8 @@ static BPUser *thisWebServices = nil;
     @finally {
         
     }
-    
-    if (bs.count == 0) {
-         [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"BPUser/nextNotificationsReceived" json:responseString];
-    }
-    self.notifications_completed(YES,bs);
+
+    self.next_notifications_completed(YES,bs);
 }
 
 -(void)nextNotificationsFailed:(ASIHTTPRequest *)request{
@@ -1343,7 +1357,7 @@ static BPUser *thisWebServices = nil;
     
     [[DTO sharedDTO]addBugLog:@"nextNotificationsFailed" where:@"BPUser/nextNotificationsFailed" json:responseString];
     
-    self.notifications_completed(NO,nil);
+    self.next_notifications_completed(NO,nil);
     
 }
 
@@ -1377,7 +1391,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1473,7 +1487,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"GET"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1519,7 +1533,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1579,7 +1593,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1636,7 +1650,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1828,7 +1842,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -1893,7 +1907,7 @@ static BPUser *thisWebServices = nil;
     
     [request setRequestMethod:@"POST"];
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
 
@@ -2051,7 +2065,7 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:headerString];
     [request addRequestHeader:@"Content-Type" value:@"application/x-www-form-urlencoded"];
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -2123,7 +2137,7 @@ static BPUser *thisWebServices = nil;
     
     
     
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     
@@ -2171,7 +2185,7 @@ static BPUser *thisWebServices = nil;
     
     [request addRequestHeader:@"Authorization" value:headerString];
     [request addRequestHeader:@"Content-Type" value:@"application/x-www-form-urlencoded"];
-    [request setTimeOutSeconds:13.0];
+    [request setTimeOutSeconds:20.0];
     
     [request setDelegate:self];
     

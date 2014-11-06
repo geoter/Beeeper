@@ -32,6 +32,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *venueLabel;
 @property (nonatomic,strong) UIView *superviewToBlur;
 
+- (void)setBeeep;
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;
 - (IBAction)twitterShare:(id)sender;

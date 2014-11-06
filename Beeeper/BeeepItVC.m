@@ -106,11 +106,10 @@
     [self.view addSubview:viewController.view];
     [self addChildViewController:viewController];
 
-    
+    [self setBeeep];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+-(void)setBeeep{
     
     shareText = [[NSMutableString alloc]init];
     
@@ -170,7 +169,7 @@
                 title = [event_title capitalizedString];
                 fingerprint = event.fingerprint;
             }
-
+            
         }
         else if ([tml isKindOfClass:[Event_Search class]]){
             Event_Search *eventS = tml;
@@ -193,7 +192,7 @@
                 [alert show];
             }
         }];
-       
+        
         
         beeepTitle = title;
         //[shareText appendString:title];
@@ -230,7 +229,7 @@
             else if(activity.eventActivity.count > 0){
                 
                 EventActivity *event = [activity.eventActivity firstObject];
-
+                
                 
             }
             
@@ -285,7 +284,7 @@
             else if(activity.eventActivity.count > 0){
                 
                 EventActivity *event = [activity.eventActivity firstObject];
-
+                
             }
             
         }
@@ -315,7 +314,7 @@
         self.venueLabel.center = CGPointMake(self.scrollV.center.x+3,self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 15);
         self.venueIcon.center = self.venueLabel.center;
         self.venueIcon.frame = CGRectMake(self.venueLabel.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
-
+        
         
         NSString *imageUrl;
         if ([tml isKindOfClass:[Timeline_Object class]]) {
@@ -337,10 +336,10 @@
         else{
             imageUrl = ffo.eventFfo.eventDetailsFfo.imageUrl;
         }
-
+        
         
         imageURL = [[DTO sharedDTO]fixLink:imageUrl];
-
+        
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -350,6 +349,10 @@
     @finally {
         
     }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 
 }
 

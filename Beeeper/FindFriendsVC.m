@@ -275,10 +275,13 @@
 
 -(void)inviteSMSPressed:(UIButton *)btn{
    
+     self.navigationItem.rightBarButtonItem = nil;
+    
     [self createTableViewHeaderWithMailOption:0];
     
     [selectedPeople removeAllObjects];
     selectedEmails = [NSMutableArray array];
+    
     
     emailInviteSelectedOption = 0;
     
@@ -397,6 +400,8 @@
 }
 
 -(void)inviteEMAILPressed:(UIButton *)btn{
+    
+     self.navigationItem.rightBarButtonItem = nil;
     
     [self createTableViewHeaderWithMailOption:1];
     
@@ -640,7 +645,7 @@
 }
 
 -(void)showAddressBook{
-  
+    
     if (emailInviteSelectedOption == 0) {
         [self inviteSMSPressed:nil];
     }
@@ -1120,6 +1125,9 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     
+    self.title = @"Find Friends";
+    self.navigationController.navigationBar.topItem.title = self.title;
+    
     NSLog(@"%.2f",self.tableV.frame.origin.y + self.tableV.tableHeaderView.frame.size.height);
     NSLog(@"%.2f",self.tableV.frame.size.height-self.tableV.tableHeaderView.frame.size.height);
 }
@@ -1218,30 +1226,45 @@
          
          if (selectedOption == FacebookButton && !isBeeeper) {
              
-             tickedV.hidden = YES;
-             fbtickedV.hidden = NO;
+             tickedV.hidden = NO;
+             fbtickedV.hidden = YES;
              followBtn.hidden = YES;
              
              if ([selectedPeople indexOfObject:user] != NSNotFound) {
-                 [fbtickedV setImage:[UIImage imageNamed:@"invited_new"]];
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
              }
              else{
-                 [fbtickedV setImage:[UIImage imageNamed:@"invite_fb_new"]];
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
              }
          }
-         else{
+         else if (selectedOption == FacebookButton && isBeeeper) {
              
              tickedV.hidden = YES;
-             followBtn.hidden = NO;
              fbtickedV.hidden = YES;
+             followBtn.hidden = NO;
              
              NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
              
              if (following.boolValue) {
-                 [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal] ;
+                 [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
              }
              else{
-                 [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
+                 [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal];
+             }
+         }
+         else{
+             
+             tickedV.hidden = NO;
+             followBtn.hidden = YES;
+             fbtickedV.hidden = YES;
+             
+             NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+             
+             if ([selectedPeople indexOfObject:user] != NSNotFound) {
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+             }
+             else{
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]] ;
              }
 
          }
@@ -1572,16 +1595,16 @@
             [UIView animateWithDuration:0.0f
                              animations:^
              {
-                 fbtickedV.alpha = 0;
+                 tickedV.alpha = 0;
              }
                              completion:^(BOOL finished)
              {
-                 [fbtickedV setImage:[UIImage imageNamed:@"invite_fb_new"]];
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
                  
                  [UIView animateWithDuration:0.0f
                                   animations:^
                   {
-                      fbtickedV.alpha = 1;
+                      tickedV.alpha = 1;
                   }
                                   completion:^(BOOL finished)
                   {
@@ -1595,22 +1618,22 @@
             [selectedPeople addObject:user];
             
             
-            fbtickedV.alpha = 0;
-            fbtickedV.hidden = NO;
+            tickedV.alpha = 0;
+            tickedV.hidden = NO;
             
             [UIView animateWithDuration:0.0f
                              animations:^
              {
-                 fbtickedV.alpha = 0;
+                 tickedV.alpha = 0;
              }
                              completion:^(BOOL finished)
              {
-                 [fbtickedV setImage:[UIImage imageNamed:@"invited_new"]];
+                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
                  
                  [UIView animateWithDuration:0.0f
                                   animations:^
                   {
-                      fbtickedV.alpha = 1;
+                      tickedV.alpha = 1;
                   }
                                   completion:^(BOOL finished)
                   {

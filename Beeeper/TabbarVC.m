@@ -182,6 +182,8 @@ static TabbarVC *thisWebServices = nil;
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
     
+    [viewController setBeeep];
+    
     [UIView animateWithDuration:0.4f
                      animations:^
      {

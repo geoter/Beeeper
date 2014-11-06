@@ -540,7 +540,7 @@ static EventWS *thisWebServices = nil;
     
     
     NSMutableArray *array = [NSMutableArray array];
-    [array addObject:[NSString stringWithFormat:@"query=%@",keyword]];
+    [array addObject:[NSString stringWithFormat:@"query=%@",[[DTO sharedDTO] urlencode:keyword]]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"order=%@",order]];
     [array addObject:[NSString stringWithFormat:@"page=%d",search_events_page]];

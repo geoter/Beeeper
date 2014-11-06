@@ -9,6 +9,9 @@
 #import "TabbarVC.h"
 #import "TimelineVC.h"
 #import <QuartzCore/QuartzCore.h>
+#import "BeeepVC.h"
+#import "BeeepItVC.h"
+#import "SuggestBeeepVC.h"
 
 @interface TabbarVC ()<UINavigationControllerDelegate>
 {
@@ -136,11 +139,12 @@ static TabbarVC *thisWebServices = nil;
 }
 */
 
-- (IBAction)addBeeepPressed:(id)sender {
-   
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepVC"];
+- (void)addBeeepPressed:(UIViewController *)sender {
     
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
+    BeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepVC"];
+    viewController.superviewToBlur = sender.navigationController.view;
+    
+    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
     
@@ -151,7 +155,90 @@ static TabbarVC *thisWebServices = nil;
      }
                      completion:^(BOOL finished)
      {
+         [UIView animateWithDuration:0.4f
+                          animations:^
+          {
+              viewController.blurContainerV.alpha = 1;
+          }
+                          completion:^(BOOL finished)
+          {
+              
+          }
+          ];
+
+     }
+     ];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)reBeeepPressed:(id)sender_tml controller:(UIViewController *)sender{
+    
+    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    viewController.tml = sender_tml;
+    viewController.superviewToBlur = sender.navigationController.view;
+    
+    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
+    [self.parentViewController.view addSubview:viewController.view];
+    [self.parentViewController addChildViewController:viewController];
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+     }
+                     completion:^(BOOL finished)
+     {
+         [UIView animateWithDuration:0.4f
+                          animations:^
+          {
+              viewController.blurContainerV.alpha = 1;
+          }
+                          completion:^(BOOL finished)
+          {
+              
+          }
+          ];
          
+     }
+     ];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur{
+    
+    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    viewController.fingerprint = fingerprint;
+    viewController.superviewToBlur = sender.navigationController.view;
+    viewController.selectedPeople = selectedPeople;
+    viewController.sendNotificationWhenFinished = sendWhenFinished;
+    viewController.showBlur = showBlur;
+    
+    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
+    [self.parentViewController.view addSubview:viewController.view];
+    [self.parentViewController addChildViewController:viewController];
+    
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+     }
+                     completion:^(BOOL finished)
+     {
+         if (showBlur) {
+             
+             [UIView animateWithDuration:0.4f
+                              animations:^
+              {
+                  viewController.blurContainerV.alpha = 1;
+              }
+                              completion:^(BOOL finished)
+              {
+                  
+              }
+              ];
+         }
      }
      ];
     

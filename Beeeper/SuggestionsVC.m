@@ -8,7 +8,6 @@
 
 #import "SuggestionsVC.h"
 #import "EventVC.h"
-#import "BeeepItVC.h"
 #import "BPSuggestions.h"
 #import "MONActivityIndicatorView.h"
 
@@ -507,10 +506,8 @@
         return;
     }
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = suggestion;
+    [[TabbarVC sharedTabbar]reBeeepPressed:suggestion controller:self];
     
-    [self presentViewController:viewController animated:YES completion:NULL];
 }
 
 -(NSMutableArray *)suggestionsForSection:(int)section{

@@ -7,7 +7,6 @@
 //
 
 #import "HomeFeedVC.h"
-#import "BeeepItVC.h"
 #import "EventVC.h"
 #import "FollowListVC.h"
 #import "CHTCollectionViewWaterfallLayout.h"
@@ -21,7 +20,6 @@
 #import "GHContextMenuView.h"
 #import "EventWS.h"
 #import "Event_Show_Object.h"
-#import "SuggestBeeepVC.h"
 #import "BorderTextField.h"
 #import "Event_Search.h"
 #import "BeeepedBy.h"
@@ -827,13 +825,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = [beeeps objectAtIndex:path.row];
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
+    [[TabbarVC sharedTabbar]reBeeepPressed:[beeeps objectAtIndex:path.row] controller:self];
     
-    [self presentViewController:viewController animated:YES completion:nil];
-    
-
 }
 
 - (IBAction)showUser:(UIButton *)sender {
@@ -1090,18 +1083,16 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         return;
     }
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    id tml;
     
     if (beeeps != nil || selectedIndex == 1) {
-         viewController.tml = [beeeps objectAtIndex:indexpath.row];
+         tml = [beeeps objectAtIndex:indexpath.row];
     }
     else{
-         viewController.tml = [events objectAtIndex:indexpath.row];
+         tml = [events objectAtIndex:indexpath.row];
     }
     
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
-    
-    [self presentViewController:viewController animated:YES completion:nil];
+    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
 
 }
 
@@ -1227,39 +1218,33 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
+    NSString *localFingerPrint;
+    
     if (beeeps != nil || selectedIndex == 1) {
             
         Friendsfeed_Object *ffo = [beeeps objectAtIndex:indexpath.row];
         
         Beeeps *bps = [ffo.beeepFfo.beeeps firstObject];
         
-        SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-        viewController.fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+        localFingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
         
-        if (viewController.fingerprint != nil) {
-             [self presentViewController:viewController animated:YES completion:nil];
-        }
-        else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-        }
     }
     else{
         
         Event_Search *event = [events objectAtIndex:indexpath.row];
         
-        SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-        viewController.fingerprint = event.fingerprint;
-        
-        if (viewController.fingerprint != nil) {
-            [self presentViewController:viewController animated:YES completion:nil];
-        }
-        else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-        }
-
+        localFingerPrint = event.fingerprint;
     }
+    
+    if (localFingerPrint) {
+        
+        [[TabbarVC sharedTabbar]suggestPressed:localFingerPrint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
+    }
+    else{
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+
 }
 
 
@@ -1346,7 +1331,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (IBAction)addNewBeeep:(id)sender {
-    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+    [[TabbarVC sharedTabbar]addBeeepPressed:self];
 }
 
 -(void)showBadgeIcon{

@@ -15,8 +15,6 @@
 #import "CHTCollectionViewWaterfallFooter.h"
 #import "EventVC.h"
 #import "GHContextMenuView.h"
-#import "BeeepItVC.h"
-#import "SuggestBeeepVC.h"
 #import "FollowListVC.h"
 #import "CommentsVC.h"
 
@@ -760,13 +758,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = [events objectAtIndex:indexpath.row];
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
-    
-    NSLog(@"%@",self.parentViewController.parentViewController);
-    
-    [self presentViewController:viewController animated:YES completion:nil];
+    [[TabbarVC sharedTabbar]reBeeepPressed:[events objectAtIndex:indexpath.row] controller:self];
     
 }
 
@@ -799,11 +791,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Event_Search *event = [events objectAtIndex:indexpath.row];
     
-    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    viewController.fingerprint = event.fingerprint;
-    
-    if (viewController.fingerprint != nil) {
-        [self presentViewController:viewController animated:YES completion:nil];
+    if (event.fingerprint != nil) {
+        [[TabbarVC sharedTabbar]suggestPressed:event.fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -863,7 +852,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (IBAction)addNewBeeep:(id)sender {
-    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+    [[TabbarVC sharedTabbar]addBeeepPressed:self];
 }
 
 -(void)showBadgeIcon{

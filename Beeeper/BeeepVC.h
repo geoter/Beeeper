@@ -24,6 +24,10 @@
 @property (weak, nonatomic) IBOutlet TKRoundedView *whenBGV;
 @property (weak, nonatomic) IBOutlet TKRoundedView *addPhotoBGV;
 @property (weak, nonatomic) IBOutlet TKRoundedView *tagsBGV;
+@property (weak, nonatomic) IBOutlet UIView *blurContainerV;
+
+@property (weak, nonatomic) IBOutlet UIImageView *blurredImageV;
+@property (nonatomic,strong) UIView *superviewToBlur;
 
 - (IBAction)releaseKeyborad:(id)sender;
 

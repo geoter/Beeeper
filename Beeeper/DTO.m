@@ -9,6 +9,7 @@
 #import "DTO.h"
 #import "Beeep_Object.h"
 #import "BPSuggestions.h"
+#import "UIImage+StackBlur.h"
 
 static DTO *thisDTO = nil;
 
@@ -466,6 +467,15 @@ static DTO *thisDTO = nil;
         }
     }];
     
+}
+
+-(UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius{
+    UIGraphicsBeginImageContext(view.bounds.size);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    UIImage *blurredImg = [image stackBlur:blurRadius];
+    return blurredImg;
 }
 
 @end

@@ -40,14 +40,14 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Spiros G. Halivelakis" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="212" translatesAutoresizingMaskIntoConstraints="NO" id="whW-KH-wiS">
-                                                    <rect key="frame" x="58" y="0.0" width="212" height="60"/>
+                                                    <rect key="frame" x="58" y="2" width="205" height="60"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ws1-Ec-TTp">
-                                                    <rect key="frame" x="271" y="0.0" width="49" height="60"/>
-                                                    <state key="normal" image="not-following-icon.png">
+                                                    <rect key="frame" x="262" y="0.0" width="58" height="60"/>
+                                                    <state key="normal" image="invite_new.png">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -88,7 +88,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aZH-NP-JpP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2552" y="-1021"/>
+            <point key="canvasLocation" x="2552" y="-1024"/>
         </scene>
         <!--Activity-->
         <scene sceneID="n8Q-mq-9kP">
@@ -317,7 +317,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="62X-j2-Ejh">
-                                                    <rect key="frame" x="260" y="0.0" width="60" height="60"/>
+                                                    <rect key="frame" x="262" y="0.0" width="58" height="60"/>
                                                     <state key="normal" image="invite_new.png">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -360,10 +360,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" tag="14" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invite_fb_new.png" translatesAutoresizingMaskIntoConstraints="NO" id="5RM-YC-hDE">
-                                                    <rect key="frame" x="267" y="15" width="46" height="30"/>
+                                                    <rect key="frame" x="269" y="15" width="44" height="30"/>
                                                 </imageView>
                                                 <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GUq-Mk-cst">
-                                                    <rect key="frame" x="260" y="0.0" width="60" height="60"/>
+                                                    <rect key="frame" x="262" y="0.0" width="58" height="60"/>
                                                     <state key="normal" image="invite_new.png">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -841,7 +841,6 @@
         <image name="invite_fb_new.png" width="46" height="30"/>
         <image name="invite_new.png" width="46" height="30"/>
         <image name="nba_494_384.png" width="247" height="192"/>
-        <image name="not-following-icon.png" width="28" height="27"/>
         <image name="suggest_unselected.png" width="22" height="22"/>
         <image name="user_icon_180x180.png" width="90" height="90"/>
         <image name="welcome_screen_0.png" width="320" height="568"/>

@@ -7,9 +7,7 @@
 //
 
 #import "EventVC.h"
-#import "BeeepItVC.h"
 #import "PHFComposeBarView.h"
-#import "SuggestBeeepVC.h"
 #import "Comment.h"
 #import "Comments.h"
 #import "EventWS.h"
@@ -1813,11 +1811,8 @@
 
 -(void)suggestIt{
     
-    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    viewController.fingerprint = fingerprint;
-    
-    if (viewController.fingerprint != nil) {
-        [self presentViewController:viewController animated:YES completion:nil];
+    if (fingerprint != nil) {
+        [[TabbarVC sharedTabbar]suggestPressed:fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -2356,20 +2351,18 @@
     @finally {
     
     }
- 
 
-    
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    id tml;
     
     if([tml isKindOfClass:[Friendsfeed_Object class]] || [tml isKindOfClass:[Timeline_Object class]] || [tml isKindOfClass:[Suggestion_Object class]]){
-        viewController.tml = self.tml;
+        tml = self.tml;
     }
     else{
-        viewController.tml = event_show_Objct;
+        tml = event_show_Objct;
     }
     
-    
-    [self presentViewController:viewController animated:YES completion:nil];
+    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
+
 }
 
 - (IBAction)showLikes:(id)sender {

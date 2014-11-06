@@ -67,6 +67,9 @@
 		5EE13A211951604F00540C04 /* Suggestion_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1C1951604F00540C04 /* Suggestion_Object.m */; };
 		5EE13A221951604F00540C04 /* What_Suggest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A1D1951604F00540C04 /* What_Suggest.m */; };
 		5EE13A261951AE7200540C04 /* Beeep_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EE13A241951AE7200540C04 /* Beeep_Object.m */; };
+		63094B691A0A997D000428AE /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63094B681A0A997C000428AE /* CoreMedia.framework */; };
+		63094B6B1A0A9986000428AE /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63094B6A1A0A9986000428AE /* CoreVideo.framework */; };
+		63094C1A1A0AA290000428AE /* UIImage+StackBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 63094C191A0AA290000428AE /* UIImage+StackBlur.m */; };
 		632BB27D19E421A6003CD50A /* GTPushButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 632BB27C19E421A6003CD50A /* GTPushButton.m */; };
 		632BB28319E43B78003CD50A /* GTCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 632BB28219E43B78003CD50A /* GTCustomCell.m */; };
 		632BB28619E46A63003CD50A /* beeep_it_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 632BB28419E46A63003CD50A /* beeep_it_white.png */; };
@@ -99,6 +102,8 @@
 		6356324A19EC519C0001D4AE /* Whom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6356324119EC519C0001D4AE /* Whom.m */; };
 		637841711A0047EE0047C27B /* chooseDate-arrow-down-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */; };
 		637841721A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */; };
+		63AC25E11A0AB30200D03932 /* beeepItIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AC25DF1A0AB30200D03932 /* beeepItIcon.png */; };
+		63AC25E21A0AB30200D03932 /* beeepItIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AC25E01A0AB30200D03932 /* beeepItIcon@2x.png */; };
 		63AE28D319F14FEA004EB040 /* UIViewController+KNSemiModal.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */; };
 		63AE28D619F15334004EB040 /* calendar_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D419F15334004EB040 /* calendar_btn.png */; };
 		63AE28D719F15334004EB040 /* calendar_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AE28D519F15334004EB040 /* calendar_btn@2x.png */; };
@@ -653,6 +658,10 @@
 		5EE13A1F1951604F00540C04 /* Suggestion_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Suggestion_Object.h; sourceTree = "<group>"; };
 		5EE13A241951AE7200540C04 /* Beeep_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beeep_Object.m; sourceTree = "<group>"; };
 		5EE13A251951AE7200540C04 /* Beeep_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beeep_Object.h; sourceTree = "<group>"; };
+		63094B681A0A997C000428AE /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		63094B6A1A0A9986000428AE /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		63094C181A0AA290000428AE /* UIImage+StackBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+StackBlur.h"; sourceTree = "<group>"; };
+		63094C191A0AA290000428AE /* UIImage+StackBlur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+StackBlur.m"; sourceTree = "<group>"; };
 		632BB27B19E421A6003CD50A /* GTPushButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPushButton.h; sourceTree = "<group>"; };
 		632BB27C19E421A6003CD50A /* GTPushButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPushButton.m; sourceTree = "<group>"; };
 		632BB28119E43B78003CD50A /* GTCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTCustomCell.h; sourceTree = "<group>"; };
@@ -701,6 +710,8 @@
 		6356324119EC519C0001D4AE /* Whom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Whom.m; sourceTree = "<group>"; };
 		6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chooseDate-arrow-down-white.png"; sourceTree = "<group>"; };
 		637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chooseDate-arrow-down-white@2x.png"; sourceTree = "<group>"; };
+		63AC25DF1A0AB30200D03932 /* beeepItIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItIcon.png; sourceTree = "<group>"; };
+		63AC25E01A0AB30200D03932 /* beeepItIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepItIcon@2x.png"; sourceTree = "<group>"; };
 		63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KNSemiModal.h"; sourceTree = "<group>"; };
 		63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KNSemiModal.m"; sourceTree = "<group>"; };
 		63AE28D419F15334004EB040 /* calendar_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar_btn.png; sourceTree = "<group>"; };
@@ -1315,12 +1326,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63C27D0419FB930900564583 /* OpenGLES.framework in Frameworks */,
+				63094B6B1A0A9986000428AE /* CoreVideo.framework in Frameworks */,
+				63094B691A0A997D000428AE /* CoreMedia.framework in Frameworks */,
 				63C27D0C19FB933A00564583 /* CoreLocation.framework in Frameworks */,
 				63C27D0A19FB933400564583 /* CoreText.framework in Frameworks */,
 				5EAC993419D8204B00B438FE /* ImageIO.framework in Frameworks */,
 				63C27D0819FB931F00564583 /* libc++.dylib in Frameworks */,
 				63C27D0619FB931600564583 /* libicucore.dylib in Frameworks */,
-				63C27D0419FB930900564583 /* OpenGLES.framework in Frameworks */,
 				63C27D0219FB92FF00564583 /* MapKit.framework in Frameworks */,
 				63C27D0019FB92F100564583 /* MessageUI.framework in Frameworks */,
 				63C27CFE19FB92E800564583 /* CoreData.framework in Frameworks */,
@@ -1453,6 +1466,8 @@
 		5EA7FAF419595A9E0033C061 /* R */ = {
 			isa = PBXGroup;
 			children = (
+				63AC25DF1A0AB30200D03932 /* beeepItIcon.png */,
+				63AC25E01A0AB30200D03932 /* beeepItIcon@2x.png */,
 				5E0FD46B19F31FD40055E7EA /* Beeep_it_btn_long.png */,
 				5E0FD46C19F31FD40055E7EA /* Beeep_it_btn_long@2x.png */,
 				CE3D18EF19B9FADE003CA382 /* Beeep_it_btn.png */,
@@ -1493,6 +1508,22 @@
 				CEA113211952ED77003C8D7B /* Suggest_popup_unpressed@2x.png */,
 			);
 			name = "Icons Long Press";
+			sourceTree = "<group>";
+		};
+		63094B5A1A0A988D000428AE /* GPUImage */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = GPUImage;
+			sourceTree = "<group>";
+		};
+		63094B6C1A0A9C56000428AE /* Blur */ = {
+			isa = PBXGroup;
+			children = (
+				63094C181A0AA290000428AE /* UIImage+StackBlur.h */,
+				63094C191A0AA290000428AE /* UIImage+StackBlur.m */,
+			);
+			name = Blur;
 			sourceTree = "<group>";
 		};
 		63B58E3719FF015700168F54 /* Calendar */ = {
@@ -1905,6 +1936,7 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				63094B5A1A0A988D000428AE /* GPUImage */,
 				63B58E3719FF015700168F54 /* Calendar */,
 				63C27CE719FB8C6B00564583 /* FMDB */,
 				5EA2D4AC19F42DDD000977A4 /* TKRoundedView.h */,
@@ -2378,6 +2410,9 @@
 		CEA64F0F18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63094B6C1A0A9C56000428AE /* Blur */,
+				63094B6A1A0A9986000428AE /* CoreVideo.framework */,
+				63094B681A0A997C000428AE /* CoreMedia.framework */,
 				63C27D0B19FB933A00564583 /* CoreLocation.framework */,
 				63C27D0919FB933400564583 /* CoreText.framework */,
 				63C27D0719FB931F00564583 /* libc++.dylib */,
@@ -2834,6 +2869,7 @@
 				CE08DD111937758100B090BE /* tick_following.png in Resources */,
 				CEFDE81218ED651D00E500A9 /* welcome_screen_0@2x.png in Resources */,
 				CE08DD101937758100B090BE /* tick_following@2x.png in Resources */,
+				63AC25E11A0AB30200D03932 /* beeepItIcon.png in Resources */,
 				63C5FE061A076F7700E9EE22 /* follow_all@2x.png in Resources */,
 				63AE28D719F15334004EB040 /* calendar_btn@2x.png in Resources */,
 				634A2E9A1A06A4C500224B54 /* invited_new.png in Resources */,
@@ -3098,6 +3134,7 @@
 				CE7CFAE918B797C10044C9AC /* MessageEntrySendButtonPressed@2x.png in Resources */,
 				632BB28A19E46C63003CD50A /* Passed_white.png in Resources */,
 				CE29EE2F18D9CADB0001EC43 /* Add_new_beeep_btn@2x.png in Resources */,
+				63AC25E21A0AB30200D03932 /* beeepItIcon@2x.png in Resources */,
 				CE3D18F219B9FADE003CA382 /* Beeep_it_btn@2x.png in Resources */,
 				CEFDE82618ED77BD00E500A9 /* Activity_icon@2x.png in Resources */,
 				CE25F9EB18B6761300D8B858 /* NotificationBackgroundError.png in Resources */,
@@ -3182,6 +3219,7 @@
 				CEFDE83918EDA16B00E500A9 /* AboutVC.m in Sources */,
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
 				63CB8D1819DB15890005E88E /* UIImage+GIF.m in Sources */,
+				63094C1A1A0AA290000428AE /* UIImage+StackBlur.m in Sources */,
 				63CB8D1D19DB15890005E88E /* UIView+WebCacheOperation.m in Sources */,
 				63C27CF419FB8C7800564583 /* FMDatabaseAdditions.m in Sources */,
 				CEA64F4918B3A71400B7ECF5 /* LoginVC.m in Sources */,
@@ -3448,8 +3486,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3462,8 +3500,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3cbcc12-4a55-48d2-8b73-09f699924038";
+				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3473,8 +3516,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3487,8 +3530,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beeeper/Beeeper-Prefix.pch";
 				INFOPLIST_FILE = "Beeeper/Beeeper-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3cbcc12-4a55-48d2-8b73-09f699924038";
+				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

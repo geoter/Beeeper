@@ -7,7 +7,6 @@
 //
 
 #import "BeeepVC.h"
-#import "BeeepItVC.h"
 #import "DZNPhotoPickerController.h"
 #import "UIImagePickerControllerExtended.h"
 #import "MyDateTimePicker.h"
@@ -45,15 +44,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
+      [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    self.blurredImageV.image = blurredImg;
+    
     predefinedTags = [NSMutableArray array];
+    
+    self.blurContainerV.alpha = 0;
     
     self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
     self.titleBGV.borderColor = [UIColor whiteColor];
     self.titleBGV.borderWidth = 0.0f;
     self.titleBGV.cornerRadius = 6;
     self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-
+    
     self.whereBGV.roundedCorners = TKRoundedCornerNone;
     self.whereBGV.borderColor = [UIColor whiteColor];
     self.whereBGV.borderWidth = 0.0f;
@@ -101,7 +107,7 @@
                                consumerSecret:kGoogleImagesSearchEngineID
                                  subscription:DZNPhotoPickerControllerSubscriptionFree];
     
-    self.containerScrollV.contentSize = CGSizeMake(305, 534);
+    self.containerScrollV.contentSize = CGSizeMake(294, 534);
     self.scrollV.contentSize = CGSizeMake(320, self.scrollV.frame.size.height);
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
@@ -154,10 +160,10 @@
     latitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
     longitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
     
-    [values setObject:city forKey:@"city"];
-    [values setObject:country forKey:@"country"];
-    [values setObject:state forKey:@"state"];
-    [values setObject:adress forKey:@"address"];
+    [values setObject:(city)?city:@"" forKey:@"city"];
+    [values setObject:(country)?country:@"" forKey:@"country"];
+    [values setObject:(state)?state:@"" forKey:@"state"];
+    [values setObject:(adress)?adress:@"" forKey:@"address"];
     [values setObject:[longitude stringValue] forKey:@"longitude"];
     [values setObject:[latitude stringValue] forKey:@"latitude"];
 }
@@ -469,7 +475,7 @@
     
     [self.containerScrollV setContentOffset:CGPointMake(0, 170) animated:YES];
     
-    if ([textView.text isEqualToString:@"Other"]) {
+    if ([textView.text isEqualToString:@"write more hashtags"]) {
         textView.text = @"#";
     }
     
@@ -515,7 +521,7 @@
     if (textView.text.length == 0 || [textView.text isEqualToString:@"#"]) {
         [values removeObjectForKey:@"keywords"];
 
-        textView.text = @"Other";
+        textView.text = @"write more hashtags";
         
         textView.textColor = [UIColor colorWithRed:184/255.0 green:185/255.0 blue:186/255.0 alpha:1];
     }
@@ -605,17 +611,28 @@
     
     [self.parentViewController.navigationController setNavigationBarHidden:NO animated:YES];
     
-    [UIView animateWithDuration:0.4f
+    [UIView animateWithDuration:0.3f
                      animations:^
      {
-         self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
+         self.blurContainerV.alpha = 0;
      }
                      completion:^(BOOL finished)
      {
-         [self removeFromParentViewController];
-         [self.view removeFromSuperview];
+         [UIView animateWithDuration:0.4f
+                          animations:^
+          {
+              self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
+          }
+                          completion:^(BOOL finished)
+          {
+              [self removeFromParentViewController];
+              [self.view removeFromSuperview];
+              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+          }
+          ];
      }
      ];
+   
 }
 
 - (IBAction)nextPressed:(UIButton *)sender {
@@ -680,36 +697,18 @@
                 [sender setTitle:@"NEXT" forState:UIControlStateNormal];
                 
                 if (completed) {
-                    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+                   
+                    id tml;
                     
                     if ([objs isKindOfClass:[NSArray class]]) {
-                        viewController.values = [(NSArray *)objs firstObject];
+                        tml = [(NSArray *)objs firstObject];
                     }
                     else{
-                        viewController.values = objs;
+                        tml = objs;
                     }
                     
-                    if (values == nil) {
-                        NSLog(@"NIL values");
-                        return;
-                    }
-                    
-                    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
-    //                [self.view.superview addSubview:viewController.view];
-    //                [self.parentViewController addChildViewController:viewController];
-    //
-    //                
-    //                [UIView animateWithDuration:0.4f
-    //                                 animations:^
-    //                 {
-    //                     viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
-    //                 }
-    //                                 completion:^(BOOL finished)
-    //                 {
-    //                 }
-    //                 ];;
-                    
-                    [self.navigationController presentViewController:viewController animated:YES completion:NULL];
+                    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
+                
                 }
                 else{
                     

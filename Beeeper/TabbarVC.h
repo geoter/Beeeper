@@ -9,20 +9,23 @@
 #import <UIKit/UIKit.h>
 
 @interface TabbarVC : UIViewController
-@property (weak, nonatomic) IBOutlet UIView *containerVC;
 
+@property (weak, nonatomic) IBOutlet UIView *containerVC;
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (strong, nonatomic) IBOutlet UILabel *notificationLabel;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
-
 @property (nonatomic,assign) BOOL showsSplashOnLoad;
-
 
 - (void)updateNotificationsBadge;
 - (void)hideBadgeIcon;
-- (IBAction)addBeeepPressed:(id)sender;
+
+- (void)addBeeepPressed:(id)sender;
+- (void)reBeeepPressed:(id)sender_tml controller:(UIViewController *)sender;
+- (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur;
+
 - (IBAction)tabbarButtonTapped:(id)sender;
 - (void)showAlert:(NSString *)title text:(NSString *)text;
+
 + (TabbarVC *)sharedTabbar;
 
 @end

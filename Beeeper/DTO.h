@@ -41,6 +41,8 @@ typedef void(^completed)(BOOL,id);
 - (void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc;
 - (UIImage *)imageWithColor:(UIColor *)color;
 - (NSString *)urlencode:(NSString *)str;
+- (UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius;
+
 @end
 
 

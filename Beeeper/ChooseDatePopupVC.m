@@ -23,16 +23,21 @@
     UITapGestureRecognizer *tapg = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(releaseMe:)];
     [self.view addGestureRecognizer:tapg];
     
-    self.expandableV.roundedCorners = TKRoundedCornerAll;
+    self.expandableV.roundedCorners = TKRoundedCornerNone;
     self.expandableV.cornerRadius = 6;
     self.expandableV.borderWidth = 0;
 
-    self.optionsV.roundedCorners = TKRoundedCornerAll;
+    self.optionsV.roundedCorners = TKRoundedCornerNone;
     self.optionsV.cornerRadius = 6;
     self.optionsV.borderWidth = 0;
+    
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:4];
+    self.blurredImageV.image = blurredImg;
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+   
     [super viewWillAppear:animated];
     
     switch (self.option) {
@@ -48,7 +53,6 @@
         default:
             break;
     }
-    
     
     [self.optionLabel sizeToFit];
     self.optionLabel.center = CGPointMake(self.optionLabel.superview.center.x,self.optionLabel.center.y);

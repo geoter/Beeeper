@@ -307,10 +307,10 @@
         btn.hidden = NO;
         
         if ([following indexOfObject:user] != NSNotFound) {
-            [btn setImage:[UIImage imageNamed:@"following-icon.png"] forState:UIControlStateNormal] ;
+            [btn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal] ;
         }
         else{
-            [btn setImage:[UIImage imageNamed:@"not-following-icon.png"] forState:UIControlStateNormal] ;
+            [btn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
         }
 
     }

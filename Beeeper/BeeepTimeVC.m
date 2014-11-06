@@ -8,24 +8,6 @@
 
 #import "BeeepTimeVC.h"
 
-@interface HighButton : UIButton
-
-@end
-
-@implementation HighButton
-
-
-- (void)setHighlighted:(BOOL)highlighted {
-    [super setHighlighted:highlighted];
-    
-    if (highlighted) {
-       
-    }
-}
-
-
-@end
-
 @interface BeeepTimeVC ()
 
 @end
@@ -44,9 +26,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+   
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.corneredBGV.bounds byRoundingCorners:UIRectCornerAllCorners                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
+    // Create the shape layer and set its path
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.frame = self.corneredBGV.bounds;
+    maskLayer.path = maskPath.CGPath;
+    // Set the newly created shape layer as the mask for the image view's layer
+    self.corneredBGV.layer.mask = maskLayer;
+    self.corneredBGV.layer.shadowColor = [UIColor colorWithRed:152/255.0 green:157/255.0 blue:164/255.0 alpha:1].CGColor;
+    
     self.scrollV.contentSize = CGSizeMake(320, 568);
     
-    for (UIButton *b in self.scrollV.subviews) {
+    for (UIButton *b in self.corneredBGV.subviews) {
         if ([b isKindOfClass:[UIButton class]] && b.tag != 77) {
             [b addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
             [b addTarget:self action:@selector(touchCancel:) forControlEvents:UIControlEventTouchDragExit];
@@ -59,10 +53,10 @@
 {
     UIButton *b = (UIButton*)sender;
 
-    b.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    b.backgroundColor = [UIColor colorWithRed:152/255.0 green:157/255.0 blue:164/255.0 alpha:1];
     [b setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+    [b setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [b setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
 }
 
 - (IBAction)touchCancel:(id)sender

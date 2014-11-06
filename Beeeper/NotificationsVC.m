@@ -705,7 +705,7 @@
 
 
 - (IBAction)addNewBeeep:(id)sender {
-    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+    [[TabbarVC sharedTabbar]addBeeepPressed:self];
 }
 
 

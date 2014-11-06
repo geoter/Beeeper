@@ -24,6 +24,9 @@
 @property (weak, nonatomic) IBOutlet TKRoundedView *expandableV;
 @property (nonatomic,strong) NSDate *selectedDate;
 
+@property (weak, nonatomic) IBOutlet UIImageView *blurredImageV;
+@property (nonatomic,strong) UIView *superviewToBlur;
+
 @property (nonatomic,assign) int option;
 @property (nonatomic,weak) id<ChooseDatePopupVCDelegate>delegate;
 - (IBAction)selection:(id)sender;

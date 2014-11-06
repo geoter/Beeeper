@@ -8,7 +8,6 @@
 
 #import "TimelineVC.h"
 #import "EventVC.h"
-#import "BeeepItVC.h"
 #import "FollowListVC.h"
 #import "Timeline_Object.h"
 #import "CommentsVC.h"
@@ -16,7 +15,6 @@
 #import "GTSegmentedControl.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "GHContextMenuView.h"
-#import "SuggestBeeepVC.h"
 #import "EventWS.h"
 #import "Event_Show_Object.h"
 #import "BPSuggestions.h"
@@ -484,8 +482,9 @@
         
         [totalBeeepsBtn setAttributedTitle:attText forState: UIControlStateNormal];
         
+        NSString *city = [[user objectForKey:@"city"] capitalizedString];
         
-        if ([user objectForKey:@"city"] != nil) {
+        if (city != nil && city.length > 0) {
             
             [UIView animateWithDuration:0.3f
                      animations:^
@@ -499,11 +498,15 @@
              }
              ];
             
-            self.userCityLabel.text = [[user objectForKey:@"city"] capitalizedString];
+            
+            self.userCityLabel.hidden = NO;
+            self.pinIcon.hidden = NO;
+            
+            self.userCityLabel.text = city;
             [self.userCityLabel sizeToFit];
             self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
             self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
-            
+
         }
         else{
             
@@ -1287,11 +1290,7 @@
         return;
     }
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = b;
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
-    
-    [self presentViewController:viewController animated:YES completion:nil];    
+    [[TabbarVC sharedTabbar]reBeeepPressed:b controller:self];
 
 }
 
@@ -1697,16 +1696,10 @@
         [alert show];
         return;
     }
-    
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    
 
     Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
-    viewController.tml = b;
     
-    viewController.view.frame = self.parentViewController.parentViewController.view.bounds;
-    
-    [self presentViewController:viewController animated:YES completion:nil];
+    [[TabbarVC sharedTabbar]reBeeepPressed:b controller:self];
     
 }
 
@@ -1781,11 +1774,8 @@
     
     Timeline_Object*b = [beeeps objectAtIndex:indexpath.row];
     
-    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    viewController.fingerprint = b.event.fingerprint;
-    
-    if (viewController.fingerprint != nil) {
-        [self presentViewController:viewController animated:YES completion:nil];
+    if (b.event.fingerprint != nil) {
+        [[TabbarVC sharedTabbar]suggestPressed:b.event.fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -1800,7 +1790,7 @@
 }
 
 - (IBAction)addNewBeeep:(id)sender {
-    [[TabbarVC sharedTabbar]addBeeepPressed:nil];
+    [[TabbarVC sharedTabbar]addBeeepPressed:self];
 }
 
 -(void)showBadgeIcon{
@@ -1950,6 +1940,8 @@
 - (IBAction)calendarPressed:(UIButton *)sender {
     
     chooseDatePopupVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ChooseDatePopupVC"];
+    chooseDatePopupVC.superviewToBlur = self.navigationController.view;
+    
     chooseDatePopupVC.view.frame = self.view.bounds;
     chooseDatePopupVC.delegate = self;
     

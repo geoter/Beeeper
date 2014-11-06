@@ -31,12 +31,19 @@
     return self;
 }
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    self.blurredImageV.image = blurredImg;
+    
+    self.blurContainerV.alpha = 0;
+    
     [self adjustFonts];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
     rowsToReload = [NSMutableArray array];
     
@@ -46,7 +53,7 @@
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    UIColor *color = [UIColor lightTextColor];
+    UIColor *color = [UIColor whiteColor];
     self.searchTxtF.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Search by name" attributes:@{NSForegroundColorAttributeName: color}];
     
     [self getFollowers];
@@ -66,34 +73,41 @@
         
         if (completed) {
             
-            if ([objs isKindOfClass:[NSArray class]] && objs.count == 0) {
+            if ([objs isKindOfClass:[NSArray class]]) {
                
+                @try {
+                    people = [NSMutableArray arrayWithArray:objs];
+                    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
+                    people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
+                    filteredPeople = people;
+                   
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self.tableV reloadData];
+                    
+                        self.noBeeepersFoundLbl.text = @"No Followers found";
+                        
+                        if (objs.count == 0) {
+                            self.noBeeepersFoundLbl.hidden = NO;
+                        }
+                        else{
+                            self.noBeeepersFoundLbl.hidden = YES;
+                        }
+                         
+                     });
+                }
+                @catch (NSException *exception) {
+        
+                }
+                @finally {
+        
+                }
+            }
+            else{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser Completed but objs == 0" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Could not load Followers. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                     [alert show];
                     
                 });
-            }
-            
-            @try {
-                people = [NSMutableArray arrayWithArray:objs];
-                NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"name"  ascending:YES];
-                people = [NSMutableArray arrayWithArray:[people sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]]];
-                filteredPeople = people;
-                [self.tableV reloadData];
-                
-                if (objs == 0) {
-                    self.noBeeepersFoundLbl.hidden = NO;
-                }
-                else{
-                    self.noBeeepersFoundLbl.hidden = YES;
-                }
-            }
-            @catch (NSException *exception) {
-    
-            }
-            @finally {
-    
             }
          
         }
@@ -105,7 +119,7 @@
             else{
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser not Completed" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                     [alert show];
 
                  });
@@ -220,19 +234,49 @@
 
 -(void)hide{
     
-    /*[UIView animateWithDuration:0.7f
-                     animations:^
-     {
-         self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-         self.containerV.frame = CGRectMake(0, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
-     }
-                     completion:^(BOOL finished)
-     {
-         [self removeFromParentViewController];
-         [self.view removeFromSuperview];
-     }
-     ];*/
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    
+    if (self.showBlur) {
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             self.blurContainerV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             
+             [UIView animateWithDuration:0.7f
+                              animations:^
+              {
+                  self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+                  self.containerV.frame = CGRectMake(0, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+              }
+                              completion:^(BOOL finished)
+              {
+                  [self removeFromParentViewController];
+                  [self.view removeFromSuperview];
+              }
+              ];
+             
+         }];
+    }
+    else{
+        [UIView animateWithDuration:0.7f
+                         animations:^
+         {
+             self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+             self.containerV.frame = CGRectMake(0, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+         }
+                         completion:^(BOOL finished)
+         {
+             [self removeFromParentViewController];
+             [self.view removeFromSuperview];
+         }
+         ];
+    }
+    
+   // [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 /*

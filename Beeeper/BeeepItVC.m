@@ -13,14 +13,12 @@
 #import "BPCreate.h"
 #import "Suggestion_Object.h"
 #import "Event_Show_Object.h"
-#import "SuggestBeeepVC.h"
 #import "Activity_Object.h"
 #import "Event_Search.h"
 #import <Twitter/Twitter.h>
 #import <Social/Social.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "BPActivity.h"
-#import "TKRoundedView.h"
 #import "BPSuggestions.h"
 
 @interface BeeepItVC ()
@@ -53,21 +51,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    self.blurredImageV.image = blurredImg;
+    
+    self.blurContainerV.alpha = 0;
+    
 //    self.suggestButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
 //    self.suggestButton.layer.borderWidth = 1;
 //    self.suggestButton.layer.cornerRadius = 5;
 
     TKRoundedView *beeepTimeBGV = (TKRoundedView *)[self.view viewWithTag:1111];
     beeepTimeBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
     beeepTimeBGV.borderWidth = 1.0f;
     beeepTimeBGV.cornerRadius = 6;
     beeepTimeBGV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
     
     TKRoundedView *suggestBGV = (TKRoundedView *)[self.view viewWithTag:1112];
     suggestBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1];
+    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
     suggestBGV.borderWidth = 1.0f;
     suggestBGV.cornerRadius = 6;
     
@@ -75,16 +80,18 @@
 //    self.beeepTimeButton.layer.borderWidth = 1;
 //    self.beeepTimeButton.layer.cornerRadius = 5;
     
-    self.fbShareV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
-    self.fbShareV.layer.borderWidth = 1;
-    self.fbShareV.layer.masksToBounds = YES;
-    self.fbShareV.layer.cornerRadius = 2;
-    
-    self.twitterV.layer.borderColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1].CGColor;
-    self.twitterV.layer.borderWidth = 1;
-    self.twitterV.layer.masksToBounds = YES;
-    self.twitterV.layer.cornerRadius = 2;
+    self.fbShareV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+    self.fbShareV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+    self.fbShareV.borderWidth = 1.0f;
+    self.fbShareV.cornerRadius = 6;
+    self.fbShareV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
 
+    self.twitterV.roundedCorners =  TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+    self.twitterV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+    self.twitterV.borderWidth = 1.0f;
+    self.twitterV.cornerRadius = 6;
+    self.twitterV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
+    
     [self adjustFonts];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
@@ -403,11 +410,33 @@
 
 - (IBAction)close:(id)sender {
     
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (sender == nil) {
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
-            [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
-        }
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^
+     {
+         self.blurContainerV.alpha = 0;
+     }
+                     completion:^(BOOL finished)
+     {
+         [UIView animateWithDuration:0.5f
+                          animations:^
+          {
+              self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
+          }
+                          completion:^(BOOL finished)
+          {
+              [self removeFromParentViewController];
+              [self.view removeFromSuperview];
+              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+              
+              if (sender == nil) {
+                  [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
+                  [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
+              }
+          }
+          ];
+
     }];
     
 }
@@ -878,45 +907,44 @@
 }
 
 - (IBAction)suggestItPressed:(id)sender {
-    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
-    viewController.sendNotificationWhenFinished = YES;
     
-    if (followers != nil && followers.count != 0) {
-        viewController.selectedPeople = [NSMutableArray arrayWithArray:followers];
-    }
-    
-    NSString  *fingerPrint;
-
+    NSString  *fingerPrintLocal;
     
     Timeline_Object *t = tml; //one of those two will be used
     Friendsfeed_Object *ffo = tml;
     Suggestion_Object *sgo = tml;
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
-        fingerPrint = t.beeep.beeepInfo.fingerprint;
+        fingerPrintLocal = t.beeep.beeepInfo.fingerprint;
     }
     else if ([tml isKindOfClass:[Event_Show_Object class]]){
         Event_Show_Object *activity = tml;
         
-        fingerPrint = activity.eventInfo.fingerprint;
+        fingerPrintLocal = activity.eventInfo.fingerprint;
         
     }
     else if([tml isKindOfClass:[Suggestion_Object class]]){
-        fingerPrint = sgo.what.fingerprint;
+        fingerPrintLocal = sgo.what.fingerprint;
     }
     else if ([tml isKindOfClass:[Event_Search class]]){
         Event_Search *eventS = tml;
-        fingerPrint = eventS.fingerprint;
+        fingerPrintLocal = eventS.fingerprint;
     }
     
     else{
-        fingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+        fingerPrintLocal = ffo.eventFfo.eventDetailsFfo.fingerprint;
     }
     
-    viewController.fingerprint = fingerPrint;
     
-    if (viewController.fingerprint != nil) {
-        [self presentViewController:viewController animated:YES completion:nil];
+    if (fingerPrintLocal != nil) {
+        
+        NSMutableArray *selectedPeople;
+        
+        if (followers != nil && followers.count != 0) {
+            selectedPeople = [NSMutableArray arrayWithArray:followers];
+        }
+        
+        [[TabbarVC sharedTabbar]suggestPressed:fingerPrintLocal controller:self sendNotificationWhenFinished:YES selectedPeople:selectedPeople showBlur:NO];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

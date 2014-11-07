@@ -16,6 +16,17 @@
 #import "BPCreate.h"
 #import "GoogleCustomSearchVC.h"
 
+@interface InputTextView : UITextView
+@end
+
+@implementation InputTextView
+
+/*************************************************
+ * fixes the issue with single lined uitextview
+ *************************************************/
+- (UIEdgeInsets) contentInset { return UIEdgeInsetsZero; }
+
+@end
 
 @class BorderTextField;
 @interface BeeepVC ()<UITextFieldDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,LocationManagerDelegate,UIAlertViewDelegate,UITextViewDelegate>
@@ -265,7 +276,7 @@
     
     if (typedStr.length == 0) {
         textField.textAlignment = NSTextAlignmentLeft;
-        textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
+        textField.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
         //remove value
         
         switch (textField.tag) {
@@ -577,6 +588,8 @@
                 
                 [(UITextField *)v2 setTextColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
                 
+                [(UITextField *)v2 setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:15]];
+                
                 [self validTextfield:(UITextField *)v2];
             }
         }
@@ -719,7 +732,7 @@
                     
                     if(status != NotReachable)
                     {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:([objs isKindOfClass:[NSString class]])?objs:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                         [alert show];
                     }
                 }

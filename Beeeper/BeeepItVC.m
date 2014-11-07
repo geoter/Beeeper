@@ -113,7 +113,6 @@
     
     shareText = [[NSMutableString alloc]init];
     
-    
     @try {
         
         if (tml == nil && self.values != nil) { //Coming from Create event screen
@@ -308,13 +307,25 @@
         
         self.titleLabel.text = (title)?title:@"n/a";
         [self.titleLabel sizeToFit];
-        self.titleLabel.center = CGPointMake(self.scrollV.center.x, self.titleLabel.center.y);
+        self.titleLabel.center = CGPointMake(self.scrollV.frame.size.width/2, self.titleLabel.center.y);
         self.venueLabel.text = (venue)?venue:@"n/a";
-        [self.venueLabel sizeToFit];
-        self.venueLabel.center = CGPointMake(self.scrollV.center.x+3,self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 15);
-        self.venueIcon.center = self.venueLabel.center;
-        self.venueIcon.frame = CGRectMake(self.venueLabel.frame.origin.x-self.venueIcon.frame.size.width, self.venueIcon.frame.origin.y, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
+       // self.titleLabel.backgroundColor = [UIColor yellowColor];
         
+        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                              self.venueLabel.font, NSFontAttributeName,
+                                              nil];
+        
+        CGRect frame = [self.venueLabel.text boundingRectWithSize:CGSizeMake(self.venueLabel.frame.size.width, 2000.0)
+                                                options:NSStringDrawingUsesLineFragmentOrigin
+                                             attributes:attributesDictionary
+                                                context:nil];
+        CGSize sizeOfText= frame.size;
+        
+       // self.venueLabel.backgroundColor = [UIColor redColor];
+        self.venueLabel.frame = CGRectMake(self.venueLabel.frame.origin.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height, sizeOfText.width, sizeOfText.height);
+        self.venueLabel.center = CGPointMake(self.titleLabel.center.x+3,self.venueLabel.center.y);//any y
+        
+        self.venueIcon.frame = CGRectMake(self.venueLabel.frame.origin.x-self.venueIcon.frame.size.width-3, self.venueLabel.frame.origin.y+2, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
         
         NSString *imageUrl;
         if ([tml isKindOfClass:[Timeline_Object class]]) {
@@ -839,15 +850,18 @@
                             [users_ids addObject:[user objectForKey:@"id"]];
                         }
                         
-                        [[BPSuggestions sharedBP]suggestEvent:fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
-                            if (completed) {
-                                NSLog(@"Suggestion send");
-                            }
-                            else{
-                                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was created but suggestions failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-                            }
-                        }];
+                        if(users_ids.count > 0){
+                            
+                            [[BPSuggestions sharedBP]suggestEvent:fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
+                                if (completed) {
+                                    NSLog(@"Suggestion send");
+                                }
+                                else{
+                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was created but suggestions failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                                }
+                            }];
+                        }
                     }
                     @catch (NSException *exception) {
                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Exception Error" message:@"Beeep was created but suggestions failed." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -867,9 +881,21 @@
                     NSDictionary *error  = (NSDictionary *)objs;
                     NSString *message = [error objectForKey:@"message"];
                     NSString *info = [error objectForKey:@"info"];
+                  
                     
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                    @try {
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:(message.length>0)?message:@"Error" message:(info.length > 0)?info:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                    }
+                    @catch (NSException *exception) {
+                       
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was not created.Please try again. We are sorry for the inconvenience" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                    }
+                    @finally {
+                        
+                    }
+                   
 
                 }
                 else{

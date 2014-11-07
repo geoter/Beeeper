@@ -656,7 +656,6 @@
 
 -(void)requestFBFriends{
     
-    
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]){
         
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
@@ -730,6 +729,15 @@
              }
          }];
         
+    }
+    else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [self hideLoading];
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        });
     }
 }
 
@@ -860,8 +868,16 @@
             }
 
             
-        } else {
-            NSLog(@"No access granted");
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self hideLoading];
+                
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twittwe and sign in with your Twitter account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            });
+
         }
     }];
 }

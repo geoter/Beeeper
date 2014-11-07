@@ -291,7 +291,7 @@
     else
     {
         
-        [self hideLoadingWithTitle:@"No Facebook accounts configured" ErrorMessage: @"You can add a Facebook account on Settings > Facebook."];
+        [self hideLoadingWithTitle:@"No Facebook account found" ErrorMessage: @"Please go to Settings > Facebook and sign in with your Facebook account."];
         
         NSLog(@"Not Configured in Settings......"); // show user an alert view that Twitter is not configured in settings.
     
@@ -483,8 +483,7 @@
     else
     {
         
-        [self hideLoadingWithTitle:@"No Twitter accounts configured" ErrorMessage: @"You can add a Twitter account on Settings > Twitter."];
-        
+        [self hideLoadingWithTitle:@"No Twitter account found" ErrorMessage: @"Please go to Settings > Twitter and sign in with your Twitter account."];
         
     }
 }

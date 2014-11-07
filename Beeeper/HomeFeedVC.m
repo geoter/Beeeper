@@ -723,7 +723,7 @@
 
         if (!segment) {
             
-            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All", @"Friends'", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All Beeeps", @"Friends' Beeeps", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
             segment.delegate = self;
             [headerView addSubview:segment];
             segment.frame = CGRectMake(0, headerView.frame.size.height-segment.frame.size.height, segment.frame.size.width, segment.frame.size.height);
@@ -1238,7 +1238,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if (localFingerPrint) {
         
-        [[TabbarVC sharedTabbar]suggestPressed:localFingerPrint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
+        [[TabbarVC sharedTabbar]suggestPressed:localFingerPrint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

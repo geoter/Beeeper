@@ -56,20 +56,7 @@
     UIView *loadingBGV = [[UIView alloc]initWithFrame:self.view.bounds];
     loadingBGV.backgroundColor = self.view.backgroundColor;
     
-    MONActivityIndicatorView *indicatorView = [[MONActivityIndicatorView alloc] init];
-    indicatorView.delegate = self;
-    indicatorView.numberOfCircles = 3;
-    indicatorView.radius = 8;
-    indicatorView.internalSpacing = 1;
-    indicatorView.center = self.view.center;
-    indicatorView.tag = -565;
-
-    [loadingBGV addSubview:indicatorView];
-    loadingBGV.tag = -434;
-    [self.view addSubview:loadingBGV];
-    [self.view bringSubviewToFront:loadingBGV];
-    loadingBGV.alpha = 1;
-    [indicatorView startAnimating];
+    [self showLoading];
    
      if (self.mode == FollowersMode) {
          

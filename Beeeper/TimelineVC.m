@@ -939,12 +939,6 @@
     }
 }
 
--(void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-   [[cell viewWithTag:55]setBackgroundColor:[UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1]];
-}
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -954,12 +948,6 @@
     viewController.tml = [beeeps objectAtIndex:indexPath.row];
     
     [self.navigationController pushViewController:viewController animated:YES];
-}
-
--(void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [[cell viewWithTag:55]setBackgroundColor:[UIColor clearColor]];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -1775,7 +1763,7 @@
     Timeline_Object*b = [beeeps objectAtIndex:indexpath.row];
     
     if (b.event.fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:b.event.fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
+        [[TabbarVC sharedTabbar]suggestPressed:b.event.fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

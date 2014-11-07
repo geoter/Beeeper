@@ -284,7 +284,7 @@ static BPCreate *thisWebServices = nil;
         }
     }
     @catch (NSException *exception) {
-        self.completed(YES,@"eventCreateFinished CATCH");
+        self.completed(NO,@"Event could not be created. Please try again");
     }
     @finally {
     

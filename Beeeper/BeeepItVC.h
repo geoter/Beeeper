@@ -29,7 +29,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *selectTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *suggestedLabel;
-@property (weak, nonatomic) IBOutlet UITextView *venueLabel;
+@property (weak, nonatomic) IBOutlet UILabel *venueLabel;
 @property (nonatomic,strong) UIView *superviewToBlur;
 
 - (void)setBeeep;

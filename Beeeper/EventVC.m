@@ -1812,7 +1812,7 @@
 -(void)suggestIt{
     
     if (fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
+        [[TabbarVC sharedTabbar]suggestPressed:fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

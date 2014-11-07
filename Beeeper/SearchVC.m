@@ -792,7 +792,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search *event = [events objectAtIndex:indexpath.row];
     
     if (event.fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:event.fingerprint controller:self sendNotificationWhenFinished:YES selectedPeople:nil showBlur:YES];
+        [[TabbarVC sharedTabbar]suggestPressed:event.fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

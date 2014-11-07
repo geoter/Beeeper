@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface SuggestBeeepVC : UIViewController <UITextFieldDelegate>
+
 @property (weak, nonatomic) IBOutlet UIView *containerV;
 @property (weak, nonatomic) IBOutlet UITextField *searchTxtF;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;

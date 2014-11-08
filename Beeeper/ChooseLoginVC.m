@@ -246,12 +246,9 @@
                  }
                  else if(usernames.count == 1){
                  
-                     
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
-                     id email = [fbAccount valueForKeyPath:@"properties.uid"];
-                     NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
                      
-                     [self attemptFBLogin:email];
+                     [self attemptFBLogin:fbAccount];
                 
                  }
                  else{
@@ -341,53 +338,113 @@
     
 }
 
--(void)attemptTwitterLogin:(NSString *)uid{
-
+-(void)attemptTwitterLogin:(ACAccount *)account{
     
     [self showLoading];
     
     static int number_of_attempts = 0;
     
-    [[BPUser sharedBP]loginTwitterUser:uid completionBlock:^(BOOL completed,NSString *user){
-        if (completed) {
-            [self setSelectedLoginMethod:@"TW"];
-            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/show.json"];
+    NSMutableDictionary *params = [NSMutableDictionary new];
+    
+    NSString *user_id = [[account valueForKey:@"properties"] valueForKey:@"user_id"];
+    
+    [params setObject:user_id forKey:@"user_id"];
+    
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:url parameters:params];
+    //  Attach an account to the request
+    [request setAccount:account]; // this can be any Twitter account obtained from the Account store
+    
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        
+        if (responseData) {
+            
+            NSDictionary *twitterData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:NULL];
+            NSLog(@"received Twitter data: %@", twitterData);
+            
+            // to do something useful with this data:
+            
+            NSString *profileImageUrl = [[twitterData objectForKey:@"profile_image_url"] stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
+            
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+            [dict setObject:profileImageUrl forKey:@"image"];
+            [dict setObject:user_id forKey:@"id"];
+            
+            [[BPUser sharedBP]loginTwitterUser:dict completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    [self setSelectedLoginMethod:[NSString stringWithFormat:@"TW-%@",user_id]];
+                    [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
+                }
+                else{
+                    if (user_id != nil && number_of_attempts < 3) {
+                        [self attemptTwitterLogin:account];
+                        number_of_attempts ++;
+                    }
+                    else{
+                        number_of_attempts = 0;
+                        if ([user isKindOfClass:[NSString class]]) {
+                            [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:user];
+                        }
+                        else{
+                            [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
+                        }
+                    }
+                }
+            }];
+
+            
         }
         else{
-            if (uid != nil && number_of_attempts < 3) {
-                [self attemptTwitterLogin:uid];
-                number_of_attempts ++;
-            }
-            else{
-                number_of_attempts = 0;
-                [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
-            }
+            NSLog(@"Error while downloading Twitter user data: %@", error);
         }
     }];
-    
-
 
 }
 
--(void)attemptFBLogin:(NSString *)uid{
+-(void)attemptFBLogin:(ACAccount *)account{
     
     [self showLoading];
     
     static int number_of_attempts = 0;
     
-    [[BPUser sharedBP]loginFacebookUser:uid completionBlock:^(BOOL completed,NSString *user){
+    id fbID = [account valueForKeyPath:@"properties.uid"];
+    NSLog(@"Facebook ID: %@, FullName: %@", fbID, account.userFullName);
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    [dict setObject:fbID forKey:@"id"];
+    
+    NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
+    [dict setObject:userImageURL forKey:@"image"];
+
+    
+    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
         if (completed) {
-            [self setSelectedLoginMethod:@"FB"];
+            [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",fbID]];
             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
         }
         else{
-            if (uid != nil && number_of_attempts < 3) {
-                [self attemptFBLogin:uid];
+            if (fbID != nil && number_of_attempts < 3) {
+                [self attemptFBLogin:account];
                 number_of_attempts ++;
             }
             else{
                 number_of_attempts = 0;
-                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
+                
+                Reachability *reachability = [Reachability reachabilityForInternetConnection];
+                [reachability startNotifier];
+                
+                NetworkStatus status = [reachability currentReachabilityStatus];
+                
+                if(status == NotReachable)
+                {
+                    [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
+                }
+                else{
+                    
+                    [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again."];
+                }
             }
         }
         
@@ -442,9 +499,8 @@
                      
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
-                     NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
 
-                     [self attemptTwitterLogin:user_id];
+                     [self attemptTwitterLogin:twitterAccount];
                  }
                  else{
                      dispatch_async(dispatch_get_main_queue(), ^{
@@ -507,69 +563,16 @@
         NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
         NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
         
-        [self showLoading];
-        
-        [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
-            if (completed) {
-                [self setSelectedLoginMethod:@"TW"];
-                [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-            }
-            else{
-                [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
-            }
-        }];
-
+        [self attemptTwitterLogin:twitterAccount];
 
     }
     else{
         
         ACAccount *fbAccount = [accounts objectAtIndex:buttonIndex];
-        id email = [fbAccount valueForKeyPath:@"properties.uid"];
-        NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
-        [self showLoading];
       
-        [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
-            if (completed) {
-                [self setSelectedLoginMethod:@"FB"];
-                [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-            }
-            else{
-                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
-            }
-            
-        }];
+        [self attemptFBLogin:fbAccount];
     }
     
-}
-
--(void)loginFBuser{
-    
-    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // Success! Include your code to handle the results here
-            NSLog(@"user info: %@", result);
-            [[BPUser sharedBP]loginFacebookUser:[result objectForKey:@"id"] completionBlock:^(BOOL completed,NSString *user){
-                if (completed) {
-                    NSLog(@"%@",user);
-                    
-                    [self setSelectedLoginMethod:@"FB"];
-                    [self performSelectorOnMainThread:@selector(loginPressed:) withObject:nil waitUntilDone:NO];
-                }
-                else{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again or contact us."];
-                    });
-                }
-            }];
-        } else {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self hideLoadingWithTitle:@"Facebook authorization failed." ErrorMessage:@"Please try again or contact us"];
-            });
-            // An error occurred, we need to handle the error
-            // See: https://developers.facebook.com/docs/ios/errors
-        }
-    }];
 }
 
 -(void)setSelectedLoginMethod:(id)value{

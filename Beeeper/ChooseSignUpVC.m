@@ -274,7 +274,7 @@
             NSString *name = [name_components firstObject];
             NSString *surname = [name_components lastObject];
             
-            NSString *profileImageUrl = [twitterData objectForKey:@"profile_image_url"];
+            NSString *profileImageUrl = [[twitterData objectForKey:@"profile_image_url"] stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
             
             NSMutableDictionary *dict = [NSMutableDictionary dictionary];
             

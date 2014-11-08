@@ -49,8 +49,8 @@ typedef void(^markRead_completed)(BOOL);
 -(NSString *)headerPOSTRequest:(NSString *)link values:(NSMutableArray *)values;
 
 -(void)loginUser:(NSString *)username password:(NSString *)password completionBlock:(completed)compbloc;
--(void)loginFacebookUser:(NSString *)fbid completionBlock:(completed)compbloc;
--(void)loginTwitterUser:(NSString *)twitterid completionBlock:(completed)compbloc;
+-(void)loginFacebookUser:(NSMutableDictionary *)values completionBlock:(completed)compbloc;
+-(void)loginTwitterUser:(NSDictionary *)values completionBlock:(completed)compbloc;
 
 -(void)signUpUser:(NSDictionary *)info completionBlock:(completed)compbloc;
 -(void)signUpSocialUser:(NSDictionary *)info completionBlock:(completed)compbloc;

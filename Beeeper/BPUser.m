@@ -19,6 +19,7 @@
     NSString *_password;
     NSString *_fbid;
     NSString *_twitterid;
+    NSString *imageToUpdate;
     
     //Request Token
     NSString *oauth_callback;
@@ -314,6 +315,10 @@ static BPUser *thisWebServices = nil;
             
             self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
         }
+        else if ([responseString isKindOfClass:[NSString class]]){
+            //error message
+            self.fbSignUpCompleted(NO,[responseString stringByReplacingOccurrencesOfString:@"\"" withString:@""]);
+        }
         else{
             NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
             [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
@@ -364,18 +369,21 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - Login
 
--(void)loginTwitterUser:(NSString *)twitterid completionBlock:(completed)compbloc{
+-(void)loginTwitterUser:(NSDictionary *)values completionBlock:(completed)compbloc{
     
     _fbid = nil; //just in case
-    _twitterid = twitterid;
+    _twitterid = [values objectForKey:@"id"];
+    imageToUpdate = [values objectForKey:@"image"];
+    
     self.completed = compbloc;
     [self getRequestToken];
 }
 
--(void)loginFacebookUser:(NSString *)fbid completionBlock:(completed)compbloc{
+-(void)loginFacebookUser:(NSMutableDictionary *)values completionBlock:(completed)compbloc{
     
     _twitterid = nil; //just in case
-    _fbid = fbid;
+    _fbid = [values objectForKey:@"id"];
+    imageToUpdate = [values objectForKey:@"image"];
     self.completed = compbloc;
     [self getRequestToken];
 }
@@ -2126,9 +2134,15 @@ static BPUser *thisWebServices = nil;
     
     if (_fbid) {
         [request addPostValue:[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",_fbid]] forKey:@"fbid"];
+        if ([imageToUpdate isKindOfClass:[NSString class]] && imageToUpdate.length > 0) {
+            [request addPostValue:imageToUpdate forKey:@"image"];
+        }
     }
     else if (_twitterid){
         [request addPostValue:[[DTO sharedDTO] urlencode:[NSString stringWithFormat:@"%@",_twitterid]] forKey:@"twid"];
+        if ([imageToUpdate isKindOfClass:[NSString class]] && imageToUpdate.length > 0) {
+            [request addPostValue:imageToUpdate forKey:@"image"];
+        }
     }
     else{
         [request addPostValue:_username forKey:@"username"];
@@ -2136,6 +2150,7 @@ static BPUser *thisWebServices = nil;
     }
     
     
+    [request setRequestMethod:@"POST"];
     
     [request setTimeOutSeconds:20.0];
     
@@ -2152,9 +2167,14 @@ static BPUser *thisWebServices = nil;
     
     @try {
         NSString *responseString = [request responseString];
-        verifier = [[responseString componentsSeparatedByString:@":"] lastObject];
-        
-        [self getAccessToken];
+        if ([responseString isKindOfClass:[NSString class]] && responseString.length > 0) {
+            verifier = [[responseString componentsSeparatedByString:@":"] lastObject];
+            
+            [self getAccessToken];
+        }
+        else{
+            self.completed(NO,@"Authorization failed. Response was empty");
+        }
     }
     @catch (NSException *exception) {
         self.completed(NO,nil);
@@ -2167,7 +2187,7 @@ static BPUser *thisWebServices = nil;
 -(void)authorizationFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
     NSLog(@"ERROR: %@",responseString);
-    self.completed(NO,nil);
+    self.completed(NO,[NSString stringWithFormat:@"Authorization Failed: %@",responseString]);
 }
 
 #pragma mark - Access Token

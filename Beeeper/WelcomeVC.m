@@ -72,7 +72,7 @@
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
     NSString *method =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
 
-    if ([method isEqualToString:@"FB"]) {
+    if ([method rangeOfString:@"FB"].location != NSNotFound) {
         if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
         {
             @try {
@@ -85,23 +85,20 @@
                                          @"253616411483666", ACFacebookAppIdKey,
                                          [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
                                          nil];
+                NSArray *accounts = [accountStore accountsWithAccountType:fbAcc];
                 
+                ACAccount *fbAccount;
                 
-                ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] lastObject];
+                for (ACAccount *acc in accounts) {
+                     NSString  *fbID = [acc valueForKeyPath:@"properties.uid"];
+                    if ([method rangeOfString:fbID].location != NSNotFound) {
+                        fbAccount = acc;
+                    }
+                }
                 
                 if (fbAccount != nil) {
                     
-                    id email = [fbAccount valueForKeyPath:@"properties.uid"];
-                    NSLog(@"Facebook ID: %@, FullName: %@", email, fbAccount.userFullName);
-                    
-                    [[BPUser sharedBP]loginFacebookUser:email completionBlock:^(BOOL completed,NSString *user){
-                        if (completed) {
-                            [self performSelector:@selector(loginPressed:) withObject:@"FB" afterDelay:0.0];
-                        }
-                        else{
-                            [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
-                        }
-                    }];
+                    [self attemptFBLogin:fbAccount];
                     
                 }
                 else{
@@ -118,62 +115,33 @@
         }
         else
         {
-            NSLog(@"Not Configured in Settings......"); // show user an alert view that Facebook is not configured in settings.
-            
-            if (FBSession.activeSession.state == FBSessionStateOpen
-                || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
-                
-                [self loginFBuser];
-            }
-            else {
-                // You must ALWAYS ask for basic_info permissions when opening a session
-                [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"user_friends",@"user_events"]
-                                                   allowLoginUI:YES
-                                              completionHandler:
-                 ^(FBSession *session, FBSessionState state, NSError *error) {
-                     
-                     // Retrieve the app delegate
-                     AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-                     // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
-                     [appDelegate sessionStateChanged:session state:state error:error];
-                     
-                     if (FBSessionStateOpen == state) {
-                         [self loginFBuser];
-                     }
-                     else{
-                         [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
-                     }
-                     
-                 }];
-
-            }
-            
+            [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:0.0];
         }
 
     }
-    else if ([method isEqualToString:@"TW"]){
+    else if ([method rangeOfString:@"TW"].location != NSNotFound){
         if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
         {
             ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
             
             ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
             
-            ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+            NSArray *accounts = [accountStore accountsWithAccountType:twitterAcc];
+            
+            ACAccount *twitterAccount;
+            
+            for (ACAccount *acc in accounts) {
+                NSString *user_id = [[acc valueForKey:@"properties"] valueForKey:@"user_id"];
+                
+                if ([method rangeOfString:user_id].location != NSNotFound) {
+                    twitterAccount = acc;
+                }
+            }
             
             if (twitterAccount != nil) {
                 
                 ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
-                NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
-                NSString *user_id = [[twitterAccount valueForKey:@"properties"] valueForKey:@"user_id"];
-                
-                [[BPUser sharedBP]loginTwitterUser:user_id completionBlock:^(BOOL completed,NSString *user){
-                    if (completed) {
-                        [self performSelector:@selector(loginPressed:) withObject:@"TW" afterDelay:0.0];
-                    }
-                    else{
-                        [self hideSplashScreen];
-                    }
-                }];
+                [self attemptTwitterLogin:twitterAccount];
                 
             }
             else{
@@ -210,28 +178,82 @@
     
 }
 
--(void)loginFBuser{
+-(void)attemptTwitterLogin:(ACAccount *)account{
     
-    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // Success! Include your code to handle the results here
-            NSLog(@"user info: %@", result);
-            [[BPUser sharedBP]loginFacebookUser:[result objectForKey:@"id"] completionBlock:^(BOOL completed,NSString *user){
-                if (completed) {
-                    NSLog(@"%@",user);
-                    [self performSelector:@selector(loginPressed:) withObject:@"FB" afterDelay:0.0];
-                }
-                else{
-                    [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:0.0];
-                }
+    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/show.json"];
+    NSMutableDictionary *params = [NSMutableDictionary new];
+    
+    NSString *user_id = [[account valueForKey:@"properties"] valueForKey:@"user_id"];
+    
+    [params setObject:user_id forKey:@"user_id"];
+    
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:url parameters:params];
+    //  Attach an account to the request
+    [request setAccount:account]; // this can be any Twitter account obtained from the Account store
+    
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        
+        if (responseData) {
+            
+            NSDictionary *twitterData = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:NULL];
+            NSLog(@"received Twitter data: %@", twitterData);
+            
+            // to do something useful with this data:
+            
+            NSString *profileImageUrl = [[twitterData objectForKey:@"profile_image_url"] stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
+            
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            
+            [dict setObject:profileImageUrl forKey:@"image"];
+            [dict setObject:user_id forKey:@"id"];
+            
+            [[BPUser sharedBP]loginTwitterUser:dict completionBlock:^(BOOL completed,NSString *user){
+                dispatch_async (dispatch_get_main_queue(), ^{
+                    
+                    if (completed) {
+                        [self loginPressed:@"TW"];
+                    }
+                    else{
+                        [self hideSplashScreen];
+                    }
+                });
             }];
-        } else {
-            // An error occurred, we need to handle the error
-            // See: https://developers.facebook.com/docs/ios/errors
-           [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
+
+            
+            
+        }
+        else{
+            [self hideSplashScreen];
         }
     }];
     
+}
+
+-(void)attemptFBLogin:(ACAccount *)account{
+    
+    id fbID = [account valueForKeyPath:@"properties.uid"];
+    NSLog(@"Facebook ID: %@, FullName: %@", fbID, account.userFullName);
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    [dict setObject:fbID forKey:@"id"];
+    
+    NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
+    [dict setObject:userImageURL forKey:@"image"];
+    
+    
+    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
+        dispatch_async (dispatch_get_main_queue(), ^{
+            
+            if (completed) {
+                [self loginPressed:@"FB"];
+            }
+            else{
+                [self hideSplashScreen];
+            }
+        });
+        
+    }];
 }
 
 - (IBAction)loginPressed:(id)sender {

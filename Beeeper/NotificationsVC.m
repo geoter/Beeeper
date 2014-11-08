@@ -604,15 +604,15 @@
     NSString* overdueMessage;
     
     if (years>0){
-        overdueMessage = [NSString stringWithFormat:@"%d%@", (years), (years==1?@"year":@"years")];
+        overdueMessage = [NSString stringWithFormat:@"%d %@", (years), (years==1?@"year":@"years")];
     }else if (months>0){
-        overdueMessage = [NSString stringWithFormat:@"%d%@", (months), (months==1?@"month":@"months")];
+        overdueMessage = [NSString stringWithFormat:@"%d %@", (months), (months==1?@"month":@"months")];
     }else if (days>0){
-        overdueMessage = [NSString stringWithFormat:@"%d%@", (days), (days==1?@"day":@"days")];
+        overdueMessage = [NSString stringWithFormat:@"%d %@", (days), (days==1?@"day":@"days")];
     }else if (hours>0){
-        overdueMessage = [NSString stringWithFormat:@"%d%@", (hours), (hours==1?@"hour":@"hours")];
+        overdueMessage = [NSString stringWithFormat:@"%d %@", (hours), (hours==1?@"hour":@"hours")];
     }else if (minutes>0){
-        overdueMessage = [NSString stringWithFormat:@"%d%@", (minutes), (minutes==1?@"minute":@"minutes")];
+        overdueMessage = [NSString stringWithFormat:@"%d %@", (minutes), (minutes==1?@"minute":@"minutes")];
     }else if (overdueTimeInterval<60){
         overdueMessage = [NSString stringWithFormat:@"a few seconds"];
     }

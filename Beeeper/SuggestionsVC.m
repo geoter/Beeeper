@@ -61,6 +61,8 @@
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
     
    // self.tableV.decelerationRate = 0.6;
+    
+    [[DTO sharedDTO]clearSuggestions];
 
 }
 

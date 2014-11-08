@@ -81,7 +81,7 @@ static TabbarVC *thisWebServices = nil;
     
     [[BPUser sharedBP]newNotificationsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
         
-        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:15];
+        [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:60];
     }];
     
    }
@@ -175,8 +175,14 @@ static TabbarVC *thisWebServices = nil;
 - (void)reBeeepPressed:(id)sender_tml controller:(UIViewController *)sender{
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
-    viewController.tml = sender_tml;
     viewController.superviewToBlur = sender.navigationController.view;
+    
+    if ([sender_tml isKindOfClass:[NSDictionary class]]) {
+        viewController.values = sender_tml;
+    }
+    else{
+        viewController.tml = sender_tml;
+    }
     
     [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
     [self.parentViewController.view addSubview:viewController.view];

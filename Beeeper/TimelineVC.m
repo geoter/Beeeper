@@ -65,7 +65,11 @@
 @end
 
 @implementation TimelineVC
-@synthesize mode,user,selectedDate;
+@synthesize mode=_mode,user,selectedDate;
+
+-(void)setMode:(int)mode{
+    _mode = mode;
+}
 
 -(void)nextPage{
     
@@ -132,11 +136,11 @@
                 if (completed) {
                     if ([[following lowercaseString]rangeOfString:@"false"].location != NSNotFound) {
                         isFollowing = NO;
-                        mode = Timeline_Not_Following;
+                        self.mode = Timeline_Not_Following;
                     }
                     else{
                         isFollowing = YES;
-                        mode = Timeline_Following;
+                        self.mode = Timeline_Following;
                     }
                     
                     [self createMenuButtons:YES];
@@ -287,11 +291,6 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
     
-    
-    if (mode == Timeline_My) {
-        [self showSuggestionsBadge];
-    }
-    
 //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
 //    self.navigationItem.leftBarButtonItem = leftItem;
 //    
@@ -402,17 +401,19 @@
         }];
         
         //Follow + /Following button
-        
-        [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            
-            if (completed) {
-                for (NSDictionary *user in objs) {
-                    if ([[user objectForKey:@"id"] isEqualToString:[self.user objectForKey:@"id"]]) {
-                        self.mode = Timeline_Following;
+        if (self.mode != Timeline_My) {
+           
+            [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                
+                if (completed) {
+                    for (NSDictionary *user in objs) {
+                        if ([[user objectForKey:@"id"] isEqualToString:[self.user objectForKey:@"id"]]) {
+                            self.mode = Timeline_Following;
+                        }
                     }
                 }
-            }
-        }];
+            }];
+        }
         
     }
     @catch (NSException *exception) {
@@ -462,7 +463,7 @@
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
         
         UIButton *totalBeeepsBtn;
-        if (mode == Timeline_My) {
+        if (self.mode == Timeline_My) {
             totalBeeepsBtn = (UIButton *)[self.myTimelineMenuV viewWithTag:32];
         }
         else{
@@ -598,6 +599,10 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
+    if (self.mode == Timeline_My) {
+        [self showSuggestionsBadge];
+    }
+    
     if (self.mode != Timeline_My || self.showBackButton) {
         UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
         self.navigationItem.leftBarButtonItem = leftItem;
@@ -665,11 +670,11 @@
 
 -(void)createMenuButtons:(BOOL)animated{
     
-    self.othersTimelineMenuV.hidden = (mode == Timeline_My);
-    self.myTimelineMenuV.hidden = !(mode == Timeline_My);
+    self.othersTimelineMenuV.hidden = (self.mode == Timeline_My);
+    self.myTimelineMenuV.hidden = !(self.mode == Timeline_My);
     
     
-    if (mode == Timeline_My) {
+    if (self.mode == Timeline_My) {
         self.followersButton = (UIButton *)[self.myTimelineMenuV viewWithTag:33];
         self.followingButton = (UIButton *)[self.myTimelineMenuV viewWithTag:34];
     }
@@ -1585,14 +1590,14 @@
 
 - (NSInteger) numberOfMenuItems
 {
-    return (mode == Timeline_My)?3:4;
+    return (self.mode == Timeline_My)?3:4;
 }
 
 -(UIImage*) imageForItemAtIndex:(NSInteger)index
 {
     NSString* imageName = nil;
    
-    if (mode == Timeline_My) {
+    if (self.mode == Timeline_My) {
         switch (index) {
             case 0:
                 imageName = @"Like_popup_unpressed";
@@ -1638,7 +1643,7 @@
     
     Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
     
-    if (mode == Timeline_My) {
+    if (self.mode == Timeline_My) {
        
         switch (selectedIndex) {
             case 0:
@@ -1834,6 +1839,8 @@
     if (![DTO sharedDTO].suggestionBadgeNumberFinished) {
         [self performSelector:@selector(showSuggestionsBadge) withObject:nil afterDelay:1.0];
     }
+    
+    [[self.suggestionsButton.superview viewWithTag:34567] removeFromSuperview];
     
     UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.suggestionsButton.frame.origin.x+5+self.suggestionsButton.frame.size.width/2,self.suggestionsButton.frame.origin.y+13,5,5)];
     b.badge.outlineWidth = 1.0;

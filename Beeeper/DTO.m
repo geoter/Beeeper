@@ -18,9 +18,6 @@ static DTO *thisDTO = nil;
     NSOperationQueue *operationQueue;
     NSMutableArray *pendingUrls;
     
-    int suggestionsCount;
-    int suggestionsEmptyCount;
-    
     BOOL wasInternetReachable;
 }
 @end
@@ -441,33 +438,24 @@ static DTO *thisDTO = nil;
 
 -(void)getSuggestions{
     
-    suggestionsCount = 0;
-    
-    [[BPSuggestions sharedBP]getSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
+    [[BPSuggestions sharedBP]getSuggestionsBadgeWithCompletionBlock:^(BOOL completed,id count){
         if (completed) {
-            suggestionsCount += objcts.count;
-            [self getNextSuggestions];
+            self.suggestionBadgeNumber = [count intValue];
+            self.suggestionBadgeNumberFinished = YES;
         }
     }];
 }
 
--(void)getNextSuggestions{
-    
-    [[BPSuggestions sharedBP]nextSuggestionsWithCompletionBlock:^(BOOL completed,NSArray *objcts){
-        
+-(void)clearSuggestions{
+    [[BPSuggestions sharedBP]clearSuggestionsBadgeWithCompletionBlock:^(BOOL completed,id count){
         if (completed) {
-            if ([objcts isKindOfClass:[NSArray class]]) {
-                suggestionsCount +=objcts.count;
-                [self getNextSuggestions];
-            }
-            else if(objcts == nil && [BPSuggestions sharedBP].loadNextPage == NO){
-                self.suggestionBadgeNumber = suggestionsCount;
-                self.suggestionBadgeNumberFinished = YES;
-            }
+            self.suggestionBadgeNumber = 0;
+            self.suggestionBadgeNumberFinished = YES;
         }
     }];
-    
+
 }
+
 
 -(UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius{
     UIGraphicsBeginImageContext(view.bounds.size);

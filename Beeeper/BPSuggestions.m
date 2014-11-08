@@ -121,6 +121,127 @@ static BPSuggestions *thisWebServices = nil;
     
 }
 
+#pragma mark - Badge
+
+-(void)clearSuggestionsBadgeWithCompletionBlock:(completed)compbloc{
+  
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/clearsugbadge"];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    NSURL *requestURL = [NSURL URLWithString:URL];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.suggestBadgeCompleted = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:20.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(suggestionsBadgeClearFinished:)];
+    
+    [request setDidFailSelector:@selector(suggestionsBadgeClearFailed:)];
+    
+    [request startAsynchronous];
+}
+
+-(void)suggestionsBadgeClearFinished:(ASIHTTPRequest *)request{
+    
+    @try {
+        NSString *responseString = [request responseString];
+        NSDictionary *badgeDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if ([badgeDict objectForKey:@"badge_num"]) {
+            self.suggestBadgeCompleted(YES,[badgeDict objectForKey:@"badge_num"]);
+        }
+    }
+    @catch (NSException *exception) {
+        self.suggestBadgeCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+    
+}
+
+-(void)suggestionsBadgeClearFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    self.suggestBadgeCompleted(NO,nil);
+}
+
+-(void)getSuggestionsBadgeWithCompletionBlock:(completed)compbloc{
+   
+    NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/getsugbadge"];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    
+    NSURL *requestURL = [NSURL URLWithString:URL];
+    
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    
+    //email,name,lastname,timezone,password,city,state,country,sex
+    //fbid,twid,active,locked,lastlogin,image_path,username
+    
+    self.suggestBadgeCompleted = compbloc;
+    
+    [request setRequestMethod:@"GET"];
+    
+    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    
+    [request setTimeOutSeconds:20.0];
+    
+    [request setDelegate:self];
+    
+    //[[request UserInfo]setObject:info forKey:@"info"];
+    
+    [request setDidFinishSelector:@selector(suggestionsBadgeFinished:)];
+    
+    [request setDidFailSelector:@selector(suggestionsBadgeFailed:)];
+    
+    [request startAsynchronous];
+    
+}
+
+-(void)suggestionsBadgeFinished:(ASIHTTPRequest *)request{
+    
+    @try {
+        NSString *responseString = [request responseString];
+        NSDictionary *badgeDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if ([badgeDict objectForKey:@"badge_num"]) {
+            self.suggestBadgeCompleted(YES,[badgeDict objectForKey:@"badge_num"]);
+        }
+    }
+    @catch (NSException *exception) {
+        self.suggestBadgeCompleted(NO,nil);
+    }
+    @finally {
+        
+    }
+
+}
+
+-(void)suggestionsBadgeFailed:(ASIHTTPRequest *)request{
+    NSString *responseString = [request responseString];
+    self.suggestBadgeCompleted(NO,nil);
+}
+
+#pragma mark - Suggestions
+
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc{
   
     loadNextPage = YES;

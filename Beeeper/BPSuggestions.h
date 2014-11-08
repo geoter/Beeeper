@@ -13,6 +13,9 @@ typedef void(^completed)(BOOL,id);
 
 @interface BPSuggestions : NSObject
 
+-(void)getSuggestionsBadgeWithCompletionBlock:(completed)compbloc;
+-(void)clearSuggestionsBadgeWithCompletionBlock:(completed)compbloc;
+
 -(void)getSuggestionsWithCompletionBlock:(completed)compbloc;
 -(void)nextSuggestionsWithCompletionBlock:(completed)compbloc;
 -(void)getLocalSuggestions:(completed)compbloc;
@@ -22,6 +25,7 @@ typedef void(^completed)(BOOL,id);
 @property (copy) void(^completed)(BOOL,id);
 @property (copy) completed localCompleted;
 @property (copy) completed suggestEventCompleted;
+@property (copy) completed suggestBadgeCompleted;
 @property (nonatomic,assign)  int pageLimit;
 @property (nonatomic,assign)  BOOL loadNextPage;
 - (id)init;

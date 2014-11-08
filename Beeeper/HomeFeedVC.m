@@ -187,7 +187,7 @@
                     self.noBeeepsLabel.hidden = (objs.count != 0);
                     
                     events = nil;
-                    beeeps = [NSMutableArray array];
+                    beeeps = [NSMutableArray arrayWithArray:objs];
                 }
                 else if ([objs isKindOfClass:[NSString class]]) {
                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs is not NSArray class" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];

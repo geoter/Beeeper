@@ -30,6 +30,8 @@ typedef void(^completed)(BOOL,id);
 
 
 - (void)getSuggestions;
+- (void)clearSuggestions;
+
 - (void)uploadBugFile;
 - (void)sendBugLog;
 - (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json;

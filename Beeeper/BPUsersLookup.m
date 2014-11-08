@@ -79,30 +79,46 @@ static BPUsersLookup *thisWebServices = nil;
 }
 
 -(void)userLookupFinished:(ASIHTTPRequest *)request{
-  
-    NSString *responseString = [request responseString];
-
-    NSArray *usersArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    if (![usersArray isKindOfClass:[NSArray class]]) {
-        [[DTO sharedDTO]addBugLog:@"![usersArray isKindOfClass:[NSArray class]]" where:@"BPUsersLookup/userLookupFinished" json:responseString];
-        [self userLookupFailed:request];
+    @try {
         
-        return;
+        NSString *responseString = [request responseString];
+        
+        NSArray *usersArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
+        if (![usersArray isKindOfClass:[NSArray class]]) {
+            [[DTO sharedDTO]addBugLog:@"![usersArray isKindOfClass:[NSArray class]]" where:@"BPUsersLookup/userLookupFinished" json:responseString];
+            [self userLookupFailed:request];
+            
+            return;
+        }
+        
+        NSMutableArray *users = [NSMutableArray array];
+        
+        for (NSString *u in usersArray) {
+            @try {
+                NSArray *userArray = [u objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+                NSDictionary *user = [userArray firstObject];
+                [users addObject:user];
+            }
+            @catch (NSException *exception) {
+                continue;
+            }
+            @finally {
+                
+            }
+            
+        }
+        
+        self.completed(YES,users);
+    }
+    @catch (NSException *exception) {
+        self.completed(NO,@"");
+    }
+    @finally {
+        
     }
     
-    NSMutableArray *users = [NSMutableArray array];
-
-    for (NSString *u in usersArray) {
-        NSArray *userArray = [u objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        NSDictionary *user = [userArray firstObject];
-        [users addObject:user];
-        
-    }
-    
-    
-    
-    self.completed(YES,users);
 }
 
 -(void)userLookupFailed:(ASIHTTPRequest *)request{

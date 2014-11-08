@@ -133,14 +133,14 @@ static BPSuggestions *thisWebServices = nil;
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
+    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL values:array]];
     
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.suggestBadgeCompleted = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    [request setRequestMethod:@"POST"];
     
     //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
     
@@ -161,10 +161,12 @@ static BPSuggestions *thisWebServices = nil;
     
     @try {
         NSString *responseString = [request responseString];
-        NSDictionary *badgeDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
-        if ([badgeDict objectForKey:@"badge_num"]) {
-            self.suggestBadgeCompleted(YES,[badgeDict objectForKey:@"badge_num"]);
+        if ([responseString rangeOfString:@"success"].location != NSNotFound) {
+            self.suggestBadgeCompleted(YES,nil);
+        }
+        else{
+            self.suggestBadgeCompleted(NO,nil);
         }
     }
     @catch (NSException *exception) {
@@ -224,6 +226,9 @@ static BPSuggestions *thisWebServices = nil;
         
         if ([badgeDict objectForKey:@"badge_num"]) {
             self.suggestBadgeCompleted(YES,[badgeDict objectForKey:@"badge_num"]);
+        }
+        else{
+            self.suggestBadgeCompleted(NO,nil);
         }
     }
     @catch (NSException *exception) {

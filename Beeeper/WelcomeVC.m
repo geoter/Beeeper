@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import <Social/Social.h>
 #import "TabbarVC.h"
+#import "LocationManager.h"
 
 @interface WelcomeVC ()
 {
@@ -49,6 +50,8 @@
 {
     [super viewDidLoad];
 
+    [[LocationManager sharedLM] startTracking];
+    
     [self showSplashScreen];
     
     [self autoLoginIfAvailable];

@@ -198,7 +198,7 @@ static BPHomeFeed *thisWebServices = nil;
     }
     else{
         
-        [[DTO sharedDTO]addBugLog:@"beeeps.count == 0" where:@"BPHomeFeed/friendsFeedFinished" json:responseString];
+        [[DTO sharedDTO]addBugLog:@"![beeeps isKindOfClass:[NSArray class]]" where:@"BPHomeFeed/friendsFeedFinished" json:responseString];
         
         requestEmptyResultsCounter++;
         page --;

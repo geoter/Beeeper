@@ -17,6 +17,8 @@
 @synthesize lastSavedTimestamp,firstSavedTimestamp;
 @synthesize signalsCounter;
 
+static LocationManager *thisWebServices = nil;
+
 - (id) init {
     
     self = [super init];
@@ -27,6 +29,18 @@
         locationsCounter = 0;
     }
     return self;
+}
+
++ (LocationManager *)sharedLM{
+    
+    if (thisWebServices != nil) {
+        return thisWebServices;
+    }
+    else{
+        return [[LocationManager alloc]init];
+    }
+    
+    return nil;
 }
 
 - (void)locationManager:(CLLocationManager *)manager

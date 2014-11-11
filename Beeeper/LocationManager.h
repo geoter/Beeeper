@@ -34,6 +34,9 @@
 @property (nonatomic, retain) NSDate *lastSavedTimestamp;
 @property (nonatomic, retain) NSDate *firstSavedTimestamp;
 
+- (id)init;
++ (LocationManager *)sharedLM;
+
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation;

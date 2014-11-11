@@ -274,6 +274,7 @@ static BPUser *thisWebServices = nil;
     [request addRequestHeader:@"Referer" value:@"t6FDJXLQnVKLYgZjaqhuiDIO7CxeK+bF+FGJorEBRB55k89C+qAxIyUKYrnTlLLJeEkHYwakO/ZYWVi8m370wQ=="];
     
     for (NSString *key in info.allKeys) {
+        
         NSString *value = [info objectForKey:key];
         [request addPostValue:value forKey:key];
     }
@@ -315,7 +316,7 @@ static BPUser *thisWebServices = nil;
             
             self.fbSignUpCompleted(NO,[error objectForKey:@"message"]);
         }
-        else if ([responseString isKindOfClass:[NSString class]]){
+        else if (([response isKindOfClass:[NSString class]] || response == nil)){
             //error message
             self.fbSignUpCompleted(NO,[responseString stringByReplacingOccurrencesOfString:@"\"" withString:@""]);
         }
@@ -610,6 +611,9 @@ static BPUser *thisWebServices = nil;
     }
     
     self.user = responseArray.firstObject;
+
+    NSLog(@"Login With ID: %@",[self.user objectForKey:@"id"]);
+    NSLog(@"Login With EMAIL: %@",[self.user objectForKey:@"email"]);
     
     self.completed(YES,responseString);
 }

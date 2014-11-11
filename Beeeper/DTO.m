@@ -128,6 +128,8 @@ static DTO *thisDTO = nil;
             NSString *fixedLink = [NSString stringWithFormat:@"http://%@",[link substringFromIndex:2]];
             return fixedLink;
         }
+        NSLog(@"%@",link);
+        
         return link;
 
     }

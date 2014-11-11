@@ -11,7 +11,7 @@
 @interface ChooseSignUpVC : UIViewController
 @property (weak, nonatomic) IBOutlet UIButton *emailSignupButton;
 
-- (IBAction)fbLoginPressed:(id)sender;
-- (IBAction)twitterLoginPressed:(id)sender;
+- (IBAction)fbSignupPressed:(id)sender;
+- (IBAction)twitterSignupPressed:(id)sender;
 
 @end

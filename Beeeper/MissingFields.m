@@ -40,7 +40,11 @@
 
 -(void)save{
     
-
+    for (UIView *v in self.scrollV.subviews) {
+        if([v isKindOfClass:[UITextField class]]){
+            [(UITextField *)v resignFirstResponder];
+        }
+    }
     if (dict.allKeys.count == self.misssingfields.allKeys.count) {
         
         [self showLoading];

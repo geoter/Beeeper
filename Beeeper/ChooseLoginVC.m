@@ -338,6 +338,99 @@
     
 }
 
+- (IBAction)twitterLoginPressed:(id)sender {
+    
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+        [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
+        return;
+    }
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
+    {
+        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+        
+        ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+        
+        [accountStore requestAccessToAccountsWithType:twitterAcc options:nil completion:^(BOOL granted, NSError *error)
+         {
+             if (granted)
+             {
+                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:twitterAcc]];
+                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
+                 
+                 if (usernames.count > 1) {
+                     
+                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                     popup.tag = 77;
+                     
+                     for (NSString *name in usernames) {
+                         [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
+                     }
+                     
+                     [popup addButtonWithTitle:@"Cancel"];
+                     
+                     popup.cancelButtonIndex = popup.numberOfButtons -1;
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [popup showInView:self.view];
+                     });
+                     
+                 }
+                 else if(usernames.count == 1){
+                     
+                     ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+                     NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
+                     
+                     [self attemptTwitterLogin:twitterAccount];
+                 }
+                 else{
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+                         [self hideLoading];
+                         
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twitter and sign in with your Twitter account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         [alert show];
+                     });
+                     
+                 }
+             }
+             else
+             {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
+                     
+                     if (error == nil) {
+                         NSLog(@"User Has disabled your app from settings...");
+                         [self hideLoadingWithTitle:@"Beeeper Disabled" ErrorMessage:@"Please go to Settings > Twitter and set Beeeper to on."];
+                     }
+                     else
+                     {
+                         NSLog(@"Error in Login: %@", error);
+                         
+                         [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Something went wrong.Please try again."];
+                         
+                     }
+                     
+                 });
+                 
+             }
+         }];
+    }
+    else
+    {
+        
+        [self hideLoadingWithTitle:@"No Twitter account found" ErrorMessage: @"Please go to Settings > Twitter and sign in with your Twitter account."];
+        
+    }
+}
+
 -(void)attemptTwitterLogin:(ACAccount *)account{
     
     [self showLoading];
@@ -396,7 +489,7 @@
             
         }
         else{
-            NSLog(@"Error while downloading Twitter user data: %@", error);
+            [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Error getting Twitter account information"];
         }
     }];
 
@@ -451,98 +544,7 @@
     }];
 }
 
-- (IBAction)twitterLoginPressed:(id)sender {
 
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    [reachability startNotifier];
-    
-    NetworkStatus status = [reachability currentReachabilityStatus];
-    
-    if(status == NotReachable)
-    {
-        [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
-        return;
-    }
-    
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
-    {
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
-        
-        ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-        
-        [accountStore requestAccessToAccountsWithType:twitterAcc options:nil completion:^(BOOL granted, NSError *error)
-         {
-             if (granted)
-             {
-                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:twitterAcc]];
-                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
-                 
-                 if (usernames.count > 1) {
-                     
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                     popup.tag = 77;
-                     
-                     for (NSString *name in usernames) {
-                         [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
-                     }
-                     
-                     [popup addButtonWithTitle:@"Cancel"];
-                     
-                     popup.cancelButtonIndex = popup.numberOfButtons -1;
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [popup showInView:self.view];
-                     });
-
-                 }
-                 else if(usernames.count == 1){
-                     
-                     ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
-                     NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
-
-                     [self attemptTwitterLogin:twitterAccount];
-                 }
-                 else{
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         
-                         [self hideLoading];
-                         
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Twitter and sign in with your Twitter account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert show];
-                     });
-
-                 }
-            }
-             else
-             {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     
-                     [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                     
-                     if (error == nil) {
-                         NSLog(@"User Has disabled your app from settings...");
-                         [self hideLoadingWithTitle:@"Beeeper Disabled" ErrorMessage:@"Please go to Settings > Twitter and set Beeeper to on."];
-                     }
-                     else
-                     {
-                         NSLog(@"Error in Login: %@", error);
-                         
-                         [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Something went wrong.Please try again."];
-                         
-                     }
-                     
-                 });
-
-             }
-         }];
-    }
-    else
-    {
-        
-        [self hideLoadingWithTitle:@"No Twitter account found" ErrorMessage: @"Please go to Settings > Twitter and sign in with your Twitter account."];
-        
-    }
-}
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
@@ -644,6 +646,7 @@
     });
     
 }
+
 
 -(void)hideLoading{
     

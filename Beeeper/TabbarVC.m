@@ -283,10 +283,10 @@ static TabbarVC *thisWebServices = nil;
     navVC.navigationBar.translucent = NO;
     navVC.view.frame = self.containerVC.frame;
     navVC.delegate = self;
-    
-    for (UIView *view in [[[navVC.navigationBar subviews] objectAtIndex:0] subviews]) {
-        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
-    }
+   
+//    for (UIView *view in [[[navVC.navigationBar subviews] objectAtIndex:0] subviews]) {
+//        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+//    }
 
     
     for (UIViewController *child in self.childViewControllers) {

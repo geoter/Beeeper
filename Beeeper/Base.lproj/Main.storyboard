@@ -716,7 +716,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="fbSignupPressed:" destination="SAg-9i-iFi" eventType="touchUpInside" id="xvX-h5-Slk"/>
+                                            <action selector="fbLoginPressed:" destination="SAg-9i-iFi" eventType="touchUpInside" id="i2p-cz-8pY"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n9o-g0-v7y">
@@ -725,7 +725,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="twitterSignupPressed:" destination="SAg-9i-iFi" eventType="touchUpInside" id="1iB-T0-V0w"/>
+                                            <action selector="twitterLoginPressed:" destination="SAg-9i-iFi" eventType="touchUpInside" id="GsB-9U-AUx"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="with" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KkC-a6-R7f">

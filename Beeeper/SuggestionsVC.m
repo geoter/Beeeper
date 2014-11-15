@@ -62,6 +62,8 @@
     
    // self.tableV.decelerationRate = 0.6;
     
+    [self getSuggestions];
+    
     [[DTO sharedDTO]clearSuggestions];
 
 }
@@ -103,7 +105,6 @@
                     }
                 }
                 
-                [self groupSuggestionsByMonth];
             }
             else{
                 [self.tableV reloadData];
@@ -193,7 +194,7 @@
     for (Suggestion_Object *activity in suggestions) {
         //EVENT DATE
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+        [formatter setDateFormat:@"EEEE, MMMM dd, yyyy HH:mm"];
         NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [formatter setLocale:usLocale];
         
@@ -207,7 +208,7 @@
         NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] objectAtIndex:1];
         NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
         
-        NSString *signature = [NSString stringWithFormat:@"%@#%@#%@",month,daynumber,year];
+        NSString *signature = [NSString stringWithFormat:@"%@#%@",month,year];
         
         if ([sections indexOfObject:signature] == NSNotFound) {
             [sections addObject:signature];
@@ -229,8 +230,6 @@
     
    // [self getLocalSuggestions];
     
-    [self getSuggestions];
-    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
@@ -244,25 +243,20 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-   return (sections.count>0 && [BPSuggestions sharedBP].loadNextPage)?(sections.count+1):sections.count;
+   return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
     
-    if (section == sections.count) {
-        return 1;
-    }
-    
-    NSMutableArray *filtered_activities = [self suggestionsForSection:section];
-    return filtered_activities.count;
+    return ([BPSuggestions sharedBP].loadNextPage)?suggestions.count+1:suggestions.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (indexPath.section == sections.count && suggestions.count > 0) {
+    if (indexPath.row == suggestions.count && suggestions.count > 0) {
         
         static NSString *CellIdentifier = @"LoadMoreCell";
         
@@ -280,16 +274,8 @@
     @try {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
-        cell.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-        cell.layer.shadowOpacity = 0.4;
-        cell.layer.shadowOffset = CGSizeMake(0, 0.1);
-        cell.layer.shadowRadius = 0.8;
-        cell.layer.masksToBounds = NO;
-        
-        NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
-        
-        Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];
+            
+        Suggestion_Object *suggestion = [suggestions objectAtIndex:indexPath.row];
         Who *w = suggestion.who;
         What_Suggest *what = suggestion.what;
 
@@ -300,15 +286,18 @@
         UIButton *beeepBtn = (id)[cell viewWithTag:67];
         beeepBtn.enabled = futureEvent;
         
-        UIImageView *imageV = (id)[cell viewWithTag:1];
-        UILabel *nameLbl = (id)[cell viewWithTag:2];
-        UILabel *venueLbl = (id)[cell viewWithTag:3];
-        UILabel *beeepedBy = (id)[cell viewWithTag:4];
+        UIImageView *imageV = (id)[cell viewWithTag:3];
+        UILabel *nameLbl = (id)[cell viewWithTag:4];
+        UILabel *venueLbl = (id)[cell viewWithTag:5];
+        UILabel *dayLbl = (id)[cell viewWithTag:2];
+        UILabel *monthLbl = (id)[cell viewWithTag:1];
+        UILabel *suggestedBy = (id)[cell viewWithTag:7];
+        UILabel *timeLabel = (id)[cell viewWithTag:55];
         
         nameLbl.text = [what.title capitalizedString];
        // [nameLbl sizeToFitHeight];
 
-        UIView *bottomV = (id)[cell viewWithTag:666];
+//        UIView *bottomV = (id)[cell viewWithTag:666];
       //  bottomV.frame = CGRectMake(nameLbl.frame.origin.x, nameLbl.frame.origin.y+nameLbl.frame.size.height, bottomV.frame.size.width,bottomV.frame.size.height);
         
         NSData *data = [what.location dataUsingEncoding:NSUTF8StringEncoding];
@@ -321,20 +310,33 @@
 
         }
         
-        beeepedBy.text = [NSString stringWithFormat:@"%@ %@",[w.name capitalizedString] ,[w.lastname capitalizedString]];
+        //EVENT DATE
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [formatter setLocale:usLocale];
         
-        UIImageView *beeepedByImageV = (id)[cell viewWithTag:34];
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:what.timestamp];
+        NSString *dateStr = [formatter stringFromDate:date];
+        NSArray *components = [dateStr componentsSeparatedByString:@","];
+        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
         
-        [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
-                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        NSString *month = [day_month objectAtIndex:1];
+        NSString *daynumber = [day_month objectAtIndex:2];
+        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
         
+        timeLabel.text = hour;
+        dayLbl.text = daynumber;
+        monthLbl.text = [month uppercaseString];
         
-
+        suggestedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
+        
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
         [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
         
             return cell;
     }
@@ -353,119 +355,20 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == sections.count){
+    if (indexPath.row == suggestions.count){
         return 51;
     }
     else{
-        return 92;
+        return 81;
     }
 }
 
-
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 7;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    
-    if(section == sections.count ) {
-        return 1;
-    }
-    else{
-        return 47;
-    }
-    
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
-    if(section == sections.count) {
-        
-        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 1)];
-        header.backgroundColor = [UIColor clearColor];
-        return header;
-    }
-    
-    NSString *signature = [sections objectAtIndex:section];
-    NSArray *components = [signature componentsSeparatedByString:@"#"];
-    NSString *month = [components objectAtIndex:0];
-    NSString *daynumber = [components objectAtIndex:1];
-    
-//    //Today
-//    NSDate *date = [NSDate date];
-//    NSDateFormatter *formatter  = [[NSDateFormatter alloc]init];
-//    [formatter setDateFormat:@"MMM#d#YYYY"];
-//    NSString *signatureToday = [formatter stringFromDate:date];
-//    
-//    BOOL isToday = [signature isEqualToString:signatureToday];
-//    
-//    //Tommorrow
-//    
-//    NSDate *dateTmw = [date dateByAddingTimeInterval:60*60*24];
-//    NSString *signatureTmw = [formatter stringFromDate:dateTmw];
-//    
-//    BOOL isTomorrow = [signature isEqualToString:signatureTmw];
-
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
-    header.backgroundColor = [UIColor clearColor];
-    UIView *backV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 46)];
-    [backV setBackgroundColor:[UIColor whiteColor]];
-    [header addSubview:backV];
-    
-//    if (isToday || isTomorrow) {
-//        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 36)];
-//        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-//        mlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
-//        mlbl.text = (isToday)?@"Today":@"Tomorrow";
-//        mlbl.textAlignment = NSTextAlignmentCenter;
-//        [backV addSubview:mlbl];
-//    }
-//    else{
-    
-        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 18)];
-        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
-        mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
-        mlbl.text = [month uppercaseString];
-        mlbl.textAlignment = NSTextAlignmentCenter;
-        [backV addSubview:mlbl];
-        
-        UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, self.tableV.frame.size.width, 18)];
-        dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
-        dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
-        dlbl.text = daynumber;
-        dlbl.textAlignment = NSTextAlignmentCenter;
-        [backV addSubview:dlbl];
-//    }
-    
-//    UIView *headerBottomLine = [[UIView alloc]initWithFrame:CGRectMake(7, header.frame.size.height-1, 306, 1)];
-//    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:227/255.0 alpha:1];
-//    [header addSubview:headerBottomLine];
-    
-    backV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-    backV.layer.shadowOpacity = 0.7;
-    backV.layer.shadowOffset = CGSizeMake(0, 0.1);
-    backV.layer.shadowRadius = 0.8;
-    [backV.layer setShadowPath:[[UIBezierPath
-                                 bezierPathWithRect:backV.bounds] CGPath]];
-    
-    return header;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    
-    
-    UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 7)];
-    footer.backgroundColor = [UIColor clearColor];
-    return footer;
-}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSMutableArray *filtered_activities = [self suggestionsForSection:indexPath.section];
-    
-    Suggestion_Object *suggestion = [filtered_activities objectAtIndex:indexPath.row];
+    Suggestion_Object *suggestion = [suggestions objectAtIndex:indexPath.row];
     
     EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
     
@@ -496,9 +399,7 @@
     UITableViewCell *cell = (UITableViewCell *)view;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSMutableArray *filtered_activities = [self suggestionsForSection:path.section];
-    
-    Suggestion_Object *suggestion = [filtered_activities objectAtIndex:path.row];
+    Suggestion_Object *suggestion = [suggestions objectAtIndex:path.row];
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
@@ -525,12 +426,12 @@
         for (Suggestion_Object *suggestion in suggestions) {
             //EVENT DATE
             NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+            [formatter setDateFormat:@"EEEE, MMMM dd, yyyy HH:mm"];
             NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
             [formatter setLocale:usLocale];
             
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
-            [formatter setDateFormat:@"MMM#dd#YYYY"];
+            [formatter setDateFormat:@"MMMM#YYYY"];
             NSString *signature = [formatter stringFromDate:date];
             
             if ([section_signature isEqualToString:signature]) {

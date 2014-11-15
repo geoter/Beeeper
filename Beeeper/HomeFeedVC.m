@@ -98,9 +98,9 @@
     UILongPressGestureRecognizer* _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:overlay action:@selector(longPressDetected:)];
     [self.collectionV addGestureRecognizer:_longPressRecognizer];
 
-    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
-        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
-    }
+//    for (UIView *view in [[[self.navigationController.navigationBar subviews] objectAtIndex:0] subviews]) {
+//        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+//    }
     
     self.collectionV.alwaysBounceVertical = YES;
     
@@ -360,6 +360,8 @@
     
     [super viewWillAppear:animated];
 
+    [self.collectionV reloadData];
+    
     [self showBadgeIcon];
     
     for (UIButton *btn in self.tabBar.subviews) {
@@ -536,7 +538,7 @@
         
       //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
         
         UIView *beeepedByView = (id)[containerV viewWithTag:32];
         
@@ -680,7 +682,7 @@
            // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             
             [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.eventFfo.eventDetailsFfo.imageUrl]]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
         
             UIView *beeepedByView = (id)[containerV viewWithTag:32];
             UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:34];
@@ -1205,15 +1207,31 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)commentEventAtIndexPath:(NSIndexPath *)indexPath{
     
-    Friendsfeed_Object*b = [beeeps objectAtIndex:indexPath.row];
-    Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
+    if (beeeps != nil) {
+        
+        Friendsfeed_Object*b = [beeeps objectAtIndex:indexPath.row];
+        Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
+        
+        CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+        viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
+        viewController.comments = beeep.comments;
+        viewController.showKeyboard = YES;
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+    else{
+        
+        Event_Search*b = [events objectAtIndex:indexPath.row];
+        
+        CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+        viewController.event_beeep_object = b;
+        viewController.comments = b.comments;
+        viewController.showKeyboard = YES;
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+
+    }
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
-    viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
-    viewController.comments = beeep.comments;
-    viewController.showKeyboard = YES;
-    
-    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{

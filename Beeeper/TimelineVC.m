@@ -290,33 +290,6 @@
     pendingImagesDict = [NSMutableDictionary dictionary];
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
-    
-//    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
-//    self.navigationItem.leftBarButtonItem = leftItem;
-//    
-//    [self.navigationController setNavigationBarHidden:NO animated:YES];
-//    self.navigationItem.hidesBackButton = YES;
-//    self.navigationController.navigationBar.backItem.title = @"";
-//    
-//    UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"beeeper_logo"]];
-//    [self.navigationItem setTitleView:titleView];
-//    
-//    
-//    UIView *commentsIconV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 44, 28)];
-//    UIButton *commentsIcon = [UIButton buttonWithType:UIButtonTypeCustom];
-//    commentsIcon.frame = commentsIconV.bounds;
-//    [commentsIcon addTarget:self action:@selector(showNotifications) forControlEvents:UIControlEventTouchUpInside];
-//    [commentsIcon setImage:[UIImage imageNamed:@"notifications_icon"] forState:UIControlStateNormal];
-//    [commentsIconV addSubview:commentsIcon];
-//    
-//    commentsIcon.center = CGPointMake(commentsIconV.center.x+10, commentsIconV.center.y);
-//    
-//    UIView *badgeV = [[UIView alloc]initWithFrame:CGRectMake(commentsIcon.center.x, commentsIcon.frame.origin.y-5, 15, 15)];
-//    badgeV.backgroundColor = [UIColor redColor];
-//    // [commentsIconV addSubview:badgeV];
-//    
-//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:commentsIconV];
-//    self.navigationItem.rightBarButtonItem = rightItem;
 
     CALayer * l = [self.profileImageBorderV layer];
     [l setMasksToBounds:YES];
@@ -425,6 +398,10 @@
 }
 
 -(void)setUserInfo{
+    
+    if (user == nil && self.mode == Timeline_My) {
+        user = [BPUser sharedBP].user;
+    }
     
     [self downloadUserImageIfNecessery];
     
@@ -925,7 +902,7 @@
     UIImageView *imgV = (id)[cell viewWithTag:3];
     
     [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
-              placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+              placeholderImage:[UIImage imageNamed:@"event_image"]];
     
     
     return cell;
@@ -1054,11 +1031,11 @@
     arrow.tag = 2;
     [bgV addSubview:arrow];
     
-    UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar_btn.png"]];
-    imgV.center = textLbl.center;
-    imgV.frame = CGRectMake(16, imgV.frame.origin.y, imgV.frame.size.width, imgV.frame.size.height);
-    imgV.tag = 3;
-    [bgV addSubview:imgV];
+//    UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"calendar_btn.png"]];
+//    imgV.center = textLbl.center;
+//    imgV.frame = CGRectMake(16, imgV.frame.origin.y, imgV.frame.size.width, imgV.frame.size.height);
+//    imgV.tag = 3;
+//    [bgV addSubview:imgV];
     
     GTPushButton *btn = [GTPushButton buttonWithType:UIButtonTypeCustom];
     btn.selectionColor = [UIColor colorWithRed:225/255.0 green:226/255.0 blue:226/255.0 alpha:0.4];
@@ -1705,7 +1682,15 @@
     NSMutableArray *likers = [NSMutableArray array];
     
     for (Likes *l in likes) {
-        NSString *liker = l.likers.likersIdentifier;
+        
+        NSString *liker;
+
+        if ([l isKindOfClass:[NSString class]]) {
+            liker = (NSString *)l;
+        }
+        else{
+          liker = l.likers.likersIdentifier;
+        }
         [likers addObject:liker];
     }
     
@@ -1714,7 +1699,10 @@
         [[EventWS sharedBP]likeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
             if (completed) {
                 
-                [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                Likes *l = [[Likes alloc]init];
+                l.likers = [[Likers alloc]init];
+                l.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                [likers addObject:l];
                 b.beeep.beeepInfo.likes = likers;
                 
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
@@ -1745,6 +1733,10 @@
                 [SVProgressHUD showSuccessWithStatus:@"Unliked"];
                 
                 [self.tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else{
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
             }
         }];
     }

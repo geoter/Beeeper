@@ -663,8 +663,8 @@
         ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
         
         NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 @"253616411483666", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
+                                 @"222125061288499", ACFacebookAppIdKey,
+                                 [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
                                  nil];
 
         
@@ -1553,6 +1553,15 @@
         }
         else{
           
+            NSArray *phones = [user objectForKey:@"phones"];
+            
+            for (NSString *str in phones) {
+               
+                NSString *phone = [[str componentsSeparatedByString:@":"] lastObject];
+
+                [selectedEmails removeObject:phone];
+            }
+            
             [selectedPeople removeObject:user];
             
             if (emailInviteSelectedOption == 0) {

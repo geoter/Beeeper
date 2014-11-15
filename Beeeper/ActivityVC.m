@@ -240,9 +240,6 @@
     
     [self getActivity];
     
-    self.title = @"Activity";
-    self.navigationController.navigationBar.topItem.title = self.title;
-    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
@@ -256,6 +253,8 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    self.navigationController.navigationBar.topItem.title = @"Activity";
 }
 
 -(void)goBack{
@@ -414,7 +413,7 @@
         }
         
         [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
-                     placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                     placeholderImage:[UIImage imageNamed:@"event_image"]];
         
         return cell;
 

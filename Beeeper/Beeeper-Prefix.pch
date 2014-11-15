@@ -36,6 +36,8 @@
     #import "TabbarVC.h"
     #import "UIView+Badge.h"
     #import "JSBadgeView.h"
+    #import "SDWebImage/MKAnnotationView+WebCache.h"
+    #import "AFNetworking.h"
 
 #define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
 #endif

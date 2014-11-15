@@ -25,14 +25,16 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb253616411483666</string>
+				<string>fb222125061288499</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.0</string>
 	<key>FacebookAppID</key>
-	<string>253616411483666</string>
+	<string>222125061288499</string>
+	<key>FacebookDisplayName</key>
+	<string>Beeeper</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>

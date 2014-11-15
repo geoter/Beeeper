@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <GoogleMaps/GoogleMaps.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 @implementation AppDelegate
 
@@ -28,7 +29,7 @@
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 
-    [FBSettings setDefaultAppID: @"253616411483666"];
+    [FBSettings setDefaultAppID: @"222125061288499"];
 
     [GMSServices provideAPIKey:@"AIzaSyDw_2s-d_HFlsMnFyz-30czOPBckYdrtE8"];
 
@@ -99,6 +100,12 @@
     
     return YES;
 }
+
+#ifdef __IPHONE_8_0
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    [application registerForRemoteNotifications];
+}
+#endif
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -215,8 +222,27 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
-    return [FBSession.activeSession handleOpenURL:url];
+   
+    @try {
+        BOOL urlWasHandled = [FBAppCall handleOpenURL:url
+                                    sourceApplication:sourceApplication
+                                      fallbackHandler:^(FBAppCall *call) {
+                                          // incoming link processing goes here
+                                          NSLog(@"%@",call);
+                                      }];
+        return urlWasHandled;
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
+    
+
+
 }
+
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
@@ -227,6 +253,8 @@
      application.applicationIconBadgeNumber = 0;
     
     [FBAppCall handleDidBecomeActive];
+    
+    [FBAppEvents activateApp];
 }
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

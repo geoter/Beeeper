@@ -67,7 +67,7 @@ NSString *const kBeeep_ObjectFingerprint = @"fingerprint";
        [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
     }
 
-    self.comments = [NSArray arrayWithArray:parsedComments];
+    self.comments = [NSMutableArray arrayWithArray:parsedComments];
             self.fingerprint = [self objectOrNilForKey:kBeeep_ObjectFingerprint fromDictionary:dict];
 
     }

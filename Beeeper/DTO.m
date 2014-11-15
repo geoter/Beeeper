@@ -363,14 +363,14 @@ static DTO *thisDTO = nil;
     
     NetworkStatus status = [reachability currentReachabilityStatus];
     
-    if(status == NotReachable && !wasInternetReachable)
+    if(status == NotReachable && wasInternetReachable)
     {
-      wasInternetReachable = YES;
+      wasInternetReachable = NO;
       [[TabbarVC sharedTabbar]showAlert:@"No Internet Connection or Connection Lost/Weak" text:@"Please make sure you are connected to the Internet."];
         return NO;
     }
     else{
-        wasInternetReachable = NO;
+        wasInternetReachable = YES;
     }
     
     
@@ -446,6 +446,8 @@ static DTO *thisDTO = nil;
             self.suggestionBadgeNumberFinished = YES;
         }
     }];
+    
+    [self performSelector:@selector(getSuggestions) withObject:nil afterDelay:60];
 }
 
 -(void)clearSuggestions{

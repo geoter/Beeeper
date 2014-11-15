@@ -17,6 +17,7 @@
 #import "GHContextMenuView.h"
 #import "FollowListVC.h"
 #import "CommentsVC.h"
+#import "BeeepedBy.h"
 
 @interface SearchVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CHTCollectionViewDelegateWaterfallLayout,GHContextOverlayViewDataSource,GHContextOverlayViewDelegate,UIAlertViewDelegate>
 {
@@ -109,6 +110,11 @@
          forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter
                 withReuseIdentifier:@"FooterView"];
     
+    
+    self.topV.layer.masksToBounds = NO;
+    self.topV.layer.shadowOffset = CGSizeMake(0, 0.5);
+    self.topV.layer.shadowRadius = 0.5;
+    self.topV.layer.shadowOpacity = 0.5;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -501,7 +507,7 @@
   //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
 
     [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+            placeholderImage:[UIImage imageNamed:@"event_image"]];
     
     UIView *beeepedByView = (id)[containerV viewWithTag:32];
 //    UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:34];
@@ -758,6 +764,21 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)beeepEventAtIndexPath:(NSIndexPath *)indexpath{
     
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+   Event_Search *event = [events objectAtIndex:indexpath.row];
+    
+    NSArray *beeeepers = event.beeepedBy;
+    
+    for (BeeepedBy *beeeper in beeeepers) {
+        if ([beeeper.beeepedByIdentifier isEqualToString:my_id]) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+    }
+
+    
     [[TabbarVC sharedTabbar]reBeeepPressed:[events objectAtIndex:indexpath.row] controller:self];
     
 }
@@ -766,24 +787,70 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Event_Search *event = [events objectAtIndex:indexpath.row];
     
-    [[EventWS sharedBP]likeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
-
-        if (completed) {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+    NSMutableArray *likes = event.likes;
+    NSMutableArray *likers = [NSMutableArray array];
+    
+    for (Likes *l in likes) {
+        
+        NSString *liker;
+        
+        if ([l isKindOfClass:[NSString class]]) {
+            liker = (NSString *)l;
         }
         else{
-            
-            NSArray *errorArray = [response objectForKey:@"errors"];
-            NSDictionary *errorDict = [errorArray firstObject];
-            
-            NSString *info = [errorDict objectForKey:@"info"];
-            if ([info isEqualToString:@"You have already liked this event"]) {
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
-            }
+            liker = l.likers.likersIdentifier;
         }
-    }];
+        [likers addObject:liker];
+    }
+
+    if ([likers indexOfObject:[[BPUser sharedBP].user objectForKey:@"id"]] == NSNotFound) {
+    
+        [[EventWS sharedBP]likeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+
+            if (completed) {
+                
+                Likes *l = [[Likes alloc]init];
+                l.likers = [[Likers alloc]init];
+                l.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                [likers addObject:l];
+                
+                event.likes = likers;
+                
+                [self.tableV reloadData];
+                
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+            }
+            else{
+                
+                NSArray *errorArray = [response objectForKey:@"errors"];
+                NSDictionary *errorDict = [errorArray firstObject];
+                
+                NSString *info = [errorDict objectForKey:@"info"];
+                if ([info isEqualToString:@"You have already liked this event"]) {
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                }
+            }
+        }];
+    }
+    else{
+        [[EventWS sharedBP]unlikeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+            if (completed) {
+                
+                UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
+                likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+            }
+            else{
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+            }
+            
+        }];
+    }
     
 }
 

@@ -264,8 +264,21 @@ static BPCreate *thisWebServices = nil;
         if ([[dict allKeys] containsObject:@"errors"]) {
           
              [[DTO sharedDTO]addBugLog:@"errors" where:@"BPCreate/eventCreateFinished" json:responseString];
-            
-            self.completed(NO,nil);
+           
+            @try {
+                NSDictionary *errorDict = [[dict objectForKey:@"errors"] firstObject];
+                
+                self.completed(NO,[errorDict objectForKey:@"message"]);
+   
+            }
+            @catch (NSException *exception) {
+                
+                self.completed(NO,nil);
+
+            }
+            @finally {
+                
+            }
             return;
         }
         

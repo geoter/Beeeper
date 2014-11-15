@@ -57,7 +57,8 @@
     loadingBGV.backgroundColor = self.view.backgroundColor;
     
     [self showLoading];
-   
+    
+
      if (self.mode == FollowersMode) {
          
         [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
@@ -91,6 +92,8 @@
             }
             else{
                 [self hideLoading];
+                
+                self.nousersLabel.hidden = NO;
             }
             
             [self updateUsersCount];
@@ -120,6 +123,10 @@
                  [self.tableV reloadData];
                  [self hideLoading];
              }
+             else{
+                 [self hideLoading];
+             }
+
          }];
      }
      else if (self.mode == FollowingMode){
@@ -137,6 +144,11 @@
                  [self.tableV reloadData];
                  [self hideLoading];
              }
+             else{
+                 [self hideLoading];
+                 self.nousersLabel.hidden = NO;
+             }
+
          }];
 
      }
@@ -176,6 +188,11 @@
                      [self hideLoading];
                  }
              }
+             else{
+                 [self hideLoading];
+                 self.nousersLabel.hidden = NO;
+             }
+
          }];
          
          //to get which of the people is our user following
@@ -201,6 +218,10 @@
                      [self hideLoading];
                  }
              }
+             else{
+                 [self hideLoading];
+             }
+
          }];
      }
 
@@ -459,6 +480,30 @@
         });
 }
 
+-(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+             [alert show];
+         }
+         ];
+        
+    });
+}
 
 #pragma mark - MONActivityIndicatorViewDelegate Methods
 

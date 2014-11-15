@@ -85,8 +85,8 @@
                 ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
                 
                 NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                         @"253616411483666", ACFacebookAppIdKey,
-                                         [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
+                                         @"222125061288499", ACFacebookAppIdKey,
+                                         [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
                                          nil];
                 NSArray *accounts = [accountStore accountsWithAccountType:fbAcc];
                 

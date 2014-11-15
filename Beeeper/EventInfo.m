@@ -82,7 +82,7 @@ NSString *const kEventInfoLikes = @"likes";
             [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
         }
         
-        self.comments = [NSArray arrayWithArray:parsedComments];
+        self.comments = [NSMutableArray arrayWithArray:parsedComments];
     }
     
     return self;

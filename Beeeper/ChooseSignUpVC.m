@@ -33,10 +33,15 @@
     NSMutableDictionary *missingInfo;
     NSArray *accounts;
     NSArray *usernames;
+    
+    int fbSelectedAccountIndex;
+    int twSelectedAccountIndex;
 }
+@property (nonatomic,strong) ACAccountStore *accountStore;
 @end
 
 @implementation ChooseSignUpVC
+@synthesize accountStore;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -192,69 +197,7 @@
     
     signupMethod = @"FB";
     
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
-    {
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
-        
-        ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-        
-        NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 @"253616411483666", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObject:@"email"], ACFacebookPermissionsKey,
-                                 nil];
-        
-        [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
-         {
-             if (granted)
-             {
-                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
-                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
-                 
-                 if (usernames.count > 1) {
-                     
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                     popup.tag = 77;
-                     
-                     for (NSString *name in usernames) {
-                         [popup addButtonWithTitle:name];
-                     }
-                     
-                     [popup addButtonWithTitle:@"Cancel"];
-                     
-                     popup.cancelButtonIndex = popup.numberOfButtons -1;
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-
-                         [self hideLoading];
-                         [popup showInView:self.view];
-                     });
-
-
-                 }
-                 else{
-                     [self fbSignupwithAccount:0];
-                 }
-             }
-             else
-             {
-                 if (error == nil) {
-                     NSLog(@"User Has disabled your app from settings...");
-                     
-                     [self hideLoadingWithTitle:@"Beeeper disabled" ErrorMessage:@"Please go to Settings > Facebook and set Beeeper to on."];
-                 }
-                 else
-                 {
-                     [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Error authenticating Facebook."];
-                 }
-             }
-         }];
-    }
-    else
-    {
-        NSLog(@"Not Configured in Settings......"); // show user an alert view that Fcebook is not configured in settings.
-        
-         [self hideLoadingWithTitle:@"No Facebook account" ErrorMessage:@"There are no Facebook accounts configured.You can add or create a Facebook account in Settings."];
-    }
+    [self fbSignupwithAccount:fbSelectedAccountIndex];
 
 }
 
@@ -263,82 +206,10 @@
     [locManager startTracking];
      signupMethod = @"TW";
     
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Facebook is configured in Settings or not
-    {
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
-        
-        ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-        
-        
-        [accountStore requestAccessToAccountsWithType:twitterAcc options:nil completion:^(BOOL granted, NSError *error)
-         {
-             if (granted)
-             {
-
-                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:twitterAcc]];
-                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
-                 
-                 if (usernames.count > 1) {
-                    
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                     popup.tag = 78;
-                     
-                     for (NSString *name in usernames) {
-                         [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
-                     }
-                     
-                     [popup addButtonWithTitle:@"Cancel"];
-                     
-                     popup.cancelButtonIndex = popup.numberOfButtons -1;
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [self hideLoading];
-                         [popup showInView:self.view];
-                     });
-
-                 }
-                 else{
-                     [self twSignupwithAccount:0];
-                 }
-                }
-             else
-             {
-                 if (error == nil) {
-                     NSLog(@"User Has disabled your app from settings...");
-                     
-                    [self hideLoadingWithTitle:@"Beeeper disabled" ErrorMessage:@"Please make sure Beeeper is allowed to use your Twitter accounts."];
-                 }
-                 else
-                 {
-                     NSLog(@"Error in Login: %@", error);
-                 }
-             }
-         }];
-    }
-    else
-    {
-        NSLog(@"Not Configured in Settings......"); // show user an alert view that Fcebook is not configured in settings.
-        
-        [self hideLoadingWithTitle:@"No Twitter account" ErrorMessage:@"There are no Twitter accounts configured.You can add or create a Twitter account in Settings."];
-    }
-    
-
+    [self twSignupwithAccount:twSelectedAccountIndex];
 }
 
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
-    if (actionSheet.cancelButtonIndex == buttonIndex) {
-        return;
-    }
-    
-    if(actionSheet.tag == 77){
-        [self fbSignupwithAccount:buttonIndex];
-    }
-    else if (actionSheet.tag == 78) { // twitter
-        [self twSignupwithAccount:buttonIndex];
-    }
-    
-}
+
 
 -(void)twSignupwithAccount:(int)row{
 
@@ -539,7 +410,10 @@
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         
         hasUsername = ([fbDict objectForKey:@"username"] != nil);
-        hasEmail = ([fbDict objectForKey:@"email"] != nil);
+        
+        NSString *email = [[fbAccount valueForKey:@"properties"] objectForKey:@"ACUIDisplayUsername"];
+
+        hasEmail = ([email isKindOfClass:[NSString class]] && email.length > 0);
         
         hasFirstName = ([[fbDict objectForKey:@"first_name"]isKindOfClass:[NSString class]] && [fbDict objectForKey:@"first_name"] != nil);
         hasLastName = ([[fbDict objectForKey:@"last_name"] isKindOfClass:[NSString class]] && [fbDict objectForKey:@"last_name"] != nil);
@@ -556,7 +430,7 @@
         }
         
         if (hasEmail) {
-            [dict setObject:[fbDict objectForKey:@"email"] forKey:@"email"];
+            [dict setObject:email forKey:@"email"];
         }
         
         NSMutableString *nameStr = [[NSMutableString alloc]init];
@@ -709,14 +583,20 @@
 
 }
 
--(IBAction)loginPressed:(id)sender {
-  
- [self hideLoading];
+- (IBAction)loginPressed:(id)sender {
     
-  UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
-  
-  [self.navigationController pushViewController:menuVC animated:YES];
-  
+    [self hideLoading];
+    
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[TabbarVC class]]) {
+            return;
+        }
+    }
+    
+    UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+    
+    [self.navigationController pushViewController:menuVC animated:YES];
+    
 }
 
 #pragma mark - Autologin
@@ -736,13 +616,13 @@
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
     {
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+        accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
         
         ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
         
         NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 @"253616411483666", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObjects:@"email",@"user_events",@"user_friends",nil], ACFacebookPermissionsKey,
+                                 @"222125061288499", ACFacebookAppIdKey,
+                                 [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
                                  nil];
         
         [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
@@ -774,6 +654,8 @@
                      
                  }
                  else if(usernames.count == 1){
+                     
+                     fbSelectedAccountIndex = 0;
                      
                      ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
                      
@@ -842,7 +724,7 @@
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) // check Twitter is configured in Settings or not
     {
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+        accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
         
         ACAccountType *twitterAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         
@@ -856,7 +738,7 @@
                  if (usernames.count > 1) {
                      
                      UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-                     popup.tag = 77;
+                     popup.tag = 80;
                      
                      for (NSString *name in usernames) {
                          [popup addButtonWithTitle:[NSString stringWithFormat:@"@%@",name]];
@@ -875,7 +757,7 @@
                      
                      ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
                      NSLog(@"Twitter UserName: %@, FullName: %@", twitterAccount.username, twitterAccount.userFullName);
-                     
+                     twSelectedAccountIndex = 0;
                      [self attemptTwitterLogin:twitterAccount];
                  }
                  else{
@@ -965,11 +847,19 @@
                     }
                     else{
                         number_of_attempts = 0;
-                        if ([user isKindOfClass:[NSString class]]) {
-                            [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:user];
+                        
+                        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+                        [reachability startNotifier];
+                        
+                        NetworkStatus status = [reachability currentReachabilityStatus];
+                        
+                        if(status == NotReachable)
+                        {
+                            [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
                         }
                         else{
-                            [self hideLoadingWithTitle:@"Twitter login failed" ErrorMessage:@"Please try again or contact us."];
+                            
+                            [self twitterSignupPressed:nil];
                         }
                     }
                 }
@@ -1025,7 +915,7 @@
                 }
                 else{
                     
-                    [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again."];
+                    [self fbSignupPressed:nil];
                 }
             }
         }
@@ -1061,6 +951,23 @@
                                 atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
     }
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (actionSheet.cancelButtonIndex == buttonIndex) {
+        return;
+    }
+    
+    if(actionSheet.tag == 79){
+        fbSelectedAccountIndex = buttonIndex;
+        [self attemptFBLogin:[accounts objectAtIndex:fbSelectedAccountIndex]];
+    }
+    else if (actionSheet.tag == 80) { // twitter
+        twSelectedAccountIndex = buttonIndex;
+        [self attemptTwitterLogin:[accounts objectAtIndex:twSelectedAccountIndex]];
+    }
+    
 }
 
 @end

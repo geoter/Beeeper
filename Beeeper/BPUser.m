@@ -233,7 +233,7 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    if ([responseString isEqualToString:@"[success]"]) {
+    if ([responseString rangeOfString:@"success"].location != NSNotFound) {
         self.setUserSettingsCompleted(YES,nil);
         [self updateUser];
     }
@@ -2060,7 +2060,7 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - Request Token
 
--(void)getRequestToken{
+-(void)getRequestTokenOld{
     
     oauth_nonce = [self random32CharacterString];
     oauth_nonce_accessToken = [self random32CharacterString];
@@ -2069,7 +2069,6 @@ static BPUser *thisWebServices = nil;
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/oAuth/request_token.php"];
     
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
     
     NSString *headerString = [NSString stringWithFormat:@"OAuth realm=\"\", xoauth_displayname=\"%@\", oauth_callback=\"%@\", oauth_signature_method=\"%@\", oauth_signature=\"%@\", oauth_nonce=\"%@\", oauth_timestamp=\"%@\", oauth_consumer_key=\"%@\", oauth_version=\"%@\"",xoauth_displayname,oauth_callback,oauth_signature_method,[self signature],oauth_nonce,oauth_timestamp,consumerKey,@"1.0"];
     
@@ -2088,9 +2087,35 @@ static BPUser *thisWebServices = nil;
     [request startAsynchronous];
 }
 
--(void)requestTokenReceived:(ASIHTTPRequest *)request{
+-(void)getRequestToken{
     
-    NSString *responseString = [request responseString];
+    oauth_nonce = [self random32CharacterString];
+    oauth_nonce_accessToken = [self random32CharacterString];
+    oauth_timestamp = [NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]];
+    
+    NSString *headerString = [NSString stringWithFormat:@"OAuth realm=\"\", xoauth_displayname=\"%@\", oauth_callback=\"%@\", oauth_signature_method=\"%@\", oauth_signature=\"%@\", oauth_nonce=\"%@\", oauth_timestamp=\"%@\", oauth_consumer_key=\"%@\", oauth_version=\"%@\"",xoauth_displayname,oauth_callback,oauth_signature_method,[self signature],oauth_nonce,oauth_timestamp,consumerKey,@"1.0"];
+
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    [manager.requestSerializer setValue:headerString forHTTPHeaderField:@"Authorization"];
+    [manager.requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    [manager POST:@"https://api.beeeper.com/oAuth/request_token.php" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        [self requestTokenReceived:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"%@",operation);
+        [self requestTokenFailed:error];
+    }];
+}
+
+-(void)requestTokenReceived:(id)responseObject{
+    
+    NSString *responseString = responseObject;
     
     @try {
         NSArray *objects = [responseString componentsSeparatedByString:@"&"];
@@ -2106,9 +2131,11 @@ static BPUser *thisWebServices = nil;
     }
 }
 
--(void)requestTokenFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
-    self.completed(NO,nil);
+-(void)requestTokenFailed:(NSError *)responseObject{
+
+    NSString *errorStr = [responseObject localizedDescription];
+    
+    self.completed(NO,errorStr);
 }
 
 -(NSString *)signature{

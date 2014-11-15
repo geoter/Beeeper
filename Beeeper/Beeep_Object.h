@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSArray *likes;
 @property (nonatomic, strong) NSString *timestamp;
 @property (nonatomic, strong) NSString *weight;
-@property (nonatomic, strong) NSArray *comments;
+@property (nonatomic, strong) NSMutableArray *comments;
 @property (nonatomic, strong) NSString *fingerprint;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;

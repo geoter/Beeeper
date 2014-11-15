@@ -678,13 +678,14 @@
               params.link = [NSURL URLWithString:website];
               NSURL *url = [NSURL URLWithString:imageURL];
               params.picture = url;
-              
+              params.name = beeepTitle;
+              params.linkDescription = self.venueLabel.text;
               
               // If the Facebook app is installed and we can present the share dialog
               if ([FBDialogs canPresentShareDialogWithParams:params]) {
                   // Present share dialog
-                  [FBDialogs presentShareDialogWithLink:params.link
-                                                handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                  
+                  [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
                                                     if(error) {
                                                         // An error occurred, we need to handle the error
                                                         // See: https://developers.facebook.com/docs/ios/errors

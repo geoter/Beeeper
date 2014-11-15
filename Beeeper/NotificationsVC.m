@@ -290,7 +290,7 @@
             EventActivity *event = [activity.eventActivity firstObject];
             
             [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-                    placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]]];
+                    placeholderImage:[UIImage imageNamed:@"event_image"]];
         }
         else{
             [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]

@@ -334,8 +334,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+              //  c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];
@@ -380,8 +380,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+               // c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];
@@ -418,8 +418,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+                //c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];
@@ -467,8 +467,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+//                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];
@@ -505,8 +505,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+              //  c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];
@@ -543,8 +543,8 @@
                 c.commenter = [[Commenter alloc]init];
                 c.commenter.name = name;
                 c.commenter.lastname = surname;
-                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                
+               // c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
                 [comments addObject:c];
                 
                 [self.tableV reloadData];

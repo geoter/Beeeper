@@ -14,4 +14,7 @@
 - (IBAction)fbSignupPressed:(id)sender;
 - (IBAction)twitterSignupPressed:(id)sender;
 
+- (IBAction)twitterLoginPressed:(id)sender;
+- (IBAction)fbLoginPressed:(id)sender;
+
 @end

@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) NSString *eventInfoDescription;
 @property (nonatomic, strong) NSString *fingerprint;
-@property (nonatomic, strong) NSArray *comments;
+@property (nonatomic, strong) NSMutableArray *comments;
 @property (nonatomic, assign) double timestamp;
 @property (nonatomic, strong) NSString *imageUrl;
 @property (nonatomic, strong) NSArray *likes;

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LocationManager.h"
 
 @interface ChooseLoginVC : UIViewController
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;

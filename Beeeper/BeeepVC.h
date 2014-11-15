@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet TKRoundedView *tagsBGV;
 @property (weak, nonatomic) IBOutlet UIView *blurContainerV;
 
+@property (weak, nonatomic) IBOutlet UIButton *selectedPhotoButton;
 @property (weak, nonatomic) IBOutlet UIImageView *blurredImageV;
 @property (nonatomic,strong) UIView *superviewToBlur;
 

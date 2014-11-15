@@ -56,7 +56,7 @@
 {
     [super viewDidLoad];
     
-      [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     
     UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
     self.blurredImageV.image = blurredImg;
@@ -66,13 +66,13 @@
     self.blurContainerV.alpha = 0;
     
     self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    self.titleBGV.borderColor = [UIColor whiteColor];
+    self.titleBGV.borderColor = [UIColor lightGrayColor];
     self.titleBGV.borderWidth = 0.0f;
     self.titleBGV.cornerRadius = 6;
     self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     self.whereBGV.roundedCorners = TKRoundedCornerNone;
-    self.whereBGV.borderColor = [UIColor whiteColor];
+    self.whereBGV.borderColor = [UIColor lightGrayColor];
     self.whereBGV.borderWidth = 0.0f;
     self.whereBGV.cornerRadius = 6;
     self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
@@ -84,13 +84,13 @@
     self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
-    self.addPhotoBGV.borderColor = [UIColor whiteColor];
-    self.addPhotoBGV.borderWidth = 1.0f;
+    self.addPhotoBGV.borderColor = [UIColor lightGrayColor];
+    self.addPhotoBGV.borderWidth = 0.0f;
     self.addPhotoBGV.cornerRadius = 6;
     self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     self.tagsBGV.roundedCorners = TKRoundedCornerAll;
-    self.tagsBGV.borderColor = [UIColor whiteColor];
+    self.tagsBGV.borderColor = [UIColor lightGrayColor];
     self.tagsBGV.borderWidth = 0.0f;
     self.tagsBGV.cornerRadius = 6;
     self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
@@ -203,7 +203,9 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
+  
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -238,6 +240,8 @@
 
         datePicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 260);
         [backV addSubview:datePicker];
+        
+        [self.scrollV endEditing:YES];
         
         [self.view addSubview:backV];
         
@@ -322,10 +326,10 @@
             default:
                 break;
         }
-    }
 
-    textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-    textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+        textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+        textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+    }
     
     return YES;
 }
@@ -488,9 +492,22 @@
     
     if ([textView.text isEqualToString:@"write more hashtags"]) {
         textView.text = @"#";
+        
+        if (textView.selectedRange.location == 0) {
+            [textView setSelectedRange:NSMakeRange(1, 0)];
+        }
+
+        textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     }
     
     return YES;
+}
+
+- (void)textViewDidChangeSelection:(UITextView *)textView
+{
+    if (textView.selectedRange.location == 0) {
+        [textView setSelectedRange:NSMakeRange(1, 0)];
+    }
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
@@ -535,6 +552,7 @@
         textView.text = @"write more hashtags";
         
         textView.textColor = [UIColor colorWithRed:184/255.0 green:185/255.0 blue:186/255.0 alpha:1];
+        textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
     }
     
     NSString *lastCharacter = [textView.text substringWithRange:NSMakeRange([textView.text length]-1, 1)];
@@ -620,10 +638,6 @@
 
 - (IBAction)close:(id)sender {
     
-    [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"dontShowNavOnClose"];
-    
-    [self.parentViewController.navigationController setNavigationBarHidden:NO animated:YES];
-    
     [UIView animateWithDuration:0.3f
                      animations:^
      {
@@ -638,9 +652,10 @@
           }
                           completion:^(BOOL finished)
           {
+              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+              
               [self removeFromParentViewController];
               [self.view removeFromSuperview];
-              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
           }
           ];
      }
@@ -909,12 +924,15 @@
             case 2://search web
             {
                
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+                
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
                 picker.delegate = self;
                 picker.initialSearchTerm = [values objectForKey:@"title"];
-                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
+                picker.cropMode = DZNPhotoEditorViewControllerCropModeCustom;
+                picker.cropSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.width /1.5384);
                 picker.enablePhotoDownload = YES;
                 picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
                 
@@ -927,7 +945,7 @@
                      [picker dismissViewControllerAnimated:YES completion:NULL];
                 };
                 
-                [self presentViewController:picker animated:YES completion:NO];
+                [self presentViewController:picker animated:YES completion:NULL];
             }
                 break;
             default:
@@ -944,12 +962,14 @@
                 break;
             case 1://search web
             {
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
                 
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
                 picker.supportedServices = DZNPhotoPickerControllerServiceGoogleImages ;
                 picker.allowsEditing = YES;
                 picker.delegate = self;
-                picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
+                picker.cropMode = DZNPhotoEditorViewControllerCropModeCustom;
+                picker.cropSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.width /1.5384);
                 picker.enablePhotoDownload = YES;
                 picker.initialSearchTerm = [values objectForKey:@"title"];
                 picker.supportedLicenses = DZNPhotoPickerControllerCCLicenseBY_ALL;
@@ -963,7 +983,7 @@
                     [picker dismissViewControllerAnimated:YES completion:NULL];
                 };
                 
-                [self presentViewController:picker animated:YES completion:NO];
+                [self presentViewController:picker animated:YES completion:NULL];
             }
                 break;
             default:
@@ -980,8 +1000,20 @@
         NSURL *image_url = [info_values objectForKey:@"source_url"];
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-        UIButton *chosenPhotoBtn = (id)[self.addPhotoBGV viewWithTag:6];
-        [chosenPhotoBtn setImage:img forState:UIControlStateNormal];
+        
+        self.addPhotoBGV.frame = CGRectMake(self.selectedPhotoButton.frame.origin.x+self.selectedPhotoButton.frame.size.width+11, self.addPhotoBGV.frame.origin.y, self.addPhotoBGV.frame.size.width, self.addPhotoBGV.frame.size.height);
+        
+        self.selectedPhotoButton.layer.borderWidth = 1;
+        self.selectedPhotoButton.layer.borderColor = [UIColor whiteColor].CGColor;
+
+        self.selectedPhotoButton.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+        self.selectedPhotoButton.layer.shadowOpacity = 0.7;
+        self.selectedPhotoButton.layer.shadowOffset = CGSizeMake(0, 0.1);
+        self.selectedPhotoButton.layer.shadowRadius = 0.8;
+
+        
+        [self.selectedPhotoButton setBackgroundImage:img forState:UIControlStateNormal];
+        self.selectedPhotoButton.hidden = NO;
         
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
@@ -1085,9 +1117,10 @@
 {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.sourceType = sourceType;
-    picker.allowsEditing = YES;
+    picker.allowsEditing = NO;
+    picker.cropMode = DZNPhotoEditorViewControllerCropModeCustom;
     picker.delegate = self;
-    
+   // picker.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentViewController:picker animated:YES completion:NULL];
     
     // picker.editingMode = DZNPhotoEditViewControllerCropModeSquare;
@@ -1105,6 +1138,15 @@
 (UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    if ([info objectForKey:UIImagePickerControllerEditedImage] == nil) {
+        DZNPhotoEditorViewController *editor = [[DZNPhotoEditorViewController alloc] initWithImage:image cropMode:DZNPhotoEditorViewControllerCropModeCustom cropSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.width /1.5384)];
+        [picker pushViewController:editor animated:YES];
+        return;
+    }
+    
+    
     [self userPickedPhoto:info];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }

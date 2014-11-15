@@ -139,8 +139,6 @@
     
     [super viewWillAppear:animated];
     
-    [self downloadInfoAndShowEvent];
-    
     self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
     
@@ -148,9 +146,11 @@
     UIBarButtonItem *btnShare = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"suggest_it_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(suggestIt)];
     UIBarButtonItem *btnMore = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"more_btn_event.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showMore)];
     
-     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     
     [self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:leftItem,btnShare,btnLike,btnMore, nil]];
+    
+    [self downloadInfoAndShowEvent];
     
 }
 
@@ -159,7 +159,9 @@
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         Timeline_Object *t = tml;
         fingerprint = t.event.fingerprint;
-        comments = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.comments];
+        if (!comments) {
+            comments = t.beeep.beeepInfo.comments;   
+        }
     }
     else if ([tml isKindOfClass:[Activity_Object class]]){
         
@@ -173,7 +175,7 @@
             [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
                 if (completed) {
                     beeep_Objct = beeep;
-                    comments = [NSMutableArray arrayWithArray:beeep_Objct.comments];
+                    comments = beeep_Objct.comments;
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
                         [self showEventWithBeeep];
@@ -214,7 +216,11 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
-                [self showEventForEventLookUpObject];
+                
+                dispatch_async (dispatch_get_main_queue(), ^{
+                    [self showEventForEventLookUpObject];
+                });
+                
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -382,7 +388,7 @@
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
     if (event_show_Objct) {
-        comments = [NSMutableArray arrayWithArray:event_show_Objct.eventInfo.comments];
+        comments = event_show_Objct.eventInfo.comments;
     }
 
     commentsLbl.text = [NSString stringWithFormat:@"%d",comments.count];
@@ -396,7 +402,7 @@
     self.beeepsLabel.hidden = (beeepers.count == 0);
     
     if (!likers) {
-        likers = [NSMutableArray arrayWithArray:suggestion.what.likes];
+        likers = suggestion.what.likes;
     }
 
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -558,7 +564,7 @@
     @try {
         imageURL = [[DTO sharedDTO] fixLink:suggestion.what.imageUrl];
         [imgV sd_setImageWithURL:[NSURL URLWithString:imageURL]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
     }
     @catch (NSException *exception) {
         NSLog(@"NO IMAGE");
@@ -672,7 +678,7 @@
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     
     if (!comments) {
-        comments = [NSMutableArray arrayWithArray:b.comments];
+        comments = b.comments;
     }
 
     commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
@@ -845,7 +851,7 @@
         
         imageURL = [[DTO sharedDTO] fixLink:imageName];
         [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
-                placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
         
     }
     @catch (NSException *exception) {
@@ -950,14 +956,23 @@
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
     if (!likers) {
-        likers = [NSMutableArray arrayWithArray:[t.beeep.beeepInfo.likes valueForKey:@"likes"]];
+        @try {
+            likers = [NSMutableArray arrayWithArray:[t.beeep.beeepInfo.likes valueForKey:@"likes"]];
+        }
+        @catch (NSException *exception) {
+            likers = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.likes];
+        }
+        @finally {
+            
+        }
+
     }
     
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
     self.likesLabel.hidden = (likers.count == 0);
     
     if (comments) {
-        commentsLbl.text = [NSString stringWithFormat:@"%d",(int)t.beeep.beeepInfo.comments.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
     }
     
     self.commentsLabel.hidden = (comments.count == 0);
@@ -970,7 +985,17 @@
     
     self.beeepsLabel.hidden = (beeepers.count == 0);
     
-    NSArray *likersIDS = [[t.beeep.beeepInfo.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"];
+    NSMutableArray *likersIDS;
+    
+    @try {
+        likersIDS = [NSMutableArray arrayWithArray:[[t.beeep.beeepInfo.likes valueForKey:@"likers"] valueForKey:@"likersIdentifier"]];
+    }
+    @catch (NSException *exception) {
+        likersIDS = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.likes];
+    }
+    @finally {
+        
+    }
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
@@ -1132,7 +1157,7 @@
         
         imageURL = [[DTO sharedDTO] fixLink:imageName];
         [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
-                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                            placeholderImage:[UIImage imageNamed:@"event_image"]];
         
     }
     @catch (NSException *exception) {
@@ -1248,17 +1273,17 @@
     isLiker = NO;
     
     if (!likers) {
-        likers =[NSMutableArray arrayWithArray:eventSearch.likes];
+        likers = eventSearch.likes;
     }
     
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
 
     if (!comments) {
-        comments = [NSMutableArray arrayWithArray:eventSearch.comments];
+        comments = eventSearch.comments;
     }
     
-    commentsLbl.text = [NSString stringWithFormat:@"%d",(int)eventSearch.comments.count];
-    
+    self.commentsLabel.text = [NSString stringWithFormat:@"%d",(int)eventSearch.comments.count];
+
     if (!beeepers) {
         beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     }
@@ -1284,8 +1309,10 @@
     }
     
     
+    BOOL hideComments = (comments.count == 0);
+    
     self.likesLabel.hidden = (likers.count == 0);
-    self.commentsLabel.hidden = (comments == 0);
+    self.commentsLabel.hidden = hideComments;
     self.beeepsLabel.hidden = (beeepers.count == 0);
         
     double now_time = [[NSDate date]timeIntervalSince1970];
@@ -1426,7 +1453,7 @@
         
         imageURL = [[DTO sharedDTO] fixLink:imageName];
         [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
-                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                            placeholderImage:[UIImage imageNamed:@"event_image"]];
         
     }
     @catch (NSException *exception) {
@@ -1558,7 +1585,7 @@
         if (event != nil) {
             
             if (!comments) {
-                comments = [NSMutableArray arrayWithArray:event.eventInfo.comments];
+                comments = event.eventInfo.comments;
             }
 
             if (!likers) {
@@ -1599,7 +1626,7 @@
         }
         
         if (!comments) {
-            comments = [NSMutableArray arrayWithArray:beeep.comments];
+            comments = beeep.comments;
         }
         
         likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -1765,7 +1792,7 @@
         
         imageURL = [[DTO sharedDTO] fixLink:imageName];
         [self.eventImageV sd_setImageWithURL:[NSURL URLWithString:imageURL]
-                            placeholderImage:[[DTO sharedDTO] imageWithColor:[UIColor lightGrayColor]]];
+                            placeholderImage:[UIImage imageNamed:@"event_image"]];
         
     }
     @catch (NSException *exception) {

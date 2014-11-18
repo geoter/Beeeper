@@ -122,7 +122,7 @@
 
     tapG = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard:)];
     [self.scrollV addGestureRecognizer:tapG];
-    [self.scrollV setContentOffset:CGPointMake(0, IS_IPHONE_5?50:90) animated:YES];
+    [self.scrollV setContentOffset:CGPointMake(0, IS_IPHONE_5?55:90) animated:YES];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{

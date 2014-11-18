@@ -505,15 +505,15 @@
 
 //    else{
         
-        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 6, self.tableV.frame.size.width, 18)];
-        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
+        UILabel *mlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 8, self.tableV.frame.size.width, 18)];
+        mlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
         mlbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
         mlbl.text = [month uppercaseString];
         mlbl.textAlignment = NSTextAlignmentCenter;
         [backV addSubview:mlbl];
         
         UILabel *dlbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 21, self.tableV.frame.size.width, 18)];
-        dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
+        dlbl.font =  [UIFont fontWithName:@"HelveticaNeue-Medium" size:17];
         dlbl.textColor = [UIColor colorWithRed:14/255.0 green:21/255.0 blue:40/255.0 alpha:1];
         dlbl.text = daynumber;
         dlbl.textAlignment = NSTextAlignmentCenter;
@@ -524,12 +524,12 @@
 //    headerBottomLine.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
 //    [header addSubview:headerBottomLine];
     
-    backV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-    backV.layer.shadowOpacity = 0.7;
-    backV.layer.shadowOffset = CGSizeMake(0, 0.1);
-    backV.layer.shadowRadius = 0.8;
-    [backV.layer setShadowPath:[[UIBezierPath
-                                bezierPathWithRect:backV.bounds] CGPath]];
+//    backV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+//    backV.layer.shadowOpacity = 0.7;
+//    backV.layer.shadowOffset = CGSizeMake(0, 0.1);
+//    backV.layer.shadowRadius = 0.8;
+//    [backV.layer setShadowPath:[[UIBezierPath
+//                                bezierPathWithRect:backV.bounds] CGPath]];
 
     
     return header;

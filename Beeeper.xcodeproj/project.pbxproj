@@ -115,6 +115,8 @@
 		636FBA4F1A138E34002EBB44 /* event_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 636FBA4D1A138E34002EBB44 /* event_image@2x.png */; };
 		637841711A0047EE0047C27B /* chooseDate-arrow-down-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */; };
 		637841721A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */; };
+		639AFDBC1A1B729600086D4F /* pin_icon_event-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AFDBA1A1B729600086D4F /* pin_icon_event-big.png */; };
+		639AFDBD1A1B729600086D4F /* pin_icon_event-big@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AFDBB1A1B729600086D4F /* pin_icon_event-big@2x.png */; };
 		63AC25E11A0AB30200D03932 /* beeepItIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AC25DF1A0AB30200D03932 /* beeepItIcon.png */; };
 		63AC25E21A0AB30200D03932 /* beeepItIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AC25E01A0AB30200D03932 /* beeepItIcon@2x.png */; };
 		63AE28D319F14FEA004EB040 /* UIViewController+KNSemiModal.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AE28D219F14FEA004EB040 /* UIViewController+KNSemiModal.m */; };
@@ -751,6 +753,8 @@
 		636FBA4D1A138E34002EBB44 /* event_image@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "event_image@2x.png"; sourceTree = "<group>"; };
 		6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chooseDate-arrow-down-white.png"; sourceTree = "<group>"; };
 		637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chooseDate-arrow-down-white@2x.png"; sourceTree = "<group>"; };
+		639AFDBA1A1B729600086D4F /* pin_icon_event-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin_icon_event-big.png"; sourceTree = "<group>"; };
+		639AFDBB1A1B729600086D4F /* pin_icon_event-big@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin_icon_event-big@2x.png"; sourceTree = "<group>"; };
 		63AC25DF1A0AB30200D03932 /* beeepItIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItIcon.png; sourceTree = "<group>"; };
 		63AC25E01A0AB30200D03932 /* beeepItIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeepItIcon@2x.png"; sourceTree = "<group>"; };
 		63AE28D119F14FEA004EB040 /* UIViewController+KNSemiModal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KNSemiModal.h"; sourceTree = "<group>"; };
@@ -2796,6 +2800,8 @@
 		CEF263AC18DC7F000047510D /* R */ = {
 			isa = PBXGroup;
 			children = (
+				639AFDBA1A1B729600086D4F /* pin_icon_event-big.png */,
+				639AFDBB1A1B729600086D4F /* pin_icon_event-big@2x.png */,
 				636FBA4C1A138E34002EBB44 /* event_image.png */,
 				636FBA4D1A138E34002EBB44 /* event_image@2x.png */,
 				63C27CDD19FA8D9A00564583 /* beeeped_white.png */,
@@ -2909,7 +2915,7 @@
 				ORGANIZATIONNAME = Beeeper;
 				TargetAttributes = {
 					CEA64F0C18B39F4F00B7ECF5 = {
-						DevelopmentTeam = XAEQ9MWECF;
+						DevelopmentTeam = C444XSFHUN;
 					};
 				};
 			};
@@ -3159,6 +3165,7 @@
 				CE0C881318D0BD2300BA548F /* option_3@2x.png in Resources */,
 				CE35D1ED18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard in Resources */,
 				CE529C5D18DB0FEE00900EB6 /* picture_5@2x.png in Resources */,
+				639AFDBC1A1B729600086D4F /* pin_icon_event-big.png in Resources */,
 				CE08DD2119379A0700B090BE /* yellow-tabbar-timeline@2x.png in Resources */,
 				5E51DF0E196A9ABB0061AE2A /* timeline-time-frame.png in Resources */,
 				CE042A0A1938D4B700E3167A /* selection0cirlce-suggestit@2x.png in Resources */,
@@ -3203,6 +3210,7 @@
 				CE77BA4618E5A98F00D4051A /* check_btn.png in Resources */,
 				CEFDE84418EDC3E700E500A9 /* activity_container_image_2.png in Resources */,
 				CE25F9F818B6761300D8B858 /* NotificationBackgroundWarningIcon@2x.png in Resources */,
+				639AFDBD1A1B729600086D4F /* pin_icon_event-big@2x.png in Resources */,
 				CEEE3EC318C9D62F00665C21 /* Welcome_Logo.png in Resources */,
 				63BD3BE01A14D22000102794 /* LICENSE in Resources */,
 				CE0C881B18D0BE1300BA548F /* option_0_gray@2x.png in Resources */,
@@ -3605,8 +3613,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3626,7 +3634,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "309aa390-7a09-44a7-928e-0c5e44c2c96c";
+				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3636,8 +3644,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3657,7 +3665,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "309aa390-7a09-44a7-928e-0c5e44c2c96c";
+				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

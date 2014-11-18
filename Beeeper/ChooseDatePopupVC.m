@@ -31,7 +31,7 @@
     self.optionsV.cornerRadius = 6;
     self.optionsV.borderWidth = 0;
     
-    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:4];
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:7];
     self.blurredImageV.image = blurredImg;
     
 }
@@ -68,7 +68,7 @@
         }
         
         if(btn.tag != self.option){
-            [btn setTitleColor:[UIColor colorWithRed:197/255.0 green:201/255.0 blue:203/255.0 alpha:1] forState:UIControlStateNormal];
+            [btn setTitleColor:[UIColor colorWithRed:137/255.0 green:137/255.0 blue:137/255.0 alpha:1] forState:UIControlStateNormal];
         }
         else{
             [btn setTitleColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1] forState:UIControlStateNormal];
@@ -79,7 +79,7 @@
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         self.popupBGV.alpha = 0.6;
+         self.popupBGV.alpha = 1;
      }
                      completion:^(BOOL finished)
      {
@@ -110,7 +110,7 @@
             continue;
         }
         if(btn != sender){
-            [btn setTitleColor:[UIColor colorWithRed:197/255.0 green:201/255.0 blue:203/255.0 alpha:1] forState:UIControlStateNormal];
+            [btn setTitleColor:[UIColor colorWithRed:137/255.0 green:137/255.0 blue:137/255.0 alpha:1] forState:UIControlStateNormal];
         }
         else{
             [btn setTitleColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1] forState:UIControlStateNormal];
@@ -177,13 +177,13 @@
     self.optionsV.alpha = 0;
     [self.view bringSubviewToFront:self.expandableV];
     
-    CalendarView *cv = [[CalendarView alloc] initWithPosition:0.0 y:20.0];
+    CalendarView *cv = [[CalendarView alloc] initWithPosition:0.0 y:12.0];
     [cv setMode:1];
     cv.calendarDelegate = self;
     cv.center = CGPointMake(self.expandableV.center.x, cv.center.y);
     [self.expandableV addSubview:cv];
 
-    UIView *lineV = [[UIView alloc]initWithFrame:CGRectMake(cv.frame.origin.x+5, 50, cv.frame.size.width-10, 1)];
+    UIView *lineV = [[UIView alloc]initWithFrame:CGRectMake(cv.frame.origin.x+5, 42, cv.frame.size.width-10, 1)];
     lineV.backgroundColor = [ UIColor colorWithRed:232/255.0 green:234/255.0 blue:235/255.0 alpha:1];
 
     [self.expandableV addSubview:lineV];
@@ -192,7 +192,7 @@
                      animations:^
      {
       
-         self.expandableV.frame = CGRectMake(0, self.expandableV.frame.origin.y, self.expandableV.frame.size.width, cv.frame.size.height+20);
+         self.expandableV.frame = CGRectMake(0, self.expandableV.frame.origin.y, self.expandableV.frame.size.width, cv.frame.size.height+15);
      }
                      completion:^(BOOL finished)
      {

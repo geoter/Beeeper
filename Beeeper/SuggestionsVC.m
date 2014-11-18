@@ -338,6 +338,11 @@
         [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]
                 placeholderImage:[UIImage imageNamed:@"event_image"]];
         
+        UIImageView *beeepedByImageV = (id)[cell viewWithTag:34];
+        
+        [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+                           placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
             return cell;
     }
     @catch (NSException *exception) {

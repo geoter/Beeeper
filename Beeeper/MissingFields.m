@@ -66,7 +66,7 @@
 
     }
     else{
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing Fields" message:@"Please make sure you field all missing information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Empty Fields" message:@"Please make sure you have filled in all required fields." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
 }
@@ -93,7 +93,7 @@
         textF.textColor = [UIColor blackColor];
         [textF.UserInfo setObject:fieldName forKey:@"key"];
         textF.tag = i;
-        textF.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
+        textF.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         textF.delegate = self;
         textF.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
         textF.returnKeyType = (i != self.misssingfields.count-1)?UIReturnKeyNext:UIReturnKeyDone;
@@ -106,7 +106,7 @@
         i++;
     }
     
-    self.joinButton.frame = CGRectMake(28, self.scrollV.contentSize.height +10, self.joinButton.frame.size.width, self.joinButton.frame.size.height);
+    self.joinButton.frame = CGRectMake(28, self.scrollV.contentSize.height +7, self.joinButton.frame.size.width, self.joinButton.frame.size.height);
     
     self.scrollV.contentSize = CGSizeMake(320, self.joinButton.frame.origin.y+self.joinButton.frame.size.height + 30);
     

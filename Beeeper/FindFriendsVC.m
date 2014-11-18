@@ -63,6 +63,9 @@
     rowsToReload = [NSMutableArray array];
     selectedPeople = [NSMutableArray array];
     
+    [self.tableV setBackgroundView:nil];
+    self.tableV.backgroundColor = [UIColor clearColor];
+    
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
     
@@ -112,6 +115,8 @@
     
     //search
     
+
+    
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     /*the search bar widht must be > 1, the height must be at least 44
      (the real size of the search bar)*/
@@ -135,10 +140,14 @@
     UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 80)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
+    UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
+    [topLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
+    [headerV addSubview:topLine];
+    
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*81, 0, 80, 80)];
+        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*81, 1, 80, 80)];
         [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateSelected];
         [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateHighlighted];
@@ -233,7 +242,7 @@
 
         [inviteSmsBtn setTitle:@"Invite via SMS" forState:UIControlStateNormal];
         
-        inviteSmsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:16];
+        inviteSmsBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         [inviteSmsBtn addTarget:self action:@selector(inviteSMSPressed:) forControlEvents:UIControlEventTouchUpInside];
         [headerV addSubview:inviteSmsBtn];
         
@@ -252,7 +261,7 @@
         
         [inviteEmailBtn setTitle:@"Invite via EMAIL" forState:UIControlStateNormal];
         
-        inviteEmailBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:16];
+        inviteEmailBtn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         [inviteEmailBtn addTarget:self action:@selector(inviteEMAILPressed:) forControlEvents:UIControlEventTouchUpInside];
         
         [headerV addSubview:inviteEmailBtn];
@@ -1270,17 +1279,17 @@
          }
          else{
              
-             tickedV.hidden = NO;
-             followBtn.hidden = YES;
+             tickedV.hidden = YES;
+             followBtn.hidden = NO;
              fbtickedV.hidden = YES;
              
              NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
              
-             if ([selectedPeople indexOfObject:user] != NSNotFound) {
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+             if (following.boolValue) {
+                 [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
              }
              else{
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]] ;
+                 [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
              }
 
          }
@@ -1723,7 +1732,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (selectedOption == FacebookButton && searchedPeople.count > 0) {
-        return 53;
+        return 47;
     }
     else{
         return 0;
@@ -1734,10 +1743,10 @@
     
     if (selectedOption == FacebookButton && searchedPeople.count > 0) {
        
-        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 53)];
+        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
         header.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
         
-        UILabel *lbl = [[UILabel alloc]initWithFrame:CGRectMake(10,0, self.tableV.frame.size.width-105,  53)];
+        UILabel *lbl = [[UILabel alloc]initWithFrame:CGRectMake(10,0, self.tableV.frame.size.width-105,  47)];
         lbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
         [lbl setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14]];
         
@@ -1765,14 +1774,14 @@
             else{ //fb header
 
     
-                lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",selectedPeople.count];
+                lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",fbPeople.count];
                 
                 
-                UIButton *selectAll = [UIButton buttonWithType:UIButtonTypeCustom];
-                [selectAll setImage:[UIImage imageNamed:@"select_all"] forState:UIControlStateNormal];
-                [selectAll setFrame:CGRectMake(header.frame.size.width-95, 0, 95, header.frame.size.height)];
-                [selectAll addTarget:self action:@selector(selectAllPressed:) forControlEvents:UIControlEventTouchUpInside];
-                [header addSubview:selectAll];
+//                UIButton *selectAll = [UIButton buttonWithType:UIButtonTypeCustom];
+//                [selectAll setImage:[UIImage imageNamed:@"select_all"] forState:UIControlStateNormal];
+//                [selectAll setFrame:CGRectMake(header.frame.size.width-95, 0, 95, header.frame.size.height)];
+//                [selectAll addTarget:self action:@selector(selectAllPressed:) forControlEvents:UIControlEventTouchUpInside];
+//                [header addSubview:selectAll];
                 
                 return header;
             }

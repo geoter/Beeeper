@@ -869,16 +869,23 @@
     
     NSString *alert_time = [self dailyLanguage:timestamp];
     reminderLabel.text = alert_time;
-    //Venue name
+    [reminderLabel sizeToFit];
+    reminderLabel.frame = CGRectMake(cell.frame.size.width-reminderLabel.frame.size.width-9, reminderLabel.frame.origin.y, reminderLabel.frame.size.width, reminderLabel.frame.size.height);
+    reminderIcon.frame = CGRectMake(reminderLabel.frame.origin.x-reminderIcon.frame.size.width-3, reminderIcon.frame.origin.y, reminderIcon.frame.size.width, reminderIcon.frame.size.height);
+    
+    //Venue
     
     UILabel *venueLbl = (id)[cell viewWithTag:5];
-    
+
     NSString *jsonString = b.event.location;
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
     venueLbl.text = [loc.venueStation capitalizedString];
+    
+    UIImageView* areaIcon = (id)[cell viewWithTag:-1];
+    areaIcon.center = CGPointMake(areaIcon.center.x, venueLbl.center.y);
     
     //Likes,Beeeps,Comments
     UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
@@ -914,7 +921,7 @@
         return 51;
     }
     else if (indexPath.row == 0){
-        return 85;
+        return 86;
     }
     else{
         return 81;
@@ -985,7 +992,7 @@
     
     UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, bgV.frame.size.height)];
     textLbl.textAlignment = NSTextAlignmentLeft;
-    textLbl.textColor = [UIColor colorWithRed:113/255.0 green:120/255.0 blue:127/255.0 alpha:1];
+    textLbl.textColor = [UIColor colorWithRed:132/255.0 green:139/255.0 blue:145/255.0 alpha:1];
 
     
     switch (chooseDaySelectedIndex) {
@@ -1018,7 +1025,7 @@
     
     
     textLbl.tag = 1;
-    textLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
+    textLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
     [textLbl sizeToFit];
     textLbl.center = bgV.center;
     [bgV addSubview:textLbl];
@@ -1788,7 +1795,7 @@
     [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:2];
     
     UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
-    b.badge.outlineWidth = 1.0;
+    b.badge.outlineWidth = 0.0;
     b.badge.badgeColor = [UIColor redColor];
     b.tag = 34567;
     b.badge.badgeValue = [BPUser sharedBP].badgeNumber;
@@ -1835,7 +1842,7 @@
     [[self.suggestionsButton.superview viewWithTag:34567] removeFromSuperview];
     
     UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.suggestionsButton.frame.origin.x+5+self.suggestionsButton.frame.size.width/2,self.suggestionsButton.frame.origin.y+13,5,5)];
-    b.badge.outlineWidth = 1.0;
+    b.badge.outlineWidth = 0.0;
     b.badge.badgeColor = [UIColor redColor];
     b.tag = 34567;
     b.badge.badgeValue = [DTO sharedDTO].suggestionBadgeNumber;

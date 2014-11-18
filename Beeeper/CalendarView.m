@@ -16,13 +16,13 @@ static const CGFloat CalendarViewDayCellWidth       = 35;
 static const CGFloat CalendarViewDayCellHeight      = 20;
 static const CGFloat CalendarViewDayCellOffset      = 5;
 
-static const CGFloat CalendarViewMonthCellWidth     = 70;
+static const CGFloat CalendarViewMonthCellWidth     = 67;
 static const CGFloat CalendarViewMonthCellHeight    = 30;
 static const CGFloat CalendarViewMonthTitleOffsetY  = 50;
 static const CGFloat CalendarViewMonthYStep         = 30;
 static const NSInteger CalendarViewMonthInLine      = 4;
 
-static const CGFloat CalendarViewYearCellWidth      = 64;
+static const CGFloat CalendarViewYearCellWidth      = 68;
 static const CGFloat CalendarViewYearCellHeight     = 30;
 static const CGFloat CalendarViewYearTitleOffsetY   = 50;
 static const CGFloat CalendarViewYearYStep          = 45;
@@ -32,13 +32,13 @@ static const NSInteger CalendarViewYearsInLine      = 4;
 static const CGFloat CalendarViewMonthLabelWidth    = 100;
 static const CGFloat CalendarViewMonthLabelHeight   = 20;
 
-static const CGFloat CalendarViewYearLabelWidth     = 40;
+static const CGFloat CalendarViewYearLabelWidth     = 100;
 static const CGFloat CalendarViewYearLabelHeight    = 20;
 
 static const CGFloat CalendarViewWeekDaysYOffset    = 30;
 static const CGFloat CalendarViewDaysYOffset        = 60;
 
-static NSString * const CalendarViewDefaultFont     = @"TrebuchetMS";
+static NSString * const CalendarViewDefaultFont     = @"HelveticaNeue";
 static const CGFloat CalendarViewDayFontSize        = 16;
 static const CGFloat CalendarViewHeaderFontSize     = 18;
 
@@ -142,7 +142,7 @@ static const NSTimeInterval CalendarViewSwipeMonthFadeOutTime = 0.6;
     yearTitleRect = CGRectMake(0, 0, 0, 0);
     monthTitleRect = CGRectMake(0, 0, 0, 0);
     
-    self.fontColor = [UIColor blackColor];
+    self.fontColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
     self.fontHeaderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     self.fontSelectedColor = [UIColor whiteColor];
     self.selectionColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
@@ -496,7 +496,7 @@ static const NSTimeInterval CalendarViewSwipeMonthFadeOutTime = 0.6;
     CGContextSetFillColorWithColor(*context, self.selectionColor.CGColor);
     
     CGFloat minx = CGRectGetMinX(rect) +13, midx = CGRectGetMidX(rect)-13, maxx = CGRectGetMaxX(rect)-13;
-    CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect), maxy = CGRectGetMaxY(rect);
+    CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect), maxy = CGRectGetMaxY(rect)-5;
     
     CGContextMoveToPoint(*context, minx, midy);
     CGContextAddArcToPoint(*context, minx, miny, midx, miny, CalendarViewSelectionRound);

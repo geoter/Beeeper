@@ -484,7 +484,7 @@
     area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
     
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
-    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+2, areaIcon.frame.size.width, areaIcon.frame.size.height);
+    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+1.5, areaIcon.frame.size.width, areaIcon.frame.size.height);
     
     //now move are to center
     area.textAlignment = NSTextAlignmentCenter;
@@ -932,7 +932,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self performSelector:@selector(showBadgeIcon) withObject:nil afterDelay:1];
     
     UIView *b = [[UIView alloc]initWithFrame:CGRectMake(self.notificationsBadgeV.frame.origin.x+self.notificationsBadgeV.frame.size.width-2,self.notificationsBadgeV.frame.origin.y+2,200,10)];
-    b.badge.outlineWidth = 1.0;
+    b.badge.outlineWidth = 0.0;
     b.badge.badgeColor = [UIColor redColor];
     b.tag = 34567;
     b.badge.badgeValue = [BPUser sharedBP].badgeNumber;

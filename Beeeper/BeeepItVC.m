@@ -709,7 +709,7 @@
                                                 }];
               } else {
                   // Present the feed dialog
-                  NSLog(@"fdfd");
+                  
               }
 
     

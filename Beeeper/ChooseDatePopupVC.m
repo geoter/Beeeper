@@ -215,6 +215,6 @@
 }
 
 -(void)releaseMe:(UITapGestureRecognizer *)tagG{
-    [self.delegate datePopupIndexOptionSelected:-1];
+    [self.delegate datePopupIndexOptionSelected:-10];
 }
 @end

@@ -234,7 +234,7 @@
 
 -(void)hide{
     
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarHidden:!self.showBlur withAnimation:UIStatusBarAnimationFade];
     
     if (self.showBlur) {
         

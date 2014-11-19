@@ -1233,7 +1233,6 @@
 		CEA64F2018B39F4F00B7ECF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		CEA64F2318B39F4F00B7ECF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CEA64F2818B39F4F00B7ECF5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		CEA64F2F18B39F4F00B7ECF5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		CEA64F3718B39F4F00B7ECF5 /* BeeeperTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeeeperTests-Info.plist"; sourceTree = "<group>"; };
 		CEA64F3918B39F4F00B7ECF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CEA64F3B18B39F4F00B7ECF5 /* BeeeperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeeeperTests.m; sourceTree = "<group>"; };
@@ -2548,7 +2547,6 @@
 				CEA64F1018B39F4F00B7ECF5 /* Foundation.framework */,
 				CEA64F1218B39F4F00B7ECF5 /* CoreGraphics.framework */,
 				CEA64F1418B39F4F00B7ECF5 /* UIKit.framework */,
-				CEA64F2F18B39F4F00B7ECF5 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

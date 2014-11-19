@@ -76,6 +76,7 @@
     NSString *method =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
 
     if ([method rangeOfString:@"FB"].location != NSNotFound) {
+        
         if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
         {
             @try {

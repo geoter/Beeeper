@@ -153,7 +153,7 @@
 
         @try {
             
-            [[BPTimeline sharedBP]getTimelineForUserID:userID option:option timeStamp:0 WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            [[BPTimeline sharedBP]getTimelineForUserID:userID option:option timeStamp:selectedDate.timeIntervalSince1970 WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 
                 UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
                 [refreshControl endRefreshing];
@@ -1888,10 +1888,16 @@
     
     }
     
+    UIImageView *arrow = (id)[headerTextLabel.superview viewWithTag:2];
+    
     [UIView animateWithDuration:0.5f
                      animations:^
      {
          chooseDatePopupVC.view.alpha = 0;
+         
+         headerTextLabel.alpha = 1;
+         
+         arrow.alpha = 1;
      }
                      completion:^(BOOL finished)
      {
@@ -1908,6 +1914,7 @@
     if (index == 0) { //upcoming
         
         chooseDaySelectedIndex = index;
+        selectedDate = [NSDate date];
         
         [self closeDatePopup:index];
         [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
@@ -1915,13 +1922,17 @@
     else if(index == 1){ //past
        
         chooseDaySelectedIndex = index;
+        selectedDate = 0;
         
         [self closeDatePopup:index];
         [self getTimeline:[self.user objectForKey:@"id"] option:Past];
     }
-    else if(index == -1){ //tapG
-        [self closeDatePopup:chooseDaySelectedIndex];
+    else if(index == -1){
+        [self closeDatePopup:-1];
         [self getTimeline:[self.user objectForKey:@"id"] option:Past];
+    }
+    else if(index == -10){ //tapG
+        [self closeDatePopup:-1];
     }
     else{
         chooseDaySelectedIndex = index;
@@ -1932,6 +1943,13 @@
 }
 
 - (IBAction)calendarPressed:(UIButton *)sender {
+    
+    CGPoint pointInView = [headerTextLabel.superview convertPoint:headerTextLabel.frame.origin toView:self.view];
+    
+    if (pointInView.y >= 300 && [[UIScreen mainScreen] bounds].size.height < 568) {
+        
+        [self.tableV setContentOffset:CGPointMake(0, 55) animated:NO];
+    }
     
     chooseDatePopupVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ChooseDatePopupVC"];
     chooseDatePopupVC.superviewToBlur = self.navigationController.view;
@@ -1955,9 +1973,18 @@
     
     //define Popup Y
     
-    CGPoint pointInView = [headerTextLabel.superview convertPoint:headerTextLabel.frame.origin toView:self.view];
+
+    if (pointInView.y >= 300 && [[UIScreen mainScreen] bounds].size.height < 568) {
+        
+        chooseDatePopupVC.popupVContainer.frame = CGRectMake(0, 300, chooseDatePopupVC.view.frame.size.width, chooseDatePopupVC.view.frame.size.height);
+      
+    }
+    else{
+
+        chooseDatePopupVC.popupVContainer.frame = CGRectMake(0,pointInView.y, chooseDatePopupVC.view.frame.size.width, chooseDatePopupVC.view.frame.size.height);
+        
+    }
     
-    chooseDatePopupVC.popupVContainer.frame = CGRectMake(0, pointInView.y, chooseDatePopupVC.view.frame.size.width, chooseDatePopupVC.view.frame.size.height);
     
     [UIView animateWithDuration:0.4f
                      animations:^

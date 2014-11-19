@@ -38,8 +38,6 @@
     self.corneredBGV.layer.mask = maskLayer;
     self.corneredBGV.layer.shadowColor = [UIColor colorWithRed:152/255.0 green:157/255.0 blue:164/255.0 alpha:1].CGColor;
     
-    self.scrollV.contentSize = CGSizeMake(320, 568);
-    
     for (UIButton *b in self.corneredBGV.subviews) {
         if ([b isKindOfClass:[UIButton class]] && b.tag != 77) {
             [b addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];

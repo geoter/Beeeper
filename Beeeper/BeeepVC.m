@@ -119,7 +119,6 @@
                                  subscription:DZNPhotoPickerControllerSubscriptionFree];
     
     self.containerScrollV.contentSize = CGSizeMake(294, 534);
-    self.scrollV.contentSize = CGSizeMake(320, self.scrollV.frame.size.height);
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
  //   [self adjustFonts];

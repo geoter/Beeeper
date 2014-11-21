@@ -191,10 +191,9 @@
 - (IBAction)forgotPassPressed:(id)sender {
     
     WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
-    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
-    viewController.title = @"Forgot Password";
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/terms"];
+    viewController.title = @"Terms of Use";
     [self.navigationController pushViewController:viewController animated:YES];
-
     
   //  UIViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ForgotPassVC"];
   //  [self.navigationController pushViewController:vc animated:YES];

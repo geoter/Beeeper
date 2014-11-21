@@ -10,6 +10,7 @@
 #import "MissingFields.h"
 #import "LocationManager.h"
 #import "TKRoundedView.h"
+#import "WebBrowserVC.h"
 
 @interface SignUp_Email_VC ()
 {
@@ -363,6 +364,13 @@
         sender.tag = 0;
         agreeTerms = NO;
     }
+}
+
+- (IBAction)showTerms:(id)sender {
+    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
+    viewController.title = @"Forgot Password";
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 -(void)invalidTextfield:(UITextField *)txtF{

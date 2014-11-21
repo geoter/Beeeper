@@ -275,7 +275,7 @@
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
-    refreshControl.tintColor = [UIColor grayColor];
+    refreshControl.tintColor = [UIColor whiteColor];
     [refreshControl addTarget:self action:@selector(getTimeline:option:) forControlEvents:UIControlEventValueChanged];
     [refreshView addSubview:refreshControl];
 
@@ -911,6 +911,26 @@
     [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
               placeholderImage:[UIImage imageNamed:@"event_image"]];
     
+    
+    if (b.event.timestamp < [[NSDate date]timeIntervalSince1970]) { //PAST
+      
+        UILabel *passedLbl = (UILabel *)[[cell viewWithTag:34] viewWithTag:35];
+        UIFont *font =[UIFont fontWithName:@"Mohave" size:9];
+        
+        for (NSString *family in [UIFont familyNames]) {
+            NSLog(@"%@", [UIFont fontNamesForFamilyName:family]);
+        }
+        
+        //[passedLbl setFont:font];
+        [cell viewWithTag:34].hidden = NO;
+        reminderIcon.hidden = YES;
+        reminderLabel.hidden = YES;
+    }
+    else{
+        [cell viewWithTag:34].hidden = YES;
+        reminderIcon.hidden = NO;
+        reminderLabel.hidden = NO;
+    }
     
     return cell;
 }

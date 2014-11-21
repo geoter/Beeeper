@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *codeNumberLabel;
 @property (weak, nonatomic) IBOutlet UILabel *websiteLabel;
 @property (weak, nonatomic) IBOutlet UITextView *tagsField;
+@property (weak, nonatomic) IBOutlet UIButton *beeepedGray;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
 @property (weak, nonatomic) IBOutlet UITableView *tableV;
 @property (weak, nonatomic) IBOutlet UILabel *likesLabel;
@@ -33,7 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *beeepsButton;
 @property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 @property (weak, nonatomic) IBOutlet UIButton *beeepItButton;
-@property (weak, nonatomic) IBOutlet UIImageView *passedIcon;
+@property (weak, nonatomic) IBOutlet UIView *passedIcon;
 
 @property (nonatomic,assign) BOOL redirectToComments;
 @property (nonatomic,strong) NSMutableDictionary *values;

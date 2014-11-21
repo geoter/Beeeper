@@ -150,8 +150,6 @@
                                consumerSecret:kGoogleImagesSearchEngineID
                                  subscription:DZNPhotoPickerControllerSubscriptionFree];
     
-    self.containerScrollV.contentSize = CGSizeMake(294, 534);
-    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
  //   [self adjustFonts];
 }
@@ -358,8 +356,8 @@
                 break;
         }
 
-        textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-        textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+        textField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
+       // textField.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     }
     
     return YES;
@@ -635,7 +633,7 @@
                 
                 [(UITextField *)v2 setText:[NSString stringWithFormat:@"%@",[df stringFromDate:datePicker.date]]];
                 
-                [(UITextField *)v2 setTextColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+               // [(UITextField *)v2 setTextColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
                 
                 [(UITextField *)v2 setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:15]];
                 
@@ -837,14 +835,14 @@
     if (base64Image) {
         [values setObject:base64Image forKey:@"base64_image"];
        
-        self.addPhotoBGV.borderColor = [UIColor clearColor];
+        //self.addPhotoBGV.borderColor = [UIColor clearColor];
     }
     else if (![values objectForKey:@"image_url"]){
         self.addPhotoBGV.borderColor = [UIColor colorWithRed:220/255.0 green:61/255.0 blue:61/255.0 alpha:1];
         mpike = YES;
     }
     else{
-        self.addPhotoBGV.borderColor = [UIColor clearColor];
+        //self.addPhotoBGV.borderColor = [UIColor clearColor];
     }
     
 
@@ -891,7 +889,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^
      {
-        backV.borderColor = [UIColor whiteColor];
+       // backV.borderColor = [UIColor whiteColor];
      }
                      completion:^(BOOL finished)
      {
@@ -925,10 +923,12 @@
     
     if ([predefinedTags indexOfObject:tag] == NSNotFound) {
         [predefinedTags addObject:tag];
-        [sender setTitleColor:[UIColor colorWithRed:54/255.0 green:60/255.0 blue:78/255.0 alpha:1] forState:UIControlStateNormal];
+        
+        [sender setTitleColor:[UIColor colorWithRed:132/255.0 green:139/255.0 blue:145/255.0 alpha:1] forState:UIControlStateNormal];
     }
     else{
         [predefinedTags removeObject:tag];
+        
         [sender setTitleColor:[UIColor colorWithRed:207/255.0 green:208/255.0 blue:209/255.0 alpha:1] forState:UIControlStateNormal];
     }
 }

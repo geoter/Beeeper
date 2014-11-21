@@ -545,7 +545,8 @@
         //disable Beeep button if past event
         
         UIButton *beeepBtn = (id)[containerV viewWithTag:99];
-        
+        UIView *passed =(id)[containerV viewWithTag:34];
+       
         return cell;
     }
     else{
@@ -702,9 +703,6 @@
             [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.whoFfo.imagePath]]
                      placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
             //disable Beeep button if past event
-            
-            UIButton *beeepBtn = (id)[containerV viewWithTag:99];
-        
         
             return cell;
     }

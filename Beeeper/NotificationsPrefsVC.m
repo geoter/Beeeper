@@ -38,7 +38,6 @@
     
     [[BPUser sharedBP]getEmailSettingsWithCompletionBlock:^(BOOL completed,NSDictionary *objs){
         if (completed) {
-            [self hideLoading];
             downloadedSettings = [NSMutableDictionary dictionaryWithDictionary:objs];
             [self updateSettings];
         }
@@ -46,6 +45,8 @@
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem getting your Notification preferences. Please try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
         }
+        
+        [self hideLoading];
     }];
     
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];

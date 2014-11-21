@@ -311,9 +311,10 @@
                 [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                 
                 [self hideLoading];
-                return;
                 
             });
+            
+            return;
         }
         //5
         
@@ -2244,6 +2245,19 @@
          self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
+     }
+     else if (selectedOption ==  TwitterButton){
+         
+         if (searchText.length > 0) {
+             searchedPeople = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText,searchText]]];
+         }
+         else{
+             searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
+         }
+         
+         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+         [self.tableV reloadData];
+
      }
 }
 

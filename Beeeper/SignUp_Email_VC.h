@@ -14,5 +14,6 @@
 
 - (IBAction)registerPressed:(id)sender;
 - (IBAction)agreeButtonPressed:(id)sender;
+- (IBAction)showTerms:(id)sender;
 
 @end

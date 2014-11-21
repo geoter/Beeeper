@@ -2390,7 +2390,7 @@
         tml = event_show_Objct;
     }
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
+    [[TabbarVC sharedTabbar]reBeeepPressed:tml image:self.eventImageV.image controller:self];
 
 }
 
@@ -2481,6 +2481,9 @@
                                                                                     otherButtonTitles:nil];
                                           [alertView show];
                                           
+                                          [self sendFacebookNoApp];
+                                          
+                                          
                                       } else if (session.isOpen) {
                                           
                                           
@@ -2513,31 +2516,70 @@
                                           params.link = [NSURL URLWithString:websiteURL];
                                           NSURL *url = [NSURL URLWithString:imageURL];
                                           params.picture = url;
-                                          
+                                          params.name = self.titleLabel.text;
+                                          params.linkDescription = self.venueLabel.text;
                                           
                                           // If the Facebook app is installed and we can present the share dialog
                                           if ([FBDialogs canPresentShareDialogWithParams:params]) {
                                               // Present share dialog
-                                              [FBDialogs presentShareDialogWithLink:params.link
-                                                                            handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-                                                                                if(error) {
-                                                                                    // An error occurred, we need to handle the error
-                                                                                    // See: https://developers.facebook.com/docs/ios/errors
-                                                                                    NSLog(@"Error publishing story: %@", error.description);
-                                                                                } else {
-                                                                                    // Success
-                                                                                    NSLog(@"result %@", results);
-                                                                                }
-                                                                            }];
+                                              
+                                              [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                  if(error) {
+                                                      // An error occurred, we need to handle the error
+                                                      // See: https://developers.facebook.com/docs/ios/errors
+                                                      
+                                                      UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                          message:error.localizedDescription
+                                                                                                         delegate:nil
+                                                                                                cancelButtonTitle:@"OK"
+                                                                                                otherButtonTitles:nil];
+                                                      [alertView show];
+                                                      
+                                                      NSLog(@"Error publishing story: %@", error.description);
+                                                 
+                                                      
+                                                  } else {
+                                                      // Success
+                                                      NSLog(@"result %@", results);
+                                                  }
+                                              }];
                                           } else {
                                               // Present the feed dialog
-                                              NSLog(@"fdfd");
+                                              [self sendFacebookNoApp];
                                           }
                                           
                                           
                                           //run your user info request here
                                       }
                                   }];
+}
+
+-(void)sendFacebookNoApp{
+    
+    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+    
+    [composeController setInitialText:shareText];
+    
+    if (self.eventImageV.image != nil) {
+        
+        [composeController addImage:self.eventImageV.image];
+        
+    }
+    
+    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
+    
+    [self presentViewController:composeController animated:YES completion:nil];
+    
+    
+    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+        if (result == SLComposeViewControllerResultDone) {
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+            [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+        }
+        
+        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+    };
+    composeController.completionHandler =myBlock;
 }
 
 -(void)sendTwitter {

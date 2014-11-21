@@ -20,7 +20,7 @@
 - (void)hideBadgeIcon;
 
 - (void)addBeeepPressed:(id)sender;
-- (void)reBeeepPressed:(id)sender_tml controller:(UIViewController *)sender;
+- (void)reBeeepPressed:(id)sender_tml image:(UIImage *)image controller:(UIViewController *)sender;
 - (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur;
 
 - (IBAction)tabbarButtonTapped:(id)sender;

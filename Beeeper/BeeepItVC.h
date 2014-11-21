@@ -32,6 +32,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *venueLabel;
 @property (nonatomic,strong) UIView *superviewToBlur;
 
+@property(nonatomic,strong) UIImage *facebookDialogEventImage;
+
 - (void)setBeeep;
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;

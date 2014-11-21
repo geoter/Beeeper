@@ -23,7 +23,7 @@
 {
     NSMutableArray *filteredResults;
     NSArray *suggestionValues;
-    NSArray *events;
+    NSMutableArray *events;
     NSMutableDictionary *pendingImagesDict;
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
@@ -42,15 +42,15 @@
     
     loadNextPage = NO;
     
-    [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *keywords){
+    [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *eventsArr){
        
         @try {
-            if (keywords.count > 0) {
-                loadNextPage = (keywords.count == [EventWS sharedBP].pageLimit);
-                [filteredResults addObjectsFromArray:keywords];
+            if (eventsArr.count > 0) {
+                loadNextPage = (eventsArr.count == [EventWS sharedBP].pageLimit);
+                [events addObjectsFromArray:eventsArr];
             }
             
-            [self.tableV reloadData];
+            [self.collectionV reloadData];
         }
         @catch (NSException *exception) {
     
@@ -243,7 +243,7 @@
     
     [[EventWS sharedBP]searchEvent:term WithCompletionBlock:^(BOOL completed,NSArray *evnts){
         if (completed) {
-            events = [NSArray arrayWithArray:evnts];
+            events = [NSMutableArray arrayWithArray:evnts];
             
             if (events.count == [EventWS sharedBP].pageLimit) {
                 loadNextPage = YES;
@@ -426,7 +426,7 @@
     NSString *daynumber = [day_month objectAtIndex:2];
     
     UIView *containerV = [cell viewWithTag:55];
-    
+
     UILabel *monthLbl = (id)[containerV viewWithTag:1];
     UILabel *dayLbl = (id)[containerV viewWithTag:2];
     UIImageView *imageV = (id)[containerV viewWithTag:3];
@@ -766,6 +766,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
     
+    UICollectionViewCell *cell = [self.collectionV cellForItemAtIndexPath:indexpath];
+
+    UIView *containerV = [cell viewWithTag:55];
+    UIImageView *imageV = (id)[containerV viewWithTag:3];
+    
    Event_Search *event = [events objectAtIndex:indexpath.row];
     
     NSArray *beeeepers = event.beeepedBy;
@@ -779,7 +784,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
 
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:[events objectAtIndex:indexpath.row] controller:self];
+    [[TabbarVC sharedTabbar]reBeeepPressed:[events objectAtIndex:indexpath.row] image:imageV.image controller:self];
     
 }
 

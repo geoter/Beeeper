@@ -734,7 +734,7 @@
                         tml = objs;
                     }
                     
-                    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
+                    [[TabbarVC sharedTabbar]reBeeepPressed:tml image:nil controller:self];
                 
                 }
                 else{

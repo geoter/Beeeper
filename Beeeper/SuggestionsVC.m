@@ -330,7 +330,7 @@
         dayLbl.text = daynumber;
         monthLbl.text = [month uppercaseString];
         
-        suggestedBy.text = [NSString stringWithFormat:@"%@",[w.name capitalizedString]];
+        suggestedBy.text = [NSString stringWithFormat:@"%@ %@",[w.name capitalizedString],[w.lastname capitalizedString]];
         
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
@@ -414,7 +414,9 @@
         return;
     }
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:suggestion controller:self];
+    UIImageView *imageV = (id)[cell viewWithTag:3];
+    
+    [[TabbarVC sharedTabbar]reBeeepPressed:suggestion image:imageV.image controller:self];
     
 }
 

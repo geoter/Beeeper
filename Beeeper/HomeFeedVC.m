@@ -449,7 +449,7 @@
         NSString *daynumber = [day_month objectAtIndex:2];
         
         UIView *containerV = [cell viewWithTag:55];
-        
+
         UILabel *monthLbl = (id)[containerV viewWithTag:1];
         UILabel *dayLbl = (id)[containerV viewWithTag:2];
         UIImageView *imageV = (id)[containerV viewWithTag:3];
@@ -827,7 +827,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     NSIndexPath *path = [self.collectionV indexPathForCell:cell];
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:[beeeps objectAtIndex:path.row] controller:self];
+    UIView *containerV = [cell viewWithTag:55];
+    UIImageView *imageV = (id)[containerV viewWithTag:3];
+    
+    [[TabbarVC sharedTabbar]reBeeepPressed:[beeeps objectAtIndex:path.row] image:imageV.image controller:self];
     
 }
 
@@ -1076,8 +1079,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
  
     
-   UICollectionViewCell *cell= [self.collectionV cellForItemAtIndexPath:indexpath];
+    UICollectionViewCell *cell= [self.collectionV cellForItemAtIndexPath:indexpath];
 
+    UIView *containerV = [cell viewWithTag:55];
+    UIImageView *imageV = (id)[containerV viewWithTag:3];
+    
     if ([cell.reuseIdentifier isEqualToString:@"EventCellWaterfallDisabled"]) {
         
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -1094,7 +1100,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
          tml = [events objectAtIndex:indexpath.row];
     }
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:tml controller:self];
+    [[TabbarVC sharedTabbar]reBeeepPressed:tml image:imageV.image controller:self];
 
 }
 

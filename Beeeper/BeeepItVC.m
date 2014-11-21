@@ -33,6 +33,7 @@
     NSString *tinyURL;
     NSString *fingerprint;
     NSMutableArray *followers;
+    
 }
 @end
 
@@ -646,6 +647,8 @@
               self.fbSwitch.on = NO;
               [self switchValueChanged:self.fbSwitch];
               
+              [self sendFacebookNoApp];
+              
           } else if (session.isOpen) {
               
             
@@ -702,14 +705,37 @@
                                                         
                                                         [self switchValueChanged:self.fbSwitch];
                                                         
+                                                        [self sendFacebookNoApp];
+                                                        
                                                     } else {
                                                         // Success
                                                         NSLog(@"result %@", results);
+                                                        @try {
+                                                           
+                                                            NSString *action = [results objectForKey:@"completionGesture"];
+                                                            
+                                                            if ([action isEqualToString:@"cancel"]) {
+                                                                
+                                                                self.fbSwitch.on = NO;
+                                                                
+                                                                [self switchValueChanged:self.fbSwitch];
+                                                            }
+                                                            
+                                                        }
+                                                        @catch (NSException *exception) {
+                                                            
+                                                        }
+                                                        @finally {
+                                                            
+
+                                                        }
+                                                        
+                                                        
                                                     }
                                                 }];
               } else {
                   // Present the feed dialog
-                  
+                  [self sendFacebookNoApp];
               }
 
     
@@ -718,52 +744,170 @@
   }];
 }
 
+-(void)sendFacebookNoApp{
+    
+    if (self.facebookDialogEventImage) {
+    
+        SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        
+        [composeController setInitialText:shareText];
+        
+        [composeController addImage:self.facebookDialogEventImage];
+        [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
+        
+        [self presentViewController:composeController animated:YES completion:nil];
+        
+        
+        SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+            if (result == SLComposeViewControllerResultDone) {
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+                
+                self.fbSwitch.on = YES;
+                [self switchValueChanged:self.fbSwitch];
+            }
+            else if (result == SLComposeViewControllerResultCancelled) {
+                self.fbSwitch.on = NO;
+                [self switchValueChanged:self.fbSwitch];
+            }
+            
+            //    [composeController dismissViewControllerAnimated:YES completion:Nil];
+        };
+        composeController.completionHandler =myBlock;
+    }
+    else{
+        
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageURL]
+                                                            options:0
+                                                           progress:^(NSInteger receivedSize, NSInteger expectedSize)
+         {
+             // progression tracking code
+         }
+                                                          completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished)
+         {
+             if (image && finished)
+             {
+                 
+                 SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+                 
+                 [composeController setInitialText:shareText];
+                 
+                 [composeController addImage:image];
+                 
+                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+                 [composeController addURL: url];
+                 
+                 
+                 [self presentViewController:composeController
+                                    animated:YES completion:nil];
+                 
+                 SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+                     if (result == SLComposeViewControllerResultCancelled) {
+                         self.twitterSwitch.on = NO;
+                         [self switchValueChanged:self.twitterSwitch];
+                         
+                     } else
+                         
+                     {
+                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                         [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+                     }
+                     
+                     //   [composeController dismissViewControllerAnimated:YES completion:Nil];
+                 };
+                 composeController.completionHandler =myBlock;
+                 
+                 
+                 
+             }
+         }];
+        
+    }
+}
+
+
 -(void)sendTwitter {
     
-    //NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-    
-    [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageURL]
-                                                        options:0
-                                                       progress:^(NSInteger receivedSize, NSInteger expectedSize)
-     {
-         // progression tracking code
-     }
-                                                      completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished)
-     {
-         if (image && finished)
-         {
-             SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-             
-             [composeController setInitialText:shareText];
-             
-             [composeController addImage:image];
-             
-             NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
-             [composeController addURL: url];
-             
-             
-             [self presentViewController:composeController
-                                animated:YES completion:nil];
-             
-             SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
-                 if (result == SLComposeViewControllerResultCancelled) {
-                     self.twitterSwitch.on = NO;
-                     [self switchValueChanged:self.twitterSwitch];
-                     
-                 } else
-                     
-                 {
-                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
-                     [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
-                 }
-                 
-                 //   [composeController dismissViewControllerAnimated:YES completion:Nil];
-             };
-             composeController.completionHandler =myBlock;
-         }
-     }];
+    if (self.facebookDialogEventImage) {
+        
+        SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        
+        [composeController setInitialText:shareText];
+        
+        [composeController addImage:self.facebookDialogEventImage];
+        
+        NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+        [composeController addURL: url];
+        
+        
+        [self presentViewController:composeController
+                           animated:YES completion:nil];
+        
+        SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+            if (result == SLComposeViewControllerResultCancelled) {
+                self.twitterSwitch.on = NO;
+                [self switchValueChanged:self.twitterSwitch];
+                
+            } else
+                
+            {
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+            }
+            
+            //   [composeController dismissViewControllerAnimated:YES completion:Nil];
+        };
+        composeController.completionHandler =myBlock;
 
+    }
+    else{
     
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageURL]
+                                                            options:0
+                                                           progress:^(NSInteger receivedSize, NSInteger expectedSize)
+         {
+             // progression tracking code
+         }
+                                                          completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished)
+         {
+             if (image && finished)
+             {
+        
+                 SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                 
+                 [composeController setInitialText:shareText];
+                 
+                 [composeController addImage:image];
+                 
+                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+                 [composeController addURL: url];
+                 
+                 
+                 [self presentViewController:composeController
+                                    animated:YES completion:nil];
+                 
+                 SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
+                     if (result == SLComposeViewControllerResultCancelled) {
+                         self.twitterSwitch.on = NO;
+                         [self switchValueChanged:self.twitterSwitch];
+                         
+                     } else
+                         
+                     {
+                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                         [SVProgressHUD showSuccessWithStatus:@"Posted on Twitter!"];
+                     }
+                     
+                     //   [composeController dismissViewControllerAnimated:YES completion:Nil];
+                 };
+                 composeController.completionHandler =myBlock;
+
+        
+        
+             }
+         }];
+    
+    }
     
 }
 

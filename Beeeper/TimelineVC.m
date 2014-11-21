@@ -1267,7 +1267,9 @@
         return;
     }
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:b controller:self];
+    UIImageView *imgV = (id)[cell viewWithTag:3];
+    
+    [[TabbarVC sharedTabbar]reBeeepPressed:b image:imgV.image controller:self];
 
 }
 
@@ -1676,7 +1678,10 @@
 
     Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
     
-    [[TabbarVC sharedTabbar]reBeeepPressed:b controller:self];
+    UITableViewCell *cell = [self.tableV cellForRowAtIndexPath:indexpath];
+    UIImageView *imgV = (id)[cell viewWithTag:3];
+    
+    [[TabbarVC sharedTabbar]reBeeepPressed:b image:imgV.image controller:self];
     
 }
 

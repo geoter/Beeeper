@@ -172,10 +172,11 @@ static TabbarVC *thisWebServices = nil;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
-- (void)reBeeepPressed:(id)sender_tml controller:(UIViewController *)sender{
+- (void)reBeeepPressed:(id)sender_tml image:(UIImage *)image controller:(UIViewController *)sender{
     
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     viewController.superviewToBlur = sender.navigationController.view;
+    viewController.facebookDialogEventImage = image;
     
     if ([sender_tml isKindOfClass:[NSDictionary class]]) {
         viewController.values = sender_tml;

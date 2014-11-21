@@ -55,7 +55,7 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
-    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:7];
     self.blurredImageV.image = blurredImg;
     
     self.blurContainerV.alpha = 0;
@@ -64,34 +64,34 @@
 //    self.suggestButton.layer.borderWidth = 1;
 //    self.suggestButton.layer.cornerRadius = 5;
 
-    TKRoundedView *beeepTimeBGV = (TKRoundedView *)[self.view viewWithTag:1111];
-    beeepTimeBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-    beeepTimeBGV.borderWidth = 1.0f;
-    beeepTimeBGV.cornerRadius = 6;
-    beeepTimeBGV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
-    
-    TKRoundedView *suggestBGV = (TKRoundedView *)[self.view viewWithTag:1112];
-    suggestBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-    suggestBGV.borderWidth = 1.0f;
-    suggestBGV.cornerRadius = 6;
+//    TKRoundedView *beeepTimeBGV = (TKRoundedView *)[self.view viewWithTag:1111];
+//    beeepTimeBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+//    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+//    beeepTimeBGV.borderWidth = 1.0f;
+//    beeepTimeBGV.cornerRadius = 6;
+//    beeepTimeBGV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
+//    
+//    TKRoundedView *suggestBGV = (TKRoundedView *)[self.view viewWithTag:1112];
+//    suggestBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+//    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+//    suggestBGV.borderWidth = 1.0f;
+//    suggestBGV.cornerRadius = 6;
     
 //    self.beeepTimeButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
 //    self.beeepTimeButton.layer.borderWidth = 1;
 //    self.beeepTimeButton.layer.cornerRadius = 5;
     
-    self.fbShareV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    self.fbShareV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-    self.fbShareV.borderWidth = 1.0f;
-    self.fbShareV.cornerRadius = 6;
-    self.fbShareV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
-
-    self.twitterV.roundedCorners =  TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-    self.twitterV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-    self.twitterV.borderWidth = 1.0f;
-    self.twitterV.cornerRadius = 6;
-    self.twitterV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
+//    self.fbShareV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+//    self.fbShareV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+//    self.fbShareV.borderWidth = 1.0f;
+//    self.fbShareV.cornerRadius = 6;
+//    self.fbShareV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
+//
+//    self.twitterV.roundedCorners =  TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+//    self.twitterV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
+//    self.twitterV.borderWidth = 1.0f;
+//    self.twitterV.cornerRadius = 6;
+//    self.twitterV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
     
     [self adjustFonts];
     
@@ -374,7 +374,7 @@
     
     self.selectTimeLabel.text = beeepTime;
     self.selectTimeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-    self.selectTimeLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+   // self.selectTimeLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     
 }
 
@@ -382,7 +382,7 @@
    followers = [NSMutableArray arrayWithArray:[notif.userInfo objectForKey:@"followers"]];
    
     self.suggestedLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-    self.suggestedLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+   // self.suggestedLabel.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     self.suggestedLabel.text = @"";
     
     for (NSDictionary *beeeper in followers) {

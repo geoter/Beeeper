@@ -58,42 +58,74 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     
-    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:7];
     self.blurredImageV.image = blurredImg;
     
     predefinedTags = [NSMutableArray array];
     
     self.blurContainerV.alpha = 0;
     
-    self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-    self.titleBGV.borderColor = [UIColor lightGrayColor];
-    self.titleBGV.borderWidth = 0.0f;
-    self.titleBGV.cornerRadius = 6;
-    self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    self.titleBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.titleBGV.layer.shadowOpacity = 0.7;
+    self.titleBGV.layer.shadowOffset = CGSizeMake(0, -0.1);
+    self.titleBGV.layer.shadowRadius = 0.8;
+    [self.titleBGV.layer setShadowPath:[[UIBezierPath
+                                bezierPathWithRect:self.titleBGV.bounds] CGPath]];
     
-    self.whereBGV.roundedCorners = TKRoundedCornerNone;
-    self.whereBGV.borderColor = [UIColor lightGrayColor];
-    self.whereBGV.borderWidth = 0.0f;
-    self.whereBGV.cornerRadius = 6;
-    self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    self.whenBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.whenBGV.layer.shadowOpacity = 0.7;
+    self.whenBGV.layer.shadowOffset = CGSizeMake(0, 0.1);
+    self.whenBGV.layer.shadowRadius = 0.8;
+    [self.whenBGV.layer setShadowPath:[[UIBezierPath
+                                         bezierPathWithRect:self.whenBGV.bounds] CGPath]];
     
-    self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-    self.whenBGV.borderColor = [UIColor whiteColor];
-    self.whenBGV.borderWidth = 0.0f;
-    self.whenBGV.cornerRadius = 6;
-    self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+   
+    self.tagsBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.tagsBGV.layer.shadowOpacity = 0.7;
+    self.tagsBGV.layer.shadowOffset = CGSizeMake(0, 0.0);
+    self.tagsBGV.layer.shadowRadius = 0.8;
+    [self.tagsBGV.layer setShadowPath:[[UIBezierPath
+                                        bezierPathWithRect:self.tagsBGV.bounds] CGPath]];
+   
     
-    self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
-    self.addPhotoBGV.borderColor = [UIColor lightGrayColor];
-    self.addPhotoBGV.borderWidth = 0.0f;
-    self.addPhotoBGV.cornerRadius = 6;
-    self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    self.scrollV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.scrollV.layer.shadowOpacity = 0.7;
+    self.scrollV.layer.shadowOffset = CGSizeMake(0, 0.0);
+    self.scrollV.layer.shadowRadius = 0.8;
+    [self.scrollV.layer setShadowPath:[[UIBezierPath
+                                        bezierPathWithRect:self.scrollV.bounds] CGPath]];
+
+
     
-    self.tagsBGV.roundedCorners = TKRoundedCornerAll;
-    self.tagsBGV.borderColor = [UIColor lightGrayColor];
-    self.tagsBGV.borderWidth = 0.0f;
-    self.tagsBGV.cornerRadius = 6;
-    self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+//    self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+//    self.titleBGV.borderColor = [UIColor lightGrayColor];
+//    self.titleBGV.borderWidth = 0.0f;
+//    self.titleBGV.cornerRadius = 6;
+//    self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+//    
+//    self.whereBGV.roundedCorners = TKRoundedCornerNone;
+//    self.whereBGV.borderColor = [UIColor lightGrayColor];
+//    self.whereBGV.borderWidth = 0.0f;
+//    self.whereBGV.cornerRadius = 6;
+//    self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+//    
+//    self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+//    self.whenBGV.borderColor = [UIColor whiteColor];
+//    self.whenBGV.borderWidth = 0.0f;
+//    self.whenBGV.cornerRadius = 6;
+//    self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+//    
+//    self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
+//    self.addPhotoBGV.borderColor = [UIColor lightGrayColor];
+//    self.addPhotoBGV.borderWidth = 0.0f;
+//    self.addPhotoBGV.cornerRadius = 6;
+//    self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+//    
+//    self.tagsBGV.roundedCorners = TKRoundedCornerAll;
+//    self.tagsBGV.borderColor = [UIColor lightGrayColor];
+//    self.tagsBGV.borderWidth = 0.0f;
+//    self.tagsBGV.cornerRadius = 6;
+//    self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     values = [NSMutableDictionary dictionary];
     
@@ -489,7 +521,7 @@
     
     [self.containerScrollV setContentOffset:CGPointMake(0, 170) animated:YES];
     
-    if ([textView.text isEqualToString:@"write more hashtags"]) {
+    if ([textView.text isEqualToString:@""]) {
         textView.text = @"#";
         
         if (textView.selectedRange.location == 0) {
@@ -548,7 +580,7 @@
     if (textView.text.length == 0 || [textView.text isEqualToString:@"#"]) {
         [values removeObjectForKey:@"keywords"];
 
-        textView.text = @"write more hashtags";
+        textView.text = @"";
         
         textView.textColor = [UIColor colorWithRed:184/255.0 green:185/255.0 blue:186/255.0 alpha:1];
         textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
@@ -870,7 +902,7 @@
 
 - (void)imageSelected{
   
-    self.addPhotoBGV.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
+//    self.addPhotoBGV.borderColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
 }
 
 
@@ -1000,15 +1032,15 @@
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
         
-        self.addPhotoBGV.frame = CGRectMake(self.selectedPhotoButton.frame.origin.x+self.selectedPhotoButton.frame.size.width+11, self.addPhotoBGV.frame.origin.y, self.addPhotoBGV.frame.size.width, self.addPhotoBGV.frame.size.height);
+       // self.addPhotoBGV.frame = CGRectMake(self.selectedPhotoButton.frame.origin.x+self.selectedPhotoButton.frame.size.width+11, self.addPhotoBGV.frame.origin.y, self.addPhotoBGV.frame.size.width, self.addPhotoBGV.frame.size.height);
         
-        self.selectedPhotoButton.layer.borderWidth = 1;
-        self.selectedPhotoButton.layer.borderColor = [UIColor whiteColor].CGColor;
+//        self.selectedPhotoButton.layer.borderWidth = 1;
+//        self.selectedPhotoButton.layer.borderColor = [UIColor whiteColor].CGColor;
 
-        self.selectedPhotoButton.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-        self.selectedPhotoButton.layer.shadowOpacity = 0.7;
-        self.selectedPhotoButton.layer.shadowOffset = CGSizeMake(0, 0.1);
-        self.selectedPhotoButton.layer.shadowRadius = 0.8;
+//        self.selectedPhotoButton.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+//        self.selectedPhotoButton.layer.shadowOpacity = 0.7;
+//        self.selectedPhotoButton.layer.shadowOffset = CGSizeMake(0, 0.1);
+//        self.selectedPhotoButton.layer.shadowRadius = 0.8;
 
         
         [self.selectedPhotoButton setBackgroundImage:img forState:UIControlStateNormal];
@@ -1017,7 +1049,7 @@
         //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
         //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
-        if (!image_url) {
+        if (image_url == nil) {
             NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
             base64Image = [self base64forData:imageData];
             [values removeObjectForKey:@"image_url"];

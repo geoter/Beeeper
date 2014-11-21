@@ -29,14 +29,22 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
    
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.corneredBGV.bounds byRoundingCorners:UIRectCornerAllCorners                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
-    // Create the shape layer and set its path
-    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-    maskLayer.frame = self.corneredBGV.bounds;
-    maskLayer.path = maskPath.CGPath;
-    // Set the newly created shape layer as the mask for the image view's layer
-    self.corneredBGV.layer.mask = maskLayer;
-    self.corneredBGV.layer.shadowColor = [UIColor colorWithRed:152/255.0 green:157/255.0 blue:164/255.0 alpha:1].CGColor;
+    self.corneredBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
+    self.corneredBGV.layer.shadowOpacity = 0.7;
+    self.corneredBGV.layer.shadowOffset = CGSizeMake(0, 0.0);
+    self.corneredBGV.layer.shadowRadius = 0.8;
+    [self.corneredBGV.layer setShadowPath:[[UIBezierPath
+                                        bezierPathWithRect:self.corneredBGV.bounds] CGPath]];
+
+    
+//    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.corneredBGV.bounds byRoundingCorners:UIRectCornerAllCorners                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
+//    // Create the shape layer and set its path
+//    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+//    maskLayer.frame = self.corneredBGV.bounds;
+//    maskLayer.path = maskPath.CGPath;
+//    // Set the newly created shape layer as the mask for the image view's layer
+//    self.corneredBGV.layer.mask = maskLayer;
+//    self.corneredBGV.layer.shadowColor = [UIColor colorWithRed:152/255.0 green:157/255.0 blue:164/255.0 alpha:1].CGColor;
     
     for (UIButton *b in self.corneredBGV.subviews) {
         if ([b isKindOfClass:[UIButton class]] && b.tag != 77) {

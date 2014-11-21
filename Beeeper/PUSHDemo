@@ -1,0 +1,27 @@
+{
+
+aps =     {
+
+alert =         {
+
+"action-loc-key" =             {
+
+name = c;
+
+param = "1415998800.88829";
+
+};
+
+body = "Kostas Batsos commented on your beeep";
+
+};
+
+badge = 1;
+
+sound = default;
+
+};
+
+c = "1415998800.88829";
+
+}

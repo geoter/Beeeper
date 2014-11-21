@@ -23,6 +23,8 @@
     
    //  [[DTO sharedDTO]addBugLog:@"test what" where:@"BPCreate/test what" json:nil];
     
+    [self application:application didReceiveRemoteNotification:nil];
+    
     [self createEditableCopyOfPlistIfNeeded];
     
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"homefeed-y"];
@@ -262,8 +264,9 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-   
+    
     @try {
+        //[userInfo objectForKey:@"w"]
         [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
         [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
     }
@@ -283,6 +286,21 @@
      sound = default;
      w = 111.122;
      }*/
+}
+
+-(void)getCorrectTypeOrDie:(NSString *)type dict:(NSDictionary *)userInfo{
+   
+    NSArray *types = [NSArray arrayWithObjects:@"w",@"u",@"l",@"c", nil];
+    
+    @try {
+        [userInfo objectForKey:type];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {

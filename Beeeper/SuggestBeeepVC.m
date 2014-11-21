@@ -36,7 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:2];
+    UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:7];
     self.blurredImageV.image = blurredImg;
     
     self.blurContainerV.alpha = 0;
@@ -136,8 +136,16 @@
     lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
 }
 
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    textField.text = ([textField.text isEqualToString:@"Search by name"])?@"":textField.text;
+    return YES;
+}
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
+    if (textField.text.length == 0) {
+        textField.text = @"Search by name";
+    }
     return YES;
 }
 

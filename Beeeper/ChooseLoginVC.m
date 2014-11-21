@@ -127,9 +127,6 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     
-
-    
-    
     if (textField.tag == 5) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:6];
         [txtF becomeFirstResponder];

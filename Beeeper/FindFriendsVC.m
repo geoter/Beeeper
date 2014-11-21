@@ -32,6 +32,9 @@
     int page;
     
     NSMutableArray *searchedPeople;
+    NSMutableArray *searchedBeeepers;
+    NSMutableArray *searchedFBFriends;
+    
     UIGestureRecognizer* cancelGesture;
     
     NSMutableArray *selectedPeople;
@@ -98,6 +101,11 @@
                     loadNextPage = (objcts.count == pageLimit);
                     searchedPeople = [NSMutableArray arrayWithArray:objcts];
                     
+                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                    
+                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                     ];
+                    
                     NSRange range = NSMakeRange(0, 1);
                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
                     [self.tableV reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
@@ -137,7 +145,7 @@
     
     //on the top of tableView
     
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 80)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 124)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
@@ -161,9 +169,9 @@
         }
     }
     
-//    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
-//    
-//    [headerV addSubview:searchBar];
+    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+    
+    [headerV addSubview:searchBar];
     
     UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,80, self.tableV.frame.size.width, 1)];
     [bottomLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
@@ -200,7 +208,7 @@
     
     //UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, (selectedOption == MailButton)?163:124)];
 
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 124)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 168)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     
@@ -272,9 +280,9 @@
         [headerV addSubview:bottomLine];
     }
     
-//    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
-//    
-//    [headerV addSubview:searchBar];
+    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+    
+    [headerV addSubview:searchBar];
     
     headerView = headerV;
     
@@ -529,6 +537,11 @@
                         loadNextPage = (objcts.count == pageLimit);
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
                         
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                        
+                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                         ];
+                        
                         [self.tableV reloadData];
                         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     }
@@ -777,7 +790,7 @@
          NSString *friendStr = [fb_ids componentsJoinedByString:@","];
          
          fbPeople = [NSMutableArray arrayWithArray:friends];
-         searchedPeople = [NSMutableArray arrayWithArray:friends];
+         searchedFBFriends = [NSMutableArray arrayWithArray:friends];
          
          
          [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
@@ -792,11 +805,11 @@
                          NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
                          
                          beeepers = [NSMutableArray arrayWithArray:friends];
-                         [searchedPeople addObjectsFromArray:friends];
+                         searchedBeeepers = [NSMutableArray arrayWithArray:friends];
                          
                          dispatch_async(dispatch_get_main_queue(), ^{
 
-                             self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+                             self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
                              
                              [self.tableV reloadData];
                              
@@ -1103,14 +1116,15 @@
         
         if(actionSheet.tag == 66){
             
-            NSDictionary *user = [searchedPeople objectAtIndex:actionSheetIndexPath.row];
+            NSDictionary *user = (FacebookButton == selectedOption)?nil:[searchedPeople objectAtIndex:actionSheetIndexPath.row];
             
-            if (selectedOption == FacebookButton && beeepers.count >0) {
-                user = [beeepers objectAtIndex:actionSheetIndexPath.row];
+            if (selectedOption == FacebookButton && searchedBeeepers.count >0) {
+                user = [searchedBeeepers objectAtIndex:actionSheetIndexPath.row];
             }
             
+            int positionSB = [searchedBeeepers indexOfObject:user];
             int positionB = [beeepers indexOfObject:user];
-            int positionS = [searchedPeople indexOfObject:user];
+            int positionSP = [searchedPeople indexOfObject:user];
             
             [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 if (completed) {
@@ -1118,10 +1132,13 @@
                     NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
                     [newUser setObject:@"0" forKey:@"following"];
                     
-                    if (selectedOption == FacebookButton && beeepers.count >0) {
-                         [beeepers replaceObjectAtIndex:positionB withObject:newUser];
+                    if (selectedOption == FacebookButton) {
+                        [beeepers replaceObjectAtIndex:positionB withObject:newUser];
+                        [searchedBeeepers replaceObjectAtIndex:positionSB withObject:newUser];
                     }
-                    [searchedPeople replaceObjectAtIndex:positionS withObject:newUser];
+                    else{
+                        [searchedPeople replaceObjectAtIndex:positionSP withObject:newUser];
+                    }
                     
                     NSRange range = NSMakeRange(0, 1);
                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -1169,7 +1186,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 
-    if (selectedOption == FacebookButton && beeepers.count > 0) {
+    if (selectedOption == FacebookButton && searchedBeeepers.count > 0) {
         return 2;
     }
     
@@ -1181,12 +1198,14 @@
     // Return the number of rows in the section.
     
     if (selectedOption == FacebookButton) {
-        if (section == 0 && beeepers.count > 0) {
-            return beeepers.count;
+        if (section == 0 && searchedBeeepers.count > 0) {
+            return searchedBeeepers.count;
         }
         else{
-            return fbPeople.count;
+            return searchedFBFriends.count;
         }
+        
+        return 0;
     }
     
     return (searchedPeople.count>0 && loadNextPage && selectedOption == BeeeperButton)?(searchedPeople.count+1):searchedPeople.count;
@@ -1213,7 +1232,7 @@
         
     }
     
-    if (selectedOption != BeeeperButton && selectedOption != FacebookButton) { //mail
+    if (selectedOption == MailButton) { //mail
         CellIdentifier = @"Cell";
     }
     else{
@@ -1231,25 +1250,24 @@
     UIImageView *tickedV = (id)[cell viewWithTag:5];
     UIImageView *fbtickedV = (id)[cell viewWithTag:14];
     
-    NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
+    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
     
     BOOL isBeeeper = NO;
     
     if (selectedOption == FacebookButton) {
-        if (indexPath.section == 0 && beeepers.count > 0) {
-            user = [beeepers objectAtIndex:indexPath.row];
+        if (indexPath.section == 0 && searchedBeeepers.count > 0) {
+            user = [searchedBeeepers objectAtIndex:indexPath.row];
             isBeeeper = YES;
         }
         else{
-            user = [fbPeople objectAtIndex:indexPath.row];
+            user = [searchedFBFriends objectAtIndex:indexPath.row];
             isBeeeper = NO;
         }
     }
     
      if (selectedOption != BeeeperButton) {
          
-         
-         if (selectedOption == FacebookButton && !isBeeeper) {
+         if ((selectedOption == FacebookButton && !isBeeeper) || selectedOption == MailButton) {
              
              tickedV.hidden = NO;
              fbtickedV.hidden = YES;
@@ -1458,14 +1476,14 @@
     UIImageView *tickedV = (id)[cell viewWithTag:5];
     UIImageView *fbtickedV = (id)[cell viewWithTag:14];
     
-    NSDictionary *user = [searchedPeople objectAtIndex:indexPath.row];
+    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
    
     if (selectedOption == FacebookButton) {
-        if ( beeepers.count > 0 && indexPath.section == 0) {
-            user  = [beeepers objectAtIndex:indexPath.row];
+        if (searchedBeeepers.count > 0 && indexPath.section == 0) {
+            user  = [searchedBeeepers objectAtIndex:indexPath.row];
         }
         else{
-            user  = [fbPeople objectAtIndex:indexPath.row];
+            user  = [searchedFBFriends objectAtIndex:indexPath.row];
         }
     }
     
@@ -1649,6 +1667,13 @@
             
         }
         else{
+            
+            if (selectedPeople.count == 50 && selectedOption == FacebookButton) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Cannot select more users." message:@"You have reached the limit of 50 selected people." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+                [alert show];
+                return;
+            }
+            
             [selectedPeople addObject:user];
             
             
@@ -1696,7 +1721,7 @@
             self.navigationItem.rightBarButtonItem = nil;
         }
         
-        if (beeepers.count > 0) {
+        if (searchedBeeepers.count > 0) {
             NSRange range = NSMakeRange(1, 1);
             NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
             [self.tableV reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
@@ -1722,6 +1747,35 @@
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (selectedOption == FacebookButton) {
+        if (indexPath.section == 1) {
+            if (indexPath.row == searchedFBFriends.count) {
+                return 40;
+            }
+            else{
+                return 61;
+            }
+        }
+        else if (indexPath.section == 0 && searchedBeeepers.count == 0){
+           
+            if (indexPath.row == searchedFBFriends.count) {
+                return 40;
+            }
+            else{
+                return 61;
+            }
+        }
+        else{
+            if (indexPath.row == searchedBeeepers.count) {
+                return 40;
+            }
+            else{
+                return 61;
+            }
+        }
+    }
+    
     if (indexPath.row == searchedPeople.count) {
         return 40;
     }
@@ -1731,7 +1785,10 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if (selectedOption == FacebookButton && searchedPeople.count > 0) {
+    if (selectedOption == FacebookButton && section == 0 && searchedBeeepers.count > 0) {
+        return 47;
+    }
+    else if (selectedOption == FacebookButton && section == 1 && searchedFBFriends.count > 0) {
         return 47;
     }
     else{
@@ -1741,7 +1798,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    if (selectedOption == FacebookButton && searchedPeople.count > 0) {
+    if (selectedOption == FacebookButton && searchedBeeepers.count+searchedFBFriends.count > 0) {
        
         UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
         header.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
@@ -1752,15 +1809,15 @@
         
         [header addSubview:lbl];
         
-        if (beeepers.count > 0) {
+        if (searchedBeeepers.count > 0) {
             
             if (section == 0) {
                 
-                if (beeepers.count == 1) {
-                    lbl.text = [NSString stringWithFormat:@"%d Friend on Beeeper",beeepers.count];
+                if (searchedBeeepers.count == 1) {
+                    lbl.text = [NSString stringWithFormat:@"%d Friend on Beeeper",searchedBeeepers.count];
                 }
                 else{
-                    lbl.text = [NSString stringWithFormat:@"%d Friends on Beeeper",beeepers.count];
+                    lbl.text = [NSString stringWithFormat:@"%d Friends on Beeeper",searchedBeeepers.count];
                 }
                 
                 UIButton *followAll = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1774,7 +1831,7 @@
             else{ //fb header
 
     
-                lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",fbPeople.count];
+                lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",searchedFBFriends.count];
                 
                 
 //                UIButton *selectAll = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -1813,8 +1870,9 @@
     
     for (int i=0; i<beeepers.count ; i++) {
 
-        NSDictionary *user = [beeepers objectAtIndex:i];
+        NSDictionary *user = [searchedBeeepers objectAtIndex:i];
         
+        int positionSB = [searchedBeeepers indexOfObject:user];
         int positionB = [beeepers indexOfObject:user];
         int positionS = [searchedPeople indexOfObject:user];
         
@@ -1823,8 +1881,13 @@
         NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
         [newUser setObject:@"1" forKey:@"following"];
         
-        [beeepers replaceObjectAtIndex:positionB withObject:newUser];
-        [searchedPeople replaceObjectAtIndex:positionS withObject:newUser];
+        if (FacebookButton == selectedOption) {
+            [searchedBeeepers replaceObjectAtIndex:positionSB withObject:newUser];
+            [beeepers replaceObjectAtIndex:positionB withObject:newUser];
+        }
+        else{
+            [searchedPeople replaceObjectAtIndex:positionS withObject:newUser];
+        }
         
         if (!following.boolValue) {
             
@@ -1899,7 +1962,7 @@
                 NSLog(@"Send Response: %@", responseString);
                 
                 if ([responseString rangeOfString:@"Error"].location != NSNotFound) {
-                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
                 
                 }
@@ -1920,7 +1983,7 @@
                 NSError *error = [request error];
                 NSLog(@"Send Error: %@", error.localizedDescription);
                 
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
                 
             }];
@@ -1930,59 +1993,7 @@
     }
     else if (selectedOption == FacebookButton){
         
-    
-        
-        NSMutableDictionary* params =   [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                         [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"to",
-                                         nil];
-        
-        
-        NSString *title = @"Beeeper invitation";
-        NSString *message = [NSString stringWithFormat:@"George has invited you to join Beeeper"];
-        
-        [FBWebDialogs presentRequestsDialogModallyWithSession:FBSession.activeSession
-                                                      message:message
-                                                        title:title
-                                                   parameters:params
-                                                      handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-                                                          if (error)
-                                                          {
-                                                              // Error launching the dialog or sending the request.
-                                                              NSLog(@"Error sending request.");
-                                                              [[TabbarVC sharedTabbar]showAlert:@"Oops!" text:@"Failed to send facebook request!"];
-
-                                                          }
-                                                          else
-                                                          {
-                                                              
-                                                              if (result == FBWebDialogResultDialogNotCompleted) {
-                                                                  // User clicked the "x" icon
-                                                                  NSLog(@"User canceled request.");
-                                                                
-                                                              }
-                                                              else
-                                                              {
-                                                                  // Handle the send request callback
-                                                                  NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
-                                                                  if (![urlParams valueForKey:@"request"])
-                                                                  {
-                                                                      // User clicked the Cancel button
-                                                                      NSLog(@"User canceled request.");
-                                                                      
-                                                                  }
-                                                                  else
-                                                                  {
-                                                                      
-                                                                      
-                                                                      // User clicked the Send button
-                                                                      NSString *requestID = [urlParams valueForKey:@"request"];
-                                                                      NSLog(@"Request ID: %@", requestID);
-                                                                      
-                                                                                                                                        }
-                                                              }
-                                                              
-                                                          }
-                                                      }];
+        [self inviteFBFriendsPressed];
 
     }
 }
@@ -2034,7 +2045,14 @@
             if (completed) {
                 if (objcts > 0) {
                     loadNextPage = (objcts.count == pageLimit);
+                
                     searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                
+                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                    
+                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                     ];
+                    
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                 }
              }
@@ -2050,8 +2068,11 @@
         [self.tableV reloadData];
     }
     else if (selectedOption == FacebookButton){
-        searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
-        self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+        searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
+        searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
+        
+        self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
+        
         [self.tableV reloadData];
     }
 }
@@ -2083,10 +2104,15 @@
     if ([searchText length] == 0) {
         if (selectedOption == MailButton){
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
+            self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
             [self.tableV reloadData];
         }
         else if (selectedOption == FacebookButton){
-            searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
+            searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
+            searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
+            
+            self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
+            
             [self.tableV reloadData];
         }
         else if (selectedOption == BeeeperButton){
@@ -2100,6 +2126,13 @@
                     if (objcts > 0) {
                         loadNextPage = (objcts.count == pageLimit);
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                       
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                        
+                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                         ];
+                        
+                        self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     }
                 }
                 
@@ -2110,7 +2143,7 @@
 
         }
         
-        self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+        
     }
 }
 
@@ -2132,6 +2165,11 @@
                         else{
                             searchedPeople = [NSMutableArray array];
                         }
+                        
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                        
+                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                         ];
                     }
 
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
@@ -2153,6 +2191,11 @@
                     if (objcts > 0) {
                         loadNextPage = (objcts.count == pageLimit);
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
+                        
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                        
+                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                         ];
                     }
                 }
 
@@ -2181,13 +2224,16 @@
      else if (selectedOption == FacebookButton){
          
          if (searchText.length > 0) {
-             searchedPeople = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
+             searchedBeeepers = [NSMutableArray arrayWithArray:[beeepers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
+             
+            searchedFBFriends = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
          }
          else{
-             searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
+             searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
+             searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
          }
         
-         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+         self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
      }
@@ -2209,6 +2255,11 @@
             if (objcts.count > 0) {
                 loadNextPage = (objcts.count == pageLimit);
                 [searchedPeople addObjectsFromArray:objcts];
+                
+                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+                
+                [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+                 ];
             }
         }
         
@@ -2306,16 +2357,17 @@
     UITableViewCell *cell = (UITableViewCell *)view;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSDictionary *user = [searchedPeople objectAtIndex:path.row];
+    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:path.row];
     
-    if (selectedOption == FacebookButton && beeepers.count >0) {
-        user = [beeepers objectAtIndex:path.row];
+    if (selectedOption == FacebookButton && searchedBeeepers.count >0) {
+        user = [searchedBeeepers objectAtIndex:path.row];
     }
     
     NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
     
     int positionB = [beeepers indexOfObject:user];
-    int positionS = [searchedPeople indexOfObject:user];
+    int positionSB = [searchedBeeepers indexOfObject:user];
+    int positionSP = [searchedPeople indexOfObject:user];
     
     if (following.boolValue) {
         
@@ -2335,10 +2387,13 @@
                 NSMutableDictionary *newUser = [NSMutableDictionary dictionaryWithDictionary:user];
                 [newUser setObject:@"1" forKey:@"following"];
 
-                if (selectedOption == FacebookButton && beeepers.count >0) {
+                if (selectedOption == FacebookButton) {
+                    [searchedBeeepers replaceObjectAtIndex:positionSB withObject:newUser];
                     [beeepers replaceObjectAtIndex:positionB withObject:newUser];
                 }
-                [searchedPeople replaceObjectAtIndex:positionS withObject:newUser];
+                else{
+                    [searchedPeople replaceObjectAtIndex:positionSP withObject:newUser];
+                }
                 
                 NSRange range = NSMakeRange(0, 1);
                 NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -2350,7 +2405,7 @@
     }
 }
 
-- (IBAction)selectFBFriendPressed:(id)sender {
+- (void)inviteFBFriendsPressed{
     
     if (selectedOption == FacebookButton){
         
@@ -2359,19 +2414,33 @@
                                          [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"to",
                                          nil];
         
-        [FBWebDialogs
-         presentRequestsDialogModallyWithSession:nil
-         message:@"Learn how to make your iOS apps social."
-         title:nil
-         parameters:params
-         handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-             if (error) {
+        
+        NSString *title = @"Beeeper invitation";
+        
+        NSString *fullName = [[NSString stringWithFormat:@"%@ %@",[[BPUser sharedBP].user objectForKey:@"name"],[[BPUser sharedBP].user objectForKey:@"lastname"]] capitalizedString];
+        
+        NSString *message = [NSString stringWithFormat:@"%@ has invited you to join Beeeper",fullName];
+        
+        
+        [FBWebDialogs presentRequestsDialogModallyWithSession:FBSession.activeSession
+                                                      message:message
+                                                        title:title
+                                                   parameters:params
+                                                      handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                                                          if (error)
+                                                          {
+
                  // Error launching the dialog or sending the request.
                  NSLog(@"Error sending request.");
+                 
+                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                 [SVProgressHUD showSuccessWithStatus:@"Error sending request."];
+                 
              } else {
                  if (result == FBWebDialogResultDialogNotCompleted) {
                      // User clicked the "x" icon
                      NSLog(@"User canceled request.");
+                     
                  } else {
                      // Handle the send request callback
                      NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
@@ -2382,6 +2451,25 @@
                          // User clicked the Send button
                          NSString *requestID = [urlParams valueForKey:@"request"];
                          NSLog(@"Request ID: %@", requestID);
+                         
+                         if (!requestID) {
+                            
+                             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                             [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
+                             
+                         }
+                         else{
+                             
+                             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                             [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
+                             
+                             [selectedPeople removeAllObjects];
+                             
+                             [self.tableV reloadData];
+                             
+                             self.navigationItem.rightBarButtonItem = nil;
+
+                         }
                      }
                  }
              }
@@ -2391,9 +2479,6 @@
 
 }
 
--(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
-    
-}
 
 
 - (NSDictionary*)parseURLParams:(NSString *)query {
@@ -2442,7 +2527,7 @@
             
         case MessageComposeResultFailed:
         {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
             [SVProgressHUD showSuccessWithStatus:@"Invitations \nFailed!"];
             break;
         }

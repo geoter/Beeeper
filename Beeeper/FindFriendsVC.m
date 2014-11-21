@@ -406,7 +406,11 @@
             [self hideLoading];
             
             if (selectedOption == MailButton) {
-                adressBookPeople = [NSMutableArray arrayWithArray:contacts];
+                
+                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                NSArray *contactsSorted=[contacts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                
+                adressBookPeople = [NSMutableArray arrayWithArray:contactsSorted];
                 searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
                 [self.tableV reloadData];
                 
@@ -505,7 +509,11 @@
             if (selectedOption == MailButton) {
                 
                 [self hideLoading];
-                adressBookPeople = [NSMutableArray arrayWithArray:contacts];
+                
+                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                NSArray *contactsSorted=[contacts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                
+                adressBookPeople = [NSMutableArray arrayWithArray:contactsSorted];
                 searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
                 [self.tableV reloadData];
                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
@@ -2086,7 +2094,7 @@
         return YES;
     }
     
-    if (count == 1) {
+    if (count == 1 || selectedOption != BeeeperButton) {
          NSString* searchText = [searchBar.text stringByReplacingCharactersInRange:range withString:text];
          [self filterContentForSearchText:searchText scope:nil];
         count = 0;

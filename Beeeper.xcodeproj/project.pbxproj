@@ -3649,8 +3649,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3670,7 +3670,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
+				PROVISIONING_PROFILE = "05753832-9009-4b37-af22-cff7e6dfa644";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3680,8 +3680,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3701,7 +3701,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
+				PROVISIONING_PROFILE = "05753832-9009-4b37-af22-cff7e6dfa644";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

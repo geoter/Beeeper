@@ -250,36 +250,33 @@ static EventWS *thisWebServices = nil;
     
     self.like_beeep_completed = compbloc;
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
-    
     NSMutableArray *postValues = [NSMutableArray array];
     
     [postValues addObject:[NSDictionary dictionaryWithObject:userID forKey:@"user"]];
     [postValues addObject:[NSDictionary dictionaryWithObject:beeepID forKey:@"beeep_id"]];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request addPostValue:userID forKey:@"user"];
-    [request addPostValue:beeepID forKey:@"beeep_id"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setRequestMethod:@"POST"];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues] forHTTPHeaderField:@"Authorization"];
     
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(unlike_Beeep_Received:)];
-    
-    [request setDidFailSelector:@selector(unlike_Beeep_Failed:)];
-    
-    [request startAsynchronous];
+    [manager POST:@"https://api.beeeper.com/1/beeep/unlike" parameters:@{@"user":userID,@"beeep_id":beeepID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self unlike_Beeep_Received:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self unlike_Beeep_Failed:error.localizedDescription];
+    }];
+
     
 }
 
 
--(void)unlike_Beeep_Received:(ASIHTTPRequest *)request{
+-(void)unlike_Beeep_Received:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     NSDictionary *response = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
@@ -306,9 +303,9 @@ static EventWS *thisWebServices = nil;
     
 }
 
--(void)unlike_Beeep_Failed :(ASIHTTPRequest *)request{
+-(void)unlike_Beeep_Failed :(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"unlike_Beeep_Failed" where:@"EventWS/unlike_Beeep_Failed" json:responseString];
     

@@ -62,6 +62,7 @@
     int chooseDaySelectedIndex;
 }
 @property (nonatomic,strong) NSDate *selectedDate;
+
 @end
 
 @implementation TimelineVC
@@ -153,7 +154,12 @@
 
         @try {
             
+            if (userID == nil) {
+                NSLog(@"userID in timeline is nil");
+            }
+            
             [[BPTimeline sharedBP]getTimelineForUserID:userID option:option timeStamp:selectedDate.timeIntervalSince1970 WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                
                 
                 UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
                 [refreshControl endRefreshing];
@@ -282,9 +288,8 @@
     [self.tableV addSubview:refreshControl];
     self.tableV.alwaysBounceVertical = YES;
     
-    
+   
     [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
-    
     // self.tableV.decelerationRate = 0.6;
     
     pendingImagesDict = [NSMutableDictionary dictionary];
@@ -405,13 +410,12 @@
     
     [self downloadUserImageIfNecessery];
     
-    BOOL mpike;
+    BOOL mpike = NO;
     
     if ([user objectForKey:@"name"] == nil || [user objectForKey:@"lastname"] == nil) {
         
          mpike = YES;
         
-         [self showLoading];
         
         if (user == nil) {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"User == nil" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -421,20 +425,32 @@
         
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
-            [self hideLoading];
             if (completed && objs.count >0) {
                 NSDictionary *userDict = [objs firstObject];
                 self.user = userDict;
                 [self setUserInfo];
             }
             else{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No user found" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                
+                Reachability *reachability = [Reachability reachabilityForInternetConnection];
+                [reachability startNotifier];
+                
+                NetworkStatus status = [reachability currentReachabilityStatus];
+                
+                if(status == NotReachable)
+                {
+                  [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
+                }
+                else{
+                    [self hideLoading];
+                }
+               
             }
         }];
         
 
     }
+    
     else{
         [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
@@ -488,6 +504,16 @@
         }
         else{
             
+            [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+                
+                if (completed && objs.count >0) {
+                    NSDictionary *userDict = [objs firstObject];
+                    self.user = userDict;
+                    [self setUserInfo];
+                }
+            }];
+
+            
             [UIView animateWithDuration:0.3f
                              animations:^
              {
@@ -502,19 +528,50 @@
         }
     }
     
-    if (!mpike) {
-        
-        [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
-            
-            [self hideLoading];
-            if (completed && objs.count >0) {
-                NSDictionary *userDict = [objs firstObject];
-                self.user = userDict;
-                
-                [self downloadUserImageIfNecessery];
-            }
-        }];
+//    if (!mpike) {
+//        
+//        [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+//            
+//          
+//            if (completed && objs.count >0) {
+//                NSDictionary *userDict = [objs firstObject];
+//                self.user = userDict;
+//                [self setUserInfo];
+//            }
+//            else{
+//                  [self hideLoading];
+//            }
+//        }];
+//    }
+}
+
+-(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
+    
+    if ([self.view viewWithTag:-434] == nil) {
+        return;
     }
+    
+    dispatch_async (dispatch_get_main_queue(), ^{
+        
+        UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
+        [indicatorView stopAnimating];
+        
+        [UIView animateWithDuration:0.3f
+                         animations:^
+         {
+             loadingBGV.alpha = 0;
+         }
+                         completion:^(BOOL finished)
+         {
+             [loadingBGV removeFromSuperview];
+             
+             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+             [alert show];
+         }
+         ];
+        
+    });
 }
 
 -(void)downloadUserImageIfNecessery{
@@ -573,6 +630,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+  
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
@@ -642,6 +700,19 @@
     self.topV.layer.shadowOffset = CGSizeMake(0, 0.1);
     self.topV.layer.shadowRadius = 0.8;
     self.topV.layer.masksToBounds = NO;
+    
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Internet connection" message:@"Please enable Wifi or Cellular data." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO ];
+        
+    }
+    
 }
 
 
@@ -674,7 +745,7 @@
         }
     }
     
-    if (self.mode == Timeline_Following){
+    if (self.mode == Timeline_Following || self.following == YES){
         
         lbl.userInteractionEnabled = NO;
         lbl.numberOfLines = 0;
@@ -865,9 +936,8 @@
     monthLbl.text = [month uppercaseString];
    // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     
-    float timestamp =  b.beeep.beeepInfo.eventTime.floatValue-b.beeep.beeepInfo.timestamp.floatValue;
+    NSString *alert_time = [self dailyLanguageFutureDate:b.beeep.beeepInfo.eventTime.intValue pastDate:b.beeep.beeepInfo.timestamp.intValue];
     
-    NSString *alert_time = [self dailyLanguage:timestamp];
     reminderLabel.text = alert_time;
     [reminderLabel sizeToFit];
     reminderLabel.frame = CGRectMake(cell.frame.size.width-reminderLabel.frame.size.width-9, reminderLabel.frame.origin.y, reminderLabel.frame.size.width, reminderLabel.frame.size.height);
@@ -1498,9 +1568,11 @@
 
 -(void)hideLoading{
     
+
     dispatch_async (dispatch_get_main_queue(), ^{
         
         UIView *loadingBGV = (id)[self.view viewWithTag:-434];
+        
         MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
         [indicatorView stopAnimating];
         
@@ -1553,16 +1625,33 @@
 }
 
 
--(NSString*)dailyLanguage:(NSTimeInterval) overdueTimeInterval{
+-(NSString*)dailyLanguageFutureDate:(NSTimeInterval )futureInterval pastDate:(NSTimeInterval) pastInterval{
     
-    if (overdueTimeInterval<0)
-        overdueTimeInterval*=-1;
+    if (pastInterval<0)
+        pastInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval/60);
-    NSInteger hours   = minutes/60;
-    NSInteger days    = hours/24;
-    NSInteger months  = days/30;
-    NSInteger years   = months/12;
+    int timeDiff = futureInterval-pastInterval;
+    
+    // Get the system calendar
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *pastDate = [[NSDate alloc] initWithTimeIntervalSince1970:pastInterval];
+    NSDate *futureDate = [[NSDate alloc] initWithTimeIntervalSince1970:futureInterval];
+
+    
+    // Get conversion to months, days, hours, minutes
+    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
+    
+    NSDateComponents *conversionInfo = [sysCalendar components:unitFlags fromDate:pastDate  toDate:futureDate  options:0];
+    
+    NSLog(@"Conversion: %dmin %dhours %ddays %dmoths",[conversionInfo minute], [conversionInfo hour], [conversionInfo day], [conversionInfo month]);
+    
+    NSInteger minutes = [conversionInfo minute];
+    NSInteger hours   = [conversionInfo hour];
+    NSInteger days    = [conversionInfo day];
+    NSInteger months  = [conversionInfo month];
+    NSInteger years   = [conversionInfo year];
     
     NSString* overdueMessage;
     
@@ -1576,7 +1665,7 @@
         overdueMessage = [NSString stringWithFormat:@"%d %@ before", (hours),(hours == 1)?@"hour":@"hours"];
     }else if (minutes>0){
         overdueMessage = [NSString stringWithFormat:@"%d %@ before", (minutes),(minutes == 1)?@"minute":@"minutes"];
-    }else if (overdueTimeInterval<60){
+    }else if (timeDiff<60){
         overdueMessage = [NSString stringWithFormat:@"On Event Time"];
     }
     
@@ -1939,6 +2028,7 @@
     if (index == 0) { //upcoming
         
         chooseDaySelectedIndex = index;
+        segmentIndex = index;
         selectedDate = [NSDate date];
         
         [self closeDatePopup:index];
@@ -1948,7 +2038,7 @@
        
         chooseDaySelectedIndex = index;
         selectedDate = 0;
-        
+        segmentIndex = index;
         [self closeDatePopup:index];
         [self getTimeline:[self.user objectForKey:@"id"] option:Past];
     }

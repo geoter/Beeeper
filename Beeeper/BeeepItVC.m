@@ -678,11 +678,12 @@
             
               // Check if the Facebook app is installed and we can present the share dialog
               FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
-              params.link = [NSURL URLWithString:website];
+              params.link = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.beeeper.com/event/%@", fingerprint]];
               NSURL *url = [NSURL URLWithString:imageURL];
               params.picture = url;
               params.name = beeepTitle;
               params.linkDescription = self.venueLabel.text;
+             
               
               // If the Facebook app is installed and we can present the share dialog
               if ([FBDialogs canPresentShareDialogWithParams:params]) {

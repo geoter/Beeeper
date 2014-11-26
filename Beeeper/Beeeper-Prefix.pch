@@ -21,9 +21,7 @@
     #import "UIView_LoopSubviews.h"
     #import "DTO.h"
     #import "NSObject+UserInfo.h"
-    #import "MVYSideMenuOptions.h"
-    #import "MVYSideMenuController.h"
-    #import "CRToast.h"
+
     #import "SVProgressHUD/SVProgressHUD.h"
     #import "JSONKit.h"
     #import "BPUsersLookup.h"
@@ -35,7 +33,6 @@
     #import "SDWebImage/UIImageView+WebCache.h"
     #import "TabbarVC.h"
     #import "UIView+Badge.h"
-    #import "JSBadgeView.h"
     #import "SDWebImage/MKAnnotationView+WebCache.h"
     #import "AFNetworking.h"
 

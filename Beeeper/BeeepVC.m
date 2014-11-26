@@ -66,16 +66,16 @@
     self.blurContainerV.alpha = 0;
     
     self.titleBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-    self.titleBGV.layer.shadowOpacity = 0.7;
-    self.titleBGV.layer.shadowOffset = CGSizeMake(0, -0.1);
-    self.titleBGV.layer.shadowRadius = 0.8;
+    self.titleBGV.layer.shadowOpacity = 0.2;
+   // self.titleBGV.layer.shadowOffset = CGSizeMake(0, -0.1);
+   // self.titleBGV.layer.shadowRadius = 0.0;
     [self.titleBGV.layer setShadowPath:[[UIBezierPath
                                 bezierPathWithRect:self.titleBGV.bounds] CGPath]];
     
     self.whenBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
     self.whenBGV.layer.shadowOpacity = 0.7;
     self.whenBGV.layer.shadowOffset = CGSizeMake(0, 0.1);
-    self.whenBGV.layer.shadowRadius = 0.8;
+    self.whenBGV.layer.shadowRadius = 0.0;
     [self.whenBGV.layer setShadowPath:[[UIBezierPath
                                          bezierPathWithRect:self.whenBGV.bounds] CGPath]];
     
@@ -83,7 +83,7 @@
     self.tagsBGV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
     self.tagsBGV.layer.shadowOpacity = 0.7;
     self.tagsBGV.layer.shadowOffset = CGSizeMake(0, 0.0);
-    self.tagsBGV.layer.shadowRadius = 0.8;
+    self.tagsBGV.layer.shadowRadius = 0.0;
     [self.tagsBGV.layer setShadowPath:[[UIBezierPath
                                         bezierPathWithRect:self.tagsBGV.bounds] CGPath]];
    
@@ -91,41 +91,35 @@
     self.scrollV.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
     self.scrollV.layer.shadowOpacity = 0.7;
     self.scrollV.layer.shadowOffset = CGSizeMake(0, 0.0);
-    self.scrollV.layer.shadowRadius = 0.8;
+    self.scrollV.layer.shadowRadius = 0.0;
     [self.scrollV.layer setShadowPath:[[UIBezierPath
                                         bezierPathWithRect:self.scrollV.bounds] CGPath]];
 
 
     
-//    self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-//    self.titleBGV.borderColor = [UIColor lightGrayColor];
-//    self.titleBGV.borderWidth = 0.0f;
-//    self.titleBGV.cornerRadius = 6;
-//    self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-//    
-//    self.whereBGV.roundedCorners = TKRoundedCornerNone;
-//    self.whereBGV.borderColor = [UIColor lightGrayColor];
-//    self.whereBGV.borderWidth = 0.0f;
-//    self.whereBGV.cornerRadius = 6;
-//    self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-//    
-//    self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-//    self.whenBGV.borderColor = [UIColor whiteColor];
-//    self.whenBGV.borderWidth = 0.0f;
-//    self.whenBGV.cornerRadius = 6;
-//    self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-//    
-//    self.addPhotoBGV.roundedCorners = TKRoundedCornerAll;
-//    self.addPhotoBGV.borderColor = [UIColor lightGrayColor];
-//    self.addPhotoBGV.borderWidth = 0.0f;
-//    self.addPhotoBGV.cornerRadius = 6;
-//    self.addPhotoBGV.drawnBordersSides = TKDrawnBorderSidesAll;
-//    
-//    self.tagsBGV.roundedCorners = TKRoundedCornerAll;
-//    self.tagsBGV.borderColor = [UIColor lightGrayColor];
-//    self.tagsBGV.borderWidth = 0.0f;
-//    self.tagsBGV.cornerRadius = 6;
-//    self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    self.titleBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
+    self.titleBGV.borderColor = [UIColor lightGrayColor];
+    self.titleBGV.borderWidth = 0.0f;
+    self.titleBGV.cornerRadius = 0;
+    self.titleBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+
+    self.whereBGV.roundedCorners = TKRoundedCornerNone;
+    self.whereBGV.borderColor = [UIColor lightGrayColor];
+    self.whereBGV.borderWidth = 0.0f;
+    self.whereBGV.cornerRadius = 0;
+    self.whereBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
+    self.whenBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
+    self.whenBGV.borderColor = [UIColor whiteColor];
+    self.whenBGV.borderWidth = 0.0f;
+    self.whenBGV.cornerRadius = 0;
+    self.whenBGV.drawnBordersSides = TKDrawnBorderSidesAll;
+    
+    self.tagsBGV.roundedCorners = TKRoundedCornerAll;
+    self.tagsBGV.borderColor = [UIColor lightGrayColor];
+    self.tagsBGV.borderWidth = 0.0f;
+    self.tagsBGV.cornerRadius = 0;
+    self.tagsBGV.drawnBordersSides = TKDrawnBorderSidesAll;
     
     values = [NSMutableDictionary dictionary];
     
@@ -308,7 +302,6 @@
     NSString * typedStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
     if (typedStr.length == 0) {
-        textField.textAlignment = NSTextAlignmentLeft;
         textField.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
         //remove value
         
@@ -534,7 +527,7 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
-    if (textView.selectedRange.location == 0) {
+    if (textView.selectedRange.location == 0 && textView.selectedRange.length >= 1) {
         [textView setSelectedRange:NSMakeRange(1, 0)];
     }
 }
@@ -838,7 +831,7 @@
         //self.addPhotoBGV.borderColor = [UIColor clearColor];
     }
     else if (![values objectForKey:@"image_url"]){
-        self.addPhotoBGV.borderColor = [UIColor colorWithRed:220/255.0 green:61/255.0 blue:61/255.0 alpha:1];
+        //self.addPhotoBGV.borderColor = [UIColor colorWithRed:220/255.0 green:61/255.0 blue:61/255.0 alpha:1];
         mpike = YES;
     }
     else{
@@ -889,7 +882,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^
      {
-       // backV.borderColor = [UIColor whiteColor];
+        backV.borderColor = [UIColor whiteColor];
      }
                      completion:^(BOOL finished)
      {

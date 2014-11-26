@@ -538,6 +538,8 @@
             if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
                
                 self.beeepItButton.hidden = NO;
+                self.passedIcon.hidden = YES;
+                self.beeepedGray.hidden = YES;
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
@@ -551,6 +553,8 @@
             else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
                 
                 self.beeepItButton.hidden = YES;
+                self.passedIcon.hidden = YES;
+                self.beeepedGray.hidden = NO;
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
@@ -838,9 +842,9 @@
         @catch (NSException *exception) {
             if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
                 
-                self.beeepItButton.hidden = YES;
+                self.beeepItButton.hidden = NO;
                 self.passedIcon.hidden = YES;
-                self.beeepedGray.hidden = NO;
+                self.beeepedGray.hidden = YES;
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
@@ -1117,7 +1121,7 @@
         }
         @catch (NSException *exception) {
             if (beeepers && [beeepers indexOfObject:my_id] == NSNotFound) {
-                self.beeepItButton.hidden = YES;
+
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
@@ -1134,9 +1138,9 @@
             }
             else if (beeepers && [beeepers indexOfObject:my_id] != NSNotFound) {
                 
-                self.beeepItButton.hidden = NO;
+                self.beeepItButton.hidden = YES;
                 self.passedIcon.hidden = YES;
-                self.beeepedGray.hidden = YES;
+                self.beeepedGray.hidden = NO;
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeeped_white"] forState:UIControlStateNormal];
@@ -1417,7 +1421,6 @@
                 
             }
             else{
-                self.beeepItButton.hidden = YES;
                 
 //                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 //                [btn setBackgroundImage:[UIImage imageNamed:@"beeepit_outlined"] forState:UIControlStateNormal];
@@ -1766,8 +1769,8 @@
 //        self.hourLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 //        self.dayLabel.textColor =[UIColor colorWithRed:150/255.0 green:153/255.0 blue:159/255.0 alpha:1];
 
-        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
-        [self.navigationItem setRightBarButtonItem:beeepItem];
+//        UIBarButtonItem *beeepItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Passed_white"] style:UIBarButtonItemStyleBordered target:nil action:nil];
+//        [self.navigationItem setRightBarButtonItem:beeepItem];
         
         self.beeepItButton.hidden = YES;
         self.passedIcon.hidden = NO;
@@ -2469,7 +2472,7 @@
 
     id tml;
     
-    if([tml isKindOfClass:[Friendsfeed_Object class]] || [tml isKindOfClass:[Timeline_Object class]] || [tml isKindOfClass:[Suggestion_Object class]]){
+    if([self.tml isKindOfClass:[Friendsfeed_Object class]] || [self.tml isKindOfClass:[Timeline_Object class]] || [self.tml isKindOfClass:[Suggestion_Object class]]){
         tml = self.tml;
     }
     else{
@@ -2599,7 +2602,7 @@
                                           
                                           // Check if the Facebook app is installed and we can present the share dialog
                                           FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
-                                          params.link = [NSURL URLWithString:websiteURL];
+                                          params.link = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.beeeper.com/event/%@", fingerprint]];
                                           NSURL *url = [NSURL URLWithString:imageURL];
                                           params.picture = url;
                                           params.name = self.titleLabel.text;

@@ -788,7 +788,7 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    [[DTO sharedDTO]addBugLog:@"followersFailed" where:@"BPUser/followersFailed" json:responseString];
+  //  [[DTO sharedDTO]addBugLog:@"followersFailed" where:@"BPUser/followersFailed" json:responseString];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -916,7 +916,7 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    [[DTO sharedDTO]addBugLog:@"followingFailed" where:@"BPUser/followingFailed" json:responseString];
+   // [[DTO sharedDTO]addBugLog:@"followingFailed" where:@"BPUser/followingFailed" json:responseString];
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
@@ -1476,7 +1476,7 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    [[DTO sharedDTO]addBugLog:@"newNotificationsFailed" where:@"BPUser/newNotificationsFailed" json:responseString];
+    //[[DTO sharedDTO]addBugLog:@"newNotificationsFailed" where:@"BPUser/newNotificationsFailed" json:responseString];
     
     self.newNotificationsCompleted(NO,nil);
     
@@ -1846,29 +1846,28 @@ static BPUser *thisWebServices = nil;
     
     self.getEmailSettingsCompleted = compbloc;
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:URL];
-    
     NSMutableArray *postValues = [NSMutableArray array];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL.absoluteString values:postValues]];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setRequestMethod:@"POST"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL.absoluteString values:postValues] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(getEmailSettings_Received:)];
-    
-    [request setDidFailSelector:@selector(getEmailSettings_Failed:)];
-    
-    [request startAsynchronous];
+    [manager GET:@"https://api.beeeper.com/1/user/notificationsettings" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self getEmailSettings_Received:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self getEmailSettings_Failed:error.localizedDescription];
+    }];
 
 }
 
--(void)getEmailSettings_Received:(ASIHTTPRequest *)request{
+-(void)getEmailSettings_Received:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     @try {
         NSArray *notifications = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -1886,9 +1885,9 @@ static BPUser *thisWebServices = nil;
 }
 
 
--(void)getEmailSettings_Failed:(ASIHTTPRequest *)request{
+-(void)getEmailSettings_Failed:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     

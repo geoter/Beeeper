@@ -138,10 +138,10 @@
     
         Comments *commentObjct = (Comments *)objct;
             
-        double timestamp = commentObjct.comment.timestamp;
-        double now_timestamp = [[NSDate date] timeIntervalSince1970];
+        int timestamp = commentObjct.comment.timestamp;
+        int now_timestamp = [[NSDate date] timeIntervalSince1970];
         
-        date.text = [self dailyLanguage:now_timestamp-timestamp];
+        date.text = [self dailyLanguageFutureDate:now_timestamp pastDate:timestamp];
         
         Comments *commentObj = (Comments *)objct;
         NSString *comment = commentObj.comment.comment;
@@ -652,16 +652,34 @@
     return _textView;
 }
 
--(NSString*)dailyLanguage:(NSTimeInterval) overdueTimeInterval{
+
+-(NSString*)dailyLanguageFutureDate:(NSTimeInterval )futureInterval pastDate:(NSTimeInterval) pastInterval{
     
-    if (overdueTimeInterval<0)
-        overdueTimeInterval*=-1;
+    if (pastInterval<0)
+        pastInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval/60);
-    NSInteger hours   = minutes/60;
-    NSInteger days    = hours/24;
-    NSInteger months  = days/30;
-    NSInteger years   = months/12;
+    int timeDiff = futureInterval-pastInterval;
+    
+    // Get the system calendar
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *pastDate = [[NSDate alloc] initWithTimeIntervalSince1970:pastInterval];
+    NSDate *futureDate = [[NSDate alloc] initWithTimeIntervalSince1970:futureInterval];
+    
+    
+    // Get conversion to months, days, hours, minutes
+    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
+    
+    NSDateComponents *conversionInfo = [sysCalendar components:unitFlags fromDate:pastDate  toDate:futureDate  options:0];
+    
+    NSLog(@"Conversion: %dmin %dhours %ddays %dmoths",[conversionInfo minute], [conversionInfo hour], [conversionInfo day], [conversionInfo month]);
+    
+    NSInteger minutes = [conversionInfo minute];
+    NSInteger hours   = [conversionInfo hour];
+    NSInteger days    = [conversionInfo day];
+    NSInteger months  = [conversionInfo month];
+    NSInteger years   = [conversionInfo year];
     
     NSString* overdueMessage;
     
@@ -675,7 +693,7 @@
         overdueMessage = [NSString stringWithFormat:@"%d%@", (hours), (hours==1?@"h":@"h")];
     }else if (minutes>0){
         overdueMessage = [NSString stringWithFormat:@"%d%@", (minutes), (minutes==1?@"m":@"m")];
-    }else if (overdueTimeInterval<60){
+    }else if (timeDiff<60){
         overdueMessage = [NSString stringWithFormat:@"a few seconds"];
     }
     

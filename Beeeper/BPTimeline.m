@@ -20,6 +20,7 @@ static BPTimeline *thisWebServices = nil;
     NSOperationQueue *operationQueue;
     int option;
     int requestEmptyResultsCounter;
+    NSTimeInterval timeStamp;
 }
 @end
 
@@ -69,12 +70,9 @@ static BPTimeline *thisWebServices = nil;
 -(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)optionn WithCompletionBlock:(completed)compbloc{
  
     order = (option == Upcoming)?@"ASC":@"DESC";
-    option = optionn;
     userID = user_id;
     
     timeline_page++;
-    
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup?"];
@@ -124,15 +122,16 @@ static BPTimeline *thisWebServices = nil;
 
 }
 
--(void)getTimelineForUserID:(NSString *)user_id option:(int)option timeStamp:(NSTimeInterval)time WithCompletionBlock:(completed)compbloc{
+-(void)getTimelineForUserID:(NSString *)user_id option:(int)optionn timeStamp:(NSTimeInterval)time WithCompletionBlock:(completed)compbloc{
     
     timeline_page = 0;
     requestEmptyResultsCounter = 0;
     
-    order = (option == Upcoming)?@"ASC":@"DESC";
+    order = (optionn == Upcoming)?@"ASC":@"DESC";
     userID = user_id;
+    option = optionn;
     
-    NSTimeInterval timeStamp = (time == 0)?[[NSDate date]timeIntervalSince1970]:time;
+    timeStamp = (time == 0)?[[NSDate date]timeIntervalSince1970]:time;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/beeep/lookup?"];
@@ -224,9 +223,9 @@ static BPTimeline *thisWebServices = nil;
     
     NSString *responseString = [request responseString];
     
-    [[DTO sharedDTO]addBugLog:@"timelineFailed" where:@"BPTimeline/timelineFailed" json:responseString];
+   // [[DTO sharedDTO]addBugLog:@"timelineFailed" where:@"BPTimeline/timelineFailed" json:responseString];
     
-    self.completed(NO,@"timelineFailed");
+    self.completed(NO,nil);
 }
 
 -(void)nextTimelineFinished:(ASIHTTPRequest *)request{

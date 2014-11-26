@@ -373,6 +373,7 @@ static DTO *thisDTO = nil;
         wasInternetReachable = YES;
     }
     
+    return YES;
     
     NSLog(@"ADDED BUGGG!!!!!!!!!!!!!!!!: %@-%@-%@",what,where,json);
     

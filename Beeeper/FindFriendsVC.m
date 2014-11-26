@@ -836,8 +836,8 @@
                          [self hideLoading];
                          
                          
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert show];
+//                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//                         [alert show];
                      });
                      
                      
@@ -1002,8 +1002,8 @@
                                 
                                 [self hideLoading];
                                 
-                                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                [alert show];
+//                                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//                                [alert show];
                             });
                             
                             
@@ -1496,7 +1496,7 @@
         }
     }
     
-    BOOL isBeeeper = ([beeepers indexOfObject:user] != NSNotFound);
+    BOOL isBeeeper = (beeepers != nil && [beeepers indexOfObject:user] != NSNotFound);
     
     if (selectedOption == MailButton) {
         

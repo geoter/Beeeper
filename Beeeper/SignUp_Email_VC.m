@@ -56,6 +56,12 @@
     [locManager startTracking];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
 -(void)hideKeyboard:(UITapGestureRecognizer *)g{
     for (UIView *subSuper in [self.scrollV subviews]) {
         
@@ -89,6 +95,7 @@
     UITextField *lastNameTxtF;
     UITextField *emailTxtF;
     UITextField *passwordTxtF;
+    UITextField *usernameTxtF;
     
     for (UIView *subSuper in [self.scrollV subviews]) {
       
@@ -134,6 +141,13 @@
                         }
                         break;
                     }
+                    case 5:{
+                        passwordTxtF = (UITextField *)sub;
+                        if ([(UITextField *)sub text].length > 0) {
+                            [values setObject:[(UITextField *)sub text] forKey:@"username"];
+                        }
+                        break;
+                    }
                     default:
                         break;
                 }
@@ -176,7 +190,14 @@
         [self invalidTextfield:passwordTxtF];
     }
     
-    if (!hasFirstName || !hasLastName || !hasEmail || !hasPassword) {
+    if (hasUsername) {
+        [self validTextfield:usernameTxtF];
+    }
+    else{
+        [self invalidTextfield:usernameTxtF];
+    }
+    
+    if (!hasFirstName || !hasLastName || !hasEmail || !hasPassword || !hasUsername) {
        
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you entered all required information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
@@ -252,9 +273,9 @@
                     [missingInfo setObject:@"Password" forKey:@"password"];
                 }
                 
-                if (!hasSex) {
-                    [missingInfo setObject:@"Gender" forKey:@"gender"];
-                }
+//                if (!hasSex) {
+//                    [missingInfo setObject:@"Gender" forKey:@"gender"];
+//                }
                 
             }
             
@@ -367,9 +388,19 @@
 }
 
 - (IBAction)showTerms:(id)sender {
+  
     WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
-    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/forgot_password"];
-    viewController.title = @"Forgot Password";
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/terms"];
+    viewController.title = @"Terms of Use";
+    [self.navigationController pushViewController:viewController animated:YES];
+
+}
+
+- (IBAction)showPrivacy:(id)sender {
+    
+    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/privacy"];
+    viewController.title = @"Privacy Policy";
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -415,7 +446,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
    
-    if (textField.tag != 4) {
+    if (textField.tag != 5) {
         UITextField *txtF = (id)[self.scrollV viewWithTag:textField.tag+1];
         [txtF becomeFirstResponder];
     }

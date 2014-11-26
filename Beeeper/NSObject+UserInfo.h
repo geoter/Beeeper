@@ -1,6 +1,6 @@
 //
 //  NSObject+UserInfo.h
-//  Today
+//  
 //
 //  Created by George on 2/12/13.
 //  Copyright (c) 2013 George Termentzoglou. All rights reserved.

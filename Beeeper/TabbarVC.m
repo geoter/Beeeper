@@ -178,6 +178,10 @@ static TabbarVC *thisWebServices = nil;
     viewController.superviewToBlur = sender.navigationController.view;
     viewController.facebookDialogEventImage = image;
     
+    if ([sender isKindOfClass:[BeeepVC class]]) {
+        viewController.hideBackgroundblur = YES;
+    }
+    
     if ([sender_tml isKindOfClass:[NSDictionary class]]) {
         viewController.values = sender_tml;
     }
@@ -199,7 +203,7 @@ static TabbarVC *thisWebServices = nil;
          [UIView animateWithDuration:0.4f
                           animations:^
           {
-              viewController.blurContainerV.alpha = 1;
+              viewController.blurContainerV.alpha = !viewController.hideBackgroundblur;
           }
                           completion:^(BOOL finished)
           {

@@ -124,7 +124,7 @@ static BPUsersLookup *thisWebServices = nil;
 -(void)userLookupFailed:(ASIHTTPRequest *)request{
     NSString *responseString = [request responseString];
     
-     [[DTO sharedDTO]addBugLog:@"userLookupFailed" where:@"BPUsersLookup/userLookupFailed" json:responseString];
+    // [[DTO sharedDTO]addBugLog:@"userLookupFailed" where:@"BPUsersLookup/userLookupFailed" json:responseString];
     
     self.completed(NO,[NSString stringWithFormat:@"userLookupFailed: %@",responseString]);
 }

@@ -45,6 +45,8 @@
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
 
+@property(nonatomic,assign) BOOL following;
+
 - (IBAction)calendarPressed:(id)sender;
 - (IBAction)addFriend:(id)sender;
 

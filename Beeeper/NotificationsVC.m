@@ -276,7 +276,7 @@
        
         double now_timestamp = [[NSDate date] timeIntervalSince1970];
         
-        NSString *when = [self dailyLanguage:now_timestamp-activity.when];
+        NSString *when = [self dailyLanguageFutureDate:now_timestamp pastDate:activity.when];
         time.text = when;
 
         NSAttributedString *notification_text = [self textForNotification:activity];
@@ -314,6 +314,10 @@
     @finally {
         
     }
+    
+    
+    UIView *line = [cell viewWithTag:88];
+    line.frame = CGRectMake(0, cell.frame.size.height-1, self.tableV.frame.size.width, 1);
     
     return cell;
 }
@@ -400,8 +404,7 @@
                 BeeepNotifications *beeepNotif = [activity.beeepNotifications firstObject];
                 BeeepsActivity *beeep = [beeepNotif.beeepObject firstObject];
 
-                double starts_in_timestamp = beeep.eventTime -beeep.timestamp;
-                 formattedString = [NSString stringWithFormat:@"%@ is starting in %@",event_title,[self dailyLanguageLong:starts_in_timestamp]];
+                formattedString = [NSString stringWithFormat:@"%@ is starting in %@",event_title,[self dailyLanguageLongFutureDate:beeep.eventTime pastDate:beeep.timestamp]];
             }
             else{
                 formattedString = [NSString stringWithFormat:@"%@ %@ %@",[w.name capitalizedString],activity.did,event_title];
@@ -560,16 +563,33 @@
     
 }
 
--(NSString*)dailyLanguage:(NSTimeInterval) overdueTimeInterval{
+-(NSString*)dailyLanguageFutureDate:(NSTimeInterval )futureInterval pastDate:(NSTimeInterval) pastInterval{
     
-    if (overdueTimeInterval<0)
-        overdueTimeInterval*=-1;
+    if (pastInterval<0)
+        pastInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval/60);
-    NSInteger hours   = minutes/60;
-    NSInteger days    = hours/24;
-    NSInteger months  = days/30;
-    NSInteger years   = months/12;
+    int timeDiff = futureInterval-pastInterval;
+    
+    // Get the system calendar
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *pastDate = [[NSDate alloc] initWithTimeIntervalSince1970:pastInterval];
+    NSDate *futureDate = [[NSDate alloc] initWithTimeIntervalSince1970:futureInterval];
+    
+    
+    // Get conversion to months, days, hours, minutes
+    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
+    
+    NSDateComponents *conversionInfo = [sysCalendar components:unitFlags fromDate:pastDate  toDate:futureDate  options:0];
+    
+    NSLog(@"Conversion: %dmin %dhours %ddays %dmoths",[conversionInfo minute], [conversionInfo hour], [conversionInfo day], [conversionInfo month]);
+    
+    NSInteger minutes = [conversionInfo minute];
+    NSInteger hours   = [conversionInfo hour];
+    NSInteger days    = [conversionInfo day];
+    NSInteger months  = [conversionInfo month];
+    NSInteger years   = [conversionInfo year];
     
     NSString* overdueMessage;
     
@@ -583,23 +603,40 @@
         overdueMessage = [NSString stringWithFormat:@"%d%@", (hours), (hours==1?@"h":@"h")];
     }else if (minutes>0){
         overdueMessage = [NSString stringWithFormat:@"%d%@", (minutes), (minutes==1?@"m":@"m")];
-    }else if (overdueTimeInterval<60){
+    }else if (timeDiff<60){
         overdueMessage = [NSString stringWithFormat:@"a few seconds"];
     }
     
     return overdueMessage;
 }
 
--(NSString*)dailyLanguageLong:(NSTimeInterval) overdueTimeInterval{
+-(NSString*)dailyLanguageLongFutureDate:(NSTimeInterval )futureInterval pastDate:(NSTimeInterval) pastInterval{
     
-    if (overdueTimeInterval<0)
-        overdueTimeInterval*=-1;
+    if (pastInterval<0)
+        pastInterval*=-1;
     
-    NSInteger minutes = round(overdueTimeInterval/60);
-    NSInteger hours   = minutes/60;
-    NSInteger days    = hours/24;
-    NSInteger months  = days/30;
-    NSInteger years   = months/12;
+    int timeDiff = futureInterval-pastInterval;
+    
+    // Get the system calendar
+    NSCalendar *sysCalendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *pastDate = [[NSDate alloc] initWithTimeIntervalSince1970:pastInterval];
+    NSDate *futureDate = [[NSDate alloc] initWithTimeIntervalSince1970:futureInterval];
+    
+    
+    // Get conversion to months, days, hours, minutes
+    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
+    
+    NSDateComponents *conversionInfo = [sysCalendar components:unitFlags fromDate:pastDate  toDate:futureDate  options:0];
+    
+    NSLog(@"Conversion: %dmin %dhours %ddays %dmoths",[conversionInfo minute], [conversionInfo hour], [conversionInfo day], [conversionInfo month]);
+    
+    NSInteger minutes = [conversionInfo minute];
+    NSInteger hours   = [conversionInfo hour];
+    NSInteger days    = [conversionInfo day];
+    NSInteger months  = [conversionInfo month];
+    NSInteger years   = [conversionInfo year];
     
     NSString* overdueMessage;
     
@@ -613,7 +650,7 @@
         overdueMessage = [NSString stringWithFormat:@"%d %@", (hours), (hours==1?@"hour":@"hours")];
     }else if (minutes>0){
         overdueMessage = [NSString stringWithFormat:@"%d %@", (minutes), (minutes==1?@"minute":@"minutes")];
-    }else if (overdueTimeInterval<60){
+    }else if (timeDiff<60){
         overdueMessage = [NSString stringWithFormat:@"a few seconds"];
     }
     

@@ -1,6 +1,6 @@
 //
 //  MyDateTimePicker.m
-//  iHotel
+// 
 //
 //  Created by George Termentzoglou on 9/22/13.
 //  Copyright (c) 2013 George Termentzoglou. All rights reserved.

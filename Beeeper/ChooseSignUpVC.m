@@ -412,7 +412,10 @@
         hasUsername = ([fbDict objectForKey:@"username"] != nil);
         
         NSString *email = [[fbAccount valueForKey:@"properties"] objectForKey:@"ACUIDisplayUsername"];
-
+        if (email == nil) {
+            email = [fbDict objectForKey:@"email"];
+        }
+        
         hasEmail = ([email isKindOfClass:[NSString class]] && email.length > 0);
         
         hasFirstName = ([[fbDict objectForKey:@"first_name"]isKindOfClass:[NSString class]] && [fbDict objectForKey:@"first_name"] != nil);

@@ -82,32 +82,25 @@ static BPActivity *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.activity_completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(activityFinished:)];
-    
-    [request setDidFailSelector:@selector(activityFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self activityFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self activityFailed:error.localizedDescription];
+    }];
 
 }
 
@@ -131,40 +124,33 @@ static BPActivity *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.activity_completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(activityFinished:)];
-    
-    [request setDidFailSelector:@selector(activityFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self activityFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self activityFailed:error.localizedDescription];
+    }];
     
 }
 
--(void)activityFinished:(ASIHTTPRequest *)request{
+-(void)activityFinished:(id)request{
     
     requestFailedCounter = 0;
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
     responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
     responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
@@ -193,11 +179,11 @@ static BPActivity *thisWebServices = nil;
 
 }
 
--(void)activityFailed:(ASIHTTPRequest *)request{
+-(void)activityFailed:(id)request{
     
     NSLog(@"FAILES REQUEST->ACTIVITY");
 
-    NSString *responseString  = [request responseString];
+    NSString *responseString  = request;
     requestFailedCounter++;
     
      [[DTO sharedDTO]addBugLog:@"activityFailed" where:@"bpactivity/activityFailed" json:responseString];
@@ -316,31 +302,23 @@ static BPActivity *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.event_completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(eventReceived:)];
-    
-    [request setDidFailSelector:@selector(eventFailed:)];
-    
-    [request startAsynchronous];
-    
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self eventReceived:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self eventFailed:error.localizedDescription];
+    }];
 }
 
 
@@ -367,36 +345,29 @@ static BPActivity *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.event_completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(eventReceived:)];
-    
-    [request setDidFailSelector:@selector(eventFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self eventReceived:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self eventFailed:error.localizedDescription];
+    }];
     
 }
 
--(void)eventReceived:(ASIHTTPRequest *)request{
+-(void)eventReceived:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     NSArray *eventArray;
     
@@ -428,9 +399,9 @@ static BPActivity *thisWebServices = nil;
     
 }
 
--(void)eventFailed:(ASIHTTPRequest *)request{
+-(void)eventFailed:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"eventFailed" where:@"bpactivity/eventFailed" json:responseString];
     self.event_completed(NO,nil);
@@ -467,39 +438,32 @@ static BPActivity *thisWebServices = nil;
             [URLwithVars appendString:@"&"];
         }
     }
-
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
     
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.beeep_completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setTimeOutSeconds:20.0];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setDelegate:self];
-    
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(beeepFromActivityFinished:)];
-    
-    [request setDidFailSelector:@selector(beeepFromActivityFailed:)];
-    
-    [request startAsynchronous];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self beeepFromActivityFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self beeepFromActivityFailed:error.localizedDescription];
+    }];
 
 }
 
--(void)beeepFromActivityFinished:(ASIHTTPRequest *)request{
+-(void)beeepFromActivityFinished:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
     NSArray *eventArray;
@@ -523,17 +487,14 @@ static BPActivity *thisWebServices = nil;
    
 }
 
--(void)beeepFromActivityFailed:(ASIHTTPRequest *)request{
+-(void)beeepFromActivityFailed:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"beeepFromActivityFailed" where:@"bpactivity/beeepFromActivityFailed" json:responseString];
     
     self.beeep_completed(NO,@"BeeepFromActivityFailed");
 }
-
-
-
 
 
 -(void)downloadImage:(Activity_Object *)actv{

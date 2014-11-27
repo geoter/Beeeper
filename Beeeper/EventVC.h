@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *venueIcon;
 @property (weak, nonatomic) IBOutlet UIButton *beeepItButton;
 @property (weak, nonatomic) IBOutlet UIView *passedIcon;
+@property (nonatomic,strong) NSString *deepLinkFingerprint;
 
 @property (nonatomic,assign) BOOL redirectToComments;
 @property (nonatomic,strong) NSMutableDictionary *values;

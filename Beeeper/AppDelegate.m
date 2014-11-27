@@ -227,7 +227,9 @@
    
     @try {
         
-        if ([url.absoluteString rangeOfString:@"beeeeper://"].location != NSNotFound) {
+        if ([url.absoluteString rangeOfString:@"beeeper://"].location != NSNotFound) {
+            [[DTO sharedDTO]setDeeepLinkEventFingerprint:[[url.absoluteString componentsSeparatedByString:@"event/"] lastObject]];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"DEEPLINK" object:nil];
             return YES;
         }
         else{
@@ -269,8 +271,10 @@
     
     @try {
         //[userInfo objectForKey:@"w"]
-        [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+        if (userInfo) {
+            [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+        }
     }
     @catch (NSException *exception) {
     

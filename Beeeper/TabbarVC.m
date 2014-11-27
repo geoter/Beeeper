@@ -53,6 +53,8 @@ static TabbarVC *thisWebServices = nil;
     
     [self pushReceived];
     
+    [self showDeeepLinkEvent];
+    
     [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -61,6 +63,8 @@ static TabbarVC *thisWebServices = nil;
     [self tabbarButtonTapped:btn];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showDeeepLinkEvent) name:@"DEEPLINK" object:nil];
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
 
     //for timeline Follow + / Following Delay
@@ -128,6 +132,22 @@ static TabbarVC *thisWebServices = nil;
         [[DTO sharedDTO]setNotificationBeeepID:nil];
     }
 
+}
+
+-(void)showDeeepLinkEvent{
+    
+    NSString *fingerprint = [[DTO sharedDTO]getDeeepLinkEventFingerprint];
+    
+    if (fingerprint != nil) {
+        
+        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        viewController.deepLinkFingerprint = [NSString stringWithString:fingerprint];
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+        [[DTO sharedDTO]setNotificationBeeepID:nil];
+    }
+    
 }
 
 /*

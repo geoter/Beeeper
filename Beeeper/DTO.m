@@ -141,6 +141,44 @@ static DTO *thisDTO = nil;
     }
 }
 
+- (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint{
+  
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    if (fingerprint) {
+        [mySettingsPlist setObject:fingerprint forKey:@"deepLinkingEvent"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+    else{
+        [mySettingsPlist removeObjectForKey:@"deepLinkingEvent"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+}
+
+- (NSString *)getDeeepLinkEventFingerprint{
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    @try {
+        NSString *beeep = [mySettingsPlist objectForKey:@"deepLinkingEvent"];
+        return beeep;
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    @finally {
+        
+    }
+}
+
 - (void)setNotificationBeeepID:(NSString *)beeep_id{
 
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

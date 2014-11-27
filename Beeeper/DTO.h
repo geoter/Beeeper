@@ -38,6 +38,11 @@ typedef void(^completed)(BOOL,id);
 - (NSString *)fixLink:(NSString *)link;
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
+
+
+- (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint;
+- (NSString *)getDeeepLinkEventFingerprint;
+    
 - (void)setNotificationBeeepID:(NSString *)beeep_id;
 - (NSString *)getNotificationBeeepID;
 - (void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc;

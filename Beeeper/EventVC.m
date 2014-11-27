@@ -40,7 +40,6 @@
     BOOL isLiker;
     
     Beeep_Object *beeep_Objct; //-(void)showEventForActivityWithBeeep
-    Event_Show_Object *event_show_Objct; //-(void)showEventForActivityWithBeeep
     
     NSString *fingerprint;
     NSString *websiteURL;
@@ -53,6 +52,7 @@
     
     BOOL viewAppeared;
 }
+@property (nonatomic,strong)  Event_Show_Object *event_show_Objct;
 @property (nonatomic,strong) NSString *imageURL;
 @property (readonly, nonatomic) UIView *container;
 @property (readonly, nonatomic) PHFComposeBarView *composeBarView;
@@ -62,7 +62,7 @@
 @end
 
 @implementation EventVC
-@synthesize kInitialViewFrame,tml,imageURL;
+@synthesize kInitialViewFrame,tml,imageURL,event_show_Objct;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -276,6 +276,9 @@
         }];
         
     }
+    else if (self.deepLinkFingerprint){
+        [self showEventWithFingerprint:self.deepLinkFingerprint];
+    }
     
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
@@ -405,6 +408,9 @@
     
     if (!likers) {
         likers = suggestion.what.likes;
+        if (likers == nil) {
+            likers = [NSMutableArray array];
+        }
     }
 
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -1224,6 +1230,23 @@
     }
 }
 
+-(void)showEventWithFingerprint:(NSString *)fingerprintDeep{
+
+    [self showLoading];
+    
+    [[BPActivity sharedBP]getEventFromFingerprint:fingerprintDeep WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            event_show_Objct = event;
+            [self showEventForEventLookUpObject];
+            [self hideLoading];
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    }];
+}
+
 -(void)showEventForEventLookUpObject{
     
     //EVENT DATE
@@ -1325,6 +1348,10 @@
     
     if (!likers) {
         likers = eventSearch.likes;
+        
+        if (likers == nil) {
+            likers = [NSMutableArray array];
+        }
     }
     
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -1341,7 +1368,7 @@
     
     beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
     
-    if ([likers indexOfObject:my_id] != NSNotFound) {
+    if (likers && [likers indexOfObject:my_id] != NSNotFound) {
         isLiker = YES;
     }
     
@@ -1671,7 +1698,7 @@
             self.likesLabel.text = [NSString stringWithFormat:@"%d",(int)likers.count];
             self.commentsLabel.text = [NSString stringWithFormat:@"%d",(int)comments.count];
             
-            isLiker = [likers indexOfObject:my_id] != NSNotFound;
+            isLiker = (likers && [likers indexOfObject:my_id] != NSNotFound);
             
             if (isLiker) {
                 UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
@@ -1704,7 +1731,7 @@
         commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
         beeepsLbl.text = [NSString stringWithFormat:@"%d",beeepers.count];
         
-        if ([likers indexOfObject:my_id] != NSNotFound) {
+        if (likers && [likers indexOfObject:my_id] != NSNotFound) {
             isLiker = YES;
         }
         
@@ -2130,6 +2157,29 @@
             }];
             
         }
+        else if (self.deepLinkFingerprint){
+            
+            [[EventWS sharedBP]unlikeEvent:self.deepLinkFingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                if (completed) {
+                    isLiker = NO;
+                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
+                    likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                    
+                    likesLbl.hidden = (likers.count == 0);
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+            }];
+        }
 
     }
     else{
@@ -2324,7 +2374,29 @@
             }];
             
         }
-
+        else if (self.deepLinkFingerprint){
+            
+            [[EventWS sharedBP]likeEvent:self.deepLinkFingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                if (completed) {
+                    isLiker = YES;
+                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    
+                    likesLbl.hidden = (likers.count ==0);
+                    
+                    //    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
+                    
+                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
+                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+                }
+                else{
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                    [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+                }
+            }];        }
         
 
         

@@ -79,7 +79,6 @@ static BPSuggestions *thisWebServices = nil;
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/suggestions?"];
     
-    
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
     [array addObject:[NSString stringWithFormat:@"page=%d",page]];
@@ -92,32 +91,23 @@ static BPSuggestions *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
-    //email,name,lastname,timezone,password,city,state,country,sex
-    //fbid,twid,active,locked,lastlogin,image_path,username
-    
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setTimeOutSeconds:20.0];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setDelegate:self];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(suggestionsFinished:)];
-    
-    [request setDidFailSelector:@selector(suggestionsFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self suggestionsFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self suggestionsFailed:error.localizedDescription];
+    }];
     
 }
 
@@ -129,38 +119,33 @@ static BPSuggestions *thisWebServices = nil;
     
     NSMutableArray *array = [NSMutableArray array];
     
-    NSURL *requestURL = [NSURL URLWithString:URL];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:URL values:array]];
-    
+   
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.suggestBadgeCompleted = compbloc;
     
-    [request setRequestMethod:@"POST"];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setTimeOutSeconds:20.0];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setDelegate:self];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(suggestionsBadgeClearFinished:)];
-    
-    [request setDidFailSelector:@selector(suggestionsBadgeClearFailed:)];
-    
-    [request startAsynchronous];
+    [manager POST:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self suggestionsBadgeClearFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self suggestionsBadgeClearFailed:error.localizedDescription];
+    }];
 }
 
--(void)suggestionsBadgeClearFinished:(ASIHTTPRequest *)request{
+-(void)suggestionsBadgeClearFinished:(id )request{
     
     @try {
-        NSString *responseString = [request responseString];
+        NSString *responseString = request;
         
         if ([responseString rangeOfString:@"success"].location != NSNotFound) {
             self.suggestBadgeCompleted(YES,nil);
@@ -178,8 +163,8 @@ static BPSuggestions *thisWebServices = nil;
     
 }
 
--(void)suggestionsBadgeClearFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)suggestionsBadgeClearFailed:(id )request{
+    NSString *responseString = request;
     self.suggestBadgeCompleted(NO,nil);
 }
 
@@ -189,39 +174,33 @@ static BPSuggestions *thisWebServices = nil;
     
     NSMutableArray *array = [NSMutableArray array];
     
-    NSURL *requestURL = [NSURL URLWithString:URL];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.suggestBadgeCompleted = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
+    [manager GET:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self suggestionsBadgeFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self suggestionsBadgeFailed:error.localizedDescription];
+    }];
     
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(suggestionsBadgeFinished:)];
-    
-    [request setDidFailSelector:@selector(suggestionsBadgeFailed:)];
-    
-    [request startAsynchronous];
     
 }
 
--(void)suggestionsBadgeFinished:(ASIHTTPRequest *)request{
+-(void)suggestionsBadgeFinished:(id)request{
     
     @try {
-        NSString *responseString = [request responseString];
+        NSString *responseString = request;
         NSDictionary *badgeDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
         if ([badgeDict objectForKey:@"badge_num"]) {
@@ -240,8 +219,8 @@ static BPSuggestions *thisWebServices = nil;
 
 }
 
--(void)suggestionsBadgeFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)suggestionsBadgeFailed:(id)request{
+    NSString *responseString = request;
     self.suggestBadgeCompleted(NO,nil);
 }
 
@@ -269,40 +248,33 @@ static BPSuggestions *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setTimeOutSeconds:20.0];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setDelegate:self];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(suggestionsFinished:)];
-    
-    [request setDidFailSelector:@selector(suggestionsFailed:)];
-    
-    [request startAsynchronous];
-    
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self suggestionsFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self suggestionsFailed:error.localizedDescription];
+    }];
 }
 
--(void)suggestionsFinished:(ASIHTTPRequest *)request{
+-(void)suggestionsFinished:(id)request{
     
     requestFailedCounter = 0;
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
@@ -334,18 +306,16 @@ static BPSuggestions *thisWebServices = nil;
 }
 
 
--(void)suggestionsFailed:(ASIHTTPRequest *)request{
+-(void)suggestionsFailed:(id)request{
     
     NSLog(@"FAILES REQUEST->SUGGESTIONS");
     
     requestFailedCounter++;
     
     @try {
-        NSString *responseString = [request responseString];
+        NSString *responseString = request;
         
         [[DTO sharedDTO]addBugLog:@"suggestionsFailed" where:@"suggestionsFailed" json:responseString];
-        
-        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:request.responseData options:kNilOptions error:NULL];
 
     }
     @catch (NSException *exception) {
@@ -543,29 +513,32 @@ static BPSuggestions *thisWebServices = nil;
         
         NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/suggest"];
         
-        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
         
         NSMutableArray *postValues = [NSMutableArray array];
         
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:users_JSON_array] forKey:@"who"]];
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"what"]];
+
         
-        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+        NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
+        [postValuesDict setObject:users_JSON_array forKey:@"who"];
+        [postValuesDict setObject:fingerprint forKey:@"what"];
         
-        [request addPostValue:users_JSON_array forKey:@"who"];
-        [request addPostValue:fingerprint forKey:@"what"];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         
-        [request setRequestMethod:@"POST"];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
-        [request setTimeOutSeconds:20.0];
+        [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues] forHTTPHeaderField:@"Authorization"];
         
-        [request setDelegate:self];
-        
-        [request setDidFinishSelector:@selector(suggestEventFinished:)];
-        
-        [request setDidFailSelector:@selector(suggestEventFailed:)];
-        
-        [request startAsynchronous];
+        [manager POST:@"https://api.beeeper.com/1/event/suggest" parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            [self suggestEventFinished:[operation responseString]];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"%@",operation);
+            [self suggestEventFailed:error.localizedDescription];
+        }];
+
         
     }
     @catch (NSException *exception) {
@@ -580,9 +553,9 @@ static BPSuggestions *thisWebServices = nil;
     
 }
 
--(void)suggestEventFinished:(ASIHTTPRequest *)request{
+-(void)suggestEventFinished:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     @try {
         
@@ -608,9 +581,9 @@ static BPSuggestions *thisWebServices = nil;
     }
   }
 
--(void)suggestEventFailed:(ASIHTTPRequest *)request{
+-(void)suggestEventFailed:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"suggestEventFailed" where:@"suggestions/suggestEventFailed" json:responseString];
     

@@ -145,7 +145,7 @@ static TabbarVC *thisWebServices = nil;
         
         [self.navigationController pushViewController:viewController animated:YES];
         
-        [[DTO sharedDTO]setNotificationBeeepID:nil];
+        [[DTO sharedDTO]setDeeepLinkEventFingerprint:nil];
     }
     
 }

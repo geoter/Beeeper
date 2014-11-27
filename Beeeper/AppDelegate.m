@@ -226,13 +226,20 @@
 {
    
     @try {
-        BOOL urlWasHandled = [FBAppCall handleOpenURL:url
-                                    sourceApplication:sourceApplication
-                                      fallbackHandler:^(FBAppCall *call) {
-                                          // incoming link processing goes here
-                                          NSLog(@"%@",call);
-                                      }];
-        return urlWasHandled;
+        
+        if ([url.absoluteString rangeOfString:@"beeeeper://"].location != NSNotFound) {
+            return YES;
+        }
+        else{
+        
+            BOOL urlWasHandled = [FBAppCall handleOpenURL:url
+                                        sourceApplication:sourceApplication
+                                          fallbackHandler:^(FBAppCall *call) {
+                                              // incoming link processing goes here
+                                              NSLog(@"%@",call);
+                                          }];
+            return urlWasHandled;
+        }
     }
     @catch (NSException *exception) {
         
@@ -241,18 +248,13 @@
         
     }
     
-
-
 }
-
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     
     // Handle the user leaving the app while the Facebook login dialog is being shown
     // For example: when the user presses the iOS "home" button while the login dialog is active
-    
-     application.applicationIconBadgeNumber = 0;
     
     [FBAppCall handleDidBecomeActive];
     

@@ -445,6 +445,8 @@ static DTO *thisDTO = nil;
         if (completed) {
             self.suggestionBadgeNumber = [count intValue];
             self.suggestionBadgeNumberFinished = YES;
+            
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber+[count intValue]];
         }
     }];
     
@@ -452,10 +454,15 @@ static DTO *thisDTO = nil;
 }
 
 -(void)clearSuggestions{
+    
     [[BPSuggestions sharedBP]clearSuggestionsBadgeWithCompletionBlock:^(BOOL completed,id count){
         if (completed) {
+            
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-self.suggestionBadgeNumber];
+            
             self.suggestionBadgeNumber = 0;
             self.suggestionBadgeNumberFinished = YES;
+            
         }
     }];
 

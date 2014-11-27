@@ -217,7 +217,13 @@
         searchResultLabel.text = [filteredResults firstObject];
     }
     else{
-         searchResultLabel.text = [NSString stringWithFormat:@"#%@",[filteredResults objectAtIndex:indexPath.row]];
+        if ([suggestionValues isEqualToArray:filteredResults]) {
+           searchResultLabel.text = [NSString stringWithFormat:@"#%@",[filteredResults objectAtIndex:indexPath.row]];
+        }
+        else{
+           searchResultLabel.text = [NSString stringWithFormat:@"%@",[filteredResults objectAtIndex:indexPath.row]];
+        }
+
          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return cell;

@@ -39,6 +39,8 @@ static TabbarVC *thisWebServices = nil;
     
     [[DTO sharedDTO]getSuggestions];
     
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0]; //reset
+    
     thisWebServices = self;
     
     if (self.showsSplashOnLoad) {

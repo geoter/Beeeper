@@ -752,9 +752,11 @@
              else{
                  dispatch_async(dispatch_get_main_queue(), ^{
                      
+                     NSLog(@"%@",error);
+                     
                      [self hideLoading];
                      
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Facebook Access was denied" message:@"Please go to Settings > Facebook and enable Beeeper." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Facebook Access was denied" message:(error)?error.localizedDescription:@"Please go to Settings > Facebook and enable Beeeper." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                      [alert show];
                  });
              }
@@ -834,7 +836,7 @@
                      dispatch_async(dispatch_get_main_queue(), ^{
                          
                          [self hideLoading];
-                         
+                         [self.tableV reloadData];
                          
 //                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
 //                         [alert show];
@@ -1800,6 +1802,9 @@
     else if (selectedOption == FacebookButton && section == 1 && searchedFBFriends.count > 0) {
         return 47;
     }
+    else if (selectedOption == FacebookButton && section == 0 && searchedFBFriends.count > 0) {
+        return 47;
+    }
     else{
         return 0;
     }
@@ -1856,7 +1861,7 @@
         else{
             
             //fb header
-
+            lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",searchedFBFriends.count];
             return header;
         }
     }

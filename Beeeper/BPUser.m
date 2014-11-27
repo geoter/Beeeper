@@ -64,8 +64,15 @@ static NSString *consumerSecret = @"e92496b00f2abc454891c8d3c54017b8";
 static BPUser *thisWebServices = nil;
 
 -(void)setBadgeNumber:(int)badgeNumber{
+
+    if (badgeNumber == 0) {
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-_badgeNumber];
+    }
+    else{
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber+badgeNumber];
+    }
+    
     _badgeNumber = badgeNumber;
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
 }
 
 -(id)init{
@@ -1188,8 +1195,8 @@ static BPUser *thisWebServices = nil;
                     serverTime = [[NSString stringWithFormat:@"%@",[activity_item objectForKey:@"notification_time"]] intValue];
                 }
                 else{
-                    NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
-                    self.badgeNumber = badge.intValue;
+//                    NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
+//                    self.badgeNumber = badge.intValue;
                 }
             }
             @catch (NSException *exception) {
@@ -1323,8 +1330,8 @@ static BPUser *thisWebServices = nil;
                     serverTime = [[NSString stringWithFormat:@"%@",[activity_item objectForKey:@"notification_time"]] intValue];
                 }
                 else{
-                    NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
-                    self.badgeNumber = badge.intValue;
+//                    NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
+//                    self.badgeNumber = badge.intValue;
                 }
             }
             @catch (NSException *exception) {
@@ -1614,7 +1621,14 @@ static BPUser *thisWebServices = nil;
         @try {
             
             NSString *responseString = [request responseString];
-            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            NSDictionary *beeepersDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            
+            NSMutableArray *beeepers = [NSMutableArray array];
+            
+            for (NSString *key in beeepersDict.allKeys) {
+                NSDictionary *beeeper = [beeepersDict objectForKey:key];
+                [beeepers addObject:beeeper];
+            }
             
             if (beeepers.count == 0) {
                  [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromFB_IDs" json:responseString];

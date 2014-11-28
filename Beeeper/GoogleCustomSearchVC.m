@@ -16,7 +16,6 @@
     NSMutableArray *moreButton;
     UITapGestureRecognizer *tapG;
     int currentPage;
-    ASIFormDataRequest *requestAsync;
     int lastX;
     int lastY;
     int lastHeight;
@@ -137,15 +136,15 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         NSLog(@"Request is %@",request);
         
-        requestAsync = [ASIFormDataRequest requestWithURL:url];
-        __weak ASIFormDataRequest *requestWeak = requestAsync;
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         
-        [requestWeak setRequestMethod:@"GET"];
-        [requestWeak setCompletionBlock:^{
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
+        [manager GET:url.absoluteString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
             @try {
-               
-                NSData *responseData = [requestWeak responseData];
+                
+                NSData *responseData = [operation responseData];
                 
                 NSError *error;
                 NSDictionary *responseDic = [NSJSONSerialization JSONObjectWithData:
@@ -167,21 +166,16 @@
                 
             }
             @catch (NSException *exception) {
-     
+                
             }
             @finally {
-            
+                
             }
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"fail");
+        }];
 
-        }];
-        
-        [requestWeak setFailedBlock:^{
-            NSLog(@"fail");
-        }];
-        
-        [requestWeak startAsynchronous];
-        
-        
     }
     
     @catch (NSException *ex) {

@@ -43,34 +43,32 @@ static BPCreate *thisWebServices = nil;
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/create"];
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
+    [postValuesDict setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
+    [postValuesDict setObject:beeep_time forKey:@"beeep_time"];
     
-    NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValuesDict]] forHTTPHeaderField:@"Authorization"];
+    
+    [postValuesDict setObject:fingerprint forKey:@"fingerprint"];
+    
+    [manager POST:requestURL.absoluteString parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self beeepCreateFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self beeepCreateFailed:error.localizedDescription];
+    }];
 
-    [postValues setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
-    [postValues setObject:beeep_time forKey:@"beeep_time"];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
-    
-    [request addPostValue:fingerprint forKey:@"fingerprint"];
-    [request addPostValue:beeep_time forKey:@"beeep_time"];
-    
-    [request setRequestMethod:@"POST"];
-    
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(beeepCreateFinished:)];
-    
-    [request setDidFailSelector:@selector(beeepCreateFailed:)];
-    
-    [request startAsynchronous];
 
 }
 
--(void)beeepCreateFinished:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)beeepCreateFinished:(id)request{
+    NSString *responseString = request;
     
     
     @try {
@@ -111,9 +109,9 @@ static BPCreate *thisWebServices = nil;
 
 }
 
--(void)beeepCreateFailed:(ASIHTTPRequest *)request{
+-(void)beeepCreateFailed:(id)request{
   
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"beeepCreateFailed" where:@"BPCreate/beeepCreateFailed" json:responseString];
     
@@ -129,27 +127,20 @@ static BPCreate *thisWebServices = nil;
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/delete"];
     
-    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
+    NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
+    [postValuesDict setObject:postStr forKey:@"beeep"];
     
-    NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [postValues setObject:[[DTO sharedDTO] urlencode:postStr] forKey:@"beeep"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValuesDict]] forHTTPHeaderField:@"Authorization"];
     
-    [request addPostValue:postStr forKey:@"beeep"];
-    
-    [request setRequestMethod:@"POST"];
-    
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-
-    [request setCompletionBlock:^{
+    [manager POST:requestURL.absoluteString parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         @try {
             
-            NSString *responseString = [request responseString];
+            NSString *responseString = [operation responseString];
             
             self.completed(([responseString rangeOfString:@"success"].location != NSNotFound),responseString);
         }
@@ -160,15 +151,10 @@ static BPCreate *thisWebServices = nil;
             
         }
         
-    }];
-    
-    [request setFailedBlock:^{
-        NSString *responseString = [request responseString];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSString *responseString = [operation responseString];
         self.completed(NO,nil);
     }];
-
-    
-    [request startAsynchronous];
 
 }
 
@@ -211,11 +197,11 @@ static BPCreate *thisWebServices = nil;
         
         NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/create"];
         
-        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-        
         NSMutableArray *postValues = [[NSMutableArray alloc]init];
+        NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
         
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
+        [postValuesDict setObject:fingerprint forKey:@"fingerprint"];
 
         for (NSString *key in values.allKeys) {
             
@@ -223,30 +209,29 @@ static BPCreate *thisWebServices = nil;
                 NSString *title = [[DTO sharedDTO] urlencode:[values objectForKey:key]];
                 
                 [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:title] forKey:key]];
-                [request setPostValue:title forKey:key];
+                [postValuesDict setObject:title forKey:key];
 
             }
             else{
                 [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[values objectForKey:key]] forKey:key]];
-                [request setPostValue:[values objectForKey:key] forKey:key];
+                [postValuesDict setObject:[values objectForKey:key] forKey:key];
             }
         }
         
-        [request setPostValue:fingerprint forKey:@"fingerprint"];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         
-        [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues]];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
-        [request setRequestMethod:@"POST"];
+        [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:postValues] forHTTPHeaderField:@"Authorization"];
         
-        [request setTimeOutSeconds:20.0];
-        
-        [request setDelegate:self];
-        
-        [request setDidFinishSelector:@selector(eventCreateFinished:)];
-        
-        [request setDidFailSelector:@selector(eventCreateFailed:)];
-        
-        [request startAsynchronous];
+        [manager POST:requestURL.absoluteString parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            [self eventCreateFinished:[operation responseString]];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSString *responseString = [operation responseString];
+            [self eventCreateFailed:[operation responseString]];
+        }];
+
 
     }
     @catch (NSException *exception) {
@@ -257,8 +242,9 @@ static BPCreate *thisWebServices = nil;
     }
 }
 
--(void)eventCreateFinished:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)eventCreateFinished:(id)request{
+    
+    NSString *responseString = request;
     
     @try {
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
@@ -306,8 +292,9 @@ static BPCreate *thisWebServices = nil;
     }
 }
 
--(void)eventCreateFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)eventCreateFailed:(id)request{
+
+    NSString *responseString = request;
 
     [[DTO sharedDTO]addBugLog:@"eventCreateFailed" where:@"BPCreate/eventCreateFailed" json:responseString];
     
@@ -347,39 +334,34 @@ static BPCreate *thisWebServices = nil;
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/invalidate/push"];
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
     NSMutableDictionary *postValues = [[NSMutableDictionary alloc]init];
     
     [postValues setObject:[NSString stringWithFormat:@"1"] forKey:@"invalidatePUSH"];
     [postValues setObject:weight forKey:@"beeep_id"];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]]];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request addPostValue:[NSString stringWithFormat:@"1"] forKey:@"invalidatePUSH"];
-    [request addPostValue:weight forKey:@"beeep_id"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setRequestMethod:@"POST"];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValues]] forHTTPHeaderField:@"Authorization"];
     
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(invalidateFinished:)];
-    
-    [request setDidFailSelector:@selector(invalidateFailed:)];
-    
-    [request startAsynchronous];
+    [manager POST:requestURL.absoluteString parameters:@{@"invalidatePUSH":@"1",@"beeep_id":weight} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [self invalidateFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSString *responseString = [operation responseString];
+        [self invalidateFailed:[operation responseString]];
+    }];
 
 }
 
--(void)invalidateFinished:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)invalidateFinished:(id)request{
+    NSString *responseString = request;
 
 }
 
--(void)invalidateFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)invalidateFailed:(id)request{
+    NSString *responseString = request;
     
 }
 

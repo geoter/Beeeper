@@ -152,8 +152,6 @@ static EventWS *thisWebServices = nil;
         
         NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/event/comment/add"];
         
-        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-        
         NSMutableArray *postValues = [NSMutableArray array];
         
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:commentText] forKey:@"comment"]];

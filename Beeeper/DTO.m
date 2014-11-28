@@ -243,28 +243,20 @@ static DTO *thisDTO = nil;
     
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     
-    __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setCompletionBlock:^{
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         @try {
             
-            NSString *responseString = [request responseString];
+            NSString *responseString = [operation responseString];
             id eventObject = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
             
             NSArray *eventArray;
@@ -282,7 +274,7 @@ static DTO *thisDTO = nil;
             else{
                 compbloc(NO,[NSString stringWithFormat:@"DTO Beeepfinished but failed: %@",responseString]);
             }
-
+            
         }
         @catch (NSException *exception) {
             compbloc(NO,nil);
@@ -291,15 +283,12 @@ static DTO *thisDTO = nil;
             
         }
         
-    }];
-    
-    [request setFailedBlock:^{
-        NSString *responseString = [request responseString];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        NSString *responseString = [operation responseString];
         compbloc(NO,nil);
     }];
-    
-    [request startAsynchronous];
-    
+
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color {
@@ -318,7 +307,7 @@ static DTO *thisDTO = nil;
 
 #pragma mark - Database
 
--(void)uploadBugFile{
+/*-(void)uploadBugFile{
     
      [self createAndCheckDatabase];
 
@@ -392,7 +381,7 @@ static DTO *thisDTO = nil;
     }];
     
     [request startAsynchronous];
-}
+}*/
 
 - (BOOL)addBugLog:(NSString *)what where:(NSString *)where json:(NSString *)json{
 

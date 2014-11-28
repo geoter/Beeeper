@@ -13,7 +13,6 @@ typedef void(^completed)(BOOL,id);
 @interface BPUsersLookup : NSObject
 {
    NSArray *userIDs;
-   ASIFormDataRequest *request;
 }
 
 @property (copy) void(^completed)(BOOL,id);

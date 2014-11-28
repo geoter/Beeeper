@@ -93,32 +93,26 @@ static BPTimeline *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
+
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(nextTimelineFinished:)];
-    
-    [request setDidFailSelector:@selector(nextTimelineFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self nextTimelineFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self nextTimelineFailed:error.localizedDescription];
+    }];
 
 }
 
@@ -152,94 +146,101 @@ static BPTimeline *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-//    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(timelineFinished:)];
-    
-    [request setDidFailSelector:@selector(timelineFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self timelineFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self timelineFailed:error.localizedDescription];
+    }];
     
 }
 
--(void)timelineFinished:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    
-    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+-(void)timelineFinished:(id)request{
 
-    if ([beeeps isKindOfClass:[NSArray class]]) {
+    @try {
+
+        NSString *responseString = request;
         
-        requestEmptyResultsCounter = 0;
+        NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
-        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
-        NSError *error;
-        
-        BOOL succeed = [responseString writeToFile:filePath
-                                        atomically:YES encoding:NSUTF8StringEncoding error:&error];
-        
-        [self parseResponseString:responseString WithCompletionBlock:self.completed];
-    }
-    else{
-        
-        [[DTO sharedDTO]addBugLog:@"![beeeps isKindOfClass:[NSArray class]]" where:@"BPTimeline/timelineFinished" json:responseString];
-        
-        requestEmptyResultsCounter++;
-        timeline_page --;
-        
-        if (requestEmptyResultsCounter <= 10) {
-            [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:self.completed];
+        if ([beeeps isKindOfClass:[NSArray class]]) {
+            
+            requestEmptyResultsCounter = 0;
+            
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
+            NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"timeline-%@-%@",userID,order]];
+            NSError *error;
+            
+            BOOL succeed = [responseString writeToFile:filePath
+                                            atomically:YES encoding:NSUTF8StringEncoding error:&error];
+            
+            [self parseResponseString:responseString WithCompletionBlock:self.completed];
         }
         else{
-            [self timelineFailed:request];
+            
+            [[DTO sharedDTO]addBugLog:@"![beeeps isKindOfClass:[NSArray class]]" where:@"BPTimeline/timelineFinished" json:responseString];
+            
+            requestEmptyResultsCounter++;
+            timeline_page --;
+            
+            if (requestEmptyResultsCounter <= 10) {
+                [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:self.completed];
+            }
+            else{
+                [self timelineFailed:request];
+            }
         }
+
+    }
+    @catch (NSException *exception) {
+         [self timelineFailed:request];
+    }
+    @finally {
+        
     }
 }
 
--(void)timelineFailed:(ASIHTTPRequest *)request{
+-(void)timelineFailed:(id)request{
     
     timeline_page--;
     
-    NSString *responseString = [request responseString];
+    if (timeline_page < 0) {
+        timeline_page = 0;
+    }
+    
+    NSString *responseString = request;
     
    // [[DTO sharedDTO]addBugLog:@"timelineFailed" where:@"BPTimeline/timelineFailed" json:responseString];
     
     self.completed(NO,nil);
 }
 
--(void)nextTimelineFinished:(ASIHTTPRequest *)request{
+-(void)nextTimelineFinished:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [self parseResponseString:responseString WithCompletionBlock:self.completed];
 }
 
--(void)nextTimelineFailed:(ASIHTTPRequest *)request{
+-(void)nextTimelineFailed:(id)request{
     
     timeline_page--;
 
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     [[DTO sharedDTO]addBugLog:@"nextTimelineFailed" where:@"BPTimeline/nextTimelineFailed" json:responseString];
     
@@ -269,31 +270,40 @@ static BPTimeline *thisWebServices = nil;
 }
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
+
+    @try {
+       NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+       
+       if (responseString == nil || responseString.length == 0 || ![beeeps isKindOfClass:[NSArray class]]) {
+           
+           [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"BPTimeline/parseResponseString" json:responseString];
+           
+           compbloc(NO,@"Response is nil");
+           timeline_page--;
+           
+           [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:compbloc];
+       }
+       
+       NSMutableArray *bs = [NSMutableArray array];
+       
+       for (NSDictionary *b in beeeps) {
+           Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
+           [bs addObject:beeep];
+       }
+       
+       compbloc(YES,bs);
+    }
+    @catch (NSException *exception) {
+       compbloc(NO,nil);
+    }
+    @finally {
+    
+    }
    
-    NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    
-    if (responseString == nil || responseString.length == 0 || ![beeeps isKindOfClass:[NSArray class]]) {
-        
-        [[DTO sharedDTO]addBugLog:@"responseString == nil" where:@"BPTimeline/parseResponseString" json:responseString];
-        
-        compbloc(NO,@"Response is nil");
-        timeline_page--;
-        
-        [self nextPageTimelineForUserID:userID option:option WithCompletionBlock:compbloc];
-    }
-    
-    NSMutableArray *bs = [NSMutableArray array];
-    
-    for (NSDictionary *b in beeeps) {
-        Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
-        [bs addObject:beeep];
-    }
-    
-    compbloc(YES,bs);
 }
 
 
--(void)downloadImage:(Timeline_Object *)tml{
+/*-(void)downloadImage:(Timeline_Object *)tml{
     
    // NSString *extension = [[tml.event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
@@ -329,6 +339,6 @@ static BPTimeline *thisWebServices = nil;
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
-}
+}*/
 
 @end

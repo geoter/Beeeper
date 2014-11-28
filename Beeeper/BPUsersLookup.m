@@ -41,8 +41,6 @@ static BPUsersLookup *thisWebServices = nil;
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/user/lookup"];
     
-    request = [ASIFormDataRequest requestWithURL:requestURL];
-    
     NSMutableString *idsJSON = [[NSMutableString alloc]initWithString:@"["];
     
     if (users_ids.count >0 && [[users_ids firstObject] isKindOfClass:[NSString class]]) {
@@ -60,29 +58,28 @@ static BPUsersLookup *thisWebServices = nil;
     [idsJSON appendString:@"]"];
     NSString *idsJSONEncoded = [[DTO sharedDTO] urlencode:idsJSON];
     
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:[NSDictionary dictionaryWithObject:idsJSONEncoded forKey:@"users"]]]];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request addPostValue:idsJSON forKey:@"users"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setRequestMethod:@"POST"];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:[NSDictionary dictionaryWithObject:idsJSONEncoded forKey:@"users"]]] forHTTPHeaderField:@"Authorization"];
     
-    [request setTimeOutSeconds:20.0];
-    
-    [request setDelegate:self];
-    
-    [request setDidFinishSelector:@selector(userLookupFinished:)];
-    
-    [request setDidFailSelector:@selector(userLookupFailed:)];
-    
-    [request startAsynchronous];
+    [manager POST:requestURL.absoluteString parameters:@{@"users":idsJSON} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self userLookupFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self userLookupFailed:error.localizedDescription];
+    }];
 
 }
 
--(void)userLookupFinished:(ASIHTTPRequest *)request{
+-(void)userLookupFinished:(id)request{
     
     @try {
         
-        NSString *responseString = [request responseString];
+        NSString *responseString = request;
         
         NSArray *usersArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
@@ -121,8 +118,9 @@ static BPUsersLookup *thisWebServices = nil;
     
 }
 
--(void)userLookupFailed:(ASIHTTPRequest *)request{
-    NSString *responseString = [request responseString];
+-(void)userLookupFailed:(id)request{
+   
+    NSString *responseString = request;
     
     // [[DTO sharedDTO]addBugLog:@"userLookupFailed" where:@"BPUsersLookup/userLookupFailed" json:responseString];
     

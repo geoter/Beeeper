@@ -1952,11 +1952,12 @@
         
             NSURL *url = [NSURL URLWithString:@"https://api.elasticemail.com/mailer/send"];
             
-            __weak ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-            [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
-            [request addPostValue:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
-            [request addPostValue:@"hello@beeeper.com" forKey:@"from"];
-            [request addPostValue:@"Beeeper" forKey:@"from_name"];
+            NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
+            
+            [postValuesDict setObject:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"username"];
+            [postValuesDict setObject:@"5c718e43-3ceb-47d5-ad45-fc9f8ad86d6d" forKey:@"api_key"];
+            [postValuesDict setObject:@"hello@beeeper.com" forKey:@"from"];
+            [postValuesDict setObject:@"Beeeper" forKey:@"from_name"];
             
             NSMutableString *recipients = [[NSMutableString alloc]init];
             
@@ -1965,44 +1966,46 @@
                 [recipients appendFormat:@"%@;",email];
             }
             
-            [request addPostValue:recipients forKey:@"to"];
-            [request addPostValue:@"Join Beeeper" forKey:@"subject"];
-            [request addPostValue:@"invitefriend" forKey:@"template"];
-            [request addPostValue:[[BPUser sharedBP].user objectForKey:@"name"] forKey:@"merge_firstname"];
-            [request addPostValue:[[BPUser sharedBP].user objectForKey:@"lastname"] forKey:@"merge_lastname"];
+            [postValuesDict setObject:recipients forKey:@"to"];
+            [postValuesDict setObject:@"Join Beeeper" forKey:@"subject"];
+            [postValuesDict setObject:@"invitefriend" forKey:@"template"];
+            [postValuesDict setObject:[[BPUser sharedBP].user objectForKey:@"name"] forKey:@"merge_firstname"];
+            [postValuesDict setObject:[[BPUser sharedBP].user objectForKey:@"lastname"] forKey:@"merge_lastname"];
             
-            [request setCompletionBlock:^{
-                NSString *responseString = [request responseString];
+            
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            
+            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            
+            [manager POST:url.absoluteString parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                
+                NSString *responseString = [operation responseString];
                 NSLog(@"Send Response: %@", responseString);
                 
                 if ([responseString rangeOfString:@"Error"].location != NSNotFound) {
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
-                
+                    
                 }
-                else{            
+                else{
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
                     
                     [selectedPeople removeAllObjects];
                     
                     [self.tableV reloadData];
-
+                    
                     self.navigationItem.rightBarButtonItem = nil;
-
+                    
                 }
-
-            }];
-            [request setFailedBlock:^{
-                NSError *error = [request error];
-                NSLog(@"Send Error: %@", error.localizedDescription);
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
-                
+
             }];
-            
-            [request startAsynchronous];
+
         }
     }
     else if (selectedOption == FacebookButton){
@@ -2324,34 +2327,30 @@
     
     NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
-    [request setRequestMethod:@"GET"];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [request setTimeOutSeconds:20.0];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setDelegate:self];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    //[[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(getPeopleFinished:)];
-    
-    [request setDidFailSelector:@selector(getPeopleFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self getPeopleFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self getPeopleFailed:error.localizedDescription];
+    }];
     
 }
 
--(void)getPeopleFinished:(ASIHTTPRequest *)request{
+-(void)getPeopleFinished:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
 
     NSArray *people = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
@@ -2368,9 +2367,9 @@
     self.search_completed(YES,people);
 }
 
--(void)getPeopleFailed:(ASIHTTPRequest *)request{
+-(void)getPeopleFailed:(id )request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     self.search_completed(NO,nil);
 }
 

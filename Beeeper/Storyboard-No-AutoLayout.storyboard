@@ -754,18 +754,18 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" id="d2d-VM-qbw">
-                                                <rect key="frame" x="15" y="0.0" width="67" height="38"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="274" height="38"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add photo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sTO-rU-ftT">
-                                                        <rect key="frame" x="0.0" y="0.0" width="67" height="38"/>
+                                                        <rect key="frame" x="15" y="0.0" width="67" height="38"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="13"/>
                                                         <color key="textColor" red="0.13725490196078433" green="0.17254901960784313" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" clipsSubviews="YES" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="oKA-dH-UMl" customClass="GTPushButton">
-                                                        <rect key="frame" x="0.0" y="0.0" width="67" height="38"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="274" height="38"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <state key="normal">
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -3781,7 +3781,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view tag="88" contentMode="scaleToFill" id="xuf-La-ehz">
-                                                    <rect key="frame" x="0.0" y="74" width="320" height="1"/>
+                                                    <rect key="frame" x="0.0" y="75" width="320" height="1"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>

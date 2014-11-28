@@ -452,6 +452,7 @@
     }
     
     else{
+        
         [self hideLoading];
         self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
         

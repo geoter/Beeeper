@@ -89,6 +89,8 @@
     
     initiateData = YES;
     
+    selectedIndex = 1; //FriendsFeed only
+    
     overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
     overlay.delegate = self;
@@ -109,14 +111,14 @@
     CHTCollectionViewWaterfallLayout *layout = (id)self.collectionV.collectionViewLayout;
     
     layout.sectionInset = UIEdgeInsetsMake(8, 8, 8, 8);
-    layout.headerHeight = 40;
+    layout.headerHeight = 0;
     layout.footerHeight = 50;
     layout.minimumColumnSpacing = 8;
     layout.minimumInteritemSpacing = 8;
 
-    [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
-        forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
-               withReuseIdentifier:@"HeaderView"];
+//    [self.collectionV registerClass:[CHTCollectionViewWaterfallHeader class]
+//        forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader
+//               withReuseIdentifier:@"HeaderView"];
 
     [self.collectionV registerClass:[CHTCollectionViewWaterfallFooter class]
         forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter
@@ -384,7 +386,8 @@
     
     if (initiateData) {
         initiateData = NO;
-        [self getHomefeed];
+        //[self getHomefeed];
+        [self getFriendsFeed];
     }
 
     [self refreshCollectionView];
@@ -717,21 +720,21 @@
 
     UICollectionReusableView * reusableview = nil ;
     
-    if ( kind == CHTCollectionElementKindSectionHeader ) {
-        
-        UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
-
-        if (!segment) {
-            
-            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All Beeeps", @"Friends' Beeeps", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
-            segment.delegate = self;
-            [headerView addSubview:segment];
-            segment.frame = CGRectMake(0, headerView.frame.size.height-segment.frame.size.height, segment.frame.size.width, segment.frame.size.height);
-            segment.center = CGPointMake(headerView.center.x,segment.center.y);
-        }
-        
-        reusableview = headerView;
-    }
+//    if ( kind == CHTCollectionElementKindSectionHeader ) {
+//        
+//        UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionHeader withReuseIdentifier : @ "HeaderView" forIndexPath : indexPath] ;
+//
+//        if (!segment) {
+//            
+//            segment = [GTSegmentedControl initWithOptions:[NSArray arrayWithObjects:@"All Beeeps", @"Friends' Beeeps", nil] size:CGSizeMake(303, 32) selectedIndex:selectedIndex selectionColor:[UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1]];
+//            segment.delegate = self;
+//            [headerView addSubview:segment];
+//            segment.frame = CGRectMake(0, headerView.frame.size.height-segment.frame.size.height, segment.frame.size.width, segment.frame.size.height);
+//            segment.center = CGPointMake(headerView.center.x,segment.center.y);
+//        }
+//        
+//        reusableview = headerView;
+//    }
     
     if ([kind isEqualToString:CHTCollectionElementKindSectionFooter]) {
         UICollectionReusableView * headerView = [collectionView dequeueReusableSupplementaryViewOfKind : CHTCollectionElementKindSectionFooter withReuseIdentifier : @ "FooterView" forIndexPath : indexPath] ;
@@ -1335,7 +1338,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
--(void)selectedSegmentAtIndex:(int)index{
+/*-(void)selectedSegmentAtIndex:(int)index{
     
     selectedIndex = index;
     
@@ -1346,7 +1349,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     else{
         [self getHomefeed];
     }
-}
+}*/
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender{
     [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];

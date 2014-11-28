@@ -1788,6 +1788,14 @@
 
     Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
     
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    if ([b.beeepersIds indexOfObject:my_id] != NSNotFound) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Already Beeeped" message:@"You have already Beeeped this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
     UITableViewCell *cell = [self.tableV cellForRowAtIndexPath:indexpath];
     UIImageView *imgV = (id)[cell viewWithTag:3];
     

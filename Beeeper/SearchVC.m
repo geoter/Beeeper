@@ -166,7 +166,7 @@
     
     self.tapG.enabled = NO;
     
-    suggestionValues = [NSArray arrayWithObjects:@"TV",@"movies",@"music",@"deals",@"sports", nil];
+    suggestionValues = [NSArray arrayWithObjects:@"Upcoming",@"TV",@"movies",@"music",@"deals",@"sports", nil];
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     

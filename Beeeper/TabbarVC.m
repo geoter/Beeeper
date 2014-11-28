@@ -58,7 +58,7 @@ static TabbarVC *thisWebServices = nil;
     [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.tag = 1;
+    btn.tag = 3;
     
     [self tabbarButtonTapped:btn];
     

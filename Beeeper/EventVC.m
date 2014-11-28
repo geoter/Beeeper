@@ -2493,6 +2493,7 @@
     [self close:nil];
     
     self.beeepItButton.hidden = YES;
+    self.beeepedGray.hidden = NO;
 }
 
 - (void)didReceiveMemoryWarning

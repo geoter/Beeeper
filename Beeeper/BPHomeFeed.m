@@ -92,32 +92,25 @@ static BPHomeFeed *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(friendsFeedFinished:)];
-    
-    [request setDidFailSelector:@selector(friendsFeedFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self friendsFeedFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self friendsFeedFailed:error.localizedDescription];
+    }];
     
 
 }
@@ -145,39 +138,32 @@ static BPHomeFeed *thisWebServices = nil;
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
-    
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:requestURL];
-    
-    [request addRequestHeader:@"Authorization" value:[[BPUser sharedBP] headerGETRequest:URL values:array]];
-    
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
     
     self.completed = compbloc;
     
-    [request setRequestMethod:@"GET"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    //[request addPostValue:[info objectForKey:@"sex"] forKey:@"sex"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    [request setTimeOutSeconds:20.0];
+    [manager.requestSerializer setValue:[[BPUser sharedBP] headerGETRequest:URL values:array] forHTTPHeaderField:@"Authorization"];
     
-    [request setDelegate:self];
-    
-    //    [[request UserInfo]setObject:info forKey:@"info"];
-    
-    [request setDidFinishSelector:@selector(friendsFeedFinished:)];
-    
-    [request setDidFailSelector:@selector(friendsFeedFailed:)];
-    
-    [request startAsynchronous];
+    [manager GET:URLwithVars parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        [self friendsFeedFinished:[operation responseString]];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",operation);
+        [self friendsFeedFailed:error.localizedDescription];
+    }];
     
 
 }
 
--(void)friendsFeedFinished:(ASIHTTPRequest *)request{
+-(void)friendsFeedFinished:(id)request{
     
-    NSString *responseString = [request responseString];
+    NSString *responseString = request;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
 
@@ -213,6 +199,16 @@ static BPHomeFeed *thisWebServices = nil;
         return;
     }
 }
+
+-(void)friendsFeedFailed:(id)request{
+    
+    NSString *responseString = request;
+    
+    [[DTO sharedDTO]addBugLog:@"friendsFeedFailed" where:@"BPHomeFeed/friendsFeedFailed" json:responseString];
+    
+    self.completed(NO,@"friendsFeedFailed");
+}
+
 
 -(void)parseResponseString:(NSString *)responseString WithCompletionBlock:(completed)compbloc{
     
@@ -275,17 +271,9 @@ static BPHomeFeed *thisWebServices = nil;
     compbloc(YES,bs);
 }
 
--(void)friendsFeedFailed:(ASIHTTPRequest *)request{
-    
-    NSString *responseString = [request responseString];
-    
-    [[DTO sharedDTO]addBugLog:@"friendsFeedFailed" where:@"BPHomeFeed/friendsFeedFailed" json:responseString];
-    
-    self.completed(NO,@"friendsFeedFailed");
-}
 
 
--(void)downloadImage:(Friendsfeed_Object *)ffo{
+/*-(void)downloadImage:(Friendsfeed_Object *)ffo{
     
   //  NSString *extension = [[ffo.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
@@ -337,6 +325,6 @@ static BPHomeFeed *thisWebServices = nil;
     
     [[NSNotificationCenter defaultCenter]postNotificationName:imageName object:nil userInfo:[NSDictionary dictionaryWithObject:imageName forKey:@"imageName"]];
 }
-
+*/
 
 @end

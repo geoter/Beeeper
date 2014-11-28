@@ -787,7 +787,7 @@
                          
                          [self hideLoading];
                          
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings> Facebook and sign in with your Facebook account.." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings> Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                          [alert show];
                      });
                      

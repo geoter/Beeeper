@@ -324,6 +324,11 @@
 
 -(void)searchStringChanged:(UITextField *)txtF{
     
+    if (txtF.text.length == 0) {
+        [self resetSearch];
+        return;
+    }
+    
     [[EventWS sharedBP]searchKeyword:txtF.text WithCompletionBlock:^(BOOL completed,NSArray *keywords){
         
         if (completed) {

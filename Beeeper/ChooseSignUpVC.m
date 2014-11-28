@@ -894,7 +894,7 @@
     [dict setObject:userImageURL forKey:@"image"];
     
     
-    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
+    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *responseString){
         if (completed) {
             [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",fbID]];
             [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
@@ -917,8 +917,13 @@
                     [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
                 }
                 else{
-                    
-                    [self fbSignupPressed:nil];
+                    if ([responseString rangeOfString:@"fb user login failure"].location != NSNotFound) {
+                        
+                        [self fbSignupPressed:nil];
+                    }
+                    else{
+                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again."];
+                    }
                 }
             }
         }

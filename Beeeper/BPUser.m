@@ -2142,7 +2142,7 @@ static BPUser *thisWebServices = nil;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@",operation);
-        [self authorizationFailed:error];
+        [self authorizationFailed:[operation responseString]];
     }];
 }
 

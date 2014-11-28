@@ -418,7 +418,7 @@
         
         
         if (user == nil) {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"User == nil" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error getting user" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             return;
         }

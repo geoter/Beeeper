@@ -135,6 +135,7 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     self.redirectToComments = NO;
+    self.redirectToLikes = NO;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -623,6 +624,9 @@
     if (self.redirectToComments) {
         [self showCommentsWillDelay];
     }
+    else if (self.redirectToLikes) {
+        [self showLikesWillDelay];
+    }
 
 }
 
@@ -932,6 +936,9 @@
     
     if (self.redirectToComments) {
         [self showCommentsWillDelay];
+    }
+    else if (self.redirectToLikes) {
+        [self showLikesWillDelay];
     }
 }
 
@@ -1250,6 +1257,9 @@
     
     if (self.redirectToComments) {
         [self showCommentsWillDelay];
+    }
+    else if (self.redirectToLikes) {
+        [self showLikesWillDelay];
     }
 }
 
@@ -1586,6 +1596,9 @@
     
     if (self.redirectToComments) {
         [self showCommentsWillDelay];
+    }
+    else if (self.redirectToLikes) {
+        [self showLikesWillDelay];
     }
 }
 
@@ -1947,6 +1960,9 @@
     
     if (self.redirectToComments) {
         [self showCommentsWillDelay];
+    }
+    else if (self.redirectToLikes) {
+        [self showLikesWillDelay];
     }
 }
 
@@ -2603,7 +2619,18 @@
         [self showComments:nil];
     }
     else{
-        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:1];
+        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:1.5];
+    }
+}
+
+-(void)showLikesWillDelay{
+    
+    if (viewAppeared && self.redirectToLikes) {
+        self.redirectToLikes = NO;
+        [self showLikes:nil];
+    }
+    else{
+        [self performSelector:@selector(showLikesWillDelay) withObject:nil afterDelay:1.5];
     }
 }
 

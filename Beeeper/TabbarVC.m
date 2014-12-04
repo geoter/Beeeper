@@ -162,6 +162,12 @@ static TabbarVC *thisWebServices = nil;
         EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.tml = [NSString stringWithString:beeepID];
         
+        BOOL commentsShow = [[beeepDict objectForKey:@"WeightPushCase"]isEqualToString:@"c"];
+        BOOL likesShow = [[beeepDict objectForKey:@"WeightPushCase"]isEqualToString:@"l"];
+        
+        viewController.redirectToComments = commentsShow;
+        viewController.redirectToLikes = likesShow;
+        
         [self.navigationController pushViewController:viewController animated:YES];
         
         [[DTO sharedDTO]setWeightForPush:nil caseStr:nil];

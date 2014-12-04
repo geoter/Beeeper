@@ -38,6 +38,8 @@
 @property (nonatomic,strong) NSString *deepLinkFingerprint;
 
 @property (nonatomic,assign) BOOL redirectToComments;
+@property (nonatomic,assign) BOOL redirectToLikes;
+
 @property (nonatomic,strong) NSMutableDictionary *values;
 @property (nonatomic,strong) id tml;
 

@@ -60,39 +60,6 @@
     
     self.blurContainerV.alpha = 0;
     
-//    self.suggestButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
-//    self.suggestButton.layer.borderWidth = 1;
-//    self.suggestButton.layer.cornerRadius = 5;
-
-//    TKRoundedView *beeepTimeBGV = (TKRoundedView *)[self.view viewWithTag:1111];
-//    beeepTimeBGV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-//    beeepTimeBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-//    beeepTimeBGV.borderWidth = 1.0f;
-//    beeepTimeBGV.cornerRadius = 6;
-//    beeepTimeBGV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
-//    
-//    TKRoundedView *suggestBGV = (TKRoundedView *)[self.view viewWithTag:1112];
-//    suggestBGV.roundedCorners = TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-//    suggestBGV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-//    suggestBGV.borderWidth = 1.0f;
-//    suggestBGV.cornerRadius = 6;
-    
-//    self.beeepTimeButton.layer.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:1].CGColor;
-//    self.beeepTimeButton.layer.borderWidth = 1;
-//    self.beeepTimeButton.layer.cornerRadius = 5;
-    
-//    self.fbShareV.roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerTopRight;
-//    self.fbShareV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-//    self.fbShareV.borderWidth = 1.0f;
-//    self.fbShareV.cornerRadius = 6;
-//    self.fbShareV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
-//
-//    self.twitterV.roundedCorners =  TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight;
-//    self.twitterV.borderColor = [UIColor colorWithRed:164/255.0 green:168/255.0 blue:174/255.0 alpha:0.8];
-//    self.twitterV.borderWidth = 1.0f;
-//    self.twitterV.cornerRadius = 6;
-//    self.twitterV.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesRight | TKDrawnBorderSidesTop;
-    
     [self adjustFonts];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
@@ -177,15 +144,16 @@
             fingerprint = eventS.fingerprint;
         }
         
-        website = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",fingerprint];
-        
-        if (website == nil) {
+        if (fingerprint == nil) {
             website = @"http://www.beeeper.com";
+        }
+        else{
+            website = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",fingerprint];
         }
         
         [[BPActivity sharedBP]getEventFromFingerprint:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
-                tinyURL = [NSString stringWithFormat:@"http://beeep.it/%@",event.tinyUrl];
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",event.tinyUrl];
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -195,7 +163,6 @@
         
         
         beeepTitle = title;
-        //[shareText appendString:title];
         
         
         NSDate *date;
@@ -245,9 +212,11 @@
         NSString *dateStr = [formatter stringFromDate:date];
         NSArray *components = [dateStr componentsSeparatedByString:@","];
         NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
         
         NSString *month = [day_month objectAtIndex:1];
         NSString *daynumber = [day_month objectAtIndex:2];
+        
         
         UILabel *dayNumberLbl = (id)[self.scrollV viewWithTag:-2];
         UILabel *monthLbl = (id)[self.scrollV viewWithTag:-1];
@@ -255,8 +224,7 @@
         
         dayNumberLbl.text = daynumber;
         monthLbl.text = [month uppercaseString];
-        
-        [shareText appendFormat:@"When: %@ %@",daynumber,[month uppercaseString]];
+
         
         NSString *venue;
         NSString *jsonString;
@@ -302,7 +270,6 @@
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
             venue = [loc.venueStation uppercaseString];
-            [shareText appendFormat:@"\nWhere: %@",venue];
         }
         
         
@@ -352,6 +319,8 @@
         
         imageURL = [[DTO sharedDTO]fixLink:imageUrl];
         
+        [shareText appendFormat:@"%@ on %@,%@ %@ - %@",beeepTitle,[month uppercaseString],daynumber,hour,[venue capitalizedString]];
+        
     }
     @catch (NSException *exception) {
         NSLog(@"%@",exception);
@@ -361,6 +330,7 @@
     @finally {
         
     }
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -683,6 +653,7 @@
               params.picture = url;
               params.name = beeepTitle;
               params.linkDescription = self.venueLabel.text;
+
              
               
               // If the Facebook app is installed and we can present the share dialog
@@ -751,7 +722,7 @@
     
         SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         
-        [composeController setInitialText:shareText];
+        [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",tinyURL?tinyURL:@""]];
         
         [composeController addImage:self.facebookDialogEventImage];
         [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
@@ -833,7 +804,7 @@
         
         SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         
-        [composeController setInitialText:shareText];
+        [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",tinyURL?tinyURL:@""]];
         
         [composeController addImage:self.facebookDialogEventImage];
         

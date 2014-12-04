@@ -1020,27 +1020,14 @@
 -(void)userPickedPhoto:(NSDictionary *)info{
    
     @try {
+        
         NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
         NSURL *image_url = [info_values objectForKey:@"source_url"];
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-        
-       // self.addPhotoBGV.frame = CGRectMake(self.selectedPhotoButton.frame.origin.x+self.selectedPhotoButton.frame.size.width+11, self.addPhotoBGV.frame.origin.y, self.addPhotoBGV.frame.size.width, self.addPhotoBGV.frame.size.height);
-        
-//        self.selectedPhotoButton.layer.borderWidth = 1;
-//        self.selectedPhotoButton.layer.borderColor = [UIColor whiteColor].CGColor;
 
-//        self.selectedPhotoButton.layer.shadowColor = [[UIColor lightGrayColor] CGColor];
-//        self.selectedPhotoButton.layer.shadowOpacity = 0.7;
-//        self.selectedPhotoButton.layer.shadowOffset = CGSizeMake(0, 0.1);
-//        self.selectedPhotoButton.layer.shadowRadius = 0.8;
-
-        
         [self.selectedPhotoButton setBackgroundImage:img forState:UIControlStateNormal];
         self.selectedPhotoButton.hidden = NO;
-        
-        //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
-        //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
         
         if (image_url == nil) {
             NSData *imageData = UIImageJPEGRepresentation(img, 0.8);

@@ -13,7 +13,7 @@
 #import "BeeepItVC.h"
 #import "SuggestBeeepVC.h"
 
-@interface TabbarVC ()<UINavigationControllerDelegate>
+@interface TabbarVC ()<UINavigationControllerDelegate,UIAlertViewDelegate>
 {
 
 }
@@ -51,7 +51,7 @@ static TabbarVC *thisWebServices = nil;
     [[BPUser sharedBP]sendDeviceToken];
     //[[BPUser sharedBP]sendDemoPush:50];
     
-    [self pushReceived];
+    [self pushReceived:nil];
     
     [self showDeeepLinkEvent];
     
@@ -62,7 +62,7 @@ static TabbarVC *thisWebServices = nil;
     
     [self tabbarButtonTapped:btn];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived) name:@"PUSH" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushReceived:) name:@"PUSH" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showDeeepLinkEvent) name:@"DEEPLINK" object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateNotificationsBadge) name:@"readNotifications" object:nil];
@@ -114,13 +114,48 @@ static TabbarVC *thisWebServices = nil;
 
 }
 
--(void)pushReceived{
-    [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
+-(void)pushReceived:(NSNotification *)notif{
+   
+    @try {
+       
+        NSDictionary *userInfo = [notif userInfo];
+        
+        if (userInfo != nil) {
+            
+            NSString *alertText = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] objectForKey:@"body"];
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Notification Received" message:alertText delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"View", nil];
+            alert.tag = 33;
+            [alert show];
+        }
+        else{
+            [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
+            [self performSelector:@selector(showPushEvent) withObject:nil afterDelay:2.0];
+            [self performSelector:@selector(showPushUser) withObject:nil afterDelay:2.0];
+        }
+
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (buttonIndex != alertView.cancelButtonIndex && alertView.tag == 33) {
+        [self showPushBeeep];
+        [self showPushEvent];
+        [self showPushUser];
+    }
 }
 
 -(void)showPushBeeep{
     
-    NSString *beeepID = [[DTO sharedDTO]getNotificationBeeepID];
+    NSDictionary *beeepDict = [[DTO sharedDTO]getWeightAndCaseForPush];
+    
+    NSString *beeepID = [beeepDict objectForKey:@"WeightPush"];
     
     if (beeepID != nil) {
         
@@ -129,9 +164,46 @@ static TabbarVC *thisWebServices = nil;
         
         [self.navigationController pushViewController:viewController animated:YES];
         
-        [[DTO sharedDTO]setNotificationBeeepID:nil];
+        [[DTO sharedDTO]setWeightForPush:nil caseStr:nil];
     }
 
+}
+
+-(void)showPushEvent{
+    
+    NSDictionary *eventDict = [[DTO sharedDTO]getFingerprintAndCaseForPush];
+    
+    NSString *eventID = [eventDict objectForKey:@"FingerprintPush"];
+    
+    if (eventID != nil) {
+        
+        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        viewController.deepLinkFingerprint = [NSString stringWithString:eventID];
+        
+        [self.navigationController pushViewController:viewController animated:YES];
+        
+        [[DTO sharedDTO]setFingerprintForPush:nil caseStr:nil];
+    }
+    
+}
+
+-(void)showPushUser{
+   
+    NSString *userID = [[DTO sharedDTO]getUserIDForPush];
+    
+    if (userID != nil) {
+      
+        TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        timelineVC.mode = Timeline_Following;
+        timelineVC.showBackButton = YES; //in case of My_Timeline
+        
+        timelineVC.following = YES;
+        timelineVC.user = [NSDictionary dictionaryWithObject:userID forKey:@"id"];
+        
+        [self.navigationController pushViewController:timelineVC animated:YES];
+    
+        [[DTO sharedDTO]setUserIDforPush:nil];
+    }
 }
 
 -(void)showDeeepLinkEvent{

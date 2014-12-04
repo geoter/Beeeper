@@ -531,7 +531,17 @@
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
       
         NSString *email = [[fbAccount valueForKey:@"properties"] objectForKey:@"ACUIDisplayUsername"];
-
+        
+        if (email == nil) {
+            email = [fbDict objectForKey:@"email"];
+        }
+        
+        NSString *username = [fbDict objectForKey:@"username"];
+        
+        if (username == nil) {
+            username = [NSString stringWithFormat:@"%@.%@",[fbDict objectForKey:@"first_name"],[fbDict objectForKey:@"last_name"]];
+        }
+        
         hasUsername = ([fbDict objectForKey:@"username"] != nil);
         hasEmail = ([email isKindOfClass:[NSString class]] && email.length >0);
         

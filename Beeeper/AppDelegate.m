@@ -48,11 +48,46 @@
     
     if (launchOptions != nil)
     {
-        NSDictionary *dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-        if (dictionary != nil)
+        NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        if (userInfo != nil)
         {
-            NSLog(@"Launched from push notification: %@", dictionary);
-            [[DTO sharedDTO]setNotificationBeeepID:[dictionary objectForKey:@"w"]];
+            @try {
+                if (userInfo) {
+                    
+                    NSString *w = [userInfo objectForKey:@"w"];
+                    
+                    if (w != nil) {
+                        [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
+                    }
+                    
+                    NSString *l = [userInfo objectForKey:@"l"];
+                    
+                    if (l != nil) {
+                        [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
+                    }
+                    
+                    
+                    NSString *c = [userInfo objectForKey:@"c"];
+                    
+                    if (c != nil) {
+                        [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
+                    }
+                    
+                    
+                    NSString *s = [userInfo objectForKey:@"s"];
+                    
+                    if (s != nil) {
+                        [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
+                    }
+                }
+            }
+            @catch (NSException *exception) {
+                NSLog(@"Catch");
+            }
+            @finally {
+                
+            }
+
         }
     }
     
@@ -270,28 +305,49 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     @try {
-        //[userInfo objectForKey:@"w"]
         if (userInfo) {
-            [[DTO sharedDTO]setNotificationBeeepID:[userInfo objectForKey:@"w"]];
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+            
+            NSString *w = [userInfo objectForKey:@"w"];
+            
+            if (w != nil) {
+                [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
+            }
+            
+            NSString *l = [userInfo objectForKey:@"l"];
+            
+            if (l != nil) {
+                [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
+            }
+
+            
+            NSString *c = [userInfo objectForKey:@"c"];
+            
+            if (c != nil) {
+                [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
+            }
+
+           
+            NSString *s = [userInfo objectForKey:@"s"];
+            
+            if (s != nil) {
+                [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
+            }
+            
+            NSString *u = [userInfo objectForKey:@"u"];
+            
+            if (u != nil) {
+                [[DTO sharedDTO]setUserIDforPush:u];
+            }
+            
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil userInfo:userInfo];
         }
     }
     @catch (NSException *exception) {
-    
+        NSLog(@"Catch");
     }
     @finally {
     
     }
-    
-    /*{
-     alert =     {
-     "action-loc-key" = "View Beeep";
-     body = "\U03c5\U03bf - \U03c5\U03bf\n (2 hours left)";
-     };
-     badge = 1;
-     sound = default;
-     w = 111.122;
-     }*/
 }
 
 -(void)getCorrectTypeOrDie:(NSString *)type dict:(NSDictionary *)userInfo{
@@ -316,7 +372,7 @@
         
         NSDictionary *apsInfo = notification.userInfo;
         
-        [[DTO sharedDTO]setNotificationBeeepID:[apsInfo objectForKey:@"w"]];
+        [[DTO sharedDTO]setWeightForPush:[apsInfo objectForKey:@"w"] caseStr:@"w"];
         
         [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
    

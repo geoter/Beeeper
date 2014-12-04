@@ -307,7 +307,7 @@
             //4
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Address Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                 
                 [self hideLoading];
@@ -437,7 +437,7 @@
             //4
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Adress Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Access Denied" message:@"Please allow Beeeper to access your Address Book." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                 
                 [self hideLoading];

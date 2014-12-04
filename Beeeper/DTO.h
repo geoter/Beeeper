@@ -42,13 +42,23 @@ typedef void(^completed)(BOOL,id);
 
 - (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint;
 - (NSString *)getDeeepLinkEventFingerprint;
-    
-- (void)setNotificationBeeepID:(NSString *)beeep_id;
-- (NSString *)getNotificationBeeepID;
+
 - (void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc;
 - (UIImage *)imageWithColor:(UIColor *)color;
 - (NSString *)urlencode:(NSString *)str;
 - (UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius;
+
+
+#pragma mark - PUSH
+
+- (void)setWeightForPush:(NSString *)weight caseStr:(NSString *)caseStr;
+- (NSDictionary *)getWeightAndCaseForPush;
+
+- (void)setFingerprintForPush:(NSString *)fingerprint caseStr:(NSString *)caseStr;
+- (NSDictionary *)getFingerprintAndCaseForPush;
+
+- (void)setUserIDforPush:(NSString *)user_id;
+- (NSString *)getUserIDForPush;
 
 @end
 

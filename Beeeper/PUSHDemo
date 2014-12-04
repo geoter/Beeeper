@@ -6,13 +6,13 @@ alert =         {
 
 "action-loc-key" =             {
 
-name = c;
+name = u;
 
-param = "1415998800.88829";
+param = "1415475985.886786452546001";
 
 };
 
-body = "Kostas Batsos commented on your beeep";
+body = "Kostas Batsos started following you";
 
 };
 
@@ -22,6 +22,6 @@ sound = default;
 
 };
 
-c = "1415998800.88829";
+u = "1415475985.886786452546001";
 
 }

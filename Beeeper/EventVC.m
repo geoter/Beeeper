@@ -45,6 +45,8 @@
     NSString *websiteURL;
     NSString *beeeperWebsiteURL;
     
+    NSString *tinyURL;
+    
     NSMutableString *shareText;
     NSMutableArray* rowsToReload;
     
@@ -164,6 +166,14 @@
         if (!comments) {
             comments = t.beeep.beeepInfo.comments;   
         }
+        
+        //get tinyurl
+        
+        [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+            if (completed) {
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl lowercaseString]];
+            }
+        }];
     }
     else if ([tml isKindOfClass:[Activity_Object class]]){
         
@@ -180,6 +190,8 @@
                     comments = beeep_Objct.comments;
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
+                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
+                        
                         [self showEventWithBeeep];
                     }
                 }
@@ -198,6 +210,8 @@
             [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     event_show_Objct = event;
+                    tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event_show_Objct.tinyUrl lowercaseString]];
+                    
                     if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
                         [self showEventWithBeeep];
                     }
@@ -218,6 +232,7 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
                 
                 dispatch_async (dispatch_get_main_queue(), ^{
                     [self showEventForEventLookUpObject];
@@ -239,6 +254,7 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
                 [self showEventWithSuggestion];
             }
             else{
@@ -254,11 +270,11 @@
             if (completed) {
                 
                 fingerprint = beeep.fingerprint;
-                
                 beeep_Objct = beeep;
                 
                 [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                     if (completed) {
+                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event.tinyUrl lowercaseString]];
                         event_show_Objct = event;
                         [self showEventWithBeeep];
                     }
@@ -279,6 +295,7 @@
     else if (self.deepLinkFingerprint){
         [self showEventWithFingerprint:self.deepLinkFingerprint];
     }
+
     
     
     if ([tml isKindOfClass:[Timeline_Object class]]) {
@@ -338,7 +355,7 @@
     dayLbl.text = [[components firstObject] uppercaseString];
     
     shareText = [[NSMutableString alloc]init];
-    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+ 
     //Website
     
     NSString *website = suggestion.what.source;
@@ -599,6 +616,8 @@
         
     }
     
+    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",suggestion.what.title,[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    
     [self hideLoading];
     
     if (self.redirectToComments) {
@@ -644,7 +663,7 @@
     
     
     shareText = [[NSMutableString alloc]init];
-    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+   
     
     //Website
     
@@ -906,6 +925,8 @@
     @finally {
         
     }
+    
+    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[ffo.eventFfo.eventDetailsFfo.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
 
     [self hideLoading];
     
@@ -948,7 +969,7 @@
     
     
     shareText = [[NSMutableString alloc]init];
-    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
+   
     //Website
     
     NSString *website;
@@ -1222,7 +1243,9 @@
     @finally {
         
     }
-
+    
+    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[t.event.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    
     [self hideLoading];
     
     if (self.redirectToComments) {
@@ -1284,8 +1307,7 @@
     
     
     shareText = [[NSMutableString alloc]init];
-    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
-    
+
     //Website
     
     NSString *website = event.eventInfo.source;
@@ -1502,8 +1524,6 @@
         
 
     }
-
-
     
     //Tags
     
@@ -1560,6 +1580,7 @@
         
     }
     
+    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
     
@@ -1605,7 +1626,6 @@
     
     
     shareText = [[NSMutableString alloc]init];
-    [shareText appendFormat:@",%@ %@",daynumber,[month uppercaseString]];
     
     //Website
     
@@ -1624,6 +1644,7 @@
     NSString *jsonString;
     
     self.titleLabel.text = [event.eventInfo.title capitalizedString];
+    
     jsonString = event.eventInfo.location;
     
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
@@ -1919,6 +1940,8 @@
     @finally {
         
     }
+    
+    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
     
@@ -2514,7 +2537,7 @@
 - (IBAction)beeepItPressed:(id)sender {
    
     if (passedEvent) {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"Can not Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Passed Event" message:@"You can’t  Beeep a passed event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         return;
     }
@@ -2720,7 +2743,7 @@
     
     SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
     
-    [composeController setInitialText:shareText];
+    [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",(tinyURL)?tinyURL:@""]];
     
     if (self.eventImageV.image != nil) {
         
@@ -2748,7 +2771,7 @@
     
     SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
     
-    [composeController setInitialText:shareText];
+    [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",(tinyURL)?tinyURL:@""]];
     
     if (self.eventImageV.image != nil) {
         

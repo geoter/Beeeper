@@ -143,8 +143,7 @@
             }
             
             if (twitterAccount != nil) {
-                
-                ACAccount *twitterAccount = [[accountStore accountsWithAccountType:twitterAcc] firstObject];
+
                 [self attemptTwitterLogin:twitterAccount];
                 
             }

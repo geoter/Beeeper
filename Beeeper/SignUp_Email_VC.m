@@ -86,7 +86,7 @@
 - (IBAction)registerPressed:(id)sender {
    
     if (!agreeTerms) {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Terms of Use" message:@"To Sign Up,please agree with our Terms of Use and Privacy Policy." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles: nil];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Terms of Use" message:@"To create account,please agree with our Terms of Use and Privacy Policy." delegate:nil cancelButtonTitle:@"Done" otherButtonTitles: nil];
         [alert show];
         return;
     }

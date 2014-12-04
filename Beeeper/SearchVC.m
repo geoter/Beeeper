@@ -28,6 +28,7 @@
     NSMutableArray *rowsToReload;
     BOOL loadNextPage;
     UITapGestureRecognizer *tapG;
+    BOOL upcomingVisible;
 }
 @end
 
@@ -42,25 +43,31 @@
     
     loadNextPage = NO;
     
-    [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *eventsArr){
-       
-        @try {
-            if (eventsArr.count > 0) {
-                loadNextPage = (eventsArr.count == [EventWS sharedBP].pageLimit);
-                [events addObjectsFromArray:eventsArr];
+    if(upcomingVisible){
+        [self nextHomeFeed];
+    }
+    else{
+    
+        [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *eventsArr){
+           
+            @try {
+                if (eventsArr.count > 0) {
+                    loadNextPage = (eventsArr.count == [EventWS sharedBP].pageLimit);
+                    [events addObjectsFromArray:eventsArr];
+                }
+                
+                [self.collectionV reloadData];
+            }
+            @catch (NSException *exception) {
+        
+            }
+            @finally {
+        
             }
             
-            [self.collectionV reloadData];
-        }
-        @catch (NSException *exception) {
-    
-        }
-        @finally {
-    
-        }
-        
-        
-    }];
+            
+        }];
+    }
     
 }
 
@@ -240,12 +247,24 @@
 
     [self.collectionV setContentOffset:CGPointZero];
     
-    [self searchTerm:tag];
+    
+    if ([tag isEqualToString:@"Upcoming"]) {
+
+        upcomingVisible = YES;
+        
+        [self getHomeFeed];
+    }
+    else{
+        [self searchTerm:tag];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+
 -(void)searchTerm:(NSString *)term{
+    
+    upcomingVisible = NO;
     
     [[EventWS sharedBP]searchEvent:term WithCompletionBlock:^(BOOL completed,NSArray *evnts){
         if (completed) {
@@ -277,6 +296,65 @@
         }
     }];
 
+}
+
+-(void)getHomeFeed{
+    
+    [[EventWS sharedBP]getAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        if (completed) {
+            
+            dispatch_async (dispatch_get_main_queue(), ^{
+                
+                events = [NSMutableArray arrayWithArray:objs];
+                
+                if (events.count == [EventWS sharedBP].pageLimit) {
+                    loadNextPage = YES;
+                }
+                
+                self.collectionV.hidden = NO;
+                [self.collectionV reloadData];
+                
+                [UIView animateWithDuration:0.3f
+                                 animations:^
+                 {
+                     self.tableV.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+                
+            });
+        }
+        
+    }];
+}
+
+-(void)nextHomeFeed{
+    
+    loadNextPage = NO;
+    
+    [[EventWS sharedBP]nextAllEventsWithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        @try {
+            if (objs.count > 0) {
+                loadNextPage = (objs.count == [EventWS sharedBP].pageLimit);
+                [events addObjectsFromArray:objs];
+            }
+            
+            [self.collectionV reloadData];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
+
+        
+    }];
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{

@@ -179,6 +179,8 @@ static DTO *thisDTO = nil;
     }
 }
 
+#pragma mark - PUSH Notifications
+
 - (void)setNotificationBeeepID:(NSString *)beeep_id{
 
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -217,6 +219,11 @@ static DTO *thisDTO = nil;
         
     }
 }
+
+
+
+
+
 
 -(void)getBeeep:(NSString *)beeep_id WithCompletionBlock:(completed)compbloc{
     
@@ -504,5 +511,146 @@ static DTO *thisDTO = nil;
     UIImage *blurredImg = [image stackBlur:blurRadius];
     return blurredImg;
 }
+
+#pragma mark - Notifications
+
+- (void)setWeightForPush:(NSString *)weight caseStr:(NSString *)caseStr{
+  
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    if (weight) {
+       
+        [mySettingsPlist setObject:weight forKey:@"WeightPush"];
+        [mySettingsPlist setObject:caseStr forKey:@"WeightPushCase"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+        
+        [self setFingerprintForPush:nil caseStr:nil];
+        [self setUserIDforPush:nil];
+    }
+    else{
+        [mySettingsPlist removeObjectForKey:@"WeightPush"];
+        [mySettingsPlist removeObjectForKey:@"WeightPushCase"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+}
+
+- (NSDictionary *)getWeightAndCaseForPush{
+  
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    @try {
+        NSString *fingerprint = [mySettingsPlist objectForKey:@"WeightPush"];
+        NSString *caseStr = [mySettingsPlist objectForKey:@"WeightPushCase"];
+        
+        NSDictionary *dict = [NSDictionary dictionaryWithObjects:@[fingerprint,caseStr] forKeys:@[@"WeightPush",@"WeightPushCase"]];
+        
+        return dict;
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    @finally {
+        
+    }
+}
+
+- (void)setFingerprintForPush:(NSString *)fingerprint caseStr:(NSString *)caseStr{
+   
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    if (fingerprint) {
+        [mySettingsPlist setObject:fingerprint forKey:@"FingerprintPush"];
+        [mySettingsPlist setObject:caseStr forKey:@"FingerprintPushCase"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+        
+        [self setWeightForPush:nil caseStr:nil];
+        [self setUserIDforPush:nil];
+    }
+    else{
+        [mySettingsPlist removeObjectForKey:@"FingerprintPush"];
+        [mySettingsPlist removeObjectForKey:@"FingerprintPushCase"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+}
+
+- (NSDictionary *)getFingerprintAndCaseForPush{
+   
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    @try {
+        NSString *fingerprint = [mySettingsPlist objectForKey:@"FingerprintPush"];
+        NSString *caseStr = [mySettingsPlist objectForKey:@"FingerprintPushCase"];
+        
+        NSDictionary *dict = [NSDictionary dictionaryWithObjects:@[fingerprint,caseStr] forKeys:@[@"FingerprintPush",@"FingerprintPushCase"]];
+        
+        return dict;
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    @finally {
+        
+    }
+    
+}
+
+- (void)setUserIDforPush:(NSString *)user_id{
+  
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    if (user_id != nil) {
+        [mySettingsPlist setObject:user_id forKey:@"User_id_PUSH"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+    else{
+        [mySettingsPlist removeObjectForKey:@"User_id_PUSH"];
+        [mySettingsPlist writeToFile:finalPath atomically: YES];
+    }
+
+}
+
+- (NSString *)getUserIDForPush{
+   
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    @try {
+        NSString *fingerprint = [mySettingsPlist objectForKey:@"User_id_PUSH"];
+        
+        return fingerprint;
+    }
+    @catch (NSException *exception) {
+        return nil;
+    }
+    @finally {
+        
+    }
+
+}
+
+
 
 @end

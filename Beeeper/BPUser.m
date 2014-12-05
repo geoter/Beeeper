@@ -63,18 +63,6 @@ static NSString *consumerSecret = @"e92496b00f2abc454891c8d3c54017b8";
 
 static BPUser *thisWebServices = nil;
 
--(void)setBadgeNumber:(int)badgeNumber{
-
-    if (badgeNumber == 0) {
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-_badgeNumber];
-    }
-    else{
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber+badgeNumber];
-    }
-    
-    _badgeNumber = badgeNumber;
-}
-
 -(id)init{
     self = [super init];
     if(self) {
@@ -1442,6 +1430,7 @@ static BPUser *thisWebServices = nil;
                     NSString *badge = [NSString stringWithFormat:@"%@",[activity_item objectForKey:@"badge_number"]];
                     if(badge.intValue != -1){
                         self.badgeNumber = badge.intValue;
+                        [[DTO sharedDTO]saveNotificationsBadge:badge.intValue];
                     }
                 }
             }

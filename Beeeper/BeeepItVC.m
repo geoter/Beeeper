@@ -25,7 +25,10 @@
 {
     NSString *beeepTime;
     int beepTimeSeconds;
+    
     NSMutableString *shareText;
+    NSMutableString *shareTextFB;
+    
     NSString *imageURL;
     NSString *website;
     NSString *beeepTitle;
@@ -60,7 +63,7 @@
     
     self.blurContainerV.alpha = 0;
     
-    [self adjustFonts];
+    
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(close:) name:@"CloseBeeepItVC" object:nil];
@@ -80,6 +83,7 @@
 -(void)setBeeep{
     
     shareText = [[NSMutableString alloc]init];
+    shareTextFB = [[NSMutableString alloc]init];
     
     @try {
         
@@ -274,8 +278,8 @@
         
         
         self.titleLabel.text = (title)?title:@"n/a";
-        [self.titleLabel sizeToFit];
-        self.titleLabel.center = CGPointMake(self.scrollV.frame.size.width/2, self.titleLabel.center.y);
+     //   [self.titleLabel sizeToFit];
+     //   self.titleLabel.center = CGPointMake(self.scrollV.frame.size.width/2, self.titleLabel.center.y);
         self.venueLabel.text = (venue)?venue:@"n/a";
        // self.titleLabel.backgroundColor = [UIColor yellowColor];
         
@@ -283,14 +287,14 @@
                                               self.venueLabel.font, NSFontAttributeName,
                                               nil];
         
-        CGRect frame = [self.venueLabel.text boundingRectWithSize:CGSizeMake(self.venueLabel.frame.size.width, 2000.0)
+        CGRect frame = [self.venueLabel.text boundingRectWithSize:CGSizeMake(self.venueLabel.frame.size.width, self.venueLabel.frame.size.height)
                                                 options:NSStringDrawingUsesLineFragmentOrigin
                                              attributes:attributesDictionary
                                                 context:nil];
         CGSize sizeOfText= frame.size;
         
        // self.venueLabel.backgroundColor = [UIColor redColor];
-        self.venueLabel.frame = CGRectMake(self.venueLabel.frame.origin.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height, sizeOfText.width, sizeOfText.height);
+        self.venueLabel.frame = CGRectMake(self.venueLabel.frame.origin.x, self.titleLabel.frame.origin.y+self.titleLabel.frame.size.height-4, sizeOfText.width, sizeOfText.height);
         self.venueLabel.center = CGPointMake(self.titleLabel.center.x+3,self.venueLabel.center.y);//any y
         
         self.venueIcon.frame = CGRectMake(self.venueLabel.frame.origin.x-self.venueIcon.frame.size.width-3, self.venueLabel.frame.origin.y+2, self.venueIcon.frame.size.width, self.venueIcon.frame.size.height);
@@ -320,6 +324,8 @@
         imageURL = [[DTO sharedDTO]fixLink:imageUrl];
         
         [shareText appendFormat:@"%@ on %@,%@ %@ - %@",beeepTitle,[month uppercaseString],daynumber,hour,[venue capitalizedString]];
+        
+        [shareTextFB appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[venue capitalizedString]];
         
     }
     @catch (NSException *exception) {
@@ -379,18 +385,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
--(void)adjustFonts{
-    
-    UILabel *fbLbl = (id)[self.fbShareV viewWithTag:2];
-    fbLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
-  
-    UILabel *twitterLbl = (id)[self.twitterV viewWithTag:2];
-    twitterLbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
-    
-    UILabel *hideFromFollowers = (id)[self.scrollV viewWithTag:10];
-    hideFromFollowers.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13];
 }
 
 - (IBAction)close:(id)sender {
@@ -652,9 +646,7 @@
               NSURL *url = [NSURL URLWithString:imageURL];
               params.picture = url;
               params.name = beeepTitle;
-              params.linkDescription = self.venueLabel.text;
-
-             
+              params.linkDescription = shareTextFB;
               
               // If the Facebook app is installed and we can present the share dialog
               if ([FBDialogs canPresentShareDialogWithParams:params]) {

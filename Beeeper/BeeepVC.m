@@ -573,7 +573,7 @@
 
         textView.text = @"";
         
-        textView.textColor = [UIColor colorWithRed:184/255.0 green:185/255.0 blue:186/255.0 alpha:1];
+        textView.textColor = [UIColor colorWithRed:207/255.0 green:208/255.0 blue:209/255.0 alpha:1];
         textView.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
     }
     

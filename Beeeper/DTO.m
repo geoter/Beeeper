@@ -19,6 +19,8 @@ static DTO *thisDTO = nil;
     NSMutableArray *pendingUrls;
     
     BOOL wasInternetReachable;
+    
+    int notificationsBadge;
 }
 @end
 
@@ -43,8 +45,6 @@ static DTO *thisDTO = nil;
         
     }
     return(self);
-    
-    
 }
 
 + (DTO *)sharedDTO{
@@ -77,6 +77,31 @@ static DTO *thisDTO = nil;
         NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImageInBackgroundFromURL:) object:url];
         [operationQueue addOperation:invocationOperation];
     }
+}
+
+- (void)setApplicationBadge:(int)number{
+    
+    if (number == 0) {
+        self.suggestionBadgeNumber = 0;
+        notificationsBadge = 0;
+    }
+    
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:number];
+}
+
+- (void)saveSuggestionsBadge:(int)number{
+
+    self.suggestionBadgeNumber = number;
+   
+    [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
+}
+
+
+- (void)saveNotificationsBadge:(int)number{
+    
+    notificationsBadge = number;
+    
+    [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
 }
 
 -(void)downloadImageInBackgroundFromURL:(NSString *)url{
@@ -477,10 +502,8 @@ static DTO *thisDTO = nil;
     
     [[BPSuggestions sharedBP]getSuggestionsBadgeWithCompletionBlock:^(BOOL completed,id count){
         if (completed) {
-            self.suggestionBadgeNumber = [count intValue];
             self.suggestionBadgeNumberFinished = YES;
-            
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber+[count intValue]];
+            [[DTO sharedDTO]saveSuggestionsBadge:[count intValue]];
         }
     }];
     
@@ -492,9 +515,8 @@ static DTO *thisDTO = nil;
     [[BPSuggestions sharedBP]clearSuggestionsBadgeWithCompletionBlock:^(BOOL completed,id count){
         if (completed) {
             
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-self.suggestionBadgeNumber];
+            [[DTO sharedDTO]saveSuggestionsBadge:0];
             
-            self.suggestionBadgeNumber = 0;
             self.suggestionBadgeNumberFinished = YES;
             
         }

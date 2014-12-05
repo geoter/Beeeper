@@ -41,7 +41,7 @@
     
     self.blurContainerV.alpha = 0;
     
-    [self adjustFonts];
+   // [self adjustFonts];
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
@@ -126,14 +126,6 @@
             }
         }
     }];
-}
-
--(void)adjustFonts{
-    UILabel *lbl = (id)[self.containerV viewWithTag:1];
-    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
-
-    lbl = (id)[self.containerV viewWithTag:2];
-    lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
 }
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{

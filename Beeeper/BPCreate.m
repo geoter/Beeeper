@@ -128,13 +128,15 @@ static BPCreate *thisWebServices = nil;
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/delete"];
     
     NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
-    [postValuesDict setObject:postStr forKey:@"beeep"];
+    [postValuesDict setObject:[[DTO sharedDTO] urlencode:postStr] forKey:@"beeep"];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     [manager.requestSerializer setValue:[[BPUser sharedBP] headerPOSTRequest:requestURL.absoluteString values:[NSMutableArray arrayWithObject:postValuesDict]] forHTTPHeaderField:@"Authorization"];
+    
+    [postValuesDict setObject:postStr forKey:@"beeep"];
     
     [manager POST:requestURL.absoluteString parameters:postValuesDict success:^(AFHTTPRequestOperation *operation, id responseObject) {
         

@@ -39,7 +39,7 @@ static TabbarVC *thisWebServices = nil;
     
     [[DTO sharedDTO]getSuggestions];
     
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0]; //reset
+    [[DTO sharedDTO]setApplicationBadge:0];//reset
     
     thisWebServices = self;
     
@@ -252,19 +252,10 @@ static TabbarVC *thisWebServices = nil;
                      animations:^
      {
          viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.blurContainerV.alpha = 1;
      }
                      completion:^(BOOL finished)
      {
-         [UIView animateWithDuration:0.4f
-                          animations:^
-          {
-              viewController.blurContainerV.alpha = 1;
-          }
-                          completion:^(BOOL finished)
-          {
-              
-          }
-          ];
 
      }
      ];
@@ -297,20 +288,10 @@ static TabbarVC *thisWebServices = nil;
                      animations:^
      {
          viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.blurContainerV.alpha = !viewController.hideBackgroundblur;
      }
                      completion:^(BOOL finished)
      {
-         [UIView animateWithDuration:0.4f
-                          animations:^
-          {
-              viewController.blurContainerV.alpha = !viewController.hideBackgroundblur;
-          }
-                          completion:^(BOOL finished)
-          {
-              
-          }
-          ];
-         
      }
      ];
     
@@ -334,22 +315,15 @@ static TabbarVC *thisWebServices = nil;
                      animations:^
      {
          viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+
+         if (showBlur) {
+             viewController.blurContainerV.alpha = 1;
+         }
+
      }
                      completion:^(BOOL finished)
      {
-         if (showBlur) {
-             
-             [UIView animateWithDuration:0.4f
-                              animations:^
-              {
-                  viewController.blurContainerV.alpha = 1;
-              }
-                              completion:^(BOOL finished)
-              {
-                  
-              }
-              ];
-         }
+    
      }
      ];
     

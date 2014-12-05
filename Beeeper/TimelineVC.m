@@ -505,6 +505,8 @@
         }
         else{
             
+            mpike = YES;
+            
             [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
                 
                 if (completed && objs.count >0) {
@@ -529,21 +531,21 @@
         }
     }
     
-//    if (!mpike) {
-//        
-//        [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
-//            
-//          
-//            if (completed && objs.count >0) {
-//                NSDictionary *userDict = [objs firstObject];
-//                self.user = userDict;
-//                [self setUserInfo];
-//            }
-//            else{
-//                  [self hideLoading];
-//            }
-//        }];
-//    }
+    if (!mpike) {
+        
+        [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+            
+          
+            if (completed && objs.count >0) {
+                NSDictionary *userDict = [objs firstObject];
+                self.user = userDict;
+                [self setUserInfo];
+            }
+            else{
+                  [self hideLoading];
+            }
+        }];
+    }
 }
 
 -(void)hideLoadingWithTitle:(NSString *)title ErrorMessage:(NSString *)message{
@@ -1203,6 +1205,10 @@
 
             });
         }
+        else{
+            UIAlertView *alertV = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Couldn't delete beeep.Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertV performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        }
     }];
 }
 
@@ -1441,6 +1447,10 @@
         //follow user
         [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
+                
+                NSMutableDictionary *userMutable = [NSMutableDictionary dictionaryWithDictionary:user];
+                [userMutable setObject:@"1" forKey:@"following"];
+                user = [NSDictionary dictionaryWithDictionary:userMutable];
                 
                 self.mode = Timeline_Following;
                 [self createMenuButtons:YES];

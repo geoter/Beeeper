@@ -173,7 +173,7 @@
     
     self.tapG.enabled = NO;
     
-    suggestionValues = [NSArray arrayWithObjects:@"Upcoming",@"TV",@"movies",@"music",@"deals",@"sports", nil];
+    suggestionValues = [NSArray arrayWithObjects:@"upcoming",@"tv",@"movies",@"music",@"deals",@"sports", nil];
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
@@ -248,7 +248,7 @@
     [self.collectionV setContentOffset:CGPointZero];
     
     
-    if ([tag isEqualToString:@"Upcoming"]) {
+    if ([tag isEqualToString:@"upcoming"]) {
 
         upcomingVisible = YES;
         

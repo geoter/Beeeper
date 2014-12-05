@@ -28,6 +28,9 @@ typedef void(^completed)(BOOL,id);
 @property (nonatomic,strong) NSString *databaseName;
 @property (nonatomic,strong) NSString *databasePath;
 
+- (void)setApplicationBadge:(int)number;
+- (void)saveSuggestionsBadge:(int)number;
+- (void)saveNotificationsBadge:(int)number;
 
 - (void)getSuggestions;
 - (void)clearSuggestions;
@@ -38,7 +41,6 @@ typedef void(^completed)(BOOL,id);
 - (NSString *)fixLink:(NSString *)link;
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
-
 
 - (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint;
 - (NSString *)getDeeepLinkEventFingerprint;

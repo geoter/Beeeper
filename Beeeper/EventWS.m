@@ -31,7 +31,7 @@ static EventWS *thisWebServices = nil;
     self = [super init];
     if(self) {
         thisWebServices = self;
-        pageLimit = 6;
+        pageLimit = 10;
         all_events_page = 0;
         order = @"ASC";
         operationQueue = [[NSOperationQueue alloc] init];
@@ -583,10 +583,6 @@ static EventWS *thisWebServices = nil;
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
     
-    
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
-    
-    
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"query=%@",[[DTO sharedDTO] urlencode:keyword]]];
     [array addObject:[NSString stringWithFormat:@"limit=%d",pageLimit]];
@@ -668,10 +664,6 @@ static EventWS *thisWebServices = nil;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/event/lookup?"];
-    
-    
-    NSTimeInterval timeStamp = [[NSDate date]timeIntervalSince1970];
-    
     
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"query=%@",events_Search_keyword]];

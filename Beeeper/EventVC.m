@@ -48,6 +48,8 @@
     NSString *tinyURL;
     
     NSMutableString *shareText;
+    NSMutableString *shareFBText;
+    
     NSMutableArray* rowsToReload;
     
     BOOL passedEvent;
@@ -356,7 +358,8 @@
     dayLbl.text = [[components firstObject] uppercaseString];
     
     shareText = [[NSMutableString alloc]init];
- 
+    shareFBText = [[NSMutableString alloc]init];
+    
     //Website
     
     NSString *website = suggestion.what.source;
@@ -366,6 +369,7 @@
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
+    self.websiteLabel.hidden = ([website rangeOfString:@"beeeper.com"].location != NSNotFound);
     
     //Venue name + Title
     
@@ -618,6 +622,7 @@
     }
     
     [shareText appendFormat:@"%@ on %@,%@ %@ - %@",suggestion.what.title,[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
     
     [self hideLoading];
     
@@ -667,7 +672,7 @@
     
     
     shareText = [[NSMutableString alloc]init];
-   
+    shareFBText = [[NSMutableString alloc]init];
     
     //Website
     
@@ -677,7 +682,7 @@
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
-
+    self.websiteLabel.hidden = ([website rangeOfString:@"beeeper.com"].location != NSNotFound);
     
     //Venue name + Title
     
@@ -931,6 +936,7 @@
     }
     
     [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[ffo.eventFfo.eventDetailsFfo.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
 
     [self hideLoading];
     
@@ -976,7 +982,8 @@
     
     
     shareText = [[NSMutableString alloc]init];
-   
+    shareFBText = [[NSMutableString alloc]init];
+    
     //Website
     
     NSString *website;
@@ -988,7 +995,8 @@
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
-    
+    self.websiteLabel.hidden = ([website rangeOfString:@"beeeper.com"].location != NSNotFound);
+
     //Venue name + Title
     
     UILabel *venueLbl = self.venueLabel;
@@ -1252,6 +1260,7 @@
     }
     
     [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[t.event.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
     
     [self hideLoading];
     
@@ -1317,7 +1326,8 @@
     
     
     shareText = [[NSMutableString alloc]init];
-
+    shareFBText = [[NSMutableString alloc]init];
+    
     //Website
     
     NSString *website = event.eventInfo.source;
@@ -1327,6 +1337,7 @@
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
+    self.websiteLabel.hidden = ([website rangeOfString:@"beeeper.com"].location != NSNotFound);
     
     //Venue name + Title
     
@@ -1591,6 +1602,7 @@
     }
     
     [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
+    [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
     
@@ -1639,6 +1651,7 @@
     
     
     shareText = [[NSMutableString alloc]init];
+    shareFBText = [[NSMutableString alloc]init];
     
     //Website
     
@@ -1649,6 +1662,7 @@
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
+    self.websiteLabel.hidden = ([website rangeOfString:@"beeeper.com"].location != NSNotFound);
     
     //Venue name + Title
     
@@ -1955,6 +1969,7 @@
     }
     
     [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
+    [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
     
@@ -2452,12 +2467,12 @@
     
     if([MFMessageComposeViewController canSendText])
     {
-        [actionSheet addButtonWithTitle:@"Share via SMS"];
+        [actionSheet addButtonWithTitle:@"Send via SMS"];
     }
     
     
     if ([MFMailComposeViewController canSendMail]) {
-        [actionSheet addButtonWithTitle:@"Share via Email"];
+        [actionSheet addButtonWithTitle:@"Send via Email"];
     }
     
     if (websiteURL != nil) {
@@ -2729,7 +2744,7 @@
                                           NSURL *url = [NSURL URLWithString:imageURL];
                                           params.picture = url;
                                           params.name = self.titleLabel.text;
-                                          params.linkDescription = self.venueLabel.text;
+                                          params.linkDescription =  shareFBText;
                                           
                                           // If the Facebook app is installed and we can present the share dialog
                                           if ([FBDialogs canPresentShareDialogWithParams:params]) {
@@ -2826,12 +2841,12 @@
     
         MFMailComposeViewController *mailComposer =
         [[MFMailComposeViewController alloc] init];
-        [mailComposer setSubject:@"Check out this Event I found on Beeeper for iOS"];
-        NSString *message = shareText;
+        [mailComposer setSubject:self.titleLabel.text];
+        NSString *message = [NSString stringWithFormat:@"Check out this event on Beeeper\n%@",tinyURL];
         [mailComposer setMessageBody:message
                               isHTML:YES];
-        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
-        [mailComposer addAttachmentData:imageData mimeType:@"image/jpeg" fileName:[NSString stringWithFormat:@"%@.jpg",self.titleLabel.text]];
+//        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
+//        [mailComposer addAttachmentData:imageData mimeType:@"image/jpeg" fileName:[NSString stringWithFormat:@"%@.jpg",self.titleLabel.text]];
         mailComposer.mailComposeDelegate = self;
         [self presentViewController:mailComposer animated:YES completion:nil];
 }
@@ -2841,7 +2856,7 @@
     MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
     if([MFMessageComposeViewController canSendText])
     {
-        controller.body = @"Check out this Event I found on Beeeper for iOS";
+        controller.body = [NSString stringWithFormat:@"Check out this event on Beeeper\n%@",tinyURL];
         controller.messageComposeDelegate = self;
         [self presentViewController:controller animated:YES completion:nil];
     }
@@ -2849,7 +2864,7 @@
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
     
     if (result == MessageComposeResultFailed) {
         

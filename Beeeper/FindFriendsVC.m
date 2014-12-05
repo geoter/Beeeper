@@ -1180,6 +1180,8 @@
     
     self.title = @"Find Friends";
     self.navigationController.navigationBar.topItem.title = self.title;
+  
+    [self.tableV reloadData];
     
     NSLog(@"%.2f",self.tableV.frame.origin.y + self.tableV.tableHeaderView.frame.size.height);
     NSLog(@"%.2f",self.tableV.frame.size.height-self.tableV.tableHeaderView.frame.size.height);
@@ -1796,13 +1798,8 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if (selectedOption == FacebookButton && section == 0 && searchedBeeepers.count > 0) {
-        return 47;
-    }
-    else if (selectedOption == FacebookButton && section == 1 && searchedFBFriends.count > 0) {
-        return 47;
-    }
-    else if (selectedOption == FacebookButton && section == 0 && searchedFBFriends.count > 0) {
+   
+    if (selectedOption == FacebookButton) {
         return 47;
     }
     else{
@@ -2358,10 +2355,11 @@
         [self getPeople:searchStr WithCompletionBlock:self.search_completed];
     }
     
+//    NSMutableArray *mutablePeople = [NSMutableArray array];
+//    
 //    for (NSDictionary *user in people) {
-//        NSArray *keys = user.allKeys;
-//        NSString *imagePath = [user objectForKey:@"image_path"];
-//        [[DTO sharedDTO]downloadImageFromURL:imagePath];
+//        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
+//        [mutablePeople addObject:dict];
 //    }
     
     self.search_completed(YES,people);

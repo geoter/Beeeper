@@ -63,20 +63,28 @@
     
     self.blurContainerV.alpha = 0;
     
-    
-    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setBeeepTime:) name:@"Beeep Time Selected" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(close:) name:@"CloseBeeepItVC" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(followersSelected:) name:@"Suggest Followers Selected" object:nil];
     
     BeeepTimeVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
-    [viewController.view setFrame:CGRectMake(0, 0, viewController.view.frame.size.width, viewController.view.frame.size.height)];
+    [viewController.view setFrame:CGRectMake(0, self.scrollV.frame.size.height, viewController.view.frame.size.width, viewController.view.frame.size.height)];
     viewController.closeExits = YES;
     
     [self.view addSubview:viewController.view];
     [self addChildViewController:viewController];
 
+    [UIView animateWithDuration:0.4f
+                     animations:^
+     {
+         viewController.view.center = self.scrollV.center;
+     }
+                     completion:^(BOOL finished)
+     {
+     }
+     ];
+    
     [self setBeeep];
 }
 
@@ -391,30 +399,22 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
-    [UIView animateWithDuration:0.3f
+    [UIView animateWithDuration:0.5f
                      animations:^
      {
          self.blurContainerV.alpha = 0;
+         self.scrollV.frame = CGRectMake(self.scrollV.frame.origin.x, self.view.frame.size.height,self.scrollV.frame.size.width , self.scrollV.frame.size.height);
      }
                      completion:^(BOOL finished)
      {
-         [UIView animateWithDuration:0.5f
-                          animations:^
-          {
-              self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
-          }
-                          completion:^(BOOL finished)
-          {
-              [self removeFromParentViewController];
-              [self.view removeFromSuperview];
-              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-              
-              if (sender == nil) {
-                  [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
-                  [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
-              }
-          }
-          ];
+         [self removeFromParentViewController];
+         [self.view removeFromSuperview];
+         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+         
+         if (sender == nil) {
+             [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
+             [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
+         }
 
     }];
     
@@ -717,7 +717,6 @@
         [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",tinyURL?tinyURL:@""]];
         
         [composeController addImage:self.facebookDialogEventImage];
-        [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
         
         [self presentViewController:composeController animated:YES completion:nil];
         
@@ -939,7 +938,10 @@
                         NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle uppercaseString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
                         localNotification.alertBody = alertBody;
                         localNotification.timeZone = [NSTimeZone defaultTimeZone];
-                        localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                       
+                        NSUInteger nextBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                        
+                        localNotification.applicationIconBadgeNumber = nextBadgeNumber;
                         localNotification.userInfo = [NSDictionary dictionaryWithDictionary:objs];
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];

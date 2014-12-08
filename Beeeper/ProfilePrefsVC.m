@@ -74,15 +74,17 @@
     }
     
     if (self.place != nil) {
-            [dict setObject:self.place.locality forKey:@"city"];
-            [dict setObject:self.place.subAdministrativeArea forKey:@"state"];
-            [dict setObject:self.place.country forKey:@"country"];
+        
+            [dict setObject:(self.place.locality)?self.place.locality:@"" forKey:@"city"];
+            [dict setObject:(self.place.subAdministrativeArea)?self.place.subAdministrativeArea:@"" forKey:@"state"];
+            [dict setObject:(self.place.country)?self.place.country:@"" forKey:@"country"];
+
         
             NSString *lat = [[NSString alloc] initWithFormat:@"%g", self.place.coordinate.latitude];
             NSString *longitude = [[NSString alloc] initWithFormat:@"%g", self.place.coordinate.longitude];
         
-            [dict setObject:lat forKey:@"lat"];
-            [dict setObject:longitude forKey:@"long"];
+            [dict setObject:lat forKey:@"latitude"];
+            [dict setObject:longitude forKey:@"longitude"];
     }
     
     if (base64Image != nil) {

@@ -115,8 +115,6 @@ static BPUser *thisWebServices = nil;
     
     [postValuesDict setObject:[info objectForKey:@"name"] forKey:@"name"];
     
-    [postValuesDict setObject:[info objectForKey:@"lastname"] forKey:@"lastname"];
-    
     [postValuesDict setObject:[info objectForKey:@"timezone"] forKey:@"timezone"];
     
     [postValuesDict setObject:[info objectForKey:@"password"] forKey:@"password"];
@@ -192,6 +190,13 @@ static BPUser *thisWebServices = nil;
     for (NSString *key in settings.allKeys) {
        @try {
            id object = [settings objectForKey:key];
+           
+           if ([key isEqualToString:@"longitude"] || [key isEqualToString:@"latitude"]) {
+               [postValuesDict setObject:[[DTO sharedDTO] urlencode:object] forKey:key];
+               [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:object]] forKey:key]];
+               continue;
+           }
+           
            [postValuesDict setObject:object forKey:key];
            [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:object] forKey:key]];
   
@@ -204,6 +209,7 @@ static BPUser *thisWebServices = nil;
             
         }
     }
+   
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
@@ -216,8 +222,8 @@ static BPUser *thisWebServices = nil;
         [self setUserSettingsFinished:[operation responseString]];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@",operation);
-        [self setUserSettingsFailed:error.localizedDescription];
+        NSString *response = operation.responseString;
+        [self setUserSettingsFailed:operation.responseString];
     }];
 
 }

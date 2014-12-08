@@ -2793,8 +2793,6 @@
         
     }
     
-    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
-    
     [self presentViewController:composeController animated:YES completion:nil];
     
     

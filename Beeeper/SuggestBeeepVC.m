@@ -238,26 +238,18 @@
     
     if (self.showBlur) {
         
-        [UIView animateWithDuration:0.3f
+        [UIView animateWithDuration:0.6f
                          animations:^
          {
              self.blurContainerV.alpha = 0;
+             self.containerV.frame = CGRectMake(self.containerV.frame.origin.x, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+             self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
          }
                          completion:^(BOOL finished)
          {
              
-             [UIView animateWithDuration:0.7f
-                              animations:^
-              {
-                  self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-                  self.containerV.frame = CGRectMake(0, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
-              }
-                              completion:^(BOOL finished)
-              {
-                  [self removeFromParentViewController];
-                  [self.view removeFromSuperview];
-              }
-              ];
+             [self removeFromParentViewController];
+             [self.view removeFromSuperview];
              
          }];
     }
@@ -266,7 +258,7 @@
                          animations:^
          {
              self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-             self.containerV.frame = CGRectMake(0, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+             self.containerV.frame = CGRectMake(self.containerV.frame.origin.x, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
          }
                          completion:^(BOOL finished)
          {

@@ -1865,20 +1865,24 @@
         
     }
     else{
-        [[EventWS sharedBP]unlikeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
-            if (completed) {
-                [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                b.beeep.beeepInfo.likes = likers;
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
-                
-                [self.tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else{
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
-            }
-        }];
+        
+        UIAlertView *alert  = [[UIAlertView alloc]initWithTitle:@"Already liked!" message:@"You have already liked this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        
+//        [[EventWS sharedBP]unlikeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+//            if (completed) {
+//                [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+//                b.beeep.beeepInfo.likes = likers;
+//                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+//                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+//                
+//                [self.tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationFade];
+//            }
+//            else{
+//                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+//                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+//            }
+//        }];
     }
     
 }

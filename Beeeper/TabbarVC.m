@@ -243,15 +243,16 @@ static TabbarVC *thisWebServices = nil;
     
     BeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepVC"];
     viewController.superviewToBlur = sender.navigationController.view;
-    
-    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
+   
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
+    
+    [viewController.containerScrollV setFrame:CGRectMake(viewController.containerScrollV.frame.origin.x, viewController.view.frame.size.height,viewController.containerScrollV.frame.size.width, viewController.containerScrollV.frame.size.height)];
     
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.containerScrollV.center = viewController.view.center;
          viewController.blurContainerV.alpha = 1;
      }
                      completion:^(BOOL finished)
@@ -280,14 +281,16 @@ static TabbarVC *thisWebServices = nil;
         viewController.tml = sender_tml;
     }
     
-    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
+
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
+    
+    [viewController.scrollV setFrame:CGRectMake(viewController.scrollV.frame.origin.x, viewController.view.frame.size.height,  viewController.scrollV.frame.size.width,   viewController.scrollV.frame.size.height)];
     
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.scrollV.center = viewController.view.center;
          viewController.blurContainerV.alpha = !viewController.hideBackgroundblur;
      }
                      completion:^(BOOL finished)
@@ -307,14 +310,15 @@ static TabbarVC *thisWebServices = nil;
     viewController.sendNotificationWhenFinished = sendWhenFinished;
     viewController.showBlur = showBlur;
     
-    [viewController.view setFrame:CGRectMake(0, self.parentViewController.view.frame.size.height,  self.parentViewController.view.frame.size.width,   self.parentViewController.view.frame.size.height)];
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
+    
+    [viewController.containerV setFrame:CGRectMake(viewController.containerV.frame.origin.x, self.parentViewController.view.frame.size.height,viewController.containerV.frame.size.width,   viewController.containerV.frame.size.height)];
     
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.containerV.center = viewController.view.center;
 
          if (showBlur) {
              viewController.blurContainerV.alpha = 1;

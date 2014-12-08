@@ -33,7 +33,7 @@ static EventWS *thisWebServices = nil;
         thisWebServices = self;
         pageLimit = 10;
         all_events_page = 0;
-        order = @"ASC";
+        order = @"DATE";
         operationQueue = [[NSOperationQueue alloc] init];
         operationQueue.maxConcurrentOperationCount = 3;
         requestEmptyResultsCounter = 0;
@@ -628,7 +628,7 @@ static EventWS *thisWebServices = nil;
     
     NSMutableArray *events = [NSMutableArray array];
     
-    if (eventsArray.count ==0) {
+    if (responseString == nil || responseString.length ==0) {
         
         [[DTO sharedDTO]addBugLog:@"eventsArray.count == 0" where:@"EventWS/searchEventFinished" json:responseString];
         
@@ -696,7 +696,7 @@ static EventWS *thisWebServices = nil;
         [self searchEventFinished:[operation responseString]];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@",operation);
+        NSString *response = operation.responseString;
         [self searchEventFailed:error.localizedDescription];
     }];
     

@@ -1143,16 +1143,20 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
         }
         else{
-            [[EventWS sharedBP]unlikeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
-                if (completed) {
-                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                    bps.likes = likers;
-                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
-                    
-                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
-                }
-            }];
+            
+            UIAlertView *alert  = [[UIAlertView alloc]initWithTitle:@"Already liked!" message:@"You have already liked this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+            
+//            [[EventWS sharedBP]unlikeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *eventShow){
+//                if (completed) {
+//                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+//                    bps.likes = likers;
+//                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+//                    [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+//                    
+//                    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
+//                }
+//            }];
         }
         
     }

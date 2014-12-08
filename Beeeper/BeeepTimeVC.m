@@ -86,21 +86,18 @@
         
         [[NSNotificationCenter defaultCenter]postNotificationName:@"CloseBeeepItVC" object:nil];
     }
-    else{
-        
-        [UIView animateWithDuration:0.5f
-                         animations:^
-         {
-             self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
-         }
-                         completion:^(BOOL finished)
-         {
-             [self removeFromParentViewController];
-             [self.view removeFromSuperview];
-             
-         }];
-    }
     
+    [UIView animateWithDuration:0.5f
+                     animations:^
+     {
+         self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
+     }
+                     completion:^(BOOL finished)
+     {
+         [self removeFromParentViewController];
+         [self.view removeFromSuperview];
+         
+     }];
 }
 
 - (IBAction)buttonClicked:(UIButton *)sender {

@@ -23,8 +23,7 @@
     BOOL hasCountry;
     BOOL hasUsername;
     BOOL hasEmail;
-    BOOL hasFirstName;
-    BOOL hasLastName;
+    BOOL hasName;
     BOOL hasSex;
     BOOL hasPassword;
    UITapGestureRecognizer *tapG;
@@ -92,7 +91,6 @@
     }
     
     UITextField *nameTxtF;
-    UITextField *lastNameTxtF;
     UITextField *emailTxtF;
     UITextField *passwordTxtF;
     UITextField *usernameTxtF;
@@ -117,13 +115,6 @@
                         nameTxtF = (UITextField *)sub;
                         if ([(UITextField *)sub text].length > 0) {
                             [values setObject:[(UITextField *)sub text] forKey:@"name"];
-                        }
-                        break;
-                    }
-                    case 2:{
-                        lastNameTxtF = (UITextField *)sub;
-                        if ([(UITextField *)sub text].length > 0) {
-                            [values setObject:[(UITextField *)sub text] forKey:@"lastname"];
                         }
                         break;
                     }
@@ -157,25 +148,17 @@
     
     hasUsername = ([values objectForKey:@"username"] != nil);
     hasEmail = ([values objectForKey:@"email"] != nil);
-    hasFirstName = ([values objectForKey:@"name"] != nil);
-    hasLastName = ([values objectForKey:@"lastname"] != nil);
+    hasName = ([values objectForKey:@"name"] != nil);
     hasSex = ([values objectForKey:@"gender"] != nil);
     hasPassword = ([values objectForKey:@"password"] != nil);
 
-    if (hasFirstName) {
+    if (hasName) {
         [self validTextfield:nameTxtF];
     }
     else{
         [self invalidTextfield:nameTxtF];
     }
     
-    if (hasLastName) {
-        [self validTextfield:lastNameTxtF];
-    }
-    else{
-        [self invalidTextfield:lastNameTxtF];
-    }
-
     if (hasEmail) {
         [self validTextfield:emailTxtF];
     }
@@ -197,7 +180,7 @@
         [self invalidTextfield:usernameTxtF];
     }
     
-    if (!hasFirstName || !hasLastName || !hasEmail || !hasPassword || !hasUsername) {
+    if (!hasName || !hasEmail || !hasPassword || !hasUsername) {
        
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing information" message:@"Please make sure you entered all required information." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
@@ -239,7 +222,7 @@
         [values setObject:lon forKey:@"lat"];
         
         
-        weHaveAllInfoNeeded = (hasUsername && hasEmail && hasFirstName &&hasLastName && hasCity && hasState && hasCountry && hasPassword);
+        weHaveAllInfoNeeded = (hasUsername && hasEmail && hasName && hasCity && hasState && hasCountry && hasPassword);
         
         if (!weHaveAllInfoNeeded) {
             
@@ -253,11 +236,8 @@
                 if (!hasEmail) {
                     [missingInfo setObject:@"Email" forKey:@"email"];
                 }
-                if (!hasFirstName) {
-                    [missingInfo setObject:@"First Name" forKey:@"name"];
-                }
-                if (!hasLastName) {
-                    [missingInfo setObject:@"Last Name" forKey:@"lastname"];
+                if (!hasName) {
+                    [missingInfo setObject:@"First and Last Name" forKey:@"name"];
                 }
                 
                 if (!hasCity) {

@@ -51,8 +51,10 @@
         [[EventWS sharedBP]nextSearchEventsWithCompletionBlock:^(BOOL completed,NSArray *eventsArr){
            
             @try {
+                
+                loadNextPage = (eventsArr.count == [EventWS sharedBP].pageLimit);
+                
                 if (eventsArr.count > 0) {
-                    loadNextPage = (eventsArr.count == [EventWS sharedBP].pageLimit);
                     [events addObjectsFromArray:eventsArr];
                 }
                 
@@ -929,21 +931,25 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         }];
     }
     else{
-        [[EventWS sharedBP]unlikeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
-            if (completed) {
-                
-                UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
-                likeBtn.image = [UIImage imageNamed:@"like_event.png"];
-                
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
-            }
-            else{
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
-            }
-            
-        }];
+        
+        UIAlertView *alert  = [[UIAlertView alloc]initWithTitle:@"Already liked!" message:@"You have already liked this event." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+        
+//        [[EventWS sharedBP]unlikeEvent:event.fingerprint WithCompletionBlock:^(BOOL completed,NSDictionary *response){
+//            if (completed) {
+//                
+//                UIBarButtonItem *likeBtn  = [self.navigationItem.leftBarButtonItems objectAtIndex:2];
+//                likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+//                
+//                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+//                [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+//            }
+//            else{
+//                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+//                [SVProgressHUD showErrorWithStatus:@"Something went wrong"];
+//            }
+//            
+//        }];
     }
     
 }

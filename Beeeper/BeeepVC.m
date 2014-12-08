@@ -660,26 +660,18 @@
 
 - (IBAction)close:(id)sender {
     
-    [UIView animateWithDuration:0.3f
+    [UIView animateWithDuration:0.5f
                      animations:^
      {
          self.blurContainerV.alpha = 0;
+          self.containerScrollV.frame = CGRectMake(self.containerScrollV.frame.origin.x, self.view.frame.size.height,self.containerScrollV.frame.size.width , self.containerScrollV.frame.size.height);
      }
                      completion:^(BOOL finished)
      {
-         [UIView animateWithDuration:0.4f
-                          animations:^
-          {
-              self.view.frame = CGRectMake(0, self.view.frame.size.height,self.view.frame.size.width , self.view.frame.size.height);
-          }
-                          completion:^(BOOL finished)
-          {
-              [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
-              
-              [self removeFromParentViewController];
-              [self.view removeFromSuperview];
-          }
-          ];
+         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+         
+         [self removeFromParentViewController];
+         [self.view removeFromSuperview];
      }
      ];
    

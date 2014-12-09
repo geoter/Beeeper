@@ -139,9 +139,6 @@
             }
             
             [self.tableV performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-        }else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Please slide to reload" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
         }
     }];
 }

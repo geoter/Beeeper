@@ -2204,7 +2204,7 @@
                          ];
                     }
 
-                    self.noUsersFoundLabel.text = @"No users found on Beeeper.";
+                    self.noUsersFoundLabel.text = @"";//@"No users found on Beeeper.";
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     
                     NSRange range = NSMakeRange(0, 1);
@@ -2252,7 +2252,7 @@
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
          }
         
-         self.noUsersFoundLabel.text = @"No contacts found on your contact list.";
+         self.noUsersFoundLabel.text = @"";//@"No contacts found on your contact list.";
          self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
          [self.tableV reloadData];
      }
@@ -2268,7 +2268,7 @@
              searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
          }
         
-         self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
+         self.noUsersFoundLabel.text = @"";//@"No one of your Facebook friends\nis on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
@@ -2282,7 +2282,7 @@
              searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
          }
          
-         self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
+         self.noUsersFoundLabel.text = @"";//@"No one of your Twitter friends\nis on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
          [self.tableV reloadData];
 
@@ -2494,29 +2494,25 @@
                      if (![urlParams valueForKey:@"request"]) {
                          // User clicked the Cancel button
                          NSLog(@"User canceled request.");
+                         
+                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                         [SVProgressHUD showErrorWithStatus:@"Invitation \nFailed!"];
+                         
                      } else {
                          // User clicked the Send button
                          NSString *requestID = [urlParams valueForKey:@"request"];
                          NSLog(@"Request ID: %@", requestID);
+                             
+                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                         [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
                          
-                         if (!requestID) {
-                            
-                             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                             [SVProgressHUD showSuccessWithStatus:@"Invitation \nFailed!"];
-                             
-                         }
-                         else{
-                             
-                             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                             [SVProgressHUD showSuccessWithStatus:@"Invitation \nSent!"];
-                             
-                             [selectedPeople removeAllObjects];
-                             
-                             [self.tableV reloadData];
-                             
-                             self.navigationItem.rightBarButtonItem = nil;
+                         [selectedPeople removeAllObjects];
+                         
+                         [self.tableV reloadData];
+                         
+                         self.navigationItem.rightBarButtonItem = nil;
 
-                         }
+                         
                      }
                  }
              }

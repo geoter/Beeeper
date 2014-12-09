@@ -1513,7 +1513,7 @@ static BPUser *thisWebServices = nil;
             
             if ([response rangeOfString:@"success"].location != NSNotFound) {
                 
-                [[DTO sharedDTO]setApplicationBadge:(int)[UIApplication sharedApplication].applicationIconBadgeNumber-self.badgeNumber];
+                [[DTO sharedDTO]setApplicationBadge:0];
                 
                 self.badgeNumber = 0;
                 self.clearBadge_completed(YES);

@@ -82,7 +82,7 @@ static DTO *thisDTO = nil;
 - (void)setApplicationBadge:(int)number{
     
     if (number == 0) {
-        self.suggestionBadgeNumber = 0;
+//        self.suggestionBadgeNumber = 0;
         notificationsBadge = 0;
     }
     
@@ -95,15 +95,18 @@ static DTO *thisDTO = nil;
     
     self.suggestionBadgeNumber = number;
    
-    [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
+    [self setApplicationBadge:notificationsBadge];
+    //    [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
 }
 
 
 - (void)saveNotificationsBadge:(int)number{
     
     notificationsBadge = number;
+
+    [self setApplicationBadge:notificationsBadge];
     
-    [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
+    //[self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
 }
 
 -(void)downloadImageInBackgroundFromURL:(NSString *)url{

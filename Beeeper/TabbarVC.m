@@ -39,7 +39,7 @@ static TabbarVC *thisWebServices = nil;
     
     [[DTO sharedDTO]getSuggestions];
     
-    [[DTO sharedDTO]setApplicationBadge:0];//reset
+    //[[DTO sharedDTO]setApplicationBadge:0];//reset
     
     thisWebServices = self;
     

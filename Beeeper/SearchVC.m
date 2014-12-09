@@ -292,7 +292,11 @@
             
         }
         else{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No upcoming Beeeps Found" message:@"Please search for another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            
+            //No upcoming events for #sports.
+              //  Try another keyword.
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"No upcoming events for #%@.",term] message:@"Try another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             alert.tag = 55;
             [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
         }
@@ -905,12 +909,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
             if (completed) {
                 
-                Likes *l = [[Likes alloc]init];
-                l.likers = [[Likers alloc]init];
-                l.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
-                [likers addObject:l];
+                Likes *like = [[Likes alloc]init];
+                like.likers = [[Likers alloc]init];
+                like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+                like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+                like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
                 
-                event.likes = likers;
+                [event.likes addObject:like];
                 
                 [self.tableV reloadData];
                 

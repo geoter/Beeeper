@@ -409,7 +409,13 @@
         
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         
-        hasUsername = ([fbDict objectForKey:@"username"] != nil);
+        NSString *username = [fbDict objectForKey:@"username"];
+        
+        if (username == nil) {
+            username = [NSString stringWithFormat:@"%@.%@",[fbDict objectForKey:@"first_name"],[fbDict objectForKey:@"last_name"]];
+        }
+        
+        hasUsername = (username != nil && username.length > 1);
         
         NSString *email = [[fbAccount valueForKey:@"properties"] objectForKey:@"ACUIDisplayUsername"];
         if (email == nil) {

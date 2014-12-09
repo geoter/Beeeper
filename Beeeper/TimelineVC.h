@@ -35,7 +35,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *addFriendIcon;
 @property (nonatomic,assign) BOOL showBackButton;
 @property (nonatomic,assign) int mode;
-@property (nonatomic,strong) NSDictionary *user; //for others' profile
+@property (nonatomic,strong) NSMutableDictionary *user; //for others' profile
 @property (weak, nonatomic) IBOutlet UIView *myTimelineMenuV;
 @property (weak, nonatomic) IBOutlet UIView *othersTimelineMenuV;
 @property (weak, nonatomic) IBOutlet UIView *topBGV;

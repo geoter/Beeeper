@@ -110,6 +110,7 @@
                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
                     [self.tableV reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
                     
+                    self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                 }
             }
@@ -415,6 +416,7 @@
                 searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
                 [self.tableV reloadData];
                 
+                self.noUsersFoundLabel.text = @"No contacts found on your contact list.";
                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
             }
         });
@@ -517,6 +519,8 @@
                 adressBookPeople = [NSMutableArray arrayWithArray:contactsSorted];
                 searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
                 [self.tableV reloadData];
+                
+                self.noUsersFoundLabel.text = @"No emails found on your contact list.";
                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
             }
 
@@ -552,6 +556,8 @@
                          ];
                         
                         [self.tableV reloadData];
+                        
+                        self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     }
                 }
@@ -820,6 +826,8 @@
                          
                          dispatch_async(dispatch_get_main_queue(), ^{
 
+                             self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
+                
                              self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
                              
                              [self.tableV reloadData];
@@ -952,6 +960,7 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
+                            self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
                             self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                             
                             [self.tableV reloadData];
@@ -987,6 +996,9 @@
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 
+                                
+                                self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
+                                
                                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                                 
                                 [self.tableV reloadData];
@@ -1000,6 +1012,7 @@
                                 fbPeople = [NSMutableArray array];
                                 searchedPeople = [NSMutableArray array];
                                 
+                                self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
                                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                                 
                                 [self hideLoading];
@@ -1024,7 +1037,7 @@
         if (emailInviteSelectedOption == 0) {
             
             UITableViewCell *cell = [actionSheet.UserInfo objectForKey:@"cell"];
-            NSDictionary *user = [actionSheet.UserInfo objectForKey:@"user_object"];
+            NSMutableDictionary *user = [actionSheet.UserInfo objectForKey:@"user_object"];
             NSArray *phones = [user objectForKey:@"phones"];
             NSString *phone = [[[phones objectAtIndex:buttonIndex] componentsSeparatedByString:@":"] lastObject];
             
@@ -1069,7 +1082,7 @@
         else{
             
             UITableViewCell *cell = [actionSheet.UserInfo objectForKey:@"cell"];
-            NSDictionary *user = [actionSheet.UserInfo objectForKey:@"user_object"];
+            NSMutableDictionary *user = [actionSheet.UserInfo objectForKey:@"user_object"];
             NSArray *emailAdresses = [user objectForKey:@"emails"];
             NSString *email = [emailAdresses objectAtIndex:buttonIndex];
             
@@ -1127,7 +1140,7 @@
         
         if(actionSheet.tag == 66){
             
-            NSDictionary *user = (FacebookButton == selectedOption)?nil:[searchedPeople objectAtIndex:actionSheetIndexPath.row];
+            NSMutableDictionary *user = (FacebookButton == selectedOption)?nil:[searchedPeople objectAtIndex:actionSheetIndexPath.row];
             
             if (selectedOption == FacebookButton && searchedBeeepers.count >0) {
                 user = [searchedBeeepers objectAtIndex:actionSheetIndexPath.row];
@@ -1263,7 +1276,7 @@
     UIImageView *tickedV = (id)[cell viewWithTag:5];
     UIImageView *fbtickedV = (id)[cell viewWithTag:14];
     
-    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
+    NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
     
     BOOL isBeeeper = NO;
     
@@ -1489,7 +1502,7 @@
     UIImageView *tickedV = (id)[cell viewWithTag:5];
     UIImageView *fbtickedV = (id)[cell viewWithTag:14];
     
-    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
+    NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
    
     if (selectedOption == FacebookButton) {
         if (searchedBeeepers.count > 0 && indexPath.section == 0) {
@@ -1881,7 +1894,7 @@
     
     for (int i=0; i<beeepers.count ; i++) {
 
-        NSDictionary *user = [searchedBeeepers objectAtIndex:i];
+        NSMutableDictionary *user = [searchedBeeepers objectAtIndex:i];
         
         int positionSB = [searchedBeeepers indexOfObject:user];
         int positionB = [beeepers indexOfObject:user];
@@ -1921,7 +1934,7 @@
     
     [selectedPeople removeAllObjects];
     
-    for (NSDictionary *user in fbPeople) {
+    for (NSMutableDictionary *user in fbPeople) {
         [selectedPeople addObject:user];
     }
     
@@ -2067,6 +2080,7 @@
                     [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
                      ];
                     
+                    self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                 }
              }
@@ -2079,12 +2093,14 @@
     else if (selectedOption == MailButton){
         searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
+        self.noUsersFoundLabel.text = @"No contacts found on your contact list.";
         [self.tableV reloadData];
     }
     else if (selectedOption == FacebookButton){
         searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
         searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
         
+        self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
         self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
         
         [self.tableV reloadData];
@@ -2118,13 +2134,14 @@
     if ([searchText length] == 0) {
         if (selectedOption == MailButton){
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
+            self.noUsersFoundLabel.text = @"No contacts found on your contact list.";
             self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
             [self.tableV reloadData];
         }
         else if (selectedOption == FacebookButton){
             searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
             searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
-            
+            self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
             self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
             
             [self.tableV reloadData];
@@ -2146,6 +2163,7 @@
                         [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
                          ];
                         
+                        self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     }
                 }
@@ -2186,6 +2204,7 @@
                          ];
                     }
 
+                    self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                     
                     NSRange range = NSMakeRange(0, 1);
@@ -2212,7 +2231,8 @@
                          ];
                     }
                 }
-
+                
+                self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                 
                 NSRange range = NSMakeRange(0, 1);
@@ -2231,7 +2251,8 @@
          else{
              searchedPeople = [NSMutableArray arrayWithArray:adressBookPeople];
          }
- 
+        
+         self.noUsersFoundLabel.text = @"No contacts found on your contact list.";
          self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
          [self.tableV reloadData];
      }
@@ -2247,6 +2268,7 @@
              searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
          }
         
+         self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
@@ -2260,6 +2282,7 @@
              searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
          }
          
+         self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
          [self.tableV reloadData];
 
@@ -2355,14 +2378,14 @@
         [self getPeople:searchStr WithCompletionBlock:self.search_completed];
     }
     
-//    NSMutableArray *mutablePeople = [NSMutableArray array];
-//    
-//    for (NSDictionary *user in people) {
-//        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
-//        [mutablePeople addObject:dict];
-//    }
+    NSMutableArray *mutablePeople = [NSMutableArray array];
     
-    self.search_completed(YES,people);
+    for (NSMutableDictionary *user in people) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
+        [mutablePeople addObject:dict];
+    }
+    
+    self.search_completed(YES,mutablePeople);
 }
 
 -(void)getPeopleFailed:(id )request{
@@ -2381,7 +2404,7 @@
     UITableViewCell *cell = (UITableViewCell *)view;
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:path.row];
+    NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:path.row];
     
     if (selectedOption == FacebookButton && searchedBeeepers.count >0) {
         user = [searchedBeeepers objectAtIndex:path.row];

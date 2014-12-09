@@ -79,6 +79,12 @@
                     if (s != nil) {
                         [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
                     }
+                    
+                    NSString *u = [userInfo objectForKey:@"u"];
+                    
+                    if (u != nil) {
+                        [[DTO sharedDTO]setUserIDforPush:u];
+                    }
                 }
             }
             @catch (NSException *exception) {
@@ -89,6 +95,11 @@
             }
 
         }
+    }
+    else{
+        [[DTO sharedDTO]setWeightForPush:nil caseStr:nil];
+        [[DTO sharedDTO]setFingerprintForPush:nil caseStr:nil];
+        [[DTO sharedDTO]setUserIDforPush:nil];
     }
     
     
@@ -152,13 +163,12 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    NSLog(@"background");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    NSLog(@"foreground");
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -304,50 +314,57 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
-    @try {
-        if (userInfo) {
-            
-            NSString *w = [userInfo objectForKey:@"w"];
-            
-            if (w != nil) {
-                [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
+    if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
+    {
+        @try {
+            if (userInfo) {
+                
+                NSString *w = [userInfo objectForKey:@"w"];
+                
+                if (w != nil) {
+                    [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
+                }
+                
+                NSString *l = [userInfo objectForKey:@"l"];
+                
+                if (l != nil) {
+                    [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
+                }
+                
+                
+                NSString *c = [userInfo objectForKey:@"c"];
+                
+                if (c != nil) {
+                    [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
+                }
+                
+                
+                NSString *s = [userInfo objectForKey:@"s"];
+                
+                if (s != nil) {
+                    [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
+                }
+                
+                NSString *u = [userInfo objectForKey:@"u"];
+                
+                if (u != nil) {
+                    [[DTO sharedDTO]setUserIDforPush:u];
+                }
+                
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil userInfo:userInfo];
+                
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[UIApplication sharedApplication].applicationIconBadgeNumber-1];
             }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"Catch");
+        }
+        @finally {
             
-            NSString *l = [userInfo objectForKey:@"l"];
-            
-            if (l != nil) {
-                [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
-            }
-
-            
-            NSString *c = [userInfo objectForKey:@"c"];
-            
-            if (c != nil) {
-                [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
-            }
-
-           
-            NSString *s = [userInfo objectForKey:@"s"];
-            
-            if (s != nil) {
-                [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
-            }
-            
-            NSString *u = [userInfo objectForKey:@"u"];
-            
-            if (u != nil) {
-                [[DTO sharedDTO]setUserIDforPush:u];
-            }
-            
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil userInfo:userInfo];
         }
     }
-    @catch (NSException *exception) {
-        NSLog(@"Catch");
-    }
-    @finally {
     
-    }
+    
 }
 
 -(void)getCorrectTypeOrDie:(NSString *)type dict:(NSDictionary *)userInfo{

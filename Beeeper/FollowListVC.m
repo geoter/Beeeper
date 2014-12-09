@@ -64,25 +64,41 @@
         [[BPUser sharedBP]getFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed) {
-                 people = [NSMutableArray arrayWithArray:objs];
                 
-//                for (NSDictionary *user in people) {
-//                    NSArray *keys = user.allKeys;
-//                    NSString *imagePath = [user objectForKey:@"image_path"];
-//                    [[DTO sharedDTO]downloadImageFromURL:imagePath];
-//                }
+                people = [NSMutableArray arrayWithArray:objs];
                 
-                NSMutableArray *true_following = [NSMutableArray array];
-                
-                if (following != nil) {
-                    for (NSDictionary *user in people) {
-                        for (NSDictionary *following_user in following) {
-                            if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
-                                [true_following addObject:user];
+                if (objs.count == 0) {
+                   
+                    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+                    
+                    if ([my_id isEqualToString:[self.user objectForKey:@"id"]]) {
+                        NSString *message = @"You have no followers yet.\nStart following friends and\ninteract with them.";
+                        self.nousersLabel.text = message;
+                        self.findFriendsButton.hidden = NO;
+                    }
+                    else{
+                        NSString *message = @"User has no followers yet.";
+                        self.nousersLabel.text = message;
+                        self.findFriendsButton.hidden = YES;
+                    }
+                    
+                    self.nousersLabel.hidden = NO;
+                }
+                else{
+                    
+                    NSMutableArray *true_following = [NSMutableArray array];
+                    
+                    if (following != nil) {
+                        for (NSDictionary *user in people) {
+                            for (NSDictionary *following_user in following) {
+                                if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
+                                    [true_following addObject:user];
+                                }
                             }
                         }
+                        following = true_following;
                     }
-                    following = true_following;
+
                 }
                 
                 [self.tableV reloadData];
@@ -93,7 +109,6 @@
             else{
                 [self hideLoading];
                 
-                self.nousersLabel.hidden = NO;
             }
             
             [self updateUsersCount];
@@ -136,17 +151,30 @@
                  people = [NSMutableArray arrayWithArray:objs];
                  following = [NSMutableArray arrayWithArray:people];
                  
-//                 for (NSDictionary *user in people) {
-//                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
-//                 }
+                 if (objs.count == 0) {
+                     
+                     NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+                     
+                     if ([my_id isEqualToString:[self.user objectForKey:@"id"]]) {
+                         NSString *message = @"You are not following anyone yet.\nStart following friends and\ninteract with them.";
+                         self.nousersLabel.text = message;
+                         self.findFriendsButton.hidden = NO;
+                     }
+                     else{
+                         NSString *message = @"User is not following anyone yet.";
+                         self.nousersLabel.text = message;
+                         self.findFriendsButton.hidden = YES;
+                     }
+                     
+                     self.nousersLabel.hidden = NO;
+                 }
                  
-                 [self updateUsersCount];
                  [self.tableV reloadData];
+                 [self updateUsersCount];
                  [self hideLoading];
              }
              else{
                  [self hideLoading];
-                 self.nousersLabel.hidden = NO;
              }
 
          }];
@@ -170,27 +198,37 @@
 //                     [[DTO sharedDTO]downloadImageFromURL:[user objectForKey:@"image_path"]];
 //                 }
                  
-                 [self updateUsersCount];
-                 
-                 NSMutableArray *true_following = [NSMutableArray array];
-                 
-                 if (following != nil) {
-                     for (NSDictionary *user in people) {
-                         for (NSDictionary *following_user in following) {
-                             if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
-                                 [true_following addObject:user];
+                 if (objs.count == 0) {
+                     
+                     self.nousersLabel.text = (self.mode ==3)?@"No one has liked it yet.": @"No one has Beeeped it yet.";
+                     self.findFriendsButton.hidden = YES;
+                     self.nousersLabel.hidden = NO;
+                 }
+                 else{
+                     
+                     NSMutableArray *true_following = [NSMutableArray array];
+                     
+                     if (following != nil) {
+                         for (NSDictionary *user in people) {
+                             for (NSDictionary *following_user in following) {
+                                 if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
+                                     [true_following addObject:user];
+                                 }
                              }
                          }
-                     }
-                     
-                     following = true_following;
-                     [self.tableV reloadData];
-                     [self hideLoading];
+                         
+                         following = true_following;
+                 }
+                 
+                 [self updateUsersCount];
+                 [self.tableV reloadData];
+                 [self hideLoading];
+                 
                  }
              }
              else{
                  [self hideLoading];
-                 self.nousersLabel.hidden = NO;
+                 
              }
 
          }];
@@ -333,8 +371,16 @@
     timelineVC.mode = Timeline_Not_Following;
     timelineVC.showBackButton = YES; //in case of My_Timeline
 
-    NSDictionary *user = [people objectAtIndex:indexPath.row];
-    timelineVC.following = ([following indexOfObject:user] != NSNotFound);
+    NSMutableDictionary *user = [people objectAtIndex:indexPath.row];
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    if ([[user objectForKey:@"id"]isEqualToString:my_id]) {
+        timelineVC.mode = Timeline_My;
+    }
+    else{
+        timelineVC.following = ([following indexOfObject:user] != NSNotFound);
+    }
+    
     timelineVC.user = user;
     
     [self.navigationController pushViewController:timelineVC animated:YES];
@@ -360,7 +406,7 @@
 
     NSIndexPath *path = [self.tableV indexPathForCell:cell];
     
-    NSDictionary *user = [people objectAtIndex:path.row];
+    NSMutableDictionary *user = [people objectAtIndex:path.row];
 
     if ([following indexOfObject:user] != NSNotFound) {
         
@@ -376,6 +422,8 @@
         [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
                 
+                [user setObject:[NSNumber numberWithInt:1] forKey:@"following"];
+
                 [following addObject:user];
                 
                 NSArray* rowsToReload = [NSArray arrayWithObjects:path, nil];
@@ -389,6 +437,11 @@
     }
 }
 
+- (IBAction)findFriendsPressed:(id)sender {
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
 
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -396,12 +449,14 @@
     if (buttonIndex != actionSheet.cancelButtonIndex) {
 
        
-         NSDictionary *user = [people objectAtIndex:actionSheetIndexPath.row];
+         NSMutableDictionary *user = [people objectAtIndex:actionSheetIndexPath.row];
         
         [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
                 
                 [following removeObject:user];
+                
+                [user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
                 
                 NSArray* rowsToReload = [NSArray arrayWithObjects:actionSheetIndexPath, nil];
                 

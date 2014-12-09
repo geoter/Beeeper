@@ -19,7 +19,9 @@
 @property (nonatomic,strong) NSArray *ids;
 @property (nonatomic,strong) NSDictionary *user; //Followers,Following
 @property (weak, nonatomic) IBOutlet UILabel *nousersLabel;
+@property (weak, nonatomic) IBOutlet UIButton *findFriendsButton;
 
 - (IBAction)rightButtonPressed:(id)sender;
+- (IBAction)findFriendsPressed:(id)sender;
 
 @end

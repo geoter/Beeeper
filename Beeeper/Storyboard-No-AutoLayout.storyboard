@@ -200,7 +200,7 @@
                                     <outlet property="delegate" destination="aj7-rd-wlg" id="Pxb-6d-NrL"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No comments" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9fO-8o-jUO">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No one has wrote anything yet." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9fO-8o-jUO">
                                 <rect key="frame" x="0.0" y="210" width="320" height="21"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
@@ -226,7 +226,7 @@
         <scene sceneID="8Mw-YC-uRm">
             <objects>
                 <viewController storyboardIdentifier="SuggestBeeepVC" id="Ixw-pc-jCj" customClass="SuggestBeeepVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="e5z-RT-giC">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="e5z-RT-giC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -310,12 +310,6 @@
                                             <action selector="sendPressed:" destination="Ixw-pc-jCj" eventType="touchUpInside" id="rzj-lQ-Dec"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading.." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YXz-qd-hf9">
-                                        <rect key="frame" x="0.0" y="232" width="272" height="23"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                        <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select friends to send this Beeep to." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZQe-gz-PmX">
                                         <rect key="frame" x="0.0" y="53" width="272" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
@@ -356,6 +350,23 @@
                                             <action selector="closePressed:" destination="Ixw-pc-jCj" eventType="touchUpInside" id="737-TU-bSi"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading.." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YXz-qd-hf9">
+                                        <rect key="frame" x="0.0" y="243" width="272" height="80"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
+                                        <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ILx-gb-U4h">
+                                        <rect key="frame" x="93" y="323" width="87" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Find friends">
+                                            <color key="titleColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="findFriendsPressed:" destination="Ixw-pc-jCj" eventType="touchUpInside" id="p8a-KR-WwS"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <userDefinedRuntimeAttributes>
@@ -371,6 +382,7 @@
                         <outlet property="blurContainerV" destination="gPV-fU-mmu" id="ZwJ-HK-fgd"/>
                         <outlet property="blurredImageV" destination="IYp-lR-zl4" id="2ru-3G-znw"/>
                         <outlet property="containerV" destination="BVT-Og-V7H" id="6SN-GF-Y00"/>
+                        <outlet property="findFriendsButton" destination="ILx-gb-U4h" id="pRg-5m-Op6"/>
                         <outlet property="noBeeepersFoundLbl" destination="YXz-qd-hf9" id="bGC-IZ-Frj"/>
                         <outlet property="searchTxtF" destination="PWS-3x-a9g" id="kGy-YS-tAB"/>
                         <outlet property="tableV" destination="GdU-oy-xMG" id="Ndu-UF-VJW"/>
@@ -1656,7 +1668,7 @@
         <scene sceneID="ez8-8x-7Na">
             <objects>
                 <viewController storyboardIdentifier="SearchVC" autoresizesArchivedViewToFullSize="NO" automaticallyAdjustsScrollViewInsets="NO" id="Pyf-sb-GHU" customClass="SearchVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="xtS-Dc-ZXU">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="xtS-Dc-ZXU">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -1952,7 +1964,7 @@
         <scene sceneID="eyW-Q5-q6f">
             <objects>
                 <viewController storyboardIdentifier="SearchVCNav" id="8ov-Av-14E" customClass="SearchVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="qTy-zU-8XO">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="qTy-zU-8XO">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -3363,13 +3375,25 @@
                                     <outlet property="delegate" destination="dgo-Fe-0d2" id="z1v-YL-NAC"/>
                                 </connections>
                             </collectionView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No beeeps found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ecA-ym-Rs0">
-                                <rect key="frame" x="0.0" y="242" width="320" height="21"/>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ecA-ym-Rs0">
+                                <rect key="frame" x="0.0" y="180" width="320" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
+                                <string key="text">You are not following anyone yet. Start following friends and see here what they are Beeeping.</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="6Yy-Vx-mqG">
+                                <rect key="frame" x="117" y="260" width="87" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Find friends">
+                                    <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="showFindFriends:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="djE-lJ-aEG"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" id="4cx-NJ-qW6">
                                 <rect key="frame" x="0.0" y="454" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
@@ -3457,6 +3481,7 @@
                     <size key="freeformSize" width="320" height="568"/>
                     <connections>
                         <outlet property="collectionV" destination="CZJ-PB-hDl" id="Ja3-B9-oHD"/>
+                        <outlet property="findFriendsButton" destination="6Yy-Vx-mqG" id="qQa-OV-OGD"/>
                         <outlet property="noBeeepsLabel" destination="ecA-ym-Rs0" id="PF9-y2-spg"/>
                         <outlet property="notificationsBadgeV" destination="LRD-JR-MdM" id="ZpI-n4-6RK"/>
                         <outlet property="notificationsButton" destination="SEL-70-Iax" id="7dm-H3-d42"/>
@@ -3513,7 +3538,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view tag="88" contentMode="scaleToFill" id="xuf-La-ehz">
-                                                    <rect key="frame" x="0.0" y="77" width="320" height="1"/>
+                                                    <rect key="frame" x="0.0" y="78" width="320" height="1"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>
@@ -3541,7 +3566,7 @@
                                     <outlet property="delegate" destination="Ag7-X4-56u" id="UDf-i5-hMs"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No notifications found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AUI-cV-2QN">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No notifications yet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AUI-cV-2QN">
                                 <rect key="frame" x="0.0" y="210" width="320" height="21"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
@@ -3759,8 +3784,7 @@
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TH3-0G-ZcC">
                                 <rect key="frame" x="7" y="248" width="306" height="71"/>
-                                <string key="text">You have no suggestions yet.
-When a friend suggests you a Beeep, you will find it here.</string>
+                                <string key="text">You have no suggestions yet.When a friend suggests you a Beeep, you will find it here.</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
@@ -4564,7 +4588,7 @@ When a friend suggests you a Beeep, you will find it here.</string>
         <scene sceneID="cfJ-Xk-zQ7">
             <objects>
                 <viewController storyboardIdentifier="FindFriendsVC" id="FSh-SO-rpy" customClass="FindFriendsVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="NrK-HA-8Dq">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="NrK-HA-8Dq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -4700,8 +4724,8 @@ When a friend suggests you a Beeep, you will find it here.</string>
                                     <outlet property="delegate" destination="FSh-SO-rpy" id="Rq6-2s-KGv"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yt9-YV-msy">
-                                <rect key="frame" x="0.0" y="274" width="320" height="21"/>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yt9-YV-msy">
+                                <rect key="frame" x="0.0" y="260" width="320" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>

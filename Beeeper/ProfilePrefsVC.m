@@ -16,7 +16,7 @@
 @interface ProfilePrefsVC ()<UITextFieldDelegate,UITextViewDelegate,UINavigationControllerDelegate,DZNPhotoPickerControllerDelegate,UIImagePickerControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     NSString *base64Image;
-    NSDictionary *user;
+    NSMutableDictionary *user;
     NSString *gender;
     BOOL changedImage;
 

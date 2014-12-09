@@ -2109,8 +2109,11 @@
                 }];
             }
             else{
-                Beeep *bps = [activity.beeepInfoActivity.beeepActivity firstObject];
-                [[EventWS sharedBP]unlikeBeeep:bps.beeepInfo.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+                BeeepActivity *beeepAct = [activity.beeepInfoActivity.beeepActivity firstObject];
+                BeeepsActivity *bps = [beeepAct.beeepsActivity firstObject];
+                UserActivity *userAt = [activity.beeepInfoActivity.userActivity firstObject];
+                
+                [[EventWS sharedBP]unlikeBeeep:bps.weight user:userAt.userActivityIdentifier WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                     if (completed) {
                         isLiker = NO;
                         [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];

@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIView *tabBar;
 @property (strong, nonatomic) IBOutlet UIView *notificationsBadgeV;
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
+@property (weak, nonatomic) IBOutlet UIButton *findFriendsButton;
 
 - (IBAction)eventBeeepPressed:(id)sender;
 - (IBAction)showUser:(id)sender;
@@ -29,4 +30,5 @@
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender;
 - (IBAction)addNewBeeep:(id)sender;
+- (IBAction)showFindFriends:(id)sender;
 @end

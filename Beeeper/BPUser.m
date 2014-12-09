@@ -538,7 +538,7 @@ static BPUser *thisWebServices = nil;
         responseString = [[responseString substringToIndex:[responseString length]-1]substringFromIndex:1];
         
         NSArray *responseArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        self.user = responseArray.firstObject;
+        self.user = [NSMutableDictionary dictionaryWithDictionary:responseArray.firstObject];
         
         //if user added new image erase the old one
         
@@ -614,7 +614,7 @@ static BPUser *thisWebServices = nil;
         return;
     }
     
-    self.user = responseArray.firstObject;
+    self.user = [NSMutableDictionary dictionaryWithDictionary:responseArray.firstObject];
 
     NSLog(@"Login With ID: %@",[self.user objectForKey:@"id"]);
     NSLog(@"Login With EMAIL: %@",[self.user objectForKey:@"email"]);
@@ -772,8 +772,15 @@ static BPUser *thisWebServices = nil;
         
         BOOL succeed = [responseString writeToFile:filePath
                                         atomically:YES encoding:NSUTF8StringEncoding error:&error];
+       
+        NSMutableArray *mutablePeople = [NSMutableArray array];
         
-        self.followers_completed(YES,users);
+        for (NSMutableDictionary *user in users) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
+            [mutablePeople addObject:dict];
+        }
+        
+        self.followers_completed(YES,mutablePeople);
     }
     else{
         
@@ -895,7 +902,15 @@ static BPUser *thisWebServices = nil;
         BOOL succeed = [responseString writeToFile:filePath
                                         atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
-        self.following_completed(YES,users);
+        
+        NSMutableArray *mutablePeople = [NSMutableArray array];
+        
+        for (NSMutableDictionary *user in users) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
+            [mutablePeople addObject:dict];
+        }
+        
+        self.following_completed(YES,mutablePeople);
     }
     else{
         
@@ -1595,8 +1610,11 @@ static BPUser *thisWebServices = nil;
             NSMutableArray *beeepers = [NSMutableArray array];
             
             for (NSString *key in beeepersDict.allKeys) {
+               
                 NSDictionary *beeeper = [beeepersDict objectForKey:key];
-                [beeepers addObject:beeeper];
+                NSMutableDictionary *mutableBeeeper = [NSMutableDictionary dictionaryWithDictionary:beeeper];
+                
+                [beeepers addObject:mutableBeeeper];
             }
             
             if (beeepers.count == 0) {
@@ -1652,7 +1670,14 @@ static BPUser *thisWebServices = nil;
                 [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromTW_IDs" json:responseString];
             }
             
-            self.beeepersFromTWCompleted(YES,beeepers);
+            NSMutableArray *mutablePeople = [NSMutableArray array];
+            
+            for (NSMutableDictionary *user in beeepers) {
+                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
+                [mutablePeople addObject:dict];
+            }
+            
+            self.beeepersFromTWCompleted(YES,mutablePeople);
         }
         @catch (NSException *exception) {
             

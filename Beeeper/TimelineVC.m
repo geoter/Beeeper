@@ -255,6 +255,7 @@
     }
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -289,7 +290,7 @@
     self.tableV.alwaysBounceVertical = YES;
     
    
-    [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    //[self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     // self.tableV.decelerationRate = 0.6;
     
     pendingImagesDict = [NSMutableDictionary dictionary];
@@ -426,8 +427,10 @@
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed && objs.count >0) {
-                NSDictionary *userDict = [objs firstObject];
-                self.user = userDict;
+                NSMutableDictionary *userDict = [objs firstObject];
+                
+                [self.user addEntriesFromDictionary:userDict];
+                
                 [self setUserInfo];
             }
             else{
@@ -481,6 +484,8 @@
         
         if (city != nil && city.length > 0) {
             
+            mpike = YES;
+            
             [UIView animateWithDuration:0.3f
                      animations:^
              {
@@ -510,9 +515,11 @@
             [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
                 
                 if (completed && objs.count >0) {
-                    NSDictionary *userDict = [objs firstObject];
-                    self.user = userDict;
+
+                    NSMutableDictionary *userDict = [objs firstObject];
+                    [self.user addEntriesFromDictionary:userDict];
                     [self setUserInfo];
+                    
                 }
             }];
 
@@ -537,9 +544,11 @@
             
           
             if (completed && objs.count >0) {
-                NSDictionary *userDict = [objs firstObject];
-                self.user = userDict;
+
+                NSMutableDictionary *userDict = [objs firstObject];
+                [self.user addEntriesFromDictionary:userDict];
                 [self setUserInfo];
+
             }
             else{
                   [self hideLoading];
@@ -636,6 +645,8 @@
   
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
+    [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     
     if (self.mode == Timeline_My) {
         [self showSuggestionsBadge];
@@ -1160,10 +1171,22 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
-    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,50.0)];
+    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,80.0)];
     footer.backgroundColor =[UIColor clearColor];
     UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
-    lbl.text = (loading)?@"Loading...":@"There are no beeeps available.";
+    lbl.textAlignment = NSTextAlignmentCenter;
+    lbl.numberOfLines = 0;
+    
+    if (loading) {
+        lbl.text = @"Loading...";
+    }
+    else if (self.mode == Timeline_My){
+        lbl.text = @"You haven’t Beeeped anything yet.\nTap the + button on the toolbar\nand create a Beeep.";
+    }
+    else{
+        lbl.text = @"There are no beeeps available.";
+    }
+    
     lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
     lbl.textAlignment = NSTextAlignmentCenter;
@@ -1447,10 +1470,8 @@
         //follow user
         [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
-                
-                NSMutableDictionary *userMutable = [NSMutableDictionary dictionaryWithDictionary:user];
-                [userMutable setObject:@"1" forKey:@"following"];
-                user = [NSDictionary dictionaryWithDictionary:userMutable];
+            
+                [user setObject:[NSNumber numberWithInt:1] forKey:@"following"];
                 
                 self.mode = Timeline_Following;
                 [self createMenuButtons:YES];
@@ -1475,6 +1496,9 @@
         [[BPUser sharedBP]unfollow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
                 self.mode = Timeline_Not_Following;
+                
+                [user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
+               
                 [self createMenuButtons:YES];
 
             }
@@ -1839,10 +1863,17 @@
         [[EventWS sharedBP]likeBeeep:b.beeep.beeepInfo.weight user:b.beeep.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
             if (completed) {
                 
-                Likes *l = [[Likes alloc]init];
-                l.likers = [[Likers alloc]init];
-                l.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
-                [likers addObject:l];
+                
+                Likes *like = [[Likes alloc]init];
+                like.likers = [[Likers alloc]init];
+                like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+                like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+                like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                
+                [likers addObject:like];
+                
                 b.beeep.beeepInfo.likes = likers;
                 
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];

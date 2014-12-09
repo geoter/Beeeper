@@ -67,8 +67,18 @@
                                     <outlet property="delegate" destination="Xbb-ty-Fke" id="oA4-f7-OyK"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VFS-rI-Tgh">
-                                <rect key="frame" x="0.0" y="210" width="320" height="21"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Jd4-G5-5dV">
+                                <rect key="frame" x="117" y="310" width="87" height="30"/>
+                                <state key="normal" title="Find friends">
+                                    <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="findFriendsPressed:" destination="Xbb-ty-Fke" eventType="touchUpInside" id="bxe-sB-EHN"/>
+                                </connections>
+                            </button>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VFS-rI-Tgh">
+                                <rect key="frame" x="0.0" y="226" width="320" height="79"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727617263794" green="0.68235296010971069" blue="0.70980393886566162" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
@@ -79,6 +89,7 @@
                     <navigationItem key="navigationItem" title="Following" id="hIK-Wl-SpD"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="findFriendsButton" destination="Jd4-G5-5dV" id="eXK-ol-PGX"/>
                         <outlet property="nousersLabel" destination="VFS-rI-Tgh" id="12X-Gl-pR7"/>
                         <outlet property="tableV" destination="xFD-0i-BJV" id="kUL-TZ-KWv"/>
                     </connections>
@@ -155,8 +166,9 @@
                                     <outlet property="delegate" destination="ssa-7w-8SZ" id="Ds0-6x-W0Z"/>
                                 </connections>
                             </tableView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Activities found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xXk-L8-2Wc">
-                                <rect key="frame" x="7" y="210" width="306" height="21"/>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xXk-L8-2Wc">
+                                <rect key="frame" x="7" y="225" width="306" height="117"/>
+                                <string key="text">You have no activity yet.Start making Beeeps, likes, comments or suggestions and all your actions will appear here</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
                                 <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>

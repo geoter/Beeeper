@@ -122,11 +122,15 @@ static TabbarVC *thisWebServices = nil;
         
         if (userInfo != nil) {
             
-            NSString *alertText = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] objectForKey:@"body"];
+//            NSString *alertText = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] objectForKey:@"body"];
+//            
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Notification Received" message:alertText delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"View", nil];
+//            alert.tag = 33;
+//            [alert show];
             
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Notification Received" message:alertText delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"View", nil];
-            alert.tag = 33;
-            [alert show];
+            [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:1.0];
+            [self performSelector:@selector(showPushEvent) withObject:nil afterDelay:1.0];
+            [self performSelector:@selector(showPushUser) withObject:nil afterDelay:1.0];
         }
         else{
             [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
@@ -204,7 +208,7 @@ static TabbarVC *thisWebServices = nil;
         timelineVC.showBackButton = YES; //in case of My_Timeline
         
         timelineVC.following = YES;
-        timelineVC.user = [NSDictionary dictionaryWithObject:userID forKey:@"id"];
+        timelineVC.user = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithObject:userID forKey:@"id"]];
         
         [self.navigationController pushViewController:timelineVC animated:YES];
     

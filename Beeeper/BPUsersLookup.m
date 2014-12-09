@@ -96,7 +96,8 @@ static BPUsersLookup *thisWebServices = nil;
             @try {
                 NSArray *userArray = [u objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
                 NSDictionary *user = [userArray firstObject];
-                [users addObject:user];
+                NSMutableDictionary *userMutable = [ NSMutableDictionary dictionaryWithDictionary:user];
+                [users addObject:userMutable];
             }
             @catch (NSException *exception) {
                 continue;

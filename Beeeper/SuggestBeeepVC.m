@@ -31,11 +31,17 @@
     return self;
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     UIImage *blurredImg = [[DTO sharedDTO]convertViewToBlurredImage:self.superviewToBlur withRadius:7];
     self.blurredImageV.image = blurredImg;
     
@@ -63,6 +69,18 @@
         [self.topRightButton removeTarget:self action:@selector(sendPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self.topRightButton addTarget:self action:@selector(donePressed:) forControlEvents:UIControlEventTouchUpInside];
     }
+    
+    UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
+    [self.tableV addSubview:refreshView];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    refreshControl.tag = 234;
+    refreshControl.tintColor = [UIColor whiteColor];
+    [refreshControl addTarget:self action:@selector(getFollowers) forControlEvents:UIControlEventValueChanged];
+    [refreshView addSubview:refreshControl];
+    
+    [self.tableV addSubview:refreshControl];
+    self.tableV.alwaysBounceVertical = YES;
 }
 
 -(void)getFollowers{
@@ -84,12 +102,15 @@
                      dispatch_async(dispatch_get_main_queue(), ^{
                          [self.tableV reloadData];
                     
-                        self.noBeeepersFoundLbl.text = @"No Followers found";
+
+                        self.noBeeepersFoundLbl.text = @"You have no followers yet.\nStart following friends and interact with them.";
                         
                         if (objs.count == 0) {
+                            self.findFriendsButton.hidden = NO;
                             self.noBeeepersFoundLbl.hidden = NO;
                         }
                         else{
+                            self.findFriendsButton.hidden = YES;
                             self.noBeeepersFoundLbl.hidden = YES;
                         }
                          
@@ -211,6 +232,12 @@
     }
 }
 
+- (IBAction)findFriendsPressed:(id)sender {
+    
+    [self hideWithFindFriends];
+    
+}
+
 -(void)showInView:(UIView *)v{
     
     self.view.frame = v.bounds;
@@ -269,6 +296,52 @@
     }
     
    // [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)hideWithFindFriends{
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:!self.showBlur withAnimation:UIStatusBarAnimationFade];
+    
+    if (self.showBlur) {
+        
+        [UIView animateWithDuration:0.6f
+                         animations:^
+         {
+             self.blurContainerV.alpha = 0;
+             self.containerV.frame = CGRectMake(self.containerV.frame.origin.x, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+             self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+         }
+                         completion:^(BOOL finished)
+         {
+             UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             [self.navigationController pushViewController:viewController animated:YES];
+             
+             [self removeFromParentViewController];
+             [self.view removeFromSuperview];
+             
+         }];
+    }
+    else{
+        [UIView animateWithDuration:0.7f
+                         animations:^
+         {
+             self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+             self.containerV.frame = CGRectMake(self.containerV.frame.origin.x, self.view.frame.size.height+self.containerV.frame.size.height, self.containerV.frame.size.width+30, self.containerV.frame.size.height);
+         }
+                         completion:^(BOOL finished)
+         {
+             
+             UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             [self.navigationController pushViewController:viewController animated:YES];
+             
+             [self removeFromParentViewController];
+             [self.view removeFromSuperview];
+             
+         }
+         ];
+    }
+    
+    // [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 /*

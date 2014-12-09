@@ -542,7 +542,7 @@
             username = [NSString stringWithFormat:@"%@.%@",[fbDict objectForKey:@"first_name"],[fbDict objectForKey:@"last_name"]];
         }
         
-        hasUsername = ([fbDict objectForKey:@"username"] != nil);
+        hasUsername = (username != nil && username.length > 1);
         hasEmail = ([email isKindOfClass:[NSString class]] && email.length >0);
         
         hasFirstName = ([[fbDict objectForKey:@"first_name"]isKindOfClass:[NSString class]] && [fbDict objectForKey:@"first_name"] != nil);

@@ -23,10 +23,12 @@
 @property (nonatomic,strong) UIView *superviewToBlur;
 @property (weak, nonatomic) IBOutlet UIView *blurContainerV;
 @property (nonatomic,assign) BOOL showBlur;
+@property (weak, nonatomic) IBOutlet UIButton *findFriendsButton;
 
 - (IBAction)closePressed:(id)sender;
 - (IBAction)donePressed:(id)sender;
 - (IBAction)sendPressed:(id)sender;
+- (IBAction)findFriendsPressed:(id)sender;
 
 -(void)showInView:(UIView *)v;
 -(void)hide;

@@ -39,7 +39,7 @@ typedef void(^markRead_completed)(BOOL);
 @property (copy) completed beeepersFromFBCompleted;
 @property (copy) completed beeepersFromTWCompleted;
 
-@property (nonatomic,strong) NSDictionary *user;
+@property (nonatomic,strong) NSMutableDictionary *user;
 @property (nonatomic,assign) int notifsPageLimit;
 @property (nonatomic,assign) int badgeNumber;
 

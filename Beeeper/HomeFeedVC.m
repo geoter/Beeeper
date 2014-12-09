@@ -186,6 +186,19 @@
                 if ([objs isKindOfClass:[NSArray class]]) {
                    
                     loadNextPage = (objs.count == [BPHomeFeed sharedBP].pageLimit);
+                    
+                    
+                    NSLog(@"%@",[BPUser sharedBP].user);
+                     NSNumber *following = (NSNumber *)[[BPUser sharedBP].user objectForKey:@"following"];
+                    if (following.intValue == 0) {
+                        self.noBeeepsLabel.text = @"You are not following anyone yet.\nStart following friends and see here what they are Beeeping.";
+                        self.findFriendsButton.hidden = (objs.count != 0);
+                    }
+                    else{
+                        self.noBeeepsLabel.text = @"No Beeeps found";
+                        self.findFriendsButton.hidden = YES;
+                    }
+                    
                     self.noBeeepsLabel.hidden = (objs.count != 0);
                     
                     events = nil;
@@ -1120,8 +1133,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
                 if (completed) {
                     
-                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                    bps.likes = likers;
+                    Likes *like = [[Likes alloc]init];
+                    like.likers = [[Likers alloc]init];
+                    like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+                    like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                    
+                    [bps.likes addObject:like];
                     
                     [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                     [SVProgressHUD showSuccessWithStatus:@"Liked!"];
@@ -1361,6 +1381,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:self];
+}
+
+- (IBAction)showFindFriends:(id)sender {
+    [self showFindFriends];
 }
 
 -(void)showBadgeIcon{

@@ -160,7 +160,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="115"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="V4M-ZJ-iIH">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="V4M-ZJ-iIH">
                                                     <rect key="frame" x="10" y="10" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" red="0.78730044160000001" green="0.78730044160000001" blue="0.78730044160000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -274,7 +274,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="293" height="47"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="QoF-aE-Brq">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="QoF-aE-Brq">
                                                             <rect key="frame" x="39" y="7" width="33" height="33"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                                         </imageView>
@@ -3042,7 +3042,7 @@
                                                                     </subviews>
                                                                     <color key="backgroundColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="deviceRGB"/>
                                                                 </view>
-                                                                <imageView userInteractionEnabled="NO" tag="34" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="CmF-FH-rMI">
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="34" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="CmF-FH-rMI">
                                                                     <rect key="frame" x="4" y="6" width="27" height="27"/>
                                                                 </imageView>
                                                             </subviews>
@@ -3511,7 +3511,7 @@ what they are Beeeping.</string>
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="rmB-1r-5hE">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="rmB-1r-5hE">
                                                     <rect key="frame" x="10" y="10" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -3743,7 +3743,7 @@ what they are Beeeping.</string>
                                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" tag="34" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="QLK-6h-rQB">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="34" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="QLK-6h-rQB">
                                                             <rect key="frame" x="154" y="45" width="28" height="28"/>
                                                         </imageView>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="7" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Steve" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3fr-Ty-qG8">
@@ -4031,7 +4031,7 @@ When a friend suggests you a Beeep, you will find it here.</string>
                                                     <rect key="frame" x="113" y="327" width="94" height="94"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="JvB-fo-c6b">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="JvB-fo-c6b">
                                                             <rect key="frame" x="2" y="2" width="90" height="90"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         </imageView>
@@ -4611,7 +4611,7 @@ When a friend suggests you a Beeep, you will find it here.</string>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="Uve-Y5-BFk">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="Uve-Y5-BFk">
                                                     <rect key="frame" x="10" y="10" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" red="0.78730044160000001" green="0.78730044160000001" blue="0.78730044160000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -4665,7 +4665,7 @@ When a friend suggests you a Beeep, you will find it here.</string>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="Bty-La-zbX">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_icon_180x180.png" id="Bty-La-zbX">
                                                     <rect key="frame" x="10" y="10" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" red="0.78730044160000001" green="0.78730044160000001" blue="0.78730044160000001" alpha="1" colorSpace="calibratedRGB"/>

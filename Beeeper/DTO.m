@@ -91,6 +91,8 @@ static DTO *thisDTO = nil;
 
 - (void)saveSuggestionsBadge:(int)number{
 
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"SuggestionsBadgeUpdated" object:nil];
+    
     self.suggestionBadgeNumber = number;
    
     [self setApplicationBadge:self.suggestionBadgeNumber+notificationsBadge];
@@ -507,7 +509,7 @@ static DTO *thisDTO = nil;
         }
     }];
     
-    [self performSelector:@selector(getSuggestions) withObject:nil afterDelay:60];
+    [self performSelector:@selector(getSuggestions) withObject:nil afterDelay:10];
 }
 
 -(void)clearSuggestions{

@@ -60,6 +60,8 @@
     BOOL headerVMovingViewShowing;
     ChooseDatePopupVC *chooseDatePopupVC;
     int chooseDaySelectedIndex;
+    
+    BOOL userDownloaded;
 }
 @property (nonatomic,strong) NSDate *selectedDate;
 
@@ -118,9 +120,11 @@
         
         loadNextPage = NO;
         
-        if (option != 0 && option != 1) {
-            option = segmentIndex;
-        }
+//        if (option != 0 && option != 1) {
+//            option = segmentIndex;
+//        }
+        
+        option = segmentIndex;
         
         if (![userID isKindOfClass:[NSString class]]) {
             userID = [self.user objectForKey:@"id"];
@@ -259,6 +263,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showSuggestionsBadge) name:@"SuggestionsBadgeUpdated" object:nil];
     
     GHContextMenuView* overlay = [[GHContextMenuView alloc] init];
     overlay.dataSource = self;
@@ -411,12 +417,7 @@
     
     [self downloadUserImageIfNecessery];
     
-    BOOL mpike = NO;
-    
     if ([user objectForKey:@"name"] == nil || [user objectForKey:@"lastname"] == nil) {
-        
-         mpike = YES;
-        
         
         if (user == nil) {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error getting user" message:@"Something went wrong.Please go back and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -430,6 +431,8 @@
                 NSMutableDictionary *userDict = [objs firstObject];
                 
                 [self.user addEntriesFromDictionary:userDict];
+                
+                userDownloaded = YES;
                 
                 [self setUserInfo];
             }
@@ -453,7 +456,6 @@
         
 
     }
-    
     else{
         
         [self hideLoading];
@@ -484,8 +486,6 @@
         
         if (city != nil && city.length > 0) {
             
-            mpike = YES;
-            
             [UIView animateWithDuration:0.3f
                      animations:^
              {
@@ -510,14 +510,15 @@
         }
         else{
             
-            mpike = YES;
-            
             [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
                 
                 if (completed && objs.count >0) {
 
                     NSMutableDictionary *userDict = [objs firstObject];
                     [self.user addEntriesFromDictionary:userDict];
+                    
+                    userDownloaded = YES;
+                    
                     [self setUserInfo];
                     
                 }
@@ -538,7 +539,7 @@
         }
     }
     
-    if (!mpike) {
+    if (!userDownloaded) {
         
         [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
             
@@ -547,6 +548,9 @@
 
                 NSMutableDictionary *userDict = [objs firstObject];
                 [self.user addEntriesFromDictionary:userDict];
+                
+                userDownloaded = YES;
+                
                 [self setUserInfo];
 
             }
@@ -1165,17 +1169,18 @@
         return 0;
     }
     else{
-        return 50;
+        return 90;
     }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
     
-    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,80.0)];
+    UIView *footer=[[UIView alloc] initWithFrame:CGRectMake(0,0,self.tableV.frame.size.width,90.0)];
     footer.backgroundColor =[UIColor clearColor];
     UILabel *lbl = [[UILabel alloc]initWithFrame:footer.bounds];
     lbl.textAlignment = NSTextAlignmentCenter;
     lbl.numberOfLines = 0;
+    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
     
     if (loading) {
         lbl.text = @"Loading...";
@@ -1187,7 +1192,7 @@
         lbl.text = @"There are no beeeps available.";
     }
     
-    lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    //lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
     lbl.textColor = [UIColor colorWithRed:111/255.0 green:113/255.0 blue:121/255.0 alpha:1];
     lbl.textAlignment = NSTextAlignmentCenter;
     [footer addSubview:lbl];

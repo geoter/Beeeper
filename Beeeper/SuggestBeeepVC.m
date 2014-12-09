@@ -103,7 +103,7 @@
                          [self.tableV reloadData];
                     
 
-                        self.noBeeepersFoundLbl.text = @"You have no followers yet.\nStart following friends and interact with them.";
+                        self.noBeeepersFoundLbl.text = @"You have no followers yet.\nStart following friends and\ninteract with them.";
                         
                         if (objs.count == 0) {
                             self.findFriendsButton.hidden = NO;

@@ -35,7 +35,7 @@ static BPSuggestions *thisWebServices = nil;
         operationQueue.maxConcurrentOperationCount = 3;
         requestFailedCounter = 0;
         requestEmptyResultsCounter = 0;
-        loadNextPage = YES;
+        loadNextPage = NO;
     }
     return(self);
 }
@@ -92,7 +92,6 @@ static BPSuggestions *thisWebServices = nil;
     }
     
     self.completed = compbloc;
-    
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     

@@ -202,8 +202,8 @@
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No one has wrote anything yet." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9fO-8o-jUO">
                                 <rect key="frame" x="0.0" y="222" width="320" height="28"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -351,15 +351,15 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading.." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YXz-qd-hf9">
-                                        <rect key="frame" x="0.0" y="243" width="272" height="80"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                        <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                        <rect key="frame" x="0.0" y="234" width="272" height="80"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                        <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ILx-gb-U4h">
-                                        <rect key="frame" x="93" y="323" width="87" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Find friends">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ILx-gb-U4h">
+                                        <rect key="frame" x="93" y="306" width="87" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <state key="normal" image="add_friend_icon_yellow.png">
                                             <color key="titleColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1901,6 +1901,7 @@
                                         <state key="normal" backgroundImage="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="Pyf-sb-GHU" eventType="touchUpInside" id="a6m-ro-cwj"/>
                                         </connections>
@@ -2175,7 +2176,7 @@
             </objects>
             <point key="canvasLocation" x="915" y="257"/>
         </scene>
-        <!--Push Notification Preferences-->
+        <!--Email Settings-->
         <scene sceneID="laW-ei-iZM">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="FVA-S2-UhM" customClass="NotificationsPrefsVC" sceneMemberID="viewController">
@@ -2191,36 +2192,26 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="503"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WSL-HS-Q0p">
-                                                <rect key="frame" x="17" y="20" width="137" height="21"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LIKES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WSL-HS-Q0p">
+                                                <rect key="frame" x="17" y="22" width="137" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <attributedString key="attributedText">
-                                                    <fragment content="LIKES">
-                                                        <attributes>
-                                                            <color key="NSColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
-                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                        </attributes>
-                                                    </fragment>
-                                                </attributedString>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <color key="textColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view tag="10" contentMode="scaleToFill" id="3f9-IX-OFQ">
-                                                <rect key="frame" x="15" y="44" width="290" height="40"/>
+                                                <rect key="frame" x="0.0" y="44" width="320" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <button opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kf9-Hz-eN1">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="When someone likes your Beeep" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fgh-1a-Gig">
+                                                        <rect key="frame" x="12" y="3" width="243" height="36"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="When someone likes your Beeep">
-                                                            <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
-                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                    </button>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <switch opaque="NO" tag="12" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="epp-1c-f6G">
-                                                        <rect key="frame" x="233" y="4" width="51" height="31"/>
+                                                        <rect key="frame" x="261" y="5" width="51" height="31"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="onTintColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                                         <connections>
@@ -2235,36 +2226,26 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EKg-rb-ZPv">
-                                                <rect key="frame" x="17" y="91" width="137" height="21"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FOLLOWS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EKg-rb-ZPv">
+                                                <rect key="frame" x="17" y="93" width="137" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <attributedString key="attributedText">
-                                                    <fragment content="FOLLOWS">
-                                                        <attributes>
-                                                            <color key="NSColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
-                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                        </attributes>
-                                                    </fragment>
-                                                </attributedString>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <color key="textColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view tag="16" contentMode="scaleToFill" id="aJh-8C-HVV">
-                                                <rect key="frame" x="15" y="116" width="290" height="40"/>
+                                                <rect key="frame" x="0.0" y="116" width="320" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <button opaque="NO" userInteractionEnabled="NO" tag="17" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Mwf-hU-0y7">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="When one starts following you" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kso-sJ-8KH">
+                                                        <rect key="frame" x="12" y="3" width="243" height="36"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="When one starts following you">
-                                                            <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
-                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                    </button>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <switch opaque="NO" tag="18" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Sz5-28-mxN">
-                                                        <rect key="frame" x="233" y="4" width="51" height="31"/>
+                                                        <rect key="frame" x="261" y="5" width="51" height="31"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="onTintColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                                         <connections>
@@ -2279,36 +2260,26 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sTF-Q2-HSS">
-                                                <rect key="frame" x="17" y="167" width="137" height="21"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="COMMENTS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sTF-Q2-HSS">
+                                                <rect key="frame" x="17" y="169" width="137" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <attributedString key="attributedText">
-                                                    <fragment content="COMMENTS">
-                                                        <attributes>
-                                                            <color key="NSColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
-                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                        </attributes>
-                                                    </fragment>
-                                                </attributedString>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <color key="textColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view tag="19" contentMode="scaleToFill" id="EPc-3Q-6pr">
-                                                <rect key="frame" x="15" y="193" width="290" height="40"/>
+                                                <rect key="frame" x="0.0" y="193" width="320" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <button opaque="NO" userInteractionEnabled="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GTT-UZ-pze">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="When your Beeep is commented" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BbM-lf-GZn">
+                                                        <rect key="frame" x="12" y="3" width="243" height="36"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="When your Beeep is commented">
-                                                            <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
-                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                    </button>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <switch opaque="NO" tag="21" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="W4b-4e-tJ6">
-                                                        <rect key="frame" x="233" y="4" width="51" height="31"/>
+                                                        <rect key="frame" x="261" y="5" width="51" height="31"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="onTintColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                                         <connections>
@@ -2323,40 +2294,64 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="krk-0h-P4Q">
-                                                <rect key="frame" x="17" y="241" width="137" height="21"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SUGGESTIONS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="krk-0h-P4Q">
+                                                <rect key="frame" x="17" y="243" width="137" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <attributedString key="attributedText">
-                                                    <fragment content="SUGGESTIONS">
-                                                        <attributes>
-                                                            <color key="NSColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
-                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                        </attributes>
-                                                    </fragment>
-                                                </attributedString>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <color key="textColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view tag="25" contentMode="scaleToFill" id="0cd-fR-oHl">
-                                                <rect key="frame" x="15" y="268" width="290" height="40"/>
+                                                <rect key="frame" x="0.0" y="268" width="320" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <button opaque="NO" userInteractionEnabled="NO" tag="26" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="M5R-R7-ayz">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="When you have a suggestion" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qwL-1F-aYa">
+                                                        <rect key="frame" x="12" y="3" width="243" height="36"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <inset key="contentEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="When you have a suggestion">
-                                                            <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
-                                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                    </button>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <switch opaque="NO" tag="27" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="51C-k3-dyE">
-                                                        <rect key="frame" x="233" y="4" width="51" height="31"/>
+                                                        <rect key="frame" x="261" y="5" width="51" height="31"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="onTintColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                                         <connections>
                                                             <action selector="togglePressed:" destination="FVA-S2-UhM" eventType="valueChanged" id="KSh-41-uAo"/>
+                                                        </connections>
+                                                    </switch>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="3"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BEEEPS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UJr-lr-M8J">
+                                                <rect key="frame" x="17" y="320" width="137" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <color key="textColor" red="0.55294117647058827" green="0.58823529411764708" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view tag="25" contentMode="scaleToFill" id="aNh-95-qKH">
+                                                <rect key="frame" x="0.0" y="343" width="317" height="42"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="At the time you chose to be reminded" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wZe-59-kal">
+                                                        <rect key="frame" x="12" y="3" width="260" height="36"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <switch opaque="NO" tag="28" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="9ib-C4-qTW">
+                                                        <rect key="frame" x="261" y="5" width="51" height="31"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="onTintColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
+                                                        <connections>
+                                                            <action selector="togglePressed:" destination="FVA-S2-UhM" eventType="valueChanged" id="sxt-o5-11c"/>
                                                         </connections>
                                                     </switch>
                                                 </subviews>
@@ -2380,7 +2375,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.87450980392156863" green="0.8901960784313725" blue="0.90196078431372551" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Push Notification Preferences" id="mnC-SH-MFo"/>
+                    <navigationItem key="navigationItem" title="Email Settings" id="mnC-SH-MFo"/>
                     <connections>
                         <outlet property="scrollV" destination="nQT-wf-376" id="gDK-Zg-1hR"/>
                     </connections>
@@ -2727,7 +2722,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <inset key="contentEdgeInsets" minX="14" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                <state key="normal" title="Notification preferences">
+                                                <state key="normal" title="Email Settings">
                                                     <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
@@ -3375,18 +3370,10 @@
                                     <outlet property="delegate" destination="dgo-Fe-0d2" id="z1v-YL-NAC"/>
                                 </connections>
                             </collectionView>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ecA-ym-Rs0">
-                                <rect key="frame" x="0.0" y="180" width="320" height="91"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <string key="text">You are not following anyone yet. Start following friends and see here what they are Beeeping.</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="6Yy-Vx-mqG">
-                                <rect key="frame" x="117" y="260" width="87" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Find friends">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="6Yy-Vx-mqG">
+                                <rect key="frame" x="117" y="258" width="87" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                <state key="normal" image="add_friend_icon.png">
                                     <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -3394,6 +3381,16 @@
                                     <action selector="showFindFriends:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="djE-lJ-aEG"/>
                                 </connections>
                             </button>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ecA-ym-Rs0">
+                                <rect key="frame" x="0.0" y="186" width="320" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <string key="text">You are not following anyone yet. 
+Start following friends and see here
+what they are Beeeping.</string>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" id="4cx-NJ-qW6">
                                 <rect key="frame" x="0.0" y="454" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
@@ -3428,16 +3425,6 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hjr-Nc-T2c">
-                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="addNewBeeep:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="eH0-8O-KeW"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="32Y-aA-RrR">
                                         <rect key="frame" x="205" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -3467,6 +3454,17 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
+                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hjr-Nc-T2c">
+                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <connections>
+                                            <action selector="addNewBeeep:" destination="dgo-Fe-0d2" eventType="touchUpInside" id="eH0-8O-KeW"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
@@ -3538,7 +3536,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view tag="88" contentMode="scaleToFill" id="xuf-La-ehz">
-                                                    <rect key="frame" x="0.0" y="78" width="320" height="1"/>
+                                                    <rect key="frame" x="0.0" y="79" width="320" height="1"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>
@@ -3568,8 +3566,8 @@
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No notifications yet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AUI-cV-2QN">
                                 <rect key="frame" x="0.0" y="210" width="320" height="21"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" id="avH-qP-znm">
@@ -3612,6 +3610,7 @@
                                         <state key="normal" backgroundImage="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="Ag7-X4-56u" eventType="touchUpInside" id="29o-nC-z6N"/>
                                         </connections>
@@ -3784,9 +3783,10 @@
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TH3-0G-ZcC">
                                 <rect key="frame" x="7" y="248" width="306" height="71"/>
-                                <string key="text">You have no suggestions yet.When a friend suggests you a Beeep, you will find it here.</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <string key="text">You have no suggestions yet.
+When a friend suggests you a Beeep, you will find it here.</string>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -4508,16 +4508,6 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Gpd-jm-IZ7">
-                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="addNewBeeep:" destination="ZvL-tS-rsJ" eventType="touchUpInside" id="xcE-7g-sDa"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="kZV-dq-vn5">
                                         <rect key="frame" x="205" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -4547,6 +4537,17 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
+                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Gpd-jm-IZ7">
+                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <connections>
+                                            <action selector="addNewBeeep:" destination="ZvL-tS-rsJ" eventType="touchUpInside" id="xcE-7g-sDa"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
@@ -4727,8 +4728,8 @@
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yt9-YV-msy">
                                 <rect key="frame" x="0.0" y="260" width="320" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -4746,9 +4747,11 @@
     </scenes>
     <resources>
         <image name="Add_new_beeep_btn.png" width="49" height="45"/>
+        <image name="Add_new_beeep_btn_pressed.png" width="49" height="45"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="activityBtn.png" width="14" height="14"/>
         <image name="add_friend_icon.png" width="24" height="24"/>
+        <image name="add_friend_icon_yellow.png" width="24" height="25"/>
         <image name="arrow-cell.png" width="9" height="16"/>
         <image name="back.png" width="55" height="19"/>
         <image name="back_bold.png" width="22" height="17"/>

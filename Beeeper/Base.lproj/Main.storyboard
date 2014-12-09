@@ -67,9 +67,9 @@
                                     <outlet property="delegate" destination="Xbb-ty-Fke" id="oA4-f7-OyK"/>
                                 </connections>
                             </tableView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Jd4-G5-5dV">
-                                <rect key="frame" x="117" y="310" width="87" height="30"/>
-                                <state key="normal" title="Find friends">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Jd4-G5-5dV">
+                                <rect key="frame" x="117" y="295" width="87" height="40"/>
+                                <state key="normal" image="add_friend_icon_yellow.png">
                                     <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -78,9 +78,9 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No users found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VFS-rI-Tgh">
-                                <rect key="frame" x="0.0" y="226" width="320" height="79"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727617263794" green="0.68235296010971069" blue="0.70980393886566162" alpha="1" colorSpace="deviceRGB"/>
+                                <rect key="frame" x="0.0" y="214" width="320" height="79"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -168,9 +168,11 @@
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xXk-L8-2Wc">
                                 <rect key="frame" x="7" y="225" width="306" height="117"/>
-                                <string key="text">You have no activity yet.Start making Beeeps, likes, comments or suggestions and all your actions will appear here</string>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="19"/>
-                                <color key="textColor" red="0.64313727620000005" green="0.68235296010000002" blue="0.70980393890000004" alpha="1" colorSpace="deviceRGB"/>
+                                <string key="text">You have no activity yet.
+Start making Beeeps, likes, comments or suggestions and all your actions will appear here
+</string>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                <color key="textColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -651,6 +653,7 @@
     </scenes>
     <resources>
         <image name="Welcome_Logo.png" width="196" height="61"/>
+        <image name="add_friend_icon_yellow.png" width="24" height="25"/>
         <image name="back.png" width="55" height="19"/>
         <image name="checkbox_empty.png" width="25" height="24"/>
         <image name="editProfileBtn.png" width="12" height="13"/>

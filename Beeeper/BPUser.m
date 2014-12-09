@@ -1490,6 +1490,10 @@ static BPUser *thisWebServices = nil;
 
 -(void)clearBadgeWithCompletionBlock:(clearBadge_completed)compbloc{
 
+    if (self.badgeNumber == 0) {
+        return;
+    }
+    
     self.clearBadge_completed = compbloc;
     
     NSMutableArray *postValues = [NSMutableArray array];
@@ -1508,6 +1512,9 @@ static BPUser *thisWebServices = nil;
             NSString *response = operation.responseString;
             
             if ([response rangeOfString:@"success"].location != NSNotFound) {
+                
+                [[DTO sharedDTO]setApplicationBadge:(int)[UIApplication sharedApplication].applicationIconBadgeNumber-self.badgeNumber];
+                
                 self.badgeNumber = 0;
                 self.clearBadge_completed(YES);
             }

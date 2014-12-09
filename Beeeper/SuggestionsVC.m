@@ -103,7 +103,10 @@
                     if (!uparxei) {
                         [suggestions addObject:sugg];
                     }
+                    
                 }
+                
+                [self.tableV reloadData];
                 
             }
             else{
@@ -256,7 +259,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (indexPath.row == suggestions.count && suggestions.count > 0) {
+    if (indexPath.row == suggestions.count && suggestions.count > 0 && [BPSuggestions sharedBP].loadNextPage) {
         
         static NSString *CellIdentifier = @"LoadMoreCell";
         

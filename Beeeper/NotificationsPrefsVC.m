@@ -23,7 +23,7 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
-    [self adjustFonts];
+    //[self adjustFonts];
 
 }
 
@@ -58,11 +58,12 @@
 
 -(void)updateSettings{
     UISwitch *toggleLikes = (id)[[self.scrollV viewWithTag:10]viewWithTag:12];
-    UISwitch *toggleRebeeeps = (id)[[self.scrollV viewWithTag:13]viewWithTag:15];
+    //UISwitch *toggleRebeeeps = (id)[[self.scrollV viewWithTag:13]viewWithTag:15];
     UISwitch *toggleFollows = (id)[[self.scrollV viewWithTag:16]viewWithTag:18];
     UISwitch *toggleComments = (id)[[self.scrollV viewWithTag:19]viewWithTag:21];
-    UISwitch *toggleFriendsJoined = (id)[[self.scrollV viewWithTag:22]viewWithTag:24];
+   // UISwitch *toggleFriendsJoined = (id)[[self.scrollV viewWithTag:22]viewWithTag:24];
     UISwitch *toggleSuggestions = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
+    UISwitch *toggleBeeepTrigger = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
     
     NSString *beeep = [downloadedSettings objectForKey:@"beeep"];
     NSString *like = [downloadedSettings objectForKey:@"like"];
@@ -71,7 +72,7 @@
     NSString *comment = [downloadedSettings objectForKey:@"comment"];
     
     toggleLikes.on = like.boolValue;
-    toggleRebeeeps.on = beeep.boolValue;
+    toggleBeeepTrigger.on = beeep.boolValue;
     toggleFollows.on = follow.boolValue;
     toggleSuggestions.on = suggest.boolValue;
     toggleComments.on = comment.boolValue;
@@ -136,6 +137,11 @@
         case 27:
         {
              [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"suggest"];
+        }
+            break;
+        case 28:
+        {
+            [downloadedSettings setObject:[NSString stringWithFormat:@"%d",sender.isOn] forKey:@"beeep"];
         }
             break;
 
@@ -205,6 +211,11 @@
         
     });
     
+}
+
+- (UIColor *)activityIndicatorView:(MONActivityIndicatorView *)activityIndicatorView
+      circleBackgroundColorAtIndex:(NSUInteger)index{
+    return [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
 }
 
 -(void)hideLoading{

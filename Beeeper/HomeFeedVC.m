@@ -191,7 +191,7 @@
                     NSLog(@"%@",[BPUser sharedBP].user);
                      NSNumber *following = (NSNumber *)[[BPUser sharedBP].user objectForKey:@"following"];
                     if (following.intValue == 0) {
-                        self.noBeeepsLabel.text = @"You are not following anyone yet.\nStart following friends and see here what they are Beeeping.";
+                        self.noBeeepsLabel.text = @"You are not following anyone yet.\nStart following friends and see here\nwhat they are Beeeping.";
                         self.findFriendsButton.hidden = (objs.count != 0);
                     }
                     else{
@@ -864,8 +864,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     timelineVC.mode = Timeline_Not_Following;
     
     NSDictionary *user = [b.whoFfo dictionaryRepresentation];
-    timelineVC.user = user;
-    
+    timelineVC.user = [NSMutableDictionary dictionaryWithDictionary:user];
+
     [self.navigationController pushViewController:timelineVC animated:YES];
 }
 

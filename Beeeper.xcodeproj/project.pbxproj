@@ -117,6 +117,10 @@
 		637841711A0047EE0047C27B /* chooseDate-arrow-down-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */; };
 		637841721A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */; };
 		6390E3831A28F4F6001C9303 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6390E3821A28F4F6001C9303 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		639AD6381A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD6361A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png */; };
+		639AD6391A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD6371A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png */; };
+		639AD63C1A374A2000C28CA5 /* add_friend_icon_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD63A1A374A2000C28CA5 /* add_friend_icon_yellow.png */; };
+		639AD63D1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD63B1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png */; };
 		639AFDBC1A1B729600086D4F /* pin_icon_event-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AFDBA1A1B729600086D4F /* pin_icon_event-big.png */; };
 		639AFDBD1A1B729600086D4F /* pin_icon_event-big@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AFDBB1A1B729600086D4F /* pin_icon_event-big@2x.png */; };
 		63AC25E11A0AB30200D03932 /* beeepItIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63AC25DF1A0AB30200D03932 /* beeepItIcon.png */; };
@@ -719,6 +723,10 @@
 		6390E3811A28F4F6001C9303 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		6390E3821A28F4F6001C9303 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		639509071A1FA4FF00E00446 /* Mohave.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mohave.otf; sourceTree = "<group>"; };
+		639AD6361A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add_new_beeep_btn_pressed@2x.png"; sourceTree = "<group>"; };
+		639AD6371A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Add_new_beeep_btn_pressed.png; sourceTree = "<group>"; };
+		639AD63A1A374A2000C28CA5 /* add_friend_icon_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_friend_icon_yellow.png; sourceTree = "<group>"; };
+		639AD63B1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_friend_icon_yellow@2x.png"; sourceTree = "<group>"; };
 		639AFDBA1A1B729600086D4F /* pin_icon_event-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin_icon_event-big.png"; sourceTree = "<group>"; };
 		639AFDBB1A1B729600086D4F /* pin_icon_event-big@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin_icon_event-big@2x.png"; sourceTree = "<group>"; };
 		63AC25DF1A0AB30200D03932 /* beeepItIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepItIcon.png; sourceTree = "<group>"; };
@@ -1685,6 +1693,8 @@
 		9615E8AA192DB56F0099B3E0 /* R */ = {
 			isa = PBXGroup;
 			children = (
+				639AD6361A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png */,
+				639AD6371A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png */,
 				962E3DA9194CBEDC00A0DD87 /* search_icon_selected.png */,
 				962E3DAA194CBEDC00A0DD87 /* search_icon_selected@2x.png */,
 				962E3DA5194CBD4700A0DD87 /* search_icon_gray@2x.png */,
@@ -1963,6 +1973,8 @@
 		CE0C880718D0BC8800BA548F /* R */ = {
 			isa = PBXGroup;
 			children = (
+				639AD63A1A374A2000C28CA5 /* add_friend_icon_yellow.png */,
+				639AD63B1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png */,
 				63C5FE081A0774A300E9EE22 /* select_all@2x.png */,
 				63C5FE091A0774A300E9EE22 /* select_all.png */,
 				63C5FE041A076F7700E9EE22 /* follow_all@2x.png */,
@@ -2837,6 +2849,7 @@
 				63C27CE419FA8D9A00564583 /* beeepit_outlined@2x.png in Resources */,
 				CE0C881618D0BD2B00BA548F /* option_2.png in Resources */,
 				CE25F9FA18B6761300D8B858 /* NotificationButtonBackground@2x.png in Resources */,
+				639AD63C1A374A2000C28CA5 /* add_friend_icon_yellow.png in Resources */,
 				CEFDE81418ED651D00E500A9 /* welcome_screen_1@2x.png in Resources */,
 				CEA1132E19530D00003C8D7B /* settings-icon-timeline.png in Resources */,
 				CEF2639718DC59A10047510D /* 2.png in Resources */,
@@ -2865,6 +2878,7 @@
 				9615E8B9192DB57C0099B3E0 /* tabbar-timeline.png in Resources */,
 				CEF263DA18DC89690047510D /* nba_494_384.png in Resources */,
 				CE042A051938D1F600E3167A /* search_icon_white@2x.png in Resources */,
+				639AD63D1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png in Resources */,
 				636EEDBB1A1FB3CF00081080 /* beeeped_gray.png in Resources */,
 				CE79423618DB261B00748EDD /* facebook_icon_gray@2x.png in Resources */,
 				CE0C882718D0BE6A00BA548F /* option_3_gray@2x.png in Resources */,
@@ -2913,6 +2927,7 @@
 				CE0C882B18D0C55800BA548F /* Beeeper_logo_small@2x.png in Resources */,
 				CE042A021938BF6700E3167A /* pin-black@2x.png in Resources */,
 				9615E8CE192DB7870099B3E0 /* activityBtn@2x.png in Resources */,
+				639AD6391A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png in Resources */,
 				637841711A0047EE0047C27B /* chooseDate-arrow-down-white.png in Resources */,
 				CEF263C018DC7F080047510D /* likes_icon_event@2x.png in Resources */,
 				5E51DF0F196A9ABB0061AE2A /* timeline-time-frame@2x.png in Resources */,
@@ -2977,6 +2992,7 @@
 				635EFB281A23916000B7D033 /* Mohave.otf in Resources */,
 				CE0C883E18D0C7B300BA548F /* plus_btn.png in Resources */,
 				CE7CFAE718B797C10044C9AC /* MessageEntrySendButton@2x.png in Resources */,
+				639AD6381A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png in Resources */,
 				9615E8B7192DB57C0099B3E0 /* tabbar-settings.png in Resources */,
 				CE02EB9F18EC441600B5674C /* search_icon.png in Resources */,
 				969591ED194A050F00526AA0 /* beeepit_btn_disabled.png in Resources */,

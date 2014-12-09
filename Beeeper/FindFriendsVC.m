@@ -826,7 +826,7 @@
                          
                          dispatch_async(dispatch_get_main_queue(), ^{
 
-                             self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
+                             self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
                 
                              self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
                              
@@ -960,7 +960,7 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
-                            self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
+                            self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
                             self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                             
                             [self.tableV reloadData];
@@ -997,7 +997,7 @@
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 
                                 
-                                self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
+                                self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
                                 
                                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                                 
@@ -1012,7 +1012,7 @@
                                 fbPeople = [NSMutableArray array];
                                 searchedPeople = [NSMutableArray array];
                                 
-                                self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
+                                self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
                                 self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
                                 
                                 [self hideLoading];
@@ -2100,7 +2100,7 @@
         searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
         searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
         
-        self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
+        self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
         self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
         
         [self.tableV reloadData];
@@ -2141,7 +2141,7 @@
         else if (selectedOption == FacebookButton){
             searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
             searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
-            self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
+            self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
             self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
             
             [self.tableV reloadData];
@@ -2268,7 +2268,7 @@
              searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
          }
         
-         self.noUsersFoundLabel.text = @"No one of your Facebook friends is on Beeeper yet.";
+         self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
@@ -2282,7 +2282,7 @@
              searchedPeople = [NSMutableArray arrayWithArray:fbPeople];
          }
          
-         self.noUsersFoundLabel.text = @"No one of your Twitter friends is on Beeeper yet.";
+         self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
          self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
          [self.tableV reloadData];
 

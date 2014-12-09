@@ -909,20 +909,25 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
             if (completed) {
                 
-                Likes *like = [[Likes alloc]init];
-                like.likers = [[Likers alloc]init];
-                like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
-                like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
-                like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-                like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
-                like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+//                Likes *like = [[Likes alloc]init];
+//                like.likers = [[Likers alloc]init];
+//                like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+//                like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+//                like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+//                like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+//                like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
                 
-                [event.likes addObject:like];
+                [event.likes addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
                 
-                [self.tableV reloadData];
+                dispatch_async (dispatch_get_main_queue(), ^{
+                  
+                    [self.collectionV reloadData];
+                    
+                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+           
+                });
                 
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
-                [SVProgressHUD showSuccessWithStatus:@"Liked!"];
             }
             else{
                 
@@ -931,8 +936,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                 
                 NSString *info = [errorDict objectForKey:@"info"];
                 if ([info isEqualToString:@"You have already liked this event"]) {
-                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
-                    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+                  
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                     
+                        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:209/255.0 green:93/255.0 blue:99/255.0 alpha:1]];
+                      [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@\n%@",[errorDict objectForKey:@"message"],[errorDict objectForKey:@"info"]]];
+           
+                    });
                 }
             }
         }];

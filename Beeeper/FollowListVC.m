@@ -183,6 +183,9 @@
      else{
          
          if (self.ids.count == 0) {
+             
+             self.nousersLabel.text = (self.mode ==3)?@"No one has liked it yet.": @"No one has Beeeped it yet.";
+             
              [self updateUsersCount]; //No users label show
              [self hideLoading];
              return;

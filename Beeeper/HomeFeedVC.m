@@ -195,7 +195,7 @@
                         self.findFriendsButton.hidden = (objs.count != 0);
                     }
                     else{
-                        self.noBeeepsLabel.text = @"None of your friends have Beeeped anything yet.";
+                        self.noBeeepsLabel.text = @"None of your friends has Beeeped anything yet.";
                         self.findFriendsButton.hidden = YES;
                     }
                     

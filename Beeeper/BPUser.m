@@ -163,7 +163,7 @@ static BPUser *thisWebServices = nil;
         }];
     }
     @catch (NSException *exception) {
-        self.completed(NO,[NSString stringWithFormat:@"signupFinished CATCH %@",responseString]);
+        self.emailSignUpCompleted(NO,[NSString stringWithFormat:@"signupFinished CATCH %@",responseString]);
     }
     @finally {
         
@@ -177,7 +177,7 @@ static BPUser *thisWebServices = nil;
     
     [[DTO sharedDTO]addBugLog:@"signupFailed" where:@"BPUser/signupFailed" json:responseString];
     
-    self.completed(NO,@"signupFailed");
+    self.emailSignUpCompleted(NO,@"signupFailed");
 }
 
 #pragma mark - User settings

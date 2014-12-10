@@ -2697,25 +2697,27 @@
 
 -(void)sendFacebook{
     
-    
     [FBSession openActiveSessionWithReadPermissions:@[@"publish_actions"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
                                                       FBSessionState state,
                                                       NSError *error) {
                                       if (error) {
-                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                              message:error.localizedDescription
-                                                                                             delegate:nil
-                                                                                    cancelButtonTitle:@"OK"
-                                                                                    otherButtonTitles:nil];
-                                          [alertView show];
                                           
-                                          [self sendFacebookNoApp];
+                                          if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound) {
+                                              
+                                              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                  message:error.localizedDescription
+                                                                                                 delegate:nil
+                                                                                        cancelButtonTitle:@"OK"
+                                                                                        otherButtonTitles:nil];
+                                              [alertView show];
+                                              
+                                              [self sendFacebookNoApp];
+                                          }
                                           
                                           
                                       } else if (session.isOpen) {
-                                          
                                           
                                           // Check if the Facebook app is installed and we can present the share dialog
                                           FBLinkShareParams *params = [[FBLinkShareParams alloc] init];

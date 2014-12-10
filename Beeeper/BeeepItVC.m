@@ -602,16 +602,22 @@
                                                       FBSessionState state,
                                                       NSError *error) {
           if (error) {
-              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                  message:error.localizedDescription
-                                                                 delegate:nil
-                                                        cancelButtonTitle:@"OK"
-                                                        otherButtonTitles:nil];
-              [alertView show];
+              
               self.fbSwitch.on = NO;
               [self switchValueChanged:self.fbSwitch];
               
-              [self sendFacebookNoApp];
+              if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound) {
+                  
+                  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                      message:error.localizedDescription
+                                                                     delegate:nil
+                                                            cancelButtonTitle:@"OK"
+                                                            otherButtonTitles:nil];
+                  [alertView show];
+                  
+                  [self sendFacebookNoApp];
+              }
+
               
           } else if (session.isOpen) {
               
@@ -697,7 +703,8 @@
                                                         
                                                     }
                                                 }];
-              } else {
+              }
+              else {
                   // Present the feed dialog
                   [self sendFacebookNoApp];
               }

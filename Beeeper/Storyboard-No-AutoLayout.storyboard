@@ -248,7 +248,7 @@
                             </view>
                             <view clipsSubviews="YES" contentMode="scaleToFill" id="BVT-Og-V7H">
                                 <rect key="frame" x="24" y="34" width="273" height="500"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggest it" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QPO-7z-rka">
                                         <rect key="frame" x="0.0" y="31" width="273" height="30"/>
@@ -412,7 +412,7 @@
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                         <state key="normal" title="Create Account">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="joinPressed:" destination="fGe-UV-Q9O" eventType="touchUpInside" id="Ujt-3w-Qv3"/>
@@ -752,7 +752,6 @@
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="3gS-AQ-8Id">
                                 <rect key="frame" x="24" y="58" width="272" height="452"/>
-                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add New Beeep" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PIA-HR-LkH">
                                         <rect key="frame" x="0.0" y="24" width="272" height="27"/>
@@ -1169,7 +1168,7 @@
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="jwg-JT-LDh">
                                 <rect key="frame" x="24" y="32" width="272" height="504"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                 <subviews>
                                     <button opaque="NO" tag="77" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1WW-yb-boq">
                                         <rect key="frame" x="0.0" y="2" width="46" height="46"/>
@@ -1428,10 +1427,9 @@
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="7B2-FY-gh3">
                                 <rect key="frame" x="24" y="75" width="272" height="418"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <view tag="1112" contentMode="scaleToFill" id="noO-qg-VsL">
-                                        <rect key="frame" x="0.0" y="163" width="271" height="43"/>
+                                        <rect key="frame" x="0.0" y="163" width="272" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="w5f-7D-SvC">
@@ -1503,7 +1501,7 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <view clipsSubviews="YES" tag="1111" contentMode="scaleToFill" id="4zu-HP-Ns2">
-                                        <rect key="frame" x="0.0" y="120" width="271" height="43"/>
+                                        <rect key="frame" x="0.0" y="120" width="272" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Beeep Time" minimumFontSize="17" id="nY1-6X-mqV">

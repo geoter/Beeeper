@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BorderTextField.h"
 
 @interface SignUp_Email_VC : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollV;
+@property (strong, nonatomic) IBOutletCollection(BorderTextField) NSArray *textFields;
 
 - (IBAction)registerPressed:(id)sender;
 - (IBAction)agreeButtonPressed:(id)sender;

@@ -107,7 +107,7 @@ static BPUser *thisWebServices = nil;
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
 
-    self.completed = compbloc;
+    self.emailSignUpCompleted = compbloc;
     
     NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
     
@@ -124,6 +124,8 @@ static BPUser *thisWebServices = nil;
     [postValuesDict setObject:[info objectForKey:@"state"] forKey:@"state"];
     
     [postValuesDict setObject:[info objectForKey:@"country"] forKey:@"country"];
+
+    [postValuesDict setObject:[info objectForKey:@"username"] forKey:@"username"];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
@@ -147,11 +149,16 @@ static BPUser *thisWebServices = nil;
     NSString *responseString = request;
    
     @try {
-        NSDictionary *info = info;
+        NSDictionary *infoDict = info;
         
-        [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
+        
+        [self loginUser:[infoDict objectForKey:@"email"] password:[infoDict objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
             if (completed) {
-                self.completed(completed,user);
+                self.emailSignUpCompleted(completed,user);
+            }
+            else{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Login error" message:@"Something went wrong." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
             }
         }];
     }

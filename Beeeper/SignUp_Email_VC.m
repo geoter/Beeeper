@@ -118,22 +118,22 @@
                         }
                         break;
                     }
-                    case 3:{
+                    case 2:{
                         emailTxtF = (UITextField *)sub;
                         if ([(UITextField *)sub text].length > 0) {
                             [values setObject:[(UITextField *)sub text] forKey:@"email"];
                         }
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         passwordTxtF = (UITextField *)sub;
                         if ([(UITextField *)sub text].length > 0) {
                             [values setObject:[(UITextField *)sub text] forKey:@"password"];
                         }
                         break;
                     }
-                    case 5:{
-                        passwordTxtF = (UITextField *)sub;
+                    case 4:{
+                        usernameTxtF = (UITextField *)sub;
                         if ([(UITextField *)sub text].length > 0) {
                             [values setObject:[(UITextField *)sub text] forKey:@"username"];
                         }
@@ -304,6 +304,20 @@
 
 }
 
+- (IBAction)loginPressed:(id)sender {
+    
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[TabbarVC class]]) {
+            return;
+        }
+    }
+    
+    UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+    
+    [self.navigationController pushViewController:menuVC animated:YES];
+    
+}
+
 
 
 -(void)adjustFonts{
@@ -426,9 +440,19 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
    
-    if (textField.tag != 5) {
-        UITextField *txtF = (id)[self.scrollV viewWithTag:textField.tag+1];
-        [txtF becomeFirstResponder];
+    if (textField.tag != 4) {
+        
+        UITextField *maxTextfield;
+        
+        for (UITextField *txtF in self.textFields) {
+            if (txtF.tag ==  textField.tag+1) {
+                maxTextfield = txtF;
+                break;
+            }
+        }
+        
+        [maxTextfield becomeFirstResponder];
+        
     }
     else{
         [self.scrollV removeGestureRecognizer:tapG];

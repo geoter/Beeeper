@@ -273,7 +273,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="next"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="Jo9-jy-Jm9" id="bWv-Hu-MKP"/>
                                                 </connections>
@@ -282,13 +282,13 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jhO-PT-toY">
-                                        <rect key="frame" x="28" y="427" width="264" height="42"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="28" y="449" width="264" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <color key="backgroundColor" red="0.94117647058823528" green="0.81568627450980391" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                         <state key="normal" title="Create Account">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="registerPressed:" destination="Jo9-jy-Jm9" eventType="touchUpInside" id="HhG-Eo-D6a"/>
@@ -298,7 +298,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <rect key="frame" x="28" y="160" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" id="SPo-xQ-MgZ" customClass="BorderTextField">
+                                            <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" id="SPo-xQ-MgZ" customClass="BorderTextField">
                                                 <rect key="frame" x="1" y="1" width="262" height="38"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -315,7 +315,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <rect key="frame" x="28" y="212" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" id="PFb-Mb-STT" customClass="BorderTextField">
+                                            <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" id="PFb-Mb-STT" customClass="BorderTextField">
                                                 <rect key="frame" x="1" y="1" width="262" height="38"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -332,12 +332,12 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <rect key="frame" x="28" y="264" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="17" id="3c3-VR-2KZ" customClass="BorderTextField">
+                                            <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="17" id="3c3-VR-2KZ" customClass="BorderTextField">
                                                 <rect key="frame" x="1" y="1" width="262" height="38"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="done" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="Jo9-jy-Jm9" id="i5X-Qr-R9h"/>
                                                 </connections>
@@ -410,6 +410,10 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                     <navigationItem key="navigationItem" id="InS-aC-Qh4"/>
                     <connections>
                         <outlet property="scrollV" destination="Iqh-xR-BgQ" id="6jx-ia-n1t"/>
+                        <outletCollection property="textFields" destination="qce-ja-NST" id="3MZ-PA-0qN"/>
+                        <outletCollection property="textFields" destination="SPo-xQ-MgZ" id="abg-f3-Y9P"/>
+                        <outletCollection property="textFields" destination="PFb-Mb-STT" id="Isz-aL-Uwp"/>
+                        <outletCollection property="textFields" destination="3c3-VR-2KZ" id="0Ma-33-qY2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eU2-rH-p32" userLabel="First Responder" sceneMemberID="firstResponder"/>

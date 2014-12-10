@@ -75,7 +75,7 @@
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     refreshControl.tag = 234;
-    refreshControl.tintColor = [UIColor whiteColor];
+    refreshControl.tintColor = [UIColor lightGrayColor];
     [refreshControl addTarget:self action:@selector(getFollowers) forControlEvents:UIControlEventValueChanged];
     [refreshView addSubview:refreshControl];
     
@@ -88,6 +88,9 @@
     static int failsCount = 0;
     
     [[BPUser sharedBP]getFollowersForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        
+        UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
+        [refreshControl endRefreshing];
         
         if (completed) {
             

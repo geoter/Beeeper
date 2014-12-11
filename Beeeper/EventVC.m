@@ -2930,7 +2930,7 @@
         MFMailComposeViewController *mailComposer =
         [[MFMailComposeViewController alloc] init];
         [mailComposer setSubject:self.titleLabel.text];
-        NSString *message = [NSString stringWithFormat:@"Check out this event on Beeeper:\n\n%@",tinyURL];
+        NSString *message = [NSString stringWithFormat:@"Check out this event on Beeeper:<br/><br/><a href='http://%@'>%@</a>",tinyURL,tinyURL];
         [mailComposer setMessageBody:message
                               isHTML:YES];
 //        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
@@ -2961,7 +2961,7 @@
         
     } else if (result == MessageComposeResultSent) {
         
-        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
         [SVProgressHUD showSuccessWithStatus:@"SMS Sent!"];
     }
     
@@ -2974,7 +2974,7 @@
          didFinishWithResult:(MFMailComposeResult)result
                        error:(NSError *)error{
     if (result == MFMailComposeResultSent) {
-        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
+        [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
         [SVProgressHUD showSuccessWithStatus:@"Email Sent!"];
     }
     else if(result == MFMailComposeResultFailed){

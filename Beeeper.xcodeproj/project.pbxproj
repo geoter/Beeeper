@@ -158,6 +158,8 @@
 		63BD3BE01A14D22000102794 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 63BD3BDC1A14D22000102794 /* LICENSE */; };
 		63BD3BE11A14D22000102794 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BD3BDE1A14D22000102794 /* MBProgressHUD.m */; };
 		63BD3BE21A14D22000102794 /* README.mdown in Sources */ = {isa = PBXBuildFile; fileRef = 63BD3BDF1A14D22000102794 /* README.mdown */; };
+		63C2147B1A38EAB000805A8D /* BeeeperNotifIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C214791A38EAB000805A8D /* BeeeperNotifIcon@2x.png */; };
+		63C2147C1A38EAB000805A8D /* BeeeperNotifIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C2147A1A38EAB000805A8D /* BeeeperNotifIcon.png */; };
 		63C27CE119FA8D9A00564583 /* beeeped_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDD19FA8D9A00564583 /* beeeped_white.png */; };
 		63C27CE219FA8D9A00564583 /* beeeped_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDE19FA8D9A00564583 /* beeeped_white@2x.png */; };
 		63C27CE319FA8D9A00564583 /* beeepit_outlined.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C27CDF19FA8D9A00564583 /* beeepit_outlined.png */; };
@@ -792,6 +794,8 @@
 		63BD3BDD1A14D22000102794 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		63BD3BDE1A14D22000102794 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		63BD3BDF1A14D22000102794 /* README.mdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.mdown; sourceTree = "<group>"; };
+		63C214791A38EAB000805A8D /* BeeeperNotifIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BeeeperNotifIcon@2x.png"; sourceTree = "<group>"; };
+		63C2147A1A38EAB000805A8D /* BeeeperNotifIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BeeeperNotifIcon.png; sourceTree = "<group>"; };
 		63C27CDD19FA8D9A00564583 /* beeeped_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeeped_white.png; sourceTree = "<group>"; };
 		63C27CDE19FA8D9A00564583 /* beeeped_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beeeped_white@2x.png"; sourceTree = "<group>"; };
 		63C27CDF19FA8D9A00564583 /* beeepit_outlined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beeepit_outlined.png; sourceTree = "<group>"; };
@@ -1622,6 +1626,15 @@
 			path = MBProgressHUD;
 			sourceTree = "<group>";
 		};
+		63C214781A38EA7300805A8D /* R */ = {
+			isa = PBXGroup;
+			children = (
+				63C214791A38EAB000805A8D /* BeeeperNotifIcon@2x.png */,
+				63C2147A1A38EAB000805A8D /* BeeeperNotifIcon.png */,
+			);
+			name = R;
+			sourceTree = "<group>";
+		};
 		63C27CE719FB8C6B00564583 /* FMDB */ = {
 			isa = PBXGroup;
 			children = (
@@ -2300,6 +2313,7 @@
 		CE7CFAF218B7AA790044C9AC /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				63C214781A38EA7300805A8D /* R */,
 				CE7CFAF318B7AA910044C9AC /* NotificationsVC.h */,
 				CE7CFAF418B7AA910044C9AC /* NotificationsVC.m */,
 			);
@@ -2725,7 +2739,7 @@
 				ORGANIZATIONNAME = Beeeper;
 				TargetAttributes = {
 					CEA64F0C18B39F4F00B7ECF5 = {
-						DevelopmentTeam = XAEQ9MWECF;
+						DevelopmentTeam = C444XSFHUN;
 					};
 				};
 			};
@@ -2939,6 +2953,7 @@
 				CEF2639D18DC59A10047510D /* 8.png in Resources */,
 				CE08DD2019379A0700B090BE /* yellow-tabbar-timeline.png in Resources */,
 				5EA7FAF019594E910033C061 /* suggest_unselected.png in Resources */,
+				63C2147B1A38EAB000805A8D /* BeeeperNotifIcon@2x.png in Resources */,
 				63C27CE119FA8D9A00564583 /* beeeped_white.png in Resources */,
 				CE0C882218D0BE5A00BA548F /* option_2_gray.png in Resources */,
 				CE25F9F118B6761300D8B858 /* NotificationBackgroundSuccess.png in Resources */,
@@ -3036,6 +3051,7 @@
 				CE29EE3C18D9CADB0001EC43 /* container_image_3.png in Resources */,
 				633E993419ED35DB0067BD56 /* welcome_screen_3.png in Resources */,
 				632BB28619E46A63003CD50A /* beeep_it_white.png in Resources */,
+				63C2147C1A38EAB000805A8D /* BeeeperNotifIcon.png in Resources */,
 				CEEE3ECD18C9E02C00665C21 /* Roboto-Bold.ttf in Resources */,
 				CE29EE3D18D9CADB0001EC43 /* container_image_3@2x.png in Resources */,
 				CE0C880B18D0BCBC00BA548F /* option_0@2x.png in Resources */,
@@ -3332,8 +3348,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3352,7 +3368,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
+				PROVISIONING_PROFILE = "05753832-9009-4b37-af22-cff7e6dfa644";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3373,8 +3389,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3386,7 +3402,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "e73dd5c8-ad50-4f3a-9fd6-2f056c2706a9";
+				PROVISIONING_PROFILE = "05753832-9009-4b37-af22-cff7e6dfa644";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3397,8 +3413,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3418,7 +3434,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
+				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3428,8 +3444,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3449,7 +3465,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
+				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

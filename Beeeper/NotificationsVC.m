@@ -286,8 +286,7 @@
             
             EventActivity *event = [activity.eventActivity firstObject];
             
-            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-                    placeholderImage:[UIImage imageNamed:@"event_image"]];
+            [imgV setImage:[UIImage imageNamed:@"BeeeperNotifIcon"]];
         }
         else{
             [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
@@ -358,7 +357,7 @@
         
         if ([my_id isEqualToString:wm.whomIdentifier]) {
             NSDictionary *user = [NSDictionary dictionaryWithObject:w.whoIdentifier forKey:@"id"];
-            vC.user = user;
+            vC.user = [NSMutableDictionary dictionaryWithDictionary:user];
         }
         
         

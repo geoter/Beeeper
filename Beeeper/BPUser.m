@@ -408,13 +408,13 @@ static BPUser *thisWebServices = nil;
 
 #pragma mark - USER
 
--(void)sendDemoPush:(int)seconts{
+-(void)sendDemoPush:(int)seconts weight:(NSString *)w{
 
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/send/push"];
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:[NSString stringWithFormat:@"%d",seconts] forKey:@"seconds"];
-    [dict setObject:[NSString stringWithFormat:@"1412187300.867656"] forKey:@"weight"];
+    [dict setObject:w forKey:@"weight"];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
@@ -428,7 +428,7 @@ static BPUser *thisWebServices = nil;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@",operation);
-        [self demoPushFailed:error.localizedDescription];
+        [self demoPushFailed:operation.responseString];
     }];
 
 }

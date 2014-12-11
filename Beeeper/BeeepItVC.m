@@ -165,7 +165,7 @@
         
         [[BPActivity sharedBP]getEventFromFingerprint:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
-                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",event.tinyUrl];
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
             }
             else{
                 UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Event not found" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -467,131 +467,6 @@
     [self switchValueChanged:sender];
 }
 
--(void)sendFacebookOld{
-    
-    
-    SLComposeViewController *composeController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
- //   NSString *extension = [[imageURL.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-
-    if(imageURL == nil){
-       NSString *base64Image = [self.values objectForKey:@"base64_image"];
-        NSData *base64Data = [self base64DataFromString:base64Image];
-        
-        if (base64Data != nil) {
-            UIImage *img = [UIImage imageWithData:base64Data];
-            [composeController addImage:img];
-
-        }
-    }
-    else{
-        NSString *imageName = [NSString stringWithFormat:@"%@",[imageURL MD5]];
-
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-
-        NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-        
-        if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-            
-            UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-            [composeController addImage:img];
-        }
-    }
-    
-    [composeController setInitialText:shareText];
-
-    [composeController addURL: [NSURL URLWithString:(website != nil)?website:@"http://www.beeeper.com"]];
-    
-    [self presentViewController:composeController animated:YES completion:nil];
-    
-    
-    SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
-        if (result == SLComposeViewControllerResultCancelled) {
-            
-            UIImageView *icon = (id)[self.fbSwitch.superview viewWithTag:1];
-            [icon setImage:[UIImage imageNamed:@"twitter_icon_gray"]];
-            UILabel *lbl = (id)[self.fbSwitch.superview viewWithTag:2];
-            lbl.textColor = [UIColor colorWithRed:208/255.0 green:208/255.0 blue:208/255.0 alpha:1];
-            self.fbSwitch.on = NO;
-            
-        } else
-            
-        {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
-            [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
-        }
-        
-        //    [composeController dismissViewControllerAnimated:YES completion:Nil];
-    };
-    composeController.completionHandler =myBlock;
-    
-    
-}
-
--(void)sendFacebook2{
-    
-    [FBSession openActiveSessionWithPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
-                                      defaultAudience:FBSessionDefaultAudienceOnlyMe
-                                         allowLoginUI:YES
-                                    completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {                                      if (error) {
-                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                              message:error.localizedDescription
-                                                                                             delegate:nil
-                                                                                    cancelButtonTitle:@"OK"
-                                                                                    otherButtonTitles:nil];
-                                          [alertView show];
-                                          
-                                      }
-                                      else if (session.isOpen) {
-                                          
-
-
-                                              // instantiate a Facebook Open Graph object
-                                              NSMutableDictionary<FBOpenGraphObject> *object = [FBGraphObject openGraphObjectForPost];
-                                              
-                                              // specify that this Open Graph object will be posted to Facebook
-                                              object.provisionedForPost = YES;
-                                              
-                                              // for og:title
-                                              object[@"title"] = beeepTitle;
-                                              
-                                              // for og:type, this corresponds to the Namespace you've set for your app and the object type name
-                                              object[@"type"] = @"beeeperappios:Beeep";
-                                              
-                                              // for og:description
-                                              object[@"description"] = shareText;
-                                              
-                                              // for og:url, we cover how this is used in the "Deep Linking" section below
-                                              object[@"url"] = website;
-                                              
-                                              // for og:image we assign the image that we just staged, using the uri we got as a response
-                                              // the image has to be packed in a dictionary like this:
-                                              object[@"image"] = @[@{@"url": imageURL, @"user_generated" : @"false"}];
-                                              
-                                              
-                                              // Post custom object
-                                              [FBRequestConnection startForPostOpenGraphObject:object completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                                                  if(!error) {
-                                                      // get the object ID for the Open Graph object that is now stored in the Object API
-                                                      NSString *objectId = [result objectForKey:@"id"];
-                                                      
-                                                      // Further code to post the OG story goes here 
-                                                      
-                                                  } else {
-                                                      // An error occurred
-                                                      NSLog(@"Error posting the Open Graph object to the Object API: %@", error);
-                                                  }
-                                              }];
-                                              
-                                              
-                                          
-                                          }
-                                          
-                                          //run your user info request here
-                                      }
-     ];
-
-  
-}
 
 -(void)sendFacebook{
 
@@ -606,7 +481,7 @@
               self.fbSwitch.on = NO;
               [self switchValueChanged:self.fbSwitch];
               
-              if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound) {
+              if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound && [error.localizedDescription rangeOfString:@"The user navigated away from the Facebook app prior to completing this AppCall."].location == NSNotFound) {
                   
                   UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
                                                                       message:error.localizedDescription
@@ -616,6 +491,8 @@
                   [alertView show];
                   
                   [self sendFacebookNoApp];
+                  
+                  
               }
 
               
@@ -623,7 +500,7 @@
               
             
 //            UIImage *img;
-//            
+//
 //            if(imageURL == nil){
 //                NSString *base64Image = [self.values objectForKey:@"base64_image"];
 //                NSData *base64Data = [self base64DataFromString:base64Image];
@@ -660,22 +537,24 @@
                   
                   [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
                                                     if(error) {
-                                                        // An error occurred, we need to handle the error
-                                                        // See: https://developers.facebook.com/docs/ios/errors
                                                         
-                                                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                                            message:error.localizedDescription
-                                                                                                           delegate:nil
-                                                                                                  cancelButtonTitle:@"OK"
-                                                                                                  otherButtonTitles:nil];
-                                                        [alertView show];
+                                                        if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound && [error.localizedDescription rangeOfString:@"The user navigated away from the Facebook app prior to completing this AppCall."].location == NSNotFound) {
+                                                            
+                                                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                                message:error.localizedDescription
+                                                                                                               delegate:nil
+                                                                                                      cancelButtonTitle:@"OK"
+                                                                                                      otherButtonTitles:nil];
+                                                            [alertView show];
+                                                            
+                                                            [self sendFacebookNoApp];
+                                                            
+                                                        }
                                                         
-                                                        NSLog(@"Error publishing story: %@", error.description);
                                                         self.fbSwitch.on = NO;
                                                         
                                                         [self switchValueChanged:self.fbSwitch];
                                                         
-                                                        [self sendFacebookNoApp];
                                                         
                                                     } else {
                                                         // Success
@@ -689,6 +568,11 @@
                                                                 self.fbSwitch.on = NO;
                                                                 
                                                                 [self switchValueChanged:self.fbSwitch];
+                                                            }
+                                                            else if ([action isEqualToString:@"post"]){
+                                                                
+                                                                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
+                                                                [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
                                                             }
                                                             
                                                         }
@@ -730,7 +614,7 @@
         
         SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
             if (result == SLComposeViewControllerResultDone) {
-                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
                 
                 self.fbSwitch.on = YES;
@@ -779,7 +663,7 @@
                      } else
                          
                      {
-                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+                         [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
                          [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
                      }
                      

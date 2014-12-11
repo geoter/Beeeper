@@ -1725,7 +1725,12 @@
 
 - (NSInteger) numberOfMenuItems
 {
-    return (self.mode == Timeline_My)?3:4;
+    if (self.mode == Timeline_My) {
+        return 3;
+    }
+    else{
+        return 4;
+    }
 }
 
 -(UIImage*) imageForItemAtIndex:(NSInteger)index

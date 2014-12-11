@@ -174,7 +174,7 @@
         
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
-                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl lowercaseString]];
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
             }
         }];
     }
@@ -193,7 +193,7 @@
                     comments = beeep_Objct.comments;
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
-                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
+                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl uppercaseString]];
                         
                         [self showEventWithBeeep];
                     }
@@ -213,7 +213,7 @@
             [[BPActivity sharedBP]getEvent:tml WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     event_show_Objct = event;
-                    tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event_show_Objct.tinyUrl lowercaseString]];
+                    tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event_show_Objct.tinyUrl uppercaseString]];
                     
                     if ((beeep_Objct != nil) || (beeep_Objct == nil && activity.beeepInfoActivity.beeepActivity.count == 0)) {
                         [self showEventWithBeeep];
@@ -235,7 +235,7 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
-                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl uppercaseString]];
                 
                 dispatch_async (dispatch_get_main_queue(), ^{
                     [self showEventForEventLookUpObject];
@@ -257,7 +257,7 @@
         [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
             if (completed) {
                 event_show_Objct = event;
-                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl lowercaseString]];
+                tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl uppercaseString]];
                 [self showEventWithSuggestion];
             }
             else{
@@ -277,7 +277,7 @@
                 
                 [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                     if (completed) {
-                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event.tinyUrl lowercaseString]];
+                        tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event.tinyUrl uppercaseString]];
                         event_show_Objct = event;
                         [self showEventWithBeeep];
                     }
@@ -335,6 +335,11 @@
     NSDate *date;
     Suggestion_Object *suggestion = tml;
     
+    [[EventWS sharedBP]getEvent:suggestion.what.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
+        }
+    }];
     
     date = [NSDate dateWithTimeIntervalSince1970:suggestion.what.timestamp];
     
@@ -637,7 +642,6 @@
 
 -(void)showEventWithFriendFeedObject{
     
-    
     //EVENT DATE
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
@@ -648,6 +652,12 @@
     Friendsfeed_Object *ffo = tml;
 
     fingerprint = ffo.eventFfo.eventDetailsFfo.fingerprint;
+    
+    [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
+        }
+    }];
     
     date = [NSDate dateWithTimeIntervalSince1970:ffo.eventFfo.eventDetailsFfo.timestamp];
     
@@ -959,6 +969,14 @@
     NSDate *date;
     Timeline_Object *t = tml; //one of those two will be used
 
+    [[EventWS sharedBP]getEvent:t.event.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
+        }
+    }];
+    
+//    [[BPUser sharedBP]sendDemoPush:10 weight:t.beeep.beeepInfo.weight];
+    
     date = [NSDate dateWithTimeIntervalSince1970:t.event.timestamp];
     
     NSString *dateStr = [formatter stringFromDate:date];
@@ -1278,6 +1296,7 @@
     
     [[BPActivity sharedBP]getEventFromFingerprint:fingerprintDeep WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
         if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
             event_show_Objct = event;
             [self showEventForEventLookUpObject];
             [self hideLoading];
@@ -1303,6 +1322,12 @@
     
     Event_Search *eventSearch = tml;
     
+    [[EventWS sharedBP]getEvent:eventSearch.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
+        }
+    }];
+
     date = [NSDate dateWithTimeIntervalSince1970:event.eventInfo.timestamp];
     
     NSString *dateStr = [formatter stringFromDate:date];
@@ -1659,6 +1684,12 @@
     websiteURL = website;
     beeeperWebsiteURL = [NSString stringWithFormat:@"https://www.beeeper.com/event/%@",event.eventInfo.fingerprint];
     
+    [[EventWS sharedBP]getEvent:event.eventInfo.fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+        if (completed) {
+            tinyURL = [NSString stringWithFormat:@"beeep.it/%@",[event.tinyUrl uppercaseString]];
+        }
+    }];
+    
     NSURL *url = [NSURL URLWithString:websiteURL];
     
     self.websiteLabel.text = [url host];
@@ -1677,6 +1708,7 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
    
     if (data != nil) {
+        
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
@@ -2523,7 +2555,7 @@
             }
             else{
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                pasteboard.string = websiteURL;
+                pasteboard.string = tinyURL;
                 
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Copied to Clipboard"];
@@ -2533,7 +2565,7 @@
             break;
         case 4:{
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-            pasteboard.string = websiteURL;
+            pasteboard.string = tinyURL;
 
             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
             [SVProgressHUD showSuccessWithStatus:@"Copied to Clipboard"];
@@ -2704,20 +2736,23 @@
                                                       NSError *error) {
                                       if (error) {
                                           
-                                          if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound) {
+                                          if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound && [error.localizedDescription rangeOfString:@"The user navigated away from the Facebook app prior to completing this AppCall."].location == NSNotFound) {
                                               
-                                              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                                  message:error.localizedDescription
-                                                                                                 delegate:nil
-                                                                                        cancelButtonTitle:@"OK"
-                                                                                        otherButtonTitles:nil];
-                                              [alertView show];
+                                                  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                      message:error.localizedDescription
+                                                                                                     delegate:nil
+                                                                                            cancelButtonTitle:@"OK"
+                                                                                            otherButtonTitles:nil];
+                                                  [alertView show];
+                                                  
+                                                  [self sendFacebookNoApp];
+
                                               
-                                              [self sendFacebookNoApp];
                                           }
                                           
                                           
-                                      } else if (session.isOpen) {
+                                      }
+                                      else if (session.isOpen) {
                                           
                                           // Check if the Facebook app is installed and we can present the share dialog
                                           FBLinkShareParams *params = [[FBLinkShareParams alloc] init];
@@ -2733,22 +2768,43 @@
                                               
                                               [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
                                                   if(error) {
-                                                      // An error occurred, we need to handle the error
-                                                      // See: https://developers.facebook.com/docs/ios/errors
                                                       
-                                                      UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                                          message:error.localizedDescription
-                                                                                                         delegate:nil
-                                                                                                cancelButtonTitle:@"OK"
-                                                                                                otherButtonTitles:nil];
-                                                      [alertView show];
-                                                      
-                                                      NSLog(@"Error publishing story: %@", error.description);
-                                                 
-                                                      
+                                                      if ([error.localizedDescription rangeOfString:@"UserLoginCancelled"].location == NSNotFound && [error.localizedDescription rangeOfString:@"The user navigated away from the Facebook app prior to completing this AppCall."].location == NSNotFound) {
+                                                          
+                                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                              message:error.localizedDescription
+                                                                                                             delegate:nil
+                                                                                                    cancelButtonTitle:@"OK"
+                                                                                                    otherButtonTitles:nil];
+                                                          [alertView show];
+                                                          
+                                                          [self sendFacebookNoApp];
+                                                          
+                                                          
+                                                      }
                                                   } else {
                                                       // Success
                                                       NSLog(@"result %@", results);
+                                                      
+                                                      @try {
+                                                          
+                                                          NSString *action = [results objectForKey:@"completionGesture"];
+                                                          
+                                                         if ([action isEqualToString:@"post"]){
+                                                              
+                                                              [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
+                                                              [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
+                                                          }
+                                                          
+                                                      }
+                                                      @catch (NSException *exception) {
+                                                          
+                                                      }
+                                                      @finally {
+                                                          
+                                                          
+                                                      }
+
                                                   }
                                               }];
                                           } else {
@@ -2779,7 +2835,7 @@
     
     SLComposeViewControllerCompletionHandler myBlock = ^(SLComposeViewControllerResult result){
         if (result == SLComposeViewControllerResultDone) {
-            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:85/255.0 green:172/255.0 blue:238/255.0 alpha:1]];
+            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:59/255.0 green:89/255.0 blue:152/255.0 alpha:1]];
             [SVProgressHUD showSuccessWithStatus:@"Posted on Facebook!"];
         }
         
@@ -2874,7 +2930,7 @@
         MFMailComposeViewController *mailComposer =
         [[MFMailComposeViewController alloc] init];
         [mailComposer setSubject:self.titleLabel.text];
-        NSString *message = [NSString stringWithFormat:@"Check out this event on Beeeper\n%@",tinyURL];
+        NSString *message = [NSString stringWithFormat:@"Check out this event on Beeeper:\n\n%@",tinyURL];
         [mailComposer setMessageBody:message
                               isHTML:YES];
 //        NSData *imageData = UIImageJPEGRepresentation(self.eventImageV.image, 0.5);
@@ -2888,7 +2944,7 @@
     MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
     if([MFMessageComposeViewController canSendText])
     {
-        controller.body = [NSString stringWithFormat:@"Check out this event on Beeeper\n%@",tinyURL];
+        controller.body = [NSString stringWithFormat:@"Check out this event on Beeeper:\n\n%@",tinyURL];
         controller.messageComposeDelegate = self;
         [self presentViewController:controller animated:YES completion:nil];
     }

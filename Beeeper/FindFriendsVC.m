@@ -1762,9 +1762,23 @@
     else{
         
         TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
-        timelineVC.mode = Timeline_Not_Following;
+        
+        BOOL following = [[user objectForKey:@"following"] boolValue];
+        
+        if (following) {
+            timelineVC.mode = Timeline_Following;
+        }
+        else{
+            timelineVC.mode = Timeline_Not_Following;
+        }
+
         timelineVC.showBackButton = YES; //in case of My_Timeline
         timelineVC.user = user;
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        if ([[user objectForKey:@"id"]isEqualToString:my_id]) {
+            timelineVC.mode = Timeline_My;
+        }
         
         [self.navigationController pushViewController:timelineVC animated:YES];
     }
@@ -2550,7 +2564,8 @@
     }
     
     NSArray *recipents = selectedEmails;
-    NSString *message = [NSString stringWithFormat:@"Social Reminder Beeeper."];
+    
+    NSString *message = [NSString stringWithFormat:@"Join Beeeper and never forget an event again. It's awesome!\nhttps://beeeper.com \n\n_______\nAlso available in the App Store: https://appsto.re/gr/SM883.i"];
     
     MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
     messageController.messageComposeDelegate = self;

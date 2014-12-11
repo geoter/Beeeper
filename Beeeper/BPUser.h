@@ -84,7 +84,7 @@ typedef void(^markRead_completed)(BOOL);
 
 -(void)sendDeviceToken;
 -(void)setDeviceToken:(NSData *)token;
--(void)sendDemoPush:(int)seconts;
+-(void)sendDemoPush:(int)seconts weight:(NSString *)w;
 
 -(void)getUser;
 -(void)beeepersFromFB_IDs:(NSString *)idsJSON WithCompletionBlock:(completed)compbloc;

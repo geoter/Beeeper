@@ -95,6 +95,7 @@
 }
 
 -(void)goBack{
+    [self.container removeFromSuperview];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

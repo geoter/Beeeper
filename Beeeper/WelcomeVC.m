@@ -94,7 +94,7 @@
                 ACAccount *fbAccount;
                 
                 for (ACAccount *acc in accounts) {
-                     NSString  *fbID = [acc valueForKeyPath:@"properties.uid"];
+                     NSString  *fbID = [NSString stringWithFormat:@"%@",[acc valueForKeyPath:@"properties.uid"]];
                     if ([method rangeOfString:fbID].location != NSNotFound) {
                         fbAccount = acc;
                     }

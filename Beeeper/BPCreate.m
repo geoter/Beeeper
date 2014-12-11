@@ -71,7 +71,6 @@ static BPCreate *thisWebServices = nil;
 -(void)beeepCreateFinished:(id)request{
     NSString *responseString = request;
     
-    
     @try {
         NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         if ([dict objectForKey:@"beeep"]) {

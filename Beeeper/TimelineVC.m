@@ -1224,6 +1224,22 @@
         if (completed) {
             dispatch_async (dispatch_get_main_queue(), ^{
                 
+                UIApplication *app = [UIApplication sharedApplication];
+                NSArray *eventArray = [app scheduledLocalNotifications];
+                for (int i=0; i<[eventArray count]; i++)
+                {
+                    UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+                    NSDictionary *userInfoCurrent = oneEvent.userInfo;
+                    NSString *beeepID=[userInfoCurrent objectForKey:@"w"];
+                    
+                    if ([beeepID isEqualToString:b.beeep.beeepInfo.weight])
+                    {
+                        //Cancelling local notification
+                        [app cancelLocalNotification:oneEvent];
+                        break;
+                    }
+                }
+                
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Deleted!"];
                 

@@ -836,7 +836,8 @@
                         NSUInteger nextBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
                         
                         localNotification.applicationIconBadgeNumber = nextBadgeNumber;
-                        localNotification.userInfo = [NSDictionary dictionaryWithDictionary:objs];
+                        NSDictionary *userinfo = [NSDictionary dictionaryWithObject:[objs objectForKey:@"beeep"] forKey:@"w"];
+                        localNotification.userInfo = userinfo;
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                     }

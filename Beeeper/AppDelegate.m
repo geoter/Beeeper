@@ -368,9 +368,31 @@
             
         }
     }
+}
+
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    
+    @try {
+        
+        NSDictionary *apsInfo = notification.userInfo;
+        
+        [[DTO sharedDTO]setWeightForPush:[apsInfo objectForKey:@"w"] caseStr:@"w"];
+        
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+        
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
     
     
 }
+
 
 -(void)getCorrectTypeOrDie:(NSString *)type dict:(NSDictionary *)userInfo{
    
@@ -385,28 +407,6 @@
     @finally {
         
     }
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-  
-    
-    @try {
-        
-        NSDictionary *apsInfo = notification.userInfo;
-        
-        [[DTO sharedDTO]setWeightForPush:[apsInfo objectForKey:@"w"] caseStr:@"w"];
-        
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
-   
-    }
-    @catch (NSException *exception) {
-        
-    }
-    @finally {
-        
-    }
-    
-    
 }
 
 -(void)clearDocumentsFolder{

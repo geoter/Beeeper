@@ -2568,6 +2568,9 @@
     NSString *message = [NSString stringWithFormat:@"Join Beeeper and never forget an event again. It's awesome!\nhttps://beeeper.com \n\n_______\nAlso available in the App Store: https://appsto.re/gr/SM883.i"];
     
     MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
+    
+    [messageController.navigationBar setTintColor:[UIColor whiteColor]];
+    
     messageController.messageComposeDelegate = self;
     [messageController setRecipients:recipents];
     [messageController setBody:message];

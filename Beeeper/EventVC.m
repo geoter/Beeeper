@@ -626,7 +626,7 @@
         
     }
     
-    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",suggestion.what.title,[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",suggestion.what.title,[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
     [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
     
     [self hideLoading];
@@ -945,7 +945,7 @@
         
     }
     
-    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[ffo.eventFfo.eventDetailsFfo.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",[ffo.eventFfo.eventDetailsFfo.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
     [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
 
     [self hideLoading];
@@ -1277,7 +1277,7 @@
         
     }
     
-    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[t.event.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
+    [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",[t.event.title capitalizedString],[month uppercaseString],daynumber,hour,[loc.venueStation capitalizedString]];
     [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[loc.venueStation capitalizedString]];
     
     [self hideLoading];
@@ -1626,7 +1626,7 @@
         
     }
     
-    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
+    [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
     [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
@@ -2000,7 +2000,7 @@
         
     }
     
-    [shareText appendFormat:@"%@ on %@,%@ %@ - %@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
+    [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",[event.eventInfo.title capitalizedString],[month uppercaseString],daynumber,hour,venueLbl.text];
     [shareFBText appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,venueLbl.text];
     
     [self hideLoading];
@@ -2824,6 +2824,9 @@
     
     [composeController setInitialText:[shareText stringByAppendingFormat:@" %@",(tinyURL)?tinyURL:@""]];
     
+    //        NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+    //        [composeController addURL: url];
+    
     if (self.eventImageV.image != nil) {
         
         [composeController addImage:self.eventImageV.image];
@@ -2908,8 +2911,6 @@
         [composeController addImage:self.eventImageV.image];
         
     }
-    
-    [composeController addURL: [NSURL URLWithString:(websiteURL != nil)?websiteURL:@"http://www.beeeper.com"]];
     
     [self presentViewController:composeController animated:YES completion:nil];
     

@@ -634,7 +634,7 @@ static BPUser *thisWebServices = nil;
     
     [[DTO sharedDTO]addBugLog:@"userInfoFailed" where:@"BPUser/userInfoFailed" json:responseString];
     
-    self.completed(NO,nil);
+    self.completed(NO,responseString);
 }
 
 #pragma mark - Follow

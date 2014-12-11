@@ -179,6 +179,9 @@
         
         NSDate *date;
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        
+        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [formatter setLocale:usLocale];
         [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
         
         Timeline_Object *t = tml; //one of those two will be used
@@ -331,7 +334,7 @@
         
         imageURL = [[DTO sharedDTO]fixLink:imageUrl];
         
-        [shareText appendFormat:@"%@ on %@,%@ %@ - %@",beeepTitle,[month uppercaseString],daynumber,hour,[venue capitalizedString]];
+        [shareText appendFormat:@"%@ starts on %@ %@ - %@ @%@",beeepTitle,[month uppercaseString],daynumber,hour,[venue capitalizedString]];
         
         [shareTextFB appendFormat:@"starts on %@ %@ - %@ @%@",[month capitalizedString],daynumber,hour,[venue capitalizedString]];
         
@@ -648,8 +651,8 @@
                  
                  [composeController addImage:image];
                  
-                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
-                 [composeController addURL: url];
+//                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+//                 [composeController addURL: url];
                  
                  
                  [self presentViewController:composeController
@@ -690,8 +693,8 @@
         
         [composeController addImage:self.facebookDialogEventImage];
         
-        NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
-        [composeController addURL: url];
+//        NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+//        [composeController addURL: url];
         
         
         [self presentViewController:composeController
@@ -733,8 +736,8 @@
                  
                  [composeController addImage:image];
                  
-                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
-                 [composeController addURL: url];
+//                 NSURL *url = [NSURL URLWithString:(tinyURL != nil)?tinyURL:@"http://www.beeeper.com"];
+//                 [composeController addURL: url];
                  
                  
                  [self presentViewController:composeController

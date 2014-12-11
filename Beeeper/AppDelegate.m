@@ -279,13 +279,18 @@
         }
         else{
         
-            BOOL urlWasHandled = [FBAppCall handleOpenURL:url
-                                        sourceApplication:sourceApplication
-                                          fallbackHandler:^(FBAppCall *call) {
-                                              // incoming link processing goes here
-                                              NSLog(@"%@",call);
-                                          }];
-            return urlWasHandled;
+            if ([url.absoluteString rangeOfString:@"fb222125061288499"].location != NSNotFound) {
+                
+                BOOL urlWasHandled = [FBAppCall handleOpenURL:url
+                                            sourceApplication:sourceApplication
+                                              fallbackHandler:^(FBAppCall *call) {
+                                                  // incoming link processing goes here
+                                                  NSLog(@"%@",call);
+                                              }];
+                return urlWasHandled;
+
+            }
+       
         }
     }
     @catch (NSException *exception) {

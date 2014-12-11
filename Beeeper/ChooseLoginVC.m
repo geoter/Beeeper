@@ -1054,7 +1054,7 @@
                         [self fbSignupwithAccount:fbSelectedAccountIndex];
                     }
                     else{
-                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Please try again."];
+                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:(responseString)?responseString:@"Please try again."];
                     }
                 }
             }

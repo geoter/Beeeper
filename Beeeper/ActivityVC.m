@@ -576,7 +576,7 @@
         
         if ([my_id isEqualToString:wm.whomIdentifier]) {
             NSDictionary *user = [NSDictionary dictionaryWithObject:w.whoIdentifier forKey:@"id"];
-            vC.user = user;
+            vC.user = [NSMutableDictionary dictionaryWithDictionary:user];
         }
     
 

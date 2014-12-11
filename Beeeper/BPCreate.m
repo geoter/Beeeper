@@ -61,6 +61,7 @@ static BPCreate *thisWebServices = nil;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@",operation);
+        NSLog(@"%@",error.localizedDescription);
         [self beeepCreateFailed:[operation responseString]];
     }];
 

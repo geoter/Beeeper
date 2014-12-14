@@ -82,6 +82,7 @@
      }
                      completion:^(BOOL finished)
      {
+         [[NSNotificationCenter defaultCenter]postNotificationName:@"HideBeeepVC" object:nil];
      }
      ];
     
@@ -399,6 +400,10 @@
 }
 
 - (IBAction)close:(id)sender {
+    
+    if(self.hideBackgroundblur){
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"CloseBeeepVC" object:nil];
+    }
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
@@ -762,6 +767,14 @@
         
         
              }
+             else{
+                 
+                 dispatch_async (dispatch_get_main_queue(), ^{
+                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Beeep was created but suggestions failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                 });
+                
+             }
          }];
     
     }
@@ -829,7 +842,7 @@
                     @try {
                         UILocalNotification *localNotification = [[UILocalNotification alloc] init];
                         localNotification.fireDate = [NSDate dateWithTimeIntervalSince1970:beep_time];
-                        NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle uppercaseString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
+                        NSString *alertBody = [NSString stringWithFormat:@"%@\n(%@)",[beeepTitle capitalizedString],[beeepTime stringByReplacingOccurrencesOfString:@"before" withString:@"left"]];
                         localNotification.alertBody = alertBody;
                         localNotification.timeZone = [NSTimeZone defaultTimeZone];
                        

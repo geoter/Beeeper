@@ -326,7 +326,7 @@ static BPUser *thisWebServices = nil;
             self.fbSignUpCompleted(NO,[responseString stringByReplacingOccurrencesOfString:@"\"" withString:@""]);
         }
         else{
-            NSDictionary *info = [[request UserInfo]objectForKey:@"info"];
+
             [self loginUser:[info objectForKey:@"email"] password:[info objectForKey:@"password"] completionBlock:^(BOOL completed,NSString *user){
                 if (completed) {
                     self.fbSignUpCompleted(completed,user);

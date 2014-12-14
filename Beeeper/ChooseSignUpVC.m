@@ -432,7 +432,7 @@
         
         
         if (hasUsername) {
-            [dict setObject:[fbDict objectForKey:@"username"] forKey:@"username"];
+            [dict setObject:username forKey:@"username"];
             
             NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [fbDict objectForKey:@"username"]];
             [dict setObject:userImageURL forKey:@"image_path"];

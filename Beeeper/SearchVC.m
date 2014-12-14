@@ -270,26 +270,39 @@
     
     [[EventWS sharedBP]searchEvent:term WithCompletionBlock:^(BOOL completed,NSArray *evnts){
         if (completed) {
+            
             events = [NSMutableArray arrayWithArray:evnts];
             
-            if (events.count == [EventWS sharedBP].pageLimit) {
-                loadNextPage = YES;
+            if (events.count != 0) {
+                
+                if (events.count == [EventWS sharedBP].pageLimit) {
+                    loadNextPage = YES;
+                }
+                
+                self.collectionV.hidden = NO;
+                [self.collectionV reloadData];
+                
+                [UIView animateWithDuration:0.3f
+                                 animations:^
+                 {
+                     self.tableV.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
             }
-            
-            self.collectionV.hidden = NO;
-            [self.collectionV reloadData];
-            
-            [UIView animateWithDuration:0.3f
-                             animations:^
-             {
-                 self.tableV.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                 
-             }
-             ];
-            
+            else{
+                
+                dispatch_async (dispatch_get_main_queue(), ^{
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"No upcoming events for #%@.",term] message:@"Try another keyword." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    alert.tag = 55;
+                    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+                });
+               
+            }
+        
         }
         else{
             

@@ -62,6 +62,7 @@
     int chooseDaySelectedIndex;
     
     BOOL userDownloaded;
+    BOOL firstTime;
 }
 @property (nonatomic,strong) NSDate *selectedDate;
 
@@ -263,6 +264,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    firstTime = YES;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showSuggestionsBadge) name:@"SuggestionsBadgeUpdated" object:nil];
     
@@ -650,7 +653,10 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
-    [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    if (firstTime) {
+        firstTime = NO;
+        [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    }
     
     if (self.mode == Timeline_My) {
         [self showSuggestionsBadge];

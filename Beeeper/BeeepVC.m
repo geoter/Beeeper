@@ -36,6 +36,7 @@
     UITextField *activeTXTF;
     LocationManager *locManager;
     NSMutableArray *predefinedTags;
+    UIImage *pickedImage;
 }
 @property(nonatomic,strong) NSString *base64Image;
 @end
@@ -145,7 +146,18 @@
                                  subscription:DZNPhotoPickerControllerSubscriptionFree];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hidePopup:) name:@"HideBeeepVC" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(closePopup:) name:@"CloseBeeepVC" object:nil];
+    
  //   [self adjustFonts];
+}
+
+-(void)closePopup:(NSNotification *)notif{
+    [self close:nil];
+}
+
+-(void)hidePopup:(NSNotification *)notif{
+    self.containerScrollV.alpha = 0;
 }
 
 - (void)locationUpdate:(CLLocation *)location{
@@ -678,13 +690,22 @@
 }
 
 - (IBAction)nextPressed:(UIButton *)sender {
- 
+    
+    
     //adjust format of keywords
     @try {
     
         NSMutableString *keywords = [[NSMutableString alloc]init];
         
-        for (NSString *tag in predefinedTags) {
+        NSMutableArray *unique = [NSMutableArray array];
+        
+        for (id obj in predefinedTags) {
+            if (![unique containsObject:obj]) {
+                [unique addObject:obj];
+            }
+        }
+        
+        for (NSString *tag in unique) {
              [keywords appendFormat:@"%@,",[tag stringByReplacingOccurrencesOfString:@"#" withString:@""]];
         }
     
@@ -720,7 +741,7 @@
         
         [values setObject:keywords forKey:@"keywords"];
       
-        [values setObject:[[DTO sharedDTO] urlencode:@"http://www.beeeper.com"] forKey:@"src"];
+        [values setObject:@"http://www.beeeper.com" forKey:@"src"];
         
         BOOL proceed = [self areAllDataAvailable:values];
         
@@ -748,8 +769,8 @@
                     else{
                         tml = objs;
                     }
-                    
-                    [[TabbarVC sharedTabbar]reBeeepPressed:tml image:nil controller:self];
+
+                    [[TabbarVC sharedTabbar]reBeeepPressed:tml image:pickedImage controller:self];
                 
                 }
                 else{
@@ -1020,9 +1041,11 @@
         }
         
         NSURL *image_url = [info_values objectForKey:@"source_url"];
-        
+    
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
 
+        pickedImage = [UIImage imageWithCGImage:img.CGImage];
+        
         [self.selectedPhotoButton setBackgroundImage:img forState:UIControlStateNormal];
         self.selectedPhotoButton.hidden = NO;
         
@@ -1033,7 +1056,7 @@
         }
         else{
             base64Image = nil;
-             [values setObject:image_url.absoluteString forKey:@"image_url"];
+            [values setObject:image_url.absoluteString forKey:@"image_url"];
         }
         
         [self imageSelected];
@@ -1111,6 +1134,8 @@
  
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
+    
+    pickedImage = [UIImage imageWithCGImage:image.CGImage];
     
     [values removeObjectForKey:@"image_url"];
     

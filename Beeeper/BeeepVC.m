@@ -1014,6 +1014,11 @@
     @try {
         
         NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
+        
+        if (info_values == nil) {
+            info_values = [info objectForKey:@"com.dzn.photoPicker.photoMetadata"];
+        }
+        
         NSURL *image_url = [info_values objectForKey:@"source_url"];
         
         UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
@@ -1028,7 +1033,7 @@
         }
         else{
             base64Image = nil;
-             [values setObject:[[DTO sharedDTO] urlencode:image_url.absoluteString] forKey:@"image_url"];
+             [values setObject:image_url.absoluteString forKey:@"image_url"];
         }
         
         [self imageSelected];

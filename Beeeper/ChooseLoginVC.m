@@ -553,7 +553,7 @@
         
         
         if (hasUsername) {
-            [dict setObject:[fbDict objectForKey:@"username"] forKey:@"username"];
+            [dict setObject:username forKey:@"username"];
             
             NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [fbDict objectForKey:@"username"]];
             [dict setObject:userImageURL forKey:@"image_path"];
@@ -591,8 +591,18 @@
             [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
         }
         
+        @try {
+            [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"fb id nil");
+            [self hideLoading];
+            return;
+        }
+        @finally {
+            
+        }
         
-        [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
         
         float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
         

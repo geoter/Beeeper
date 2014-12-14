@@ -42,6 +42,7 @@ static BPCreate *thisWebServices = nil;
     self.completed = compbloc;
     
     NSURL *requestURL = [NSURL URLWithString:@"https://api.beeeper.com/1/beeep/create"];
+
     
     NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
     [postValuesDict setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
@@ -115,8 +116,15 @@ static BPCreate *thisWebServices = nil;
     
     [[DTO sharedDTO]addBugLog:@"beeepCreateFailed" where:@"BPCreate/beeepCreateFailed" json:responseString];
     
-    self.completed(NO,nil);
+    NSDictionary *dict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
+    NSArray *errors = [dict objectForKey:@"errors"];
+    
+    NSDictionary *error = [errors firstObject];
+    
+    if (error != nil) {
+        self.completed(NO,error);
+    }
 }
 
 -(void)beeepDelete:(NSString *)fingerprint timestamp:(NSString *)timestamp weight:(NSString *)weight completionBlock:(completed)compbloc{
@@ -193,7 +201,11 @@ static BPCreate *thisWebServices = nil;
         
         id fingerprint = [self encodeWithHmacsha256:fingerPrint_Input];
         
-        fingerprint = [self base64forData:[fingerprint dataUsingEncoding:NSUTF8StringEncoding]];
+        NSData *data = [fingerprint dataUsingEncoding:NSASCIIStringEncoding];
+        
+        NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        fingerprint = [self base64forData:data];
         
         [valuesDict setObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"];
         
@@ -201,25 +213,38 @@ static BPCreate *thisWebServices = nil;
         
         NSMutableArray *postValues = [[NSMutableArray alloc]init];
         NSMutableDictionary *postValuesDict = [NSMutableDictionary dictionary];
+
+
+        
+        for (NSString *key in values.allKeys) {
+            
+            
+            
+        NSString *title = [[DTO sharedDTO] urlencode:[values objectForKey:key]];
+        
+        [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:title] forKey:key]];
+        [postValuesDict setObject:title forKey:key];
+            
+            
+//            if ([key isEqualToString:@"title"] || [key isEqualToString:@"station"] || [key isEqualToString:@"latitude"] || [key isEqualToString:@"longitude"]) {
+//                
+//                
+//                NSString *title = [[DTO sharedDTO] urlencode:[values objectForKey:key]];
+//                
+//                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:title] forKey:key]];
+//                [postValuesDict setObject:title forKey:key];
+//
+//            }
+//            else{
+//                
+//                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[values objectForKey:key]] forKey:key]];
+//                [postValuesDict setObject:[values objectForKey:key] forKey:key];
+//            }
+        }
         
         [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:fingerprint] forKey:@"fingerprint"]];
         [postValuesDict setObject:fingerprint forKey:@"fingerprint"];
-
-        for (NSString *key in values.allKeys) {
-            
-            if ([key isEqualToString:@"title"] || [key isEqualToString:@"station"]) {
-                NSString *title = [[DTO sharedDTO] urlencode:[values objectForKey:key]];
-                
-                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:title] forKey:key]];
-                [postValuesDict setObject:title forKey:key];
-
-            }
-            else{
-                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[values objectForKey:key]] forKey:key]];
-                [postValuesDict setObject:[values objectForKey:key] forKey:key];
-            }
-        }
-        
+    
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         
         manager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -231,6 +256,7 @@ static BPCreate *thisWebServices = nil;
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSString *responseString = [operation responseString];
+            NSString *errorMessage = error.localizedDescription;
             [self eventCreateFailed:[operation responseString]];
         }];
 
@@ -390,8 +416,8 @@ static BPCreate *thisWebServices = nil;
         NSInteger theIndex = (i / 3) * 4;
         output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
         output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
-        output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
-        output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
+        output[theIndex + 2] = table[(value >> 6)  & 0x3F];
+        output[theIndex + 3] = table[(value >> 0)  & 0x3F];
     }
     
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];

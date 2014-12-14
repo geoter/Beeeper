@@ -890,7 +890,7 @@
                   
                     
                     @try {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:(message.length>0)?message:@"Error" message:(info.length > 0)?info:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                     }
                     @catch (NSException *exception) {

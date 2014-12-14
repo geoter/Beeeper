@@ -14,7 +14,12 @@ typedef void(^completed)(BOOL,id);
 {
     NSOperationQueue *operationQueue;
     NSMutableDictionary *valuesDict;
+    
+    
+    
 }
+@property (nonatomic,strong) NSString *fingerprint;
+@property (nonatomic,strong) NSString *beeep_time;
 
 @property (copy) void(^completed)(BOOL,id);
 - (id)init;

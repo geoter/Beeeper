@@ -29,6 +29,7 @@
     BOOL loadNextPage;
     UITapGestureRecognizer *tapG;
     BOOL upcomingVisible;
+    NSIndexPath *pendingActionIndexPath;
 }
 @end
 
@@ -124,6 +125,24 @@
     self.topV.layer.shadowOffset = CGSizeMake(0, 0.5);
     self.topV.layer.shadowRadius = 0.5;
     self.topV.layer.shadowOpacity = 0.5;
+
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(rebeeeped:) name:@"Rebeeep" object:nil];
+}
+
+-(void)rebeeeped:(NSNotification *)notif{
+   
+    NSIndexPath *indexpath= pendingActionIndexPath;
+    
+    Event_Search *event = [events objectAtIndex:indexpath.row];
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    BeeepedBy *beeeper = [[BeeepedBy alloc]init];
+    beeeper.beeepedByIdentifier = my_id;
+    
+    [event.beeepedBy addObject:beeeper];
+    
+    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -891,6 +910,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         }
     }
 
+    pendingActionIndexPath = indexpath;
     
     [[TabbarVC sharedTabbar]reBeeepPressed:[events objectAtIndex:indexpath.row] image:imageV.image controller:self];
     

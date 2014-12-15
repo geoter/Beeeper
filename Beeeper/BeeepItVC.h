@@ -36,6 +36,8 @@
 
 @property(nonatomic,strong) UIImage *facebookDialogEventImage;
 
+@property(nonatomic,strong) NSString *notificationName;
+
 - (void)setBeeep;
 - (IBAction)close:(id)sender;
 - (IBAction)fbShare:(id)sender;

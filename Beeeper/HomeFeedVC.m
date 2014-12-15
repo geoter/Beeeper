@@ -38,6 +38,8 @@
     BOOL loadNextPage;
     BOOL initiateData;
     BOOL getNextPage;
+    
+    NSIndexPath *pendingActionIndexPath;
 }
 @end
 
@@ -133,6 +135,20 @@
     
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(showFindFriends)];
     self.navigationItem.rightBarButtonItem = rightItem;
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(rebeeeped:) name:@"Rebeeep" object:nil];
+}
+
+-(void)rebeeeped:(NSNotification *)notif{
+    NSIndexPath *indexpath= pendingActionIndexPath;
+   
+    Friendsfeed_Object *event = [beeeps objectAtIndex:indexpath.row];
+    
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    [event.eventFfo.beeepedBy addObject:my_id];
+
+    [self.collectionV reloadItemsAtIndexPaths:@[indexpath]];
 }
 
 -(void)refresh{
@@ -844,6 +860,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     UIView *containerV = [cell viewWithTag:55];
     UIImageView *imageV = (id)[containerV viewWithTag:3];
     
+    
+    
     [[TabbarVC sharedTabbar]reBeeepPressed:[beeeps objectAtIndex:path.row] image:imageV.image controller:self];
     
 }
@@ -1113,6 +1131,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     else{
          tml = [events objectAtIndex:indexpath.row];
     }
+    
+    pendingActionIndexPath = indexpath;
     
     [[TabbarVC sharedTabbar]reBeeepPressed:tml image:imageV.image controller:self];
 

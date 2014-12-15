@@ -12,6 +12,8 @@
 #import "BeeepVC.h"
 #import "BeeepItVC.h"
 #import "SuggestBeeepVC.h"
+#import "HomeFeedVC.h"
+#import "SearchVC.h"
 
 @interface TabbarVC ()<UINavigationControllerDelegate,UIAlertViewDelegate>
 {
@@ -274,6 +276,10 @@ static TabbarVC *thisWebServices = nil;
     BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     viewController.superviewToBlur = sender.navigationController.view;
     viewController.facebookDialogEventImage = image;
+    
+    if ([sender isKindOfClass:[HomeFeedVC class]] || [sender isKindOfClass:[SearchVC class]]) {
+        viewController.notificationName = @"Rebeeep";
+    }
     
     if ([sender isKindOfClass:[BeeepVC class]]) {
         viewController.hideBackgroundblur = YES;

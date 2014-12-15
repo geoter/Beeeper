@@ -152,16 +152,14 @@
                     [self createMenuButtons:YES];
                 }
             }];
-            
-
         }
-        
 
         @try {
             
             if (userID == nil) {
                 NSLog(@"userID in timeline is nil");
             }
+
             
             [[BPTimeline sharedBP]getTimelineForUserID:userID option:option timeStamp:selectedDate.timeIntervalSince1970 WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 
@@ -170,6 +168,11 @@
                 [refreshControl endRefreshing];
                 
                 if (completed) {
+                    
+                    
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        [self.tableV setContentOffset:CGPointZero animated:NO];
+                    });
                     
                     loading = NO;
                     
@@ -183,9 +186,11 @@
                     else{
                         loadNextPage = NO;
                     }
+
+                    dispatch_async (dispatch_get_main_queue(), ^{
+                        [self.tableV reloadData];
+                    });
                     
-                    [self.tableV reloadData];
-                    [self.tableV setContentOffset:CGPointZero animated:YES];
                   //  suggestionsPerSection = [NSMutableDictionary dictionary];
                    // sections = [NSMutableArray array];
                  //   [self groupBeeepsByMonth];
@@ -284,6 +289,23 @@
          user = [BPUser sharedBP].user;
     }
     
+    [[BPTimeline sharedBP]getLocalTimelineUserID:[self.user objectForKey:@"id"] option:Upcoming WithCompletionBlock:^(BOOL completed,NSArray *objs){
+        if (completed) {
+            beeeps = [NSMutableArray arrayWithArray:objs];
+            
+            if (beeeps.count > 0) {
+                loading = NO;
+                [self.tableV reloadData];
+            }
+            
+            // suggestionsPerSection = [NSMutableDictionary dictionary];
+            // sections = [NSMutableArray array];
+            
+            //                [self groupBeeepsByMonth];
+            
+        }
+    }];
+    
     rowsToReload = [NSMutableArray array];
 
     UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
@@ -319,25 +341,23 @@
     self.userCityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     self.usernameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
     
+   
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(rebeeeped:) name:@"Rebeeep" object:nil];
+}
+
+-(void)getLocalData{
+    
     @try {
         
-        
-        [[BPTimeline sharedBP]getLocalTimelineUserID:[self.user objectForKey:@"id"] option:Upcoming WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            if (completed) {
-                beeeps = [NSMutableArray arrayWithArray:objs];
-                
-                if (beeeps.count > 0) {
-                    loading = NO;
-                    [self.tableV reloadData];
-                }
-                
-                // suggestionsPerSection = [NSMutableDictionary dictionary];
-                // sections = [NSMutableArray array];
-                
-                //                [self groupBeeepsByMonth];
-                
-            }
-        }];
+        if (self.mode == Timeline_My) {
+            self.followersButton = (UIButton *)[self.myTimelineMenuV viewWithTag:33];
+            self.followingButton = (UIButton *)[self.myTimelineMenuV viewWithTag:34];
+        }
+        else{
+            self.followersButton = (UIButton *)[self.othersTimelineMenuV viewWithTag:33];
+            self.followingButton = (UIButton *)[self.othersTimelineMenuV viewWithTag:34];
+        }
         
         [[BPUser sharedBP]getLocalFollowersForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
@@ -390,7 +410,7 @@
         
         //Follow + /Following button
         if (self.mode != Timeline_My) {
-           
+            
             [[BPUser sharedBP]getLocalFollowingForUser:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 
                 if (completed) {
@@ -410,14 +430,15 @@
     @finally {
         
     }
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(rebeeeped:) name:@"Rebeeep" object:nil];
 }
 
 -(void)rebeeeped:(NSNotification *)notif{
     
     if (self.mode == Timeline_My) {
         [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    }
+    else{
+        [self.tableV reloadData];
     }
 }
 
@@ -662,6 +683,8 @@
   
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+  
+    [self getLocalData];
     
     if (firstTime) {
         firstTime = NO;
@@ -751,9 +774,8 @@
 
 
 -(void)createMenuButtons:(BOOL)animated{
+    
     dispatch_async (dispatch_get_main_queue(), ^{
-           
-           
 
     self.othersTimelineMenuV.hidden = (self.mode == Timeline_My);
     self.myTimelineMenuV.hidden = !(self.mode == Timeline_My);
@@ -1511,8 +1533,10 @@
         [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
             
-                [user setObject:[NSNumber numberWithInt:1] forKey:@"following"];
+                [self.user setObject:[NSNumber numberWithInt:1] forKey:@"following"];
+                [self.user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
                 
+                NSLog(@"%@",user);
                 self.mode = Timeline_Following;
                 [self createMenuButtons:YES];
             }
@@ -1539,8 +1563,8 @@
                 
                 self.following = NO;
                 
-                [user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
-               
+                [self.user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
+                [self.user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
                 [self createMenuButtons:YES];
 
             }
@@ -2145,7 +2169,8 @@
     }
     else if(index == -1){
         [self closeDatePopup:-1];
-        [self getTimeline:[self.user objectForKey:@"id"] option:Past];
+        segmentIndex = -1;
+        [self getTimeline:[self.user objectForKey:@"id"] option:segmentIndex];
     }
     else if(index == -10){ //tapG
         [self closeDatePopup:-1];
@@ -2320,12 +2345,16 @@
     
         @try {
             
-            [[BPTimeline sharedBP]getTimelineForUserID:[user objectForKey:@"id"] option:0 timeStamp:[selectedDate timeIntervalSince1970] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+            segmentIndex = -1;
+            
+            [[BPTimeline sharedBP]getTimelineForUserID:[user objectForKey:@"id"] option:segmentIndex timeStamp:[selectedDate timeIntervalSince1970] WithCompletionBlock:^(BOOL completed,NSArray *objs){
                 
                 UIRefreshControl *refreshControl = (id)[self.tableV viewWithTag:234];
                 [refreshControl endRefreshing];
                 
                 if (completed) {
+                    
+                    [self.tableV setContentOffset:CGPointZero animated:NO];
                     
                     loading = NO;
                     
@@ -2339,7 +2368,7 @@
                     else{
                         loadNextPage = NO;
                     }
-                    [self.tableV setContentOffset:CGPointZero animated:YES];
+                    
                     [self.tableV reloadData];
                     
                     //  suggestionsPerSection = [NSMutableDictionary dictionary];

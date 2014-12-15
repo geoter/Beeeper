@@ -1337,7 +1337,9 @@
          else{
              
              tickedV.hidden = YES;
-             followBtn.hidden = NO;
+             
+             NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+             followBtn.hidden = ([my_id isEqualToString:[user objectForKey:@"id"]])?YES:NO;
              fbtickedV.hidden = YES;
              
              NSNumber *following = (NSNumber *)[user objectForKey:@"following"];

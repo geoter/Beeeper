@@ -89,10 +89,11 @@
                     NSMutableArray *true_following = [NSMutableArray array];
                     
                     if (following != nil) {
-                        for (NSDictionary *user in people) {
+                        for (NSMutableDictionary *user in people) {
                             for (NSDictionary *following_user in following) {
                                 if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
                                     [true_following addObject:user];
+                                    [user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
                                 }
                             }
                         }
@@ -124,10 +125,11 @@
                  NSMutableArray *true_following = [NSMutableArray array];
                  
                  if (people != nil) {
-                     for (NSDictionary *user in people) {
+                     for (NSMutableDictionary *user in people) {
                          for (NSDictionary *following_user in following) {
                              if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
                                  [true_following addObject:user];
+                                 [user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
                              }
                          }
                      }
@@ -212,10 +214,12 @@
                      NSMutableArray *true_following = [NSMutableArray array];
                      
                      if (following != nil) {
-                         for (NSDictionary *user in people) {
+                         for (NSMutableDictionary *user in people) {
                              for (NSDictionary *following_user in following) {
                                  if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
+                                     
                                      [true_following addObject:user];
+                                     [user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
                                  }
                              }
                          }
@@ -246,10 +250,12 @@
                  NSMutableArray *true_following = [NSMutableArray array];
                  
                  if (people != nil) {
-                     for (NSDictionary *user in people) {
+                     for (NSMutableDictionary *user in people) {
                          for (NSDictionary *following_user in following) {
                              if ([[user objectForKey:@"id"] isEqualToString:[following_user objectForKey:@"id"]]) {
                                  [true_following addObject:user];
+                                 [user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
+                                 
                              }
                          }
                      }
@@ -289,6 +295,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
+    [self.tableV reloadData];
 }
 
 -(void)goBack{
@@ -355,7 +362,9 @@
     
         btn.hidden = NO;
         
-        if ([following indexOfObject:user] != NSNotFound) {
+         BOOL following = [[user objectForKey:@"i_follow"] boolValue];
+        
+        if (following) {
             [btn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal] ;
         }
         else{
@@ -381,7 +390,8 @@
         timelineVC.mode = Timeline_My;
     }
     else{
-        timelineVC.following = ([following indexOfObject:user] != NSNotFound);
+        BOOL following = [[user objectForKey:@"i_follow"] boolValue];
+        timelineVC.following = following;
     }
     
     timelineVC.user = user;
@@ -411,7 +421,9 @@
     
     NSMutableDictionary *user = [people objectAtIndex:path.row];
 
-    if ([following indexOfObject:user] != NSNotFound) {
+    BOOL followingVar = [[user objectForKey:@"i_follow"] boolValue];
+
+    if (followingVar) {
         
         NSString *username = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
         
@@ -425,7 +437,7 @@
         [[BPUser sharedBP]follow:[user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             if (completed) {
                 
-                [user setObject:[NSNumber numberWithInt:1] forKey:@"following"];
+                [user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
 
                 [following addObject:user];
                 
@@ -459,7 +471,7 @@
                 
                 [following removeObject:user];
                 
-                [user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
+                [user setObject:[NSNumber numberWithInt:0] forKey:@"i_follow"];
                 
                 NSArray* rowsToReload = [NSArray arrayWithObjects:actionSheetIndexPath, nil];
                 

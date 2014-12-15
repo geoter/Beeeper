@@ -855,6 +855,12 @@
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                         [[NSNotificationCenter defaultCenter]postNotificationName:@"Rebeeep" object:nil];
+                        
+                        if ([tml isKindOfClass:[Timeline_Object class]]) {
+                            NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+                            [t.beeepersIds addObject:my_id];
+                        }
+                        
 //                        [[NSNotificationCenter defaultCenter]postNotificationName:self.notificationName object:nil];
                     }
                     @catch (NSException *exception) {

@@ -69,7 +69,7 @@ static BPTimeline *thisWebServices = nil;
 
 -(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)optionn WithCompletionBlock:(completed)compbloc{
  
-    order = (option == Upcoming)?@"ASC":@"DESC";
+    order = (option == Upcoming || optionn == -1)?@"ASC":@"DESC";
     userID = user_id;
     
     timeline_page++;
@@ -121,7 +121,7 @@ static BPTimeline *thisWebServices = nil;
     timeline_page = 0;
     requestEmptyResultsCounter = 0;
     
-    order = (optionn == Upcoming)?@"ASC":@"DESC";
+    order = (optionn == Upcoming || optionn == -1)?@"ASC":@"DESC";
     userID = user_id;
     option = optionn;
     

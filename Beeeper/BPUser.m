@@ -1001,7 +1001,7 @@ static BPUser *thisWebServices = nil;
     
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/followers/create"];
     
-    self.completed = compbloc;
+    self.followCompleted = compbloc;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
@@ -1031,7 +1031,7 @@ static BPUser *thisWebServices = nil;
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
-    self.completed(YES,nil);
+    self.followCompleted(YES,nil);
     
     //For timeline
     
@@ -1045,14 +1045,14 @@ static BPUser *thisWebServices = nil;
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
-    self.completed(NO,nil);
+    self.followCompleted(NO,nil);
 }
 
 -(void)unfollow:(NSString *)userID WithCompletionBlock:(completed)compbloc{
   
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/following/stop"];
     
-    self.completed = compbloc;
+    self.followCompleted = compbloc;
     
     NSMutableArray *postValues = [NSMutableArray array];
     
@@ -1082,7 +1082,7 @@ static BPUser *thisWebServices = nil;
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
-    self.completed(YES,nil);
+    self.followCompleted(YES,nil);
     
     
     //For timeline
@@ -1096,7 +1096,7 @@ static BPUser *thisWebServices = nil;
     
     //responseString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DemoJSON" ofType:@""] encoding:NSUTF8StringEncoding error:NULL];
     
-    self.completed(NO,nil);
+    self.followCompleted(NO,nil);
 }
 
 #pragma mark - Notifications LOCAL

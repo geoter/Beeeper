@@ -261,7 +261,6 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
     NSString *tag = [filteredResults objectAtIndex:indexPath.row];
     
     self.searchTextField.text = tag;

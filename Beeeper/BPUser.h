@@ -27,6 +27,7 @@ typedef void(^markRead_completed)(BOOL);
 @property (copy) void(^clearBadge_completed)(BOOL);
 @property (copy) void(^markRead_completed)(BOOL);
 
+@property (copy) completed followCompleted;
 @property (copy) completed emailSignUpCompleted;
 @property (copy) completed fbSignUpCompleted;
 @property (copy) completed localNotificationsCompleted;

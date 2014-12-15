@@ -844,7 +844,14 @@
                          
                      }
                      else{
+                         
+                         self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
+                         
+                         self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
+                         
                          [self.tableV reloadData];
+                         
+                         [self hideLoading];
                      }
                  }
                  else{
@@ -1002,7 +1009,6 @@
                             }
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                
                                 
                                 self.noUsersFoundLabel.text = @"No one of your Twitter friends\nis on Beeeper yet.";
                                 

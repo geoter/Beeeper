@@ -198,14 +198,15 @@ static BPUser *thisWebServices = nil;
        @try {
            id object = [settings objectForKey:key];
            
-           if ([key isEqualToString:@"longitude"] || [key isEqualToString:@"latitude"]) {
+//           if ([key isEqualToString:@"email"] || [key isEqualToString:@"timezone"])
+//           {
+//               [postValuesDict setObject:object forKey:key];
+//               [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:object] forKey:key]];
+//           }
+//           else{
                [postValuesDict setObject:[[DTO sharedDTO] urlencode:object] forKey:key];
                [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:[[DTO sharedDTO] urlencode:object]] forKey:key]];
-               continue;
-           }
-           
-           [postValuesDict setObject:object forKey:key];
-           [postValues addObject:[NSDictionary dictionaryWithObject:[[DTO sharedDTO] urlencode:object] forKey:key]];
+           //}
   
         }
         @catch (NSException *exception) {
@@ -230,6 +231,7 @@ static BPUser *thisWebServices = nil;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSString *response = operation.responseString;
+        NSString *errorStr = error.localizedDescription;
         [self setUserSettingsFailed:operation.responseString];
     }];
 
@@ -1619,23 +1621,27 @@ static BPUser *thisWebServices = nil;
         @try {
             
             NSString *responseString = [operation responseString];
-            NSDictionary *beeepersDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
             
-            NSMutableArray *beeepers = [NSMutableArray array];
-            
-            for (NSString *key in beeepersDict.allKeys) {
-               
-                NSDictionary *beeeper = [beeepersDict objectForKey:key];
-                NSMutableDictionary *mutableBeeeper = [NSMutableDictionary dictionaryWithDictionary:beeeper];
+            if ([responseString isEqualToString:@"No ids provided"]) {
+                NSMutableArray *beeepers = [NSMutableArray array];
+                self.beeepersFromFBCompleted(YES,beeepers);     
+            }
+            else{
+                NSDictionary *beeepersDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
                 
-                [beeepers addObject:mutableBeeeper];
+                NSMutableArray *beeepers = [NSMutableArray array];
+                
+                for (NSString *key in beeepersDict.allKeys) {
+                   
+                    NSDictionary *beeeper = [beeepersDict objectForKey:key];
+                    NSMutableDictionary *mutableBeeeper = [NSMutableDictionary dictionaryWithDictionary:beeeper];
+                    
+                    [beeepers addObject:mutableBeeeper];
+                }
+
+                
+                self.beeepersFromFBCompleted(YES,beeepers);
             }
-            
-            if (beeepers.count == 0) {
-                [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromFB_IDs" json:responseString];
-            }
-            
-            self.beeepersFromFBCompleted(YES,beeepers);
         }
         @catch (NSException *exception) {
             self.beeepersFromFBCompleted(NO,nil);
@@ -1678,20 +1684,20 @@ static BPUser *thisWebServices = nil;
         
         @try {
             
-            NSArray *beeepers = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+            NSDictionary *beeepersDict = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        
             
-            if (beeepers.count == 0) {
-                [[DTO sharedDTO]addBugLog:@"beeepers.count == 0" where:@"BPUser/beeepersFromTW_IDs" json:responseString];
+            NSMutableArray *beeepers = [NSMutableArray array];
+            
+            for (NSString *key in beeepersDict.allKeys) {
+                
+                NSDictionary *beeeper = [beeepersDict objectForKey:key];
+                NSMutableDictionary *mutableBeeeper = [NSMutableDictionary dictionaryWithDictionary:beeeper];
+                
+                [beeepers addObject:mutableBeeeper];
             }
             
-            NSMutableArray *mutablePeople = [NSMutableArray array];
-            
-            for (NSMutableDictionary *user in beeepers) {
-                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:user];
-                [mutablePeople addObject:dict];
-            }
-            
-            self.beeepersFromTWCompleted(YES,mutablePeople);
+            self.beeepersFromTWCompleted(YES,beeepers);
         }
         @catch (NSException *exception) {
             

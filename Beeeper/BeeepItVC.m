@@ -854,10 +854,8 @@
                         localNotification.userInfo = userinfo;
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-                        
-                        if (self.notificationName) {
-                            [[NSNotificationCenter defaultCenter]postNotificationName:self.notificationName object:nil];   
-                        }
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"Rebeeep" object:nil];
+//                        [[NSNotificationCenter defaultCenter]postNotificationName:self.notificationName object:nil];
                     }
                     @catch (NSException *exception) {
     

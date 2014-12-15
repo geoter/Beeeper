@@ -3414,7 +3414,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3435,7 +3435,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
+				PROVISIONING_PROFILE = "0835af8d-317c-4642-ab68-ada0bc3c4a8d";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3445,7 +3445,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: George Termentzoglou (YDQRX9MYE7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3466,7 +3466,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
+				PROVISIONING_PROFILE = "0835af8d-317c-4642-ab68-ada0bc3c4a8d";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

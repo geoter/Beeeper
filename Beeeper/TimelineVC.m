@@ -410,7 +410,17 @@
     @finally {
         
     }
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(rebeeeped:) name:@"Rebeeep" object:nil];
 }
+
+-(void)rebeeeped:(NSNotification *)notif{
+    
+    if (self.mode == Timeline_My) {
+        [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
+    }
+}
+
 
 -(void)setUserInfo{
     

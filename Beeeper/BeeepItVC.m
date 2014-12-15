@@ -421,6 +421,7 @@
          
          if (sender == nil) {
              [[NSNotificationCenter defaultCenter]postNotificationName:@"BeeepIt" object:nil];
+             [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
              [SVProgressHUD showSuccessWithStatus:@"Successfully \nBeeeped!"];
          }
 

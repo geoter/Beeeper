@@ -13,9 +13,9 @@
 
 @property (nonatomic, strong) NSString *tinyUrl;
 @property (nonatomic, strong) NSString *hashTags;
-@property (nonatomic, strong) NSString *beeepedBy;
+@property (nonatomic, strong) NSMutableArray *beeepedBy;
 @property (nonatomic, strong) EventInfo *eventInfo;
-@property (nonatomic, strong) NSArray *comments;
+@property (nonatomic, strong) NSMutableArray *comments;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

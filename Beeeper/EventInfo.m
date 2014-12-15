@@ -68,7 +68,7 @@ NSString *const kEventInfoLikes = @"likes";
             self.loc = [self objectOrNilForKey:kEventInfoLoc fromDictionary:dict];
             self.url = [self objectOrNilForKey:kEventInfoUrl fromDictionary:dict];
             self.likesCount = [[self objectOrNilForKey:kEventInfoLikesCount fromDictionary:dict] doubleValue];
-            self.likes = [self objectOrNilForKey:kEventInfoLikes fromDictionary:dict];
+            self.likes =  [NSMutableArray arrayWithArray:[self objectOrNilForKey:kEventInfoLikes fromDictionary:dict]];
         
         NSObject *receivedComments = [dict objectForKey:kEventInfoComments];
         NSMutableArray *parsedComments = [NSMutableArray array];

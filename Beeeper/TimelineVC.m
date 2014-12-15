@@ -741,7 +741,10 @@
 
 
 -(void)createMenuButtons:(BOOL)animated{
-    
+    dispatch_async (dispatch_get_main_queue(), ^{
+           
+           
+
     self.othersTimelineMenuV.hidden = (self.mode == Timeline_My);
     self.myTimelineMenuV.hidden = !(self.mode == Timeline_My);
     
@@ -819,7 +822,7 @@
         self.followButton.hidden = YES;
     }
  
-
+        });
 }
 
 - (void)didReceiveMemoryWarning
@@ -1524,6 +1527,8 @@
             if (completed) {
                 self.mode = Timeline_Not_Following;
                 
+                self.following = NO;
+                
                 [user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
                
                 [self createMenuButtons:YES];
@@ -1874,7 +1879,7 @@
         
     Timeline_Object *b = [beeeps objectAtIndex:indexpath.row];
     
-    NSArray *likes = b.beeep.beeepInfo.likes;
+    NSMutableArray *likes = b.beeep.beeepInfo.likes;
     NSMutableArray *likers = [NSMutableArray array];
     
     for (Likes *l in likes) {
@@ -1904,9 +1909,9 @@
                 like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
                 like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
                 
-                [likers addObject:like];
+                [likes addObject:like];
                 
-                b.beeep.beeepInfo.likes = likers;
+                b.beeep.beeepInfo.likes = likes;
                 
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Liked!"];

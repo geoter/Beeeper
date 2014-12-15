@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSString *hashTags;
 @property (nonatomic, strong) NSString *label;
 @property (nonatomic, assign) double when;
-@property (nonatomic, strong) NSArray *beeepersIds;
+@property (nonatomic, strong) NSMutableArray *beeepersIds;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

@@ -427,7 +427,7 @@
     self.commentsLabel.hidden = (comments.count == 0);
     
     if (!beeepers){
-        beeepers = [NSMutableArray arrayWithArray:suggestion.beeepersIds];
+        beeepers = suggestion.beeepersIds;
     }
     
     beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
@@ -736,7 +736,8 @@
     Beeeps *b = [ffo.beeepFfo.beeeps firstObject];
     
     if (!likers) {
-        likers = [NSMutableArray arrayWithArray:[b.likes valueForKey:@"likes"]];
+       // likers = [NSMutableArray arrayWithArray:[b.likes valueForKey:@"likes"]];
+        likers = b.likes;
     }
     
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -748,7 +749,7 @@
     commentsLbl.text = [NSString stringWithFormat:@"%d",(int)comments.count];
     
     if (!beeepers) {
-        beeepers = [NSMutableArray arrayWithArray:ffo.eventFfo.beeepedBy];
+        beeepers = ffo.eventFfo.beeepedBy;
     }
 
     beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
@@ -1056,16 +1057,7 @@
     UILabel *commentsLbl = (id)[headerV viewWithTag:-4];
     
     if (!likers) {
-        @try {
-            likers = [NSMutableArray arrayWithArray:[t.beeep.beeepInfo.likes valueForKey:@"likes"]];
-        }
-        @catch (NSException *exception) {
-            likers = [NSMutableArray arrayWithArray:t.beeep.beeepInfo.likes];
-        }
-        @finally {
-            
-        }
-
+        likers = t.beeep.beeepInfo.likes;
     }
     
     likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -1078,7 +1070,7 @@
     self.commentsLabel.hidden = (comments.count == 0);
    
     if (!beeepers) {
-        beeepers = [NSMutableArray arrayWithArray:t.beeepersIds];
+        beeepers = t.beeepersIds;
     }
 
     beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
@@ -1431,7 +1423,7 @@
     self.commentsLabel.text = [NSString stringWithFormat:@"%d",(int)eventSearch.comments.count];
 
     if (!beeepers) {
-        beeepers = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+        beeepers = event.beeepedBy;
     }
     
     beeepsLbl.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
@@ -1747,8 +1739,7 @@
     isLiker = NO;
     
     @try {
-        NSArray *beeepersArr = [event.beeepedBy objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-        beeepers = [beeepersArr valueForKey:@"id"];
+        beeepers = event.beeepedBy;
     }
     @catch (NSException *exception) {
     
@@ -2067,7 +2058,13 @@
             [[EventWS sharedBP]unlikeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                 if (completed) {
                     isLiker = NO;
-                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    
+                    for (Likes * like in likers) {
+                        if ([like.likers.likersIdentifier isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
+                            [likers removeObject:like];
+                        }
+                    }
+
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
         //            [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                     
@@ -2149,10 +2146,21 @@
                     if (completed) {
                         isLiker = NO;
                         [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                        likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                        likesLbl.hidden = (likers.count == 0);
-                        
-                        [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                       
+                        dispatch_async (dispatch_get_main_queue(), ^{
+                            
+                            likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
+                            likesLbl.hidden = (likers.count == 0);
+                            
+                            UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
+                            likeBtn.image = [UIImage imageNamed:@"like_event.png"];
+                            
+                            
+                            [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                            [SVProgressHUD showSuccessWithStatus:@"Unliked"];
+
+           
+                        });
                     }
                 }];
             }
@@ -2196,7 +2204,13 @@
           
                 if (completed) {
                     isLiker = NO;
-                    [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    
+                    for (Likes * like in likers) {
+                        if ([like.likers.likersIdentifier isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
+                            [likers removeObject:like];
+                        }
+                    }
+
                     likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
                     //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                     
@@ -2278,10 +2292,19 @@
             [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,NSDictionary *response){
                 if (completed) {
                     isLiker = YES;
-                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                    
+                    Likes *like = [[Likes alloc]init];
+                    like.likers = [[Likers alloc]init];
+                    like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+                    like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                    
+                    [likers addObject:like];
                     
                     likesLbl.hidden = (likers.count == 0);
-                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",likesLbl.text.intValue + 1];
 //                    [self.likesButton setImage:[UIImage imageNamed:@"liked_icon_event"] forState:UIControlStateNormal];
                     
                     UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
@@ -2360,17 +2383,30 @@
                 }];
             }
             else{
-                NSLog(@"oooops");
-                     /*   [[EventWS sharedBP]likeBeeep:bps.weight user:ffo.beeepFfo.userId WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
+
+                BeeepActivity *beeepAct = [activity.beeepInfoActivity.beeepActivity firstObject];
+                BeeepsActivity *beeep = [beeepAct.beeepsActivity firstObject];
+                UserActivity *userAt = [activity.beeepInfoActivity.userActivity firstObject];
+               
+                [[EventWS sharedBP]likeBeeep:beeep.weight user:userAt.userActivityIdentifier WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
                             if (completed) {
-                                isLiker = NO;
-                                [likers removeObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                                likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue - 1)>0)?(likesLbl.text.intValue - 1):0];
-                      
-                                likesLbl.hidden = (likers.count == 0);
-                                [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
+                                isLiker = YES;
+                                [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
+                              
+                                dispatch_async (dispatch_get_main_queue(), ^{
+                                   likesLbl.text = [NSString stringWithFormat:@"%d",likesLbl.text.intValue + 1];
+                                   
+                                   likesLbl.hidden = (likers.count == 0);
+                                    
+                                    UIBarButtonItem *likeBtn  = [self.navigationItem.rightBarButtonItems objectAtIndex:1];
+                                    likeBtn.image = [UIImage imageNamed:@"liked_event.png"];
+                                    
+                                    [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
+                                    [SVProgressHUD showSuccessWithStatus:@"Liked!"];
+           
+                               });
                             }
-                        }];*/
+                        }];
 
             }
             
@@ -2413,8 +2449,18 @@
                 
                 if (completed) {
                     isLiker = YES;
-                    [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    
+                    Likes *like = [[Likes alloc]init];
+                    like.likers = [[Likers alloc]init];
+                    like.likes = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.likersIdentifier = [[BPUser sharedBP].user objectForKey:@"id"];
+                    like.likers.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    like.likers.name = [[BPUser sharedBP].user objectForKey:@"name"];
+                    like.likers.lastname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                    
+                    [likers addObject:like];
+
+                    likesLbl.text = [NSString stringWithFormat:@"%d",likesLbl.text.intValue + 1];
                     //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                     
                     likesLbl.hidden = (likers.count == 0);
@@ -2445,7 +2491,7 @@
                 if (completed) {
                     isLiker = YES;
                     [likers addObject:[[BPUser sharedBP].user objectForKey:@"id"]];
-                    likesLbl.text = [NSString stringWithFormat:@"%d",((likesLbl.text.intValue + 1)>0)?(likesLbl.text.intValue + 1):0];
+                    likesLbl.text = [NSString stringWithFormat:@"%d",likesLbl.text.intValue + 1];
                     //    [self.likesButton setImage:[UIImage imageNamed:@"likes_icon_event"] forState:UIControlStateNormal];
                     
                     likesLbl.hidden = (likers.count == 0);
@@ -2581,6 +2627,11 @@
     
     [self close:nil];
     
+    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+    
+    [beeepers addObject:my_id];
+    
+    self.beeepsLabel.text = [NSString stringWithFormat:@"%d",(int)beeepers.count];
     self.beeepItButton.hidden = YES;
     self.beeepedGray.hidden = NO;
 }
@@ -2649,7 +2700,16 @@
     
     FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
-    viewController.ids = likers;
+    
+    @try {
+         viewController.ids = [[likers valueForKey:@"likers"]valueForKey:@"likersIdentifier"];
+    }
+    @catch (NSException *exception) {
+         viewController.ids = likers;
+    }
+    @finally {
+        
+    }
     
     [self.navigationController pushViewController:viewController animated:YES];
 }

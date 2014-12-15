@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSString *source;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *location;
-@property (nonatomic, strong) NSArray *beeepedBy;
+@property (nonatomic, strong) NSMutableArray *beeepedBy;
 @property (nonatomic, assign) double locked;
 @property (nonatomic, strong) NSString *hashTags;
 @property (nonatomic, strong) NSArray *loc;

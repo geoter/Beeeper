@@ -59,7 +59,7 @@ NSString *const kBeeepInfoFingerprint = @"fingerprint";
        [parsedLikes addObject:[Likes modelObjectWithDictionary:(NSDictionary *)receivedLikes]];
     }
 
-    self.likes = [NSArray arrayWithArray:parsedLikes];
+    self.likes = [NSMutableArray arrayWithArray:parsedLikes];
             self.timestamp = [self objectOrNilForKey:kBeeepInfoTimestamp fromDictionary:dict];
             self.weight = [self objectOrNilForKey:kBeeepInfoWeight fromDictionary:dict];
     NSObject *receivedComments = [dict objectForKey:kBeeepInfoComments];

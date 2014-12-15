@@ -12,7 +12,7 @@
 @interface BeeepInfo : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, strong) NSString *eventTime;
-@property (nonatomic, strong) NSArray *likes;
+@property (nonatomic, strong) NSMutableArray *likes;
 @property (nonatomic, strong) NSString *timestamp;
 @property (nonatomic, strong) NSString *weight;
 @property (nonatomic, strong) NSMutableArray *comments;

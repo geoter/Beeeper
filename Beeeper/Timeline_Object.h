@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSString *hashTags;
 @property (nonatomic, strong) Beeep *beeep;
 @property (nonatomic, strong) Event *event;
-@property (nonatomic, strong) NSArray *beeepersIds;
+@property (nonatomic, strong) NSMutableArray *beeepersIds;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

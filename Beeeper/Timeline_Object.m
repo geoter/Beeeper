@@ -44,7 +44,7 @@ NSString *const kTimeline_ObjectBeeepersIds = @"beeepers_ids";
             self.hashTags = [self objectOrNilForKey:kTimeline_ObjectHashTags fromDictionary:dict];
             self.beeep = [Beeep modelObjectWithDictionary:[dict objectForKey:kTimeline_ObjectBeeep]];
             self.event = [Event modelObjectWithDictionary:[dict objectForKey:kTimeline_ObjectEvent]];
-            self.beeepersIds = [self objectOrNilForKey:kTimeline_ObjectBeeepersIds fromDictionary:dict];
+            self.beeepersIds = [NSMutableArray arrayWithArray:[self objectOrNilForKey:kTimeline_ObjectBeeepersIds fromDictionary:dict]];
 
     }
     

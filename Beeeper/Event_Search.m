@@ -99,7 +99,7 @@ NSString *const kEvent_SearchLikesCount = @"likes_count";
        [parsedBeeepedBy addObject:[BeeepedBy modelObjectWithDictionary:(NSDictionary *)receivedBeeepedBy]];
     }
 
-    self.beeepedBy = [NSArray arrayWithArray:parsedBeeepedBy];
+    self.beeepedBy = [NSMutableArray arrayWithArray:parsedBeeepedBy];
             self.locked = [[self objectOrNilForKey:kEvent_SearchLocked fromDictionary:dict] doubleValue];
             self.hashTags = [self objectOrNilForKey:kEvent_SearchHashTags fromDictionary:dict];
             self.loc = [self objectOrNilForKey:kEvent_SearchLoc fromDictionary:dict];

@@ -816,7 +816,7 @@
                 
                  if (completed) {
                      
-                     if (objcts && objcts.count>0) {
+                     if (objcts && objcts.count>0 && YES) {
                          
                          NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                          NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];

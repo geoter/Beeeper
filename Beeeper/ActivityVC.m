@@ -19,6 +19,7 @@
     BOOL loadNextPage;
     NSMutableDictionary *activitiesPerSection;
     NSMutableArray *rowsToReload;
+    BOOL firstTime;
 }
 @end
 
@@ -28,6 +29,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    firstTime = YES;
+    
     rowsToReload = [NSMutableArray array];
     
     [self showLoading];
@@ -238,7 +242,11 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self getActivity];
+    if (firstTime) {
+        firstTime = NO;
+        [self getActivity];
+    }
+
     
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     

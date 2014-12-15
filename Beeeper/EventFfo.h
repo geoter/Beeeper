@@ -10,7 +10,7 @@
 
 @interface EventFfo : NSObject <NSCoding, NSCopying>
 
-@property (nonatomic, strong) NSArray *beeepedBy;
+@property (nonatomic, strong) NSMutableArray *beeepedBy;
 @property (nonatomic, strong) EventDetailsFfo *eventDetailsFfo;
 @property (nonatomic, strong) NSString *hashTags;
 

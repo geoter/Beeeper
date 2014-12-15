@@ -46,7 +46,7 @@ NSString *const kEventFfoHashTags = @"hash_tags";
     // This check serves to make sure that a non-NSDictionary object
     // passed into the model class doesn't break the parsing.
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
-            self.beeepedBy = [self objectOrNilForKey:kEventFfoBeeepedBy fromDictionary:dict];
+            self.beeepedBy = [NSMutableArray arrayWithArray:[self objectOrNilForKey:kEventFfoBeeepedBy fromDictionary:dict]];
             self.eventDetailsFfo = [EventDetailsFfo modelObjectWithDictionary:[dict objectForKey:kEventFfoEventDetailsFfo]];
             self.hashTags = [self objectOrNilForKey:kEventFfoHashTags fromDictionary:dict];
 

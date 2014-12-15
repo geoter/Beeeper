@@ -54,7 +54,7 @@ NSString *const kSuggestion_ObjectBeeepersIds = @"beeepers_ids";
             self.hashTags = [self objectOrNilForKey:kSuggestion_ObjectHashTags fromDictionary:dict];
             self.label = [self objectOrNilForKey:kSuggestion_ObjectLabel fromDictionary:dict];
             self.when = [[self objectOrNilForKey:kSuggestion_ObjectWhen fromDictionary:dict] doubleValue];
-            self.beeepersIds = [self objectOrNilForKey:kSuggestion_ObjectBeeepersIds fromDictionary:dict];
+            self.beeepersIds = [NSMutableArray arrayWithArray:[self objectOrNilForKey:kSuggestion_ObjectBeeepersIds fromDictionary:dict]];
 
     }
     

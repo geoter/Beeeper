@@ -53,8 +53,6 @@ static TabbarVC *thisWebServices = nil;
     
     [self pushReceived:nil];
     
-    [self showDeeepLinkEvent];
-    
     [self updateNotificationsBadge];
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -131,11 +129,14 @@ static TabbarVC *thisWebServices = nil;
             [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:1.0];
             [self performSelector:@selector(showPushEvent) withObject:nil afterDelay:1.0];
             [self performSelector:@selector(showPushUser) withObject:nil afterDelay:1.0];
+            [self performSelector:@selector(showDeeepLinkEvent) withObject:nil afterDelay:1.0];
+
         }
         else{
             [self performSelector:@selector(showPushBeeep) withObject:nil afterDelay:2.0];
             [self performSelector:@selector(showPushEvent) withObject:nil afterDelay:2.0];
             [self performSelector:@selector(showPushUser) withObject:nil afterDelay:2.0];
+            [self performSelector:@selector(showDeeepLinkEvent) withObject:nil afterDelay:1.0];
         }
 
     }

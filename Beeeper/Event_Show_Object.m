@@ -43,7 +43,8 @@ NSString *const kBaseClassComments = @"comments";
     if(self && [dict isKindOfClass:[NSDictionary class]]) {
             self.tinyUrl = [self objectOrNilForKey:kEvent_Show_ObjectTinyUrl fromDictionary:dict];
             self.hashTags = [self objectOrNilForKey:kEvent_Show_ObjectHashTags fromDictionary:dict];
-            self.beeepedBy = [self objectOrNilForKey:kEvent_Show_ObjectBeeepedBy fromDictionary:dict];
+            NSString *beeepers = [self objectOrNilForKey:kEvent_Show_ObjectBeeepedBy fromDictionary:dict];
+            self.beeepedBy = [NSMutableArray arrayWithArray:[beeepers objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines]];
             self.eventInfo = [EventInfo modelObjectWithDictionary:[dict objectForKey:kEvent_Show_ObjectEventInfo]];
         
             NSObject *receivedComments = [dict objectForKey:kBaseClassComments];
@@ -58,7 +59,7 @@ NSString *const kBaseClassComments = @"comments";
                 [parsedComments addObject:[Comments modelObjectWithDictionary:(NSDictionary *)receivedComments]];
             }
             
-            self.comments = [NSArray arrayWithArray:parsedComments];
+            self.comments = [NSMutableArray arrayWithArray:parsedComments];
 
     }
     

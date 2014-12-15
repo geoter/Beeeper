@@ -72,8 +72,8 @@
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back_bold"] style:UIBarButtonItemStyleBordered target:self action:@selector(goBack)];
     self.navigationItem.leftBarButtonItem = leftItem;
     
-    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
-    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
+//    self.navigationController.interactivePopGestureRecognizer.delegate = (id<UIGestureRecognizerDelegate>)self;
+//    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationItem.hidesBackButton = YES;

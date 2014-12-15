@@ -8,7 +8,7 @@
 
 #import "SuggestBeeepVC.h"
 #import "BPSuggestions.h"
-
+#import "FindFriendsVC.h"
 
 @interface SuggestBeeepVC ()
 {
@@ -316,7 +316,7 @@
          }
                          completion:^(BOOL finished)
          {
-             UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             FindFriendsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
              [self.navigationController pushViewController:viewController animated:YES];
              
              [self removeFromParentViewController];
@@ -334,7 +334,8 @@
                          completion:^(BOOL finished)
          {
              
-             UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             FindFriendsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             viewController.hideNavigationBarOnClose = YES;
              [self.navigationController pushViewController:viewController animated:YES];
              
              [self removeFromParentViewController];

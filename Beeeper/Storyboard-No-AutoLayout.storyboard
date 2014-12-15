@@ -3534,7 +3534,7 @@ what they are Beeeping.</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view tag="88" contentMode="scaleToFill" id="xuf-La-ehz">
-                                                    <rect key="frame" x="0.0" y="82" width="320" height="1"/>
+                                                    <rect key="frame" x="0.0" y="83" width="320" height="1"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>

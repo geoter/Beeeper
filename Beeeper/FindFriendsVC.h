@@ -15,6 +15,7 @@ typedef void(^completed)(BOOL,id);
 @property (nonatomic,copy) completed search_completed;
 @property (nonatomic,assign) int pageLimit;
 @property (weak, nonatomic) IBOutlet UILabel *noUsersFoundLabel;
+@property (nonatomic,assign) BOOL hideNavigationBarOnClose;
 
 - (IBAction)rightButtonPressed:(id)sender;
 - (IBAction)selectFBFriendPressed:(id)sender;

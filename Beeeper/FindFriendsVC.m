@@ -79,6 +79,7 @@
     self.navigationItem.hidesBackButton = YES;
     self.navigationController.navigationBar.backItem.title = @"";
     
+    [[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"HideTabbar" object:self];
     
     //self.tableV.decelerationRate = 0.6;
@@ -529,6 +530,12 @@
 }
 
 -(void)goBack{
+    
+    if (self.hideNavigationBarOnClose) {
+        
+        [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 

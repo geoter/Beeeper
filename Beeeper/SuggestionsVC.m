@@ -253,7 +253,7 @@
 {
     // Return the number of rows in the section.
     
-    return ([BPSuggestions sharedBP].loadNextPage)?suggestions.count+1:suggestions.count;
+    return ([BPSuggestions sharedBP].loadNextPage && suggestions.count > 0)?suggestions.count+1:suggestions.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

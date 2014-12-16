@@ -553,11 +553,16 @@
         
         
         if (hasUsername) {
-            [dict setObject:username forKey:@"username"];
             
-            NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [fbDict objectForKey:@"username"]];
+            [dict setObject:username forKey:@"username"];
+
+            NSString * fbID  = [fbDict objectForKey:@"id"];
+            
+            NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
             [dict setObject:userImageURL forKey:@"image_path"];
         }
+
+       
         
         if (hasEmail) {
             [dict setObject:email forKey:@"email"];

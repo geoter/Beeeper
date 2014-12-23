@@ -39,6 +39,9 @@ NSString *const kEventDetailsFfoUrl = @"url";
 @synthesize loc = _loc;
 @synthesize url = _url;
 
+-(NSString *)title{
+    return [[DTO sharedDTO]sigmaTelikoCorrection:_title];
+}
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {

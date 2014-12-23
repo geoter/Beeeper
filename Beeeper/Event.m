@@ -42,6 +42,10 @@ NSString *const kEventUrl = @"url";
 @synthesize url = _url;
 
 
+-(NSString *)title{
+    return [[DTO sharedDTO]sigmaTelikoCorrection:_title];
+}
+
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
     return [[self alloc] initWithDictionary:dict];
@@ -109,6 +113,7 @@ NSString *const kEventUrl = @"url";
 - (id)objectOrNilForKey:(id)aKey fromDictionary:(NSDictionary *)dict
 {
     id object = [dict objectForKey:aKey];
+    
     return [object isEqual:[NSNull null]] ? nil : object;
 }
 

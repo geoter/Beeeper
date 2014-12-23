@@ -49,7 +49,6 @@ NSString *const kGoogleImageSearchAPIObjectContent = @"content";
 @synthesize visibleUrl = _visibleUrl;
 @synthesize content = _content;
 
-
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
     return [[self alloc] initWithDictionary:dict];

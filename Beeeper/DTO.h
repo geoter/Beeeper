@@ -42,6 +42,8 @@ typedef void(^completed)(BOOL,id);
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
 
+- (NSString *)sigmaTelikoCorrection:(NSString *)originalString;
+
 - (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint;
 - (NSString *)getDeeepLinkEventFingerprint;
 

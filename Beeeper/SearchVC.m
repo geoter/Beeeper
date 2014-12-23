@@ -242,14 +242,14 @@
     
     if ([[filteredResults firstObject]isEqualToString:@"No results found"]) {
         cell.accessoryType = UITableViewCellAccessoryNone;
-        searchResultLabel.text = [filteredResults firstObject];
+        searchResultLabel.text = [[DTO sharedDTO]sigmaTelikoCorrection:[filteredResults firstObject]];
     }
     else{
         if ([suggestionValues isEqualToArray:filteredResults]) {
-           searchResultLabel.text = [NSString stringWithFormat:@"#%@",[filteredResults objectAtIndex:indexPath.row]];
+           searchResultLabel.text = [NSString stringWithFormat:@"#%@",[[DTO sharedDTO]sigmaTelikoCorrection:[filteredResults objectAtIndex:indexPath.row]]];
         }
         else{
-           searchResultLabel.text = [NSString stringWithFormat:@"%@",[filteredResults objectAtIndex:indexPath.row]];
+           searchResultLabel.text = [NSString stringWithFormat:@"%@",[[DTO sharedDTO]sigmaTelikoCorrection:[filteredResults objectAtIndex:indexPath.row]]];
         }
 
          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

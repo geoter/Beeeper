@@ -45,6 +45,10 @@ NSString *const kEventInfoLikes = @"likes";
 @synthesize likesCount = _likesCount;
 @synthesize likes = _likes;
 
+-(NSString *)title{
+    return [[DTO sharedDTO]sigmaTelikoCorrection:_title];
+}
+
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {
     return [[self alloc] initWithDictionary:dict];

@@ -46,6 +46,9 @@ NSString *const kWhatLikesCount = @"likes_count";
 @synthesize loc = _loc;
 @synthesize likesCount = _likesCount;
 
+-(NSString *)title{
+    return [[DTO sharedDTO]sigmaTelikoCorrection:_title];
+}
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {

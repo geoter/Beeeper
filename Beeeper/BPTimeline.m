@@ -173,7 +173,7 @@ static BPTimeline *thisWebServices = nil;
     @try {
 
         NSString *responseString = request;
-        
+      
         NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
         
         if ([beeeps isKindOfClass:[NSArray class]]) {
@@ -287,7 +287,9 @@ static BPTimeline *thisWebServices = nil;
        NSMutableArray *bs = [NSMutableArray array];
        
        for (NSDictionary *b in beeeps) {
+          
            Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:b];
+          
            [bs addObject:beeep];
        }
        

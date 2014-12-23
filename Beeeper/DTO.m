@@ -59,6 +59,23 @@ static DTO *thisDTO = nil;
     return nil;
 }
 
+-(NSString *)sigmaTelikoCorrection:(NSString *)originalString{
+   
+    NSError *error = NULL;
+    NSRegularExpressionOptions regexOptions = 0;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"σ\\s" options:regexOptions error:&error];
+    
+    if (error)
+    {
+        NSLog(@"Couldn't create regex with given string and options");
+    }
+    
+    NSRange range = NSMakeRange(0, originalString.length);
+    NSString *afterText = [regex stringByReplacingMatchesInString:originalString options:0 range:range withTemplate:@"ς "];
+    return afterText;
+
+}
+
 - (NSString *)urlencode:(NSString *)str {
     CFStringRef safeString =
     CFURLCreateStringByAddingPercentEscapes(NULL,

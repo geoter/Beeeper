@@ -25,6 +25,9 @@ NSString *const kEventActivityImageUrl = @"image_url";
 @synthesize title = _title;
 @synthesize imageUrl = _imageUrl;
 
+-(NSString *)title{
+    return [[DTO sharedDTO]sigmaTelikoCorrection:_title];
+}
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict
 {

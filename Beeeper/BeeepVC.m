@@ -15,6 +15,8 @@
 #import <AddressBook/AddressBook.h>
 #import "BPCreate.h"
 #import "GoogleCustomSearchVC.h"
+#import "GMGoogleImageSearchVC.h"
+#import "GoogleImageSearchAPIObject.h"
 
 @interface InputTextView : UITextView
 @end
@@ -148,7 +150,7 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hidePopup:) name:@"HideBeeepVC" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(closePopup:) name:@"CloseBeeepVC" object:nil];
-    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(userPickedPhoto:) name:@"GoogleImageSearchResult" object:nil];
  //   [self adjustFonts];
 }
 
@@ -312,6 +314,12 @@
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
     
     NSString * typedStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if (range.location == textField.text.length && [string isEqualToString:@" "]) {
+        // ignore replacement string and add your own
+        textField.text = [textField.text stringByAppendingString:@"\u00a0"];
+        return NO;
+    }
     
     if (typedStr.length == 0) {
         textField.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
@@ -544,10 +552,12 @@
     }
 }
 
+
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
 
     NSString * typedStr = [textView.text stringByReplacingCharactersInRange:range withString:text];
     
+
     if (typedStr.length == 0) {
         
         //remove value
@@ -961,6 +971,9 @@
             case 2://search web
             {
                
+                [self searchWeb:[values objectForKey:@"title"]];
+                return;
+                
                 [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
                 
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
@@ -999,6 +1012,12 @@
                 break;
             case 1://search web
             {
+              
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+                
+                [self searchWeb:[values objectForKey:@"title"]];
+                return;
+                
                 [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
                 
                 DZNPhotoPickerController *picker = [[DZNPhotoPickerController alloc] init];
@@ -1034,17 +1053,37 @@
    
     @try {
         
-        NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
+        NSURL *image_url;
         
-        if (info_values == nil) {
-            info_values = [info objectForKey:@"com.dzn.photoPicker.photoMetadata"];
+        UIImage *img;
+        
+        if ([info isKindOfClass:[NSNotification class]]) {
+           
+            NSDictionary *userInfo = [(NSNotification *)info userInfo];
+            
+            GoogleImageSearchAPIObject *object = [userInfo objectForKey:@"GoogleSearchImageObject"];
+            
+            image_url = [NSURL URLWithString:object.url];
+            
+            img = [userInfo objectForKey:@"GoogleSearchImage"];
+            
+            pickedImage = [UIImage imageWithCGImage:img.CGImage];
+            
         }
-        
-        NSURL *image_url = [info_values objectForKey:@"source_url"];
-    
-        UIImage *img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-
-        pickedImage = [UIImage imageWithCGImage:img.CGImage];
+        else{
+            
+            NSDictionary *info_values = [info objectForKey:@"DZNPhotoPickerControllerPhotoMetadata"];
+            
+            if (info_values == nil) {
+                info_values = [info objectForKey:@"com.dzn.photoPicker.photoMetadata"];
+            }
+            
+            image_url = [info_values objectForKey:@"source_url"];
+            
+            img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+            
+            pickedImage = [UIImage imageWithCGImage:img.CGImage];
+        }
         
         [self.selectedPhotoButton setBackgroundImage:img forState:UIControlStateNormal];
         self.selectedPhotoButton.hidden = NO;
@@ -1227,6 +1266,18 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     return [str substringWithRange:NSMakeRange(location, length - location)];
 }
 
+
+-(void)searchWeb:(NSString *)initialSearchTerm{
+    
+
+    GMGoogleImageSearchVC *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"GMGoogleImageSearchVC"];
+    vc.initialSearchTerm = initialSearchTerm;
+
+    UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vc];
+    [navVC setNavigationBarHidden:YES];
+    
+    [self presentViewController:navVC animated:YES completion:NULL];
+}
 
 
 @end

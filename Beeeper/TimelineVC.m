@@ -1564,7 +1564,7 @@
                 self.following = NO;
                 
                 [self.user setObject:[NSNumber numberWithInt:0] forKey:@"following"];
-                [self.user setObject:[NSNumber numberWithInt:1] forKey:@"i_follow"];
+                [self.user setObject:[NSNumber numberWithInt:0] forKey:@"i_follow"];
                 [self createMenuButtons:YES];
 
             }

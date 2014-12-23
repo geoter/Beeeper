@@ -57,6 +57,6 @@
                              cropRect:(CGRect)cropRect
                             zoomScale:(CGFloat)zoomScale
                              cropMode:(DZNPhotoEditorViewControllerCropMode)cropMode
-                        photoMetadata:(DZNPhotoMetadata *)metadata;;
+                        photoMetadata:(DZNPhotoMetadata *)metadata;
 
 @end

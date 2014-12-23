@@ -151,11 +151,17 @@ static BPActivity *thisWebServices = nil;
     requestFailedCounter = 0;
     
     NSString *responseString = request;
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (beeeps == nil) {
+        
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+        
+        beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    }
 
     if ([beeeps isKindOfClass:[NSArray class]]) {
       
@@ -216,9 +222,6 @@ static BPActivity *thisWebServices = nil;
         [self getActivityWithCompletionBlock:self.activity_completed];
         return;
     }
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
     NSMutableArray *bs = [NSMutableArray array];
     
@@ -259,9 +262,13 @@ static BPActivity *thisWebServices = nil;
         return;
     }
     
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+    if (beeeps == nil) {
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+
+        beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    }
     
     NSMutableArray *bs = [NSMutableArray array];
     

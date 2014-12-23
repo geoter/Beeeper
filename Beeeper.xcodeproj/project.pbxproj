@@ -117,6 +117,8 @@
 		637841711A0047EE0047C27B /* chooseDate-arrow-down-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6378416F1A0047EE0047C27B /* chooseDate-arrow-down-white.png */; };
 		637841721A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 637841701A0047EE0047C27B /* chooseDate-arrow-down-white@2x.png */; };
 		6390E3831A28F4F6001C9303 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6390E3821A28F4F6001C9303 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		6398EDBD1A49226E0070FDD3 /* GMGoogleImageSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6398EDBA1A49226E0070FDD3 /* GMGoogleImageSearchVC.m */; };
+		6398EDBE1A49226E0070FDD3 /* GoogleImageSearchAPIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6398EDBC1A49226E0070FDD3 /* GoogleImageSearchAPIObject.m */; };
 		639AD6381A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD6361A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png */; };
 		639AD6391A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD6371A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png */; };
 		639AD63C1A374A2000C28CA5 /* add_friend_icon_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 639AD63A1A374A2000C28CA5 /* add_friend_icon_yellow.png */; };
@@ -725,6 +727,10 @@
 		6390E3811A28F4F6001C9303 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		6390E3821A28F4F6001C9303 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		639509071A1FA4FF00E00446 /* Mohave.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mohave.otf; sourceTree = "<group>"; };
+		6398EDB91A49226E0070FDD3 /* GMGoogleImageSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMGoogleImageSearchVC.h; sourceTree = "<group>"; };
+		6398EDBA1A49226E0070FDD3 /* GMGoogleImageSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGoogleImageSearchVC.m; sourceTree = "<group>"; };
+		6398EDBB1A49226E0070FDD3 /* GoogleImageSearchAPIObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleImageSearchAPIObject.h; sourceTree = "<group>"; };
+		6398EDBC1A49226E0070FDD3 /* GoogleImageSearchAPIObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleImageSearchAPIObject.m; sourceTree = "<group>"; };
 		639AD6361A37468D00C28CA5 /* Add_new_beeep_btn_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add_new_beeep_btn_pressed@2x.png"; sourceTree = "<group>"; };
 		639AD6371A37468D00C28CA5 /* Add_new_beeep_btn_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Add_new_beeep_btn_pressed.png; sourceTree = "<group>"; };
 		639AD63A1A374A2000C28CA5 /* add_friend_icon_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_friend_icon_yellow.png; sourceTree = "<group>"; };
@@ -1533,6 +1539,17 @@
 			name = font;
 			sourceTree = "<group>";
 		};
+		6398EDBF1A4922740070FDD3 /* GMGoogleImageSearchAPI */ = {
+			isa = PBXGroup;
+			children = (
+				6398EDB91A49226E0070FDD3 /* GMGoogleImageSearchVC.h */,
+				6398EDBA1A49226E0070FDD3 /* GMGoogleImageSearchVC.m */,
+				6398EDBB1A49226E0070FDD3 /* GoogleImageSearchAPIObject.h */,
+				6398EDBC1A49226E0070FDD3 /* GoogleImageSearchAPIObject.m */,
+			);
+			name = GMGoogleImageSearchAPI;
+			sourceTree = "<group>";
+		};
 		63B58E3719FF015700168F54 /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1935,6 +1952,7 @@
 		CE080C8B18B64576007E2066 /* 3rd Party Files */ = {
 			isa = PBXGroup;
 			children = (
+				6398EDBF1A4922740070FDD3 /* GMGoogleImageSearchAPI */,
 				63B58E3719FF015700168F54 /* Calendar */,
 				63C27CE719FB8C6B00564583 /* FMDB */,
 				5EA2D4AC19F42DDD000977A4 /* TKRoundedView.h */,
@@ -2740,7 +2758,7 @@
 				ORGANIZATIONNAME = Beeeper;
 				TargetAttributes = {
 					CEA64F0C18B39F4F00B7ECF5 = {
-						DevelopmentTeam = C444XSFHUN;
+						DevelopmentTeam = XAEQ9MWECF;
 					};
 				};
 			};
@@ -3153,6 +3171,7 @@
 				CE7CFAF518B7AA910044C9AC /* NotificationsVC.m in Sources */,
 				CEFDE83918EDA16B00E500A9 /* AboutVC.m in Sources */,
 				5E09B554192216C800AF5DE8 /* Beeep.m in Sources */,
+				6398EDBE1A49226E0070FDD3 /* GoogleImageSearchAPIObject.m in Sources */,
 				63CB8D1819DB15890005E88E /* UIImage+GIF.m in Sources */,
 				63BD3B9A1A14CF8D00102794 /* AFURLSessionManager.m in Sources */,
 				63094C1A1A0AA290000428AE /* UIImage+StackBlur.m in Sources */,
@@ -3261,6 +3280,7 @@
 				9673323A1948865500A58217 /* Event_Show_Object.m in Sources */,
 				9638F88818D48370007394AC /* DTO.m in Sources */,
 				961A2AF618D4B77E00E695FA /* NSObject+UserInfo.m in Sources */,
+				6398EDBD1A49226E0070FDD3 /* GMGoogleImageSearchVC.m in Sources */,
 				63CB8D1619DB15890005E88E /* SDWebImagePrefetcher.m in Sources */,
 				6356324919EC519C0001D4AE /* Who.m in Sources */,
 				63BD3B961A14CF8D00102794 /* AFSecurityPolicy.m in Sources */,
@@ -3414,8 +3434,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3435,7 +3455,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
+				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3445,8 +3465,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Spiros Halivelakis (SM239WVP42)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: George Termentzoglou (XAEQ9MWECF)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/user/Documents/FacebookSDK,
@@ -3466,7 +3486,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9a3c21d2-f319-4969-8837-40de41308698";
+				PROVISIONING_PROFILE = "e474ec25-83ab-4ed8-910b-1d8755cc7c9e";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -1165,12 +1165,17 @@ static BPUser *thisWebServices = nil;
 -(void)notificationsReceived:(id)request{
     
     NSString *responseString = request;
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-    
     
     NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (notificationsArray == nil) {
+        
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+        
+        notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    }
     
     if (![notificationsArray isKindOfClass:[NSArray class]]) {
         [[DTO sharedDTO]addBugLog:@"![notificationsArray isKindOfClass:[NSArray class]]->notifictionsFailed" where:@"BPUser/notificationsReceived" json:responseString];
@@ -1301,11 +1306,15 @@ static BPUser *thisWebServices = nil;
 -(void)nextNotificationsReceived:(id)request{
     
     NSString *responseString = request;
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
     
     NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (notificationsArray == nil) {
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+        notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    }
     
     if (![notificationsArray isKindOfClass:[NSArray class]]) {
         [[DTO sharedDTO]addBugLog:@"![notificationsArray isKindOfClass:[NSArray class]]" where:@"BPUser/nextNotificationsReceived" json:responseString];
@@ -1429,13 +1438,17 @@ static BPUser *thisWebServices = nil;
     
     NSString *responseString = request;
     
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-    responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-    
-    
     NSArray *notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+    
+    if (notificationsArray == nil) {
+        
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
+        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
+        notificationsArray = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
+
+    }
     
     NSMutableArray *bs = [NSMutableArray array];
     

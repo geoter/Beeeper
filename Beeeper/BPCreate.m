@@ -61,7 +61,7 @@ static BPCreate *thisWebServices = nil;
         [self beeepCreateFinished:[operation responseString]];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@",operation);
+        NSLog(@"%@",operation.responseString);
         NSLog(@"%@",error.localizedDescription);
         [self beeepCreateFailed:[operation responseString]];
     }];
@@ -122,9 +122,8 @@ static BPCreate *thisWebServices = nil;
     
     NSDictionary *error = [errors firstObject];
     
-    if (error != nil) {
-        self.completed(NO,error);
-    }
+     self.completed(NO,error);
+    
 }
 
 -(void)beeepDelete:(NSString *)fingerprint timestamp:(NSString *)timestamp weight:(NSString *)weight completionBlock:(completed)compbloc{

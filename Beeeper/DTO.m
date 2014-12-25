@@ -72,6 +72,17 @@ static DTO *thisDTO = nil;
     
     NSRange range = NSMakeRange(0, originalString.length);
     NSString *afterText = [regex stringByReplacingMatchesInString:originalString options:0 range:range withTemplate:@"ς "];
+    
+    NSString *lastChar = [afterText substringFromIndex:[afterText length] - 1];
+    
+    if([lastChar isEqualToString:@"σ"]){
+       NSRange lastComma = [afterText rangeOfString:lastChar options:NSBackwardsSearch];
+        
+        if(lastComma.location != NSNotFound) {
+            afterText = [afterText stringByReplacingCharactersInRange:lastComma
+                                               withString:@"ς"];
+        }
+    }
     return afterText;
 
 }

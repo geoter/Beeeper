@@ -2645,7 +2645,7 @@
 - (IBAction)ShowWebsite:(id)sender {
     NSLog(@"link");
     
-   WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+   WebBrowserVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:websiteURL];
     
     [self.navigationController pushViewController:viewController animated:YES];
@@ -2698,7 +2698,7 @@
 
 - (IBAction)showLikes:(id)sender {
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
     
     @try {
@@ -2716,7 +2716,7 @@
 
 - (IBAction)showComments:(id)sender {
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = ([tml isKindOfClass:[NSString class]])?beeep_Objct:tml;
     viewController.comments = comments;
     [self.navigationController pushViewController:viewController animated:YES];
@@ -2745,7 +2745,7 @@
 }
 
 - (IBAction)showBeeeps:(id)sender {
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
     viewController.ids = beeepers;
 

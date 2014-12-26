@@ -52,6 +52,7 @@ typedef void(^completed)(BOOL,id);
 - (NSString *)urlencode:(NSString *)str;
 - (UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius;
 
+-(UIStoryboard *)storyboardWithNameDeviceSpecific:(NSString *)storyboardID;
 
 #pragma mark - PUSH
 

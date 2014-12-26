@@ -311,7 +311,7 @@
     UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
     [self.tableV addSubview:refreshView];
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor whiteColor];
     [refreshControl addTarget:self action:@selector(getTimeline:option:) forControlEvents:UIControlEventValueChanged];
@@ -1081,7 +1081,7 @@
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+    EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
     
     viewController.tml = [beeeps objectAtIndex:indexPath.row];
     
@@ -1391,7 +1391,7 @@
 
 - (IBAction)addFriend:(id)sender {
     
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -1406,7 +1406,7 @@
 
 
 - (IBAction)showFollowers:(id)sender {
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = 1;
     viewController.user = self.user;
     
@@ -1414,7 +1414,7 @@
 }
 
 - (IBAction)showFollowing:(id)sender {
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = 2;
     viewController.user = self.user;
 
@@ -1478,7 +1478,7 @@
     }
     
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
     viewController.ids = likers;
     
@@ -1498,7 +1498,7 @@
     
     Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
    
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = b;
     viewController.comments = [NSMutableArray arrayWithArray: b.beeep.beeepInfo.comments];
     [self.navigationController pushViewController:viewController animated:YES];
@@ -1518,7 +1518,7 @@
     
     Timeline_Object *b = [beeeps objectAtIndex:path.row-1];
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
     viewController.ids = b.beeepersIds;
     [self.navigationController pushViewController:viewController animated:YES];
@@ -1574,12 +1574,12 @@
 }
 
 - (IBAction)editProfilePressed:(id)sender {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EditProfile"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EditProfile"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (IBAction)settingsPressed:(id)sender {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SettingsVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SettingsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -1598,12 +1598,12 @@
 }
 
 - (IBAction)showSuggestions:(id)sender {
-    UIViewController *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestionsVC"];
+    UIViewController *vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SuggestionsVC"];
     [self.navigationController pushViewController:vC animated:YES];
 }
 
 - (IBAction)showActivity:(id)sender {
-    UIViewController *vC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ActivityVC"];
+    UIViewController *vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"ActivityVC"];
     [self.navigationController pushViewController:vC animated:YES];
 }
 
@@ -1993,7 +1993,7 @@
     
     Timeline_Object*b = [beeeps objectAtIndex:indexPath.row];
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
     viewController.comments = [NSMutableArray arrayWithArray: b.beeep.beeepInfo.comments];
     viewController.showKeyboard = YES;

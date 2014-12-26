@@ -707,5 +707,24 @@ static DTO *thisDTO = nil;
 }
 
 
+-(UIStoryboard *)storyboardWithNameDeviceSpecific:(NSString *)storyboardID{
+    
+    if (IS_IPHONE_6 || IS_IPHONE_6P) {
+        if ([storyboardID isEqualToString:@"Storyboard-No-AutoLayout"]) {
+            return [UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout-6" bundle:nil];
+        }
+        else{
+            return [UIStoryboard storyboardWithName:@"Main-6" bundle:nil];
+        }
+
+    }
+    else if (IS_IPHONE_6P)
+    {
+    
+    }
+
+    return [UIStoryboard storyboardWithName:storyboardID bundle:nil];
+}
+
 
 @end

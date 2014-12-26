@@ -166,7 +166,7 @@ static TabbarVC *thisWebServices = nil;
     
     if (beeepID != nil) {
         
-        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.tml = [NSString stringWithString:beeepID];
         
         BOOL commentsShow = [[beeepDict objectForKey:@"WeightPushCase"]isEqualToString:@"c"];
@@ -190,7 +190,7 @@ static TabbarVC *thisWebServices = nil;
     
     if (eventID != nil) {
         
-        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.deepLinkFingerprint = [NSString stringWithString:eventID];
         
         [self.navigationController pushViewController:viewController animated:YES];
@@ -206,7 +206,7 @@ static TabbarVC *thisWebServices = nil;
     
     if (userID != nil) {
       
-        TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *timelineVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         timelineVC.mode = Timeline_Following;
         timelineVC.showBackButton = YES; //in case of My_Timeline
         
@@ -225,7 +225,7 @@ static TabbarVC *thisWebServices = nil;
     
     if (fingerprint != nil) {
         
-        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
         viewController.deepLinkFingerprint = [NSString stringWithString:fingerprint];
         
         [self.navigationController pushViewController:viewController animated:YES];
@@ -248,7 +248,7 @@ static TabbarVC *thisWebServices = nil;
 
 - (void)addBeeepPressed:(UIViewController *)sender {
     
-    BeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepVC"];
+    BeeepVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"BeeepVC"];
     viewController.superviewToBlur = sender.navigationController.view;
    
     [self.parentViewController.view addSubview:viewController.view];
@@ -273,7 +273,7 @@ static TabbarVC *thisWebServices = nil;
 
 - (void)reBeeepPressed:(id)sender_tml image:(UIImage *)image controller:(UIViewController *)sender{
     
-    BeeepItVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
+    BeeepItVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"BeeepItVC"];
     viewController.superviewToBlur = sender.navigationController.view;
     viewController.facebookDialogEventImage = image;
     
@@ -314,7 +314,7 @@ static TabbarVC *thisWebServices = nil;
 
 - (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur{
     
-    SuggestBeeepVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
+    SuggestBeeepVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
     viewController.fingerprint = fingerprint;
     viewController.superviewToBlur = sender.navigationController.view;
     viewController.selectedPeople = selectedPeople;
@@ -352,19 +352,19 @@ static TabbarVC *thisWebServices = nil;
     
     switch (sender.tag) {
         case 1:
-            vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"HomeFeedVC"];
+            vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"HomeFeedVC"];
             break;
         case 2:
-            vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVC"];
+            vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SearchVC"];
             break;
         case 3:{
-                TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+                TimelineVC *timelineVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
                 timelineVC.mode = Timeline_My;
                 vC = timelineVC;
             }
             break;
         case 4:
-            vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"NotificationsVC"];
+            vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"NotificationsVC"];
             break;
         default:
             

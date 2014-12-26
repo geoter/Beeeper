@@ -201,6 +201,8 @@
 		63CB8D1B19DB15890005E88E /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0919DB15890005E88E /* UIImageView+HighlightedWebCache.m */; };
 		63CB8D1C19DB15890005E88E /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0B19DB15890005E88E /* UIImageView+WebCache.m */; };
 		63CB8D1D19DB15890005E88E /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CB8D0D19DB15890005E88E /* UIView+WebCacheOperation.m */; };
+		63D55AB51A4CC5690019724A /* Storyboard-No-AutoLayout-6.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D55AB41A4CC5690019724A /* Storyboard-No-AutoLayout-6.storyboard */; };
+		63D55AB71A4CCCD90019724A /* Main-6.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D55AB61A4CCCD90019724A /* Main-6.storyboard */; };
 		63FAE1A919F0045200D8EA36 /* calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FAE1A719F0045200D8EA36 /* calendar.png */; };
 		63FAE1AA19F0045200D8EA36 /* calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63FAE1A819F0045200D8EA36 /* calendar@2x.png */; };
 		9600487C18D473E60043A6FB /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9600487B18D473E60043A6FB /* LocationManager.m */; };
@@ -864,6 +866,8 @@
 		63CB8D0B19DB15890005E88E /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		63CB8D0C19DB15890005E88E /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		63CB8D0D19DB15890005E88E /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		63D55AB41A4CC5690019724A /* Storyboard-No-AutoLayout-6.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Storyboard-No-AutoLayout-6.storyboard"; sourceTree = "<group>"; };
+		63D55AB61A4CCCD90019724A /* Main-6.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Main-6.storyboard"; sourceTree = "<group>"; };
 		63FAE1A719F0045200D8EA36 /* calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar.png; sourceTree = "<group>"; };
 		63FAE1A819F0045200D8EA36 /* calendar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar@2x.png"; sourceTree = "<group>"; };
 		9600487A18D473E60043A6FB /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
@@ -2402,6 +2406,8 @@
 				CEA64F2018B39F4F00B7ECF5 /* AppDelegate.m */,
 				6366AF8B1A1F38D6009BBE14 /* PUSHDemo */,
 				CE35D1EC18D0A1340086C26A /* Storyboard-No-AutoLayout.storyboard */,
+				63D55AB41A4CC5690019724A /* Storyboard-No-AutoLayout-6.storyboard */,
+				63D55AB61A4CCCD90019724A /* Main-6.storyboard */,
 				CEA64F2218B39F4F00B7ECF5 /* Main.storyboard */,
 				9615E8A9192DB5650099B3E0 /* Tabbar */,
 				5E08B377192FB62D0090E63E /* Beeep */,
@@ -2914,6 +2920,7 @@
 				639AD63D1A374A2000C28CA5 /* add_friend_icon_yellow@2x.png in Resources */,
 				636EEDBB1A1FB3CF00081080 /* beeeped_gray.png in Resources */,
 				CE79423618DB261B00748EDD /* facebook_icon_gray@2x.png in Resources */,
+				63D55AB71A4CCCD90019724A /* Main-6.storyboard in Resources */,
 				CE0C882718D0BE6A00BA548F /* option_3_gray@2x.png in Resources */,
 				CE25F9F618B6761300D8B858 /* NotificationBackgroundWarning@2x.png in Resources */,
 				CE25F9EE18B6761300D8B858 /* NotificationBackgroundErrorIcon@2x.png in Resources */,
@@ -3107,6 +3114,7 @@
 				9615E8C9192DB7870099B3E0 /* following-icon.png in Resources */,
 				9615E8D0192DB7870099B3E0 /* editProfileBtn@2x.png in Resources */,
 				CEEE3EF218C9FC9E00665C21 /* icon-facebook.png in Resources */,
+				63D55AB51A4CC5690019724A /* Storyboard-No-AutoLayout-6.storyboard in Resources */,
 				634BC6B21A1F61BC00B821F0 /* closeXwhite@2x.png in Resources */,
 				CE529C5418DB0FEE00900EB6 /* picture_1.png in Resources */,
 				CE25F9F718B6761300D8B858 /* NotificationBackgroundWarningIcon.png in Resources */,

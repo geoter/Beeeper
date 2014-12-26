@@ -352,7 +352,7 @@
                 
                 if (missingInfo.allKeys.count != 0) {
                     
-                    MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                    MissingFields *mf = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"MissingFields"];
                     mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
                     mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
                     mf.delegate = self;
@@ -549,7 +549,7 @@
             
             if (missingInfo.allKeys.count != 0) {
                 
-                MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                MissingFields *mf = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"MissingFields"];
                 mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
                 mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
                 mf.delegate = self;
@@ -606,7 +606,7 @@
         }
     }
     
-    UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+    UIViewController *menuVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TabbarVC"];
     
     [self.navigationController pushViewController:menuVC animated:YES];
     

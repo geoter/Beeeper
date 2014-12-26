@@ -67,7 +67,7 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(close:) name:@"CloseBeeepItVC" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(followersSelected:) name:@"Suggest Followers Selected" object:nil];
     
-    BeeepTimeVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
+    BeeepTimeVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
     [viewController.view setFrame:CGRectMake(0, self.scrollV.frame.size.height, viewController.view.frame.size.width, viewController.view.frame.size.height)];
     viewController.closeExits = YES;
@@ -944,7 +944,7 @@
 }
 
 - (IBAction)beeepTimeSelected:(id)sender {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
     [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
     [self.view addSubview:viewController.view];

@@ -92,10 +92,10 @@
 
 - (IBAction)showTerms:(id)sender {
     
-//    UIViewController *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TermsVC"];
+//    UIViewController *vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TermsVC"];
 //    [self.navigationController pushViewController:vC animated:YES];
 
-    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    WebBrowserVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/terms"];
     viewController.title = @"Terms of Use";
     [self.navigationController pushViewController:viewController animated:YES];
@@ -108,7 +108,7 @@
 
 - (IBAction)showPrivacy:(id)sender {
     
-    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    WebBrowserVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/privacy"];
     viewController.title = @"Privacy Policy";
     [self.navigationController pushViewController:viewController animated:YES];

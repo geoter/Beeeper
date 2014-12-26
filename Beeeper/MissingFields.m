@@ -74,7 +74,7 @@
 
 - (IBAction)loginPressed:(id)sender {
     
-    UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+    UIViewController *menuVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TabbarVC"];
     
     [self.navigationController pushViewController:menuVC animated:YES];
     

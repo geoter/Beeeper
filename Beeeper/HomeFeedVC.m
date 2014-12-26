@@ -383,7 +383,7 @@
 
 
 -(void)showFindFriends{
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -800,7 +800,7 @@
 -(void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
   
-    EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+    EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
     
     if (beeeps != nil || selectedIndex == 1) {
         viewController.tml = [beeeps objectAtIndex:indexPath.row];
@@ -878,7 +878,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
   
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+    TimelineVC *timelineVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
     timelineVC.mode = Timeline_Not_Following;
     
     NSDictionary *user = [b.whoFfo dictionaryRepresentation];
@@ -900,7 +900,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
     Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
     viewController.ids = [beeep.likes valueForKey:@"likes"];
     
@@ -920,7 +920,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
     Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [beeeps objectAtIndex:path.row];
     viewController.comments = beeep.comments;
     
@@ -938,7 +938,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     Friendsfeed_Object*b = [beeeps objectAtIndex:path.row];
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
     viewController.ids = b.eventFfo.beeepedBy;
     [self.navigationController pushViewController:viewController animated:YES];
@@ -957,7 +957,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search* event = [events objectAtIndex:path.row];
     
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
     viewController.ids = event.likes;
     
@@ -976,7 +976,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Event_Search *event = [events objectAtIndex:path.row];
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = event;
     viewController.comments = event.comments;
 
@@ -997,7 +997,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search* event = [events objectAtIndex:path.row];
     
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
     viewController.ids = [event.beeepedBy valueForKey:@"beeepedByIdentifier"];
     
@@ -1263,7 +1263,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         Friendsfeed_Object*b = [beeeps objectAtIndex:indexPath.row];
         Beeeps *beeep = [b.beeepFfo.beeeps firstObject];
         
-        CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+        CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
         viewController.event_beeep_object = [beeeps objectAtIndex:indexPath.row];
         viewController.comments = beeep.comments;
         viewController.showKeyboard = YES;
@@ -1274,7 +1274,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
         Event_Search*b = [events objectAtIndex:indexPath.row];
         
-        CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+        CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
         viewController.event_beeep_object = b;
         viewController.comments = b.comments;
         viewController.showKeyboard = YES;

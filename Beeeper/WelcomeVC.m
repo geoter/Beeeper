@@ -262,13 +262,13 @@
 - (IBAction)loginPressed:(id)sender {
     
     if (sender != nil) {
-        TabbarVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+        TabbarVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TabbarVC"];
         
         viewController.showsSplashOnLoad = (sender != nil);
         [self.navigationController pushViewController:viewController animated:NO];
     }
     else{
-        UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"ChooseLoginVC"];
+        UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"ChooseLoginVC"];
         [self.navigationController pushViewController:viewController animated:YES];
     }
 }
@@ -399,7 +399,7 @@
 
 
 - (IBAction)login:(id)sender {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"ChooseLoginVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"ChooseLoginVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

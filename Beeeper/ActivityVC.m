@@ -561,7 +561,7 @@
     
     if (activity.eventActivity.count > 0 || activity.beeepInfoActivity.eventActivity != nil) {
         
-        EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+        EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
         
         viewController.tml = activity;
         
@@ -569,7 +569,7 @@
     }
     else{
     
-        TimelineVC *vC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *vC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         vC.mode = Timeline_Not_Following;
 
         Who *w = [activity.who firstObject];

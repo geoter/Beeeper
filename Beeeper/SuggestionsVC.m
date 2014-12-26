@@ -378,7 +378,7 @@
     
     Suggestion_Object *suggestion = [suggestions objectAtIndex:indexPath.row];
     
-    EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+    EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
     
     viewController.tml = suggestion;
     

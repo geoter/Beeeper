@@ -316,7 +316,7 @@
          }
                          completion:^(BOOL finished)
          {
-             FindFriendsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             FindFriendsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
              [self.navigationController pushViewController:viewController animated:YES];
              
              [self removeFromParentViewController];
@@ -334,7 +334,7 @@
                          completion:^(BOOL finished)
          {
              
-             FindFriendsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+             FindFriendsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
              viewController.hideNavigationBarOnClose = YES;
              [self.navigationController pushViewController:viewController animated:YES];
              

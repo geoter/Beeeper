@@ -264,7 +264,7 @@
         
         if (missingInfo.allKeys.count != 0) {
             
-            MissingFields *mf = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"MissingFields"];
+            MissingFields *mf = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"MissingFields"];
             mf.fields = [NSMutableDictionary dictionaryWithDictionary:values];
             mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
             mf.delegate = self;
@@ -312,7 +312,7 @@
         }
     }
     
-    UIViewController *menuVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TabbarVC"];
+    UIViewController *menuVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TabbarVC"];
     
     [self.navigationController pushViewController:menuVC animated:YES];
     
@@ -383,7 +383,7 @@
 
 - (IBAction)showTerms:(id)sender {
   
-    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    WebBrowserVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/terms"];
     viewController.title = @"Terms of Use";
     [self.navigationController pushViewController:viewController animated:YES];
@@ -392,7 +392,7 @@
 
 - (IBAction)showPrivacy:(id)sender {
     
-    WebBrowserVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"WebBrowser"];
+    WebBrowserVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"WebBrowser"];
     viewController.url = [NSURL URLWithString:@"https://www.beeeper.com/privacy"];
     viewController.title = @"Privacy Policy";
     [self.navigationController pushViewController:viewController animated:YES];

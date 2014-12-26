@@ -510,7 +510,7 @@
 
 +(void)showInVC:(UIViewController *)vc withSeachTerm:(NSString *)term{
     
-    SearchVC *sVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"SearchVCNav"];
+    SearchVC *sVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SearchVCNav"];
     
     sVC.initialSearchTerm = term;
     sVC.topV.frame = CGRectMake(0, -sVC.topV.frame.size.height, 320, sVC.topV.frame.size.height);
@@ -737,7 +737,7 @@
 -(void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    EventVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"EventVC"];
+    EventVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"EventVC"];
     viewController.tml = [events objectAtIndex:indexPath.row];
     
     [self.navigationController pushViewController:viewController animated:YES];
@@ -780,7 +780,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search* event = [events objectAtIndex:path.row];
 
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = LikesMode;
     viewController.ids = event.likes;
     
@@ -798,7 +798,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Event_Search* event = [events objectAtIndex:path.row];
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = [events objectAtIndex:path.row];
     viewController.comments = event.comments;
     [self.navigationController pushViewController:viewController animated:YES];
@@ -817,7 +817,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search* event = [events objectAtIndex:path.row];
 
     
-    FollowListVC *viewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"FollowListVC"];
+    FollowListVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"FollowListVC"];
     viewController.mode = BeeepersMode;
     viewController.ids = [event.beeepedBy valueForKey:@"beeepedByIdentifier"];
     
@@ -1021,7 +1021,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     Event_Search *event = [events objectAtIndex:indexPath.row];
     
-    CommentsVC *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"CommentsVC"];
+    CommentsVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"CommentsVC"];
     viewController.event_beeep_object = event;
     viewController.comments = event.comments;
     viewController.showKeyboard = YES;

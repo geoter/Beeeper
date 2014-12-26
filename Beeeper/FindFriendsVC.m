@@ -1776,7 +1776,7 @@
     }
     else{
         
-        TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+        TimelineVC *timelineVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
         
         BOOL following = [[user objectForKey:@"following"] boolValue];
         

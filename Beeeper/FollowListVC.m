@@ -379,7 +379,7 @@
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    TimelineVC *timelineVC = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"TimelineVC"];
+    TimelineVC *timelineVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"TimelineVC"];
     timelineVC.mode = Timeline_Not_Following;
     timelineVC.showBackButton = YES; //in case of My_Timeline
 
@@ -453,7 +453,7 @@
 }
 
 - (IBAction)findFriendsPressed:(id)sender {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Storyboard-No-AutoLayout" bundle:nil] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
+    UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"FindFriendsVC"];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

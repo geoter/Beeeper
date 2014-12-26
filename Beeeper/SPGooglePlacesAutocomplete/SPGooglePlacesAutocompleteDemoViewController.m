@@ -46,6 +46,16 @@
         
     }
     
+        // Create a GMSCameraPosition that tells the map to display the
+    // coordinate -33.86,151.20 at zoom level 6.
+    
+    mapView_.myLocationEnabled = YES;
+    self.searchDisplayController.searchBar.placeholder = @"Search City";
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
     CLLocation *userloc = [DTO sharedDTO].userLocation;
     float latitude = 37.9810702;
     float longitude = 23.7375054;
@@ -58,14 +68,10 @@
                                                             longitude:longitude
                                                                  zoom:6];
     
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 22, 320, self.view.frame.size.height) camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 22, self.view.frame.size.width, self.view.frame.size.height) camera:camera];
     [self.view addSubview:mapView_];
     [self.view bringSubviewToFront:self.searchDisplayController.searchBar];
-    // Create a GMSCameraPosition that tells the map to display the
-    // coordinate -33.86,151.20 at zoom level 6.
-    
-    mapView_.myLocationEnabled = YES;
-    self.searchDisplayController.searchBar.placeholder = @"Search City";
+
 }
 
 -(void)goBack{

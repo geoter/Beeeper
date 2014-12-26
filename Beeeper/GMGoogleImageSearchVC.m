@@ -79,7 +79,7 @@
     
     UIImageView *imgV = (id)[cell viewWithTag:1];
     
-    [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.tbUrl]]
+    [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.url]]
             placeholderImage:[UIImage imageNamed:@"event_image"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 
             }];

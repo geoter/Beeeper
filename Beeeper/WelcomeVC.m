@@ -40,10 +40,14 @@
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
     NSError *error;
     
-    [[NSFileManager defaultManager]removeItemAtPath:filePath error:&error];
+    if ([[NSFileManager defaultManager]fileExistsAtPath:filePath]) {
+      
+        [[NSFileManager defaultManager]removeItemAtPath:filePath error:&error];
+        
+        NSString *crFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
+        [[NSFileManager defaultManager]removeItemAtPath:crFilePath error:NULL];
+    }
     
-    NSString *crFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"cr"]];
-    [[NSFileManager defaultManager]removeItemAtPath:crFilePath error:NULL];
 }
 
 - (void)viewDidLoad
@@ -74,6 +78,11 @@
     NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents directory
     NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"log_method"]];
     NSString *method =  [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:NULL];
+    
+    if (method == nil) {
+        [self hideSplashScreen];
+        return;
+    }
 
     if ([method rangeOfString:@"FB"].location != NSNotFound) {
         
@@ -313,7 +322,15 @@
     
     @try {
         for (int i = 0; i <= 3; i++) { //100 is just a big number
-            NSString *photoName = [NSString stringWithFormat:@"welcome_screen_%d",i];
+            
+            NSString *photoName;
+            
+            if (IS_IPHONE_6) {
+                photoName = [NSString stringWithFormat:@"welcome_screen_%d_6",i];
+            }
+            else{
+                photoName = [NSString stringWithFormat:@"welcome_screen_%d",i];
+            }
             
             NSString *path = [[NSBundle mainBundle] pathForResource:photoName ofType:@"png"];
             
@@ -322,6 +339,7 @@
                 
                 if (i == 0) {
                     [self.bgImage setImage:image];
+                    [self.view sendSubviewToBack:self.bgImage];
                 }
                 
                 

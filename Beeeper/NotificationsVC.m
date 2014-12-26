@@ -293,15 +293,15 @@
                      placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         }
         
-        CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+        CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake((IS_IPHONE_6)?267:212, CGFLOAT_MAX)];
         
         int lines = round(textViewSize.height/txtV.font.lineHeight);
         
         if (lines == 2) {
-            txtV.frame = CGRectMake(txtV.frame.origin.x, 16, 212, textViewSize.height);
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 16, (IS_IPHONE_6)?267:212, textViewSize.height);
         }
         else{
-            txtV.frame = CGRectMake(txtV.frame.origin.x, 20, 212, textViewSize.height);
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 20, (IS_IPHONE_6)?267:212, textViewSize.height);
         }
     }
     @catch (NSException *exception) {
@@ -494,7 +494,7 @@
            
             NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
             
-            CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake(212, CGFLOAT_MAX)];
+            CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake((IS_IPHONE_6)?267:212, CGFLOAT_MAX)];
             
             float height = ((textViewSize.height + 23 + 10)>60)?(textViewSize.height + 23 + 10):60;
             

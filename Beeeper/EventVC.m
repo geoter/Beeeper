@@ -113,15 +113,15 @@
 
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    self.scrollV.contentSize = CGSizeMake(320, 871);
+    self.scrollV.contentSize = CGSizeMake(self.scrollV.frame.size.width, 871);
     
    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(beeepIt:) name:@"BeeepIt" object:nil];
     
-    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
+    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, self.tableV.frame.size.width, 44);
     
     UIView *container = [self container];
     [container addSubview:[self composeBarView]];
-    container.frame = CGRectMake(0, self.view.frame.size.height + container.frame.size.height, 320, container.frame.size.height);
+    container.frame = CGRectMake(0, self.view.frame.size.height + container.frame.size.height, self.tableV.frame.size.width, container.frame.size.height);
     [self.view addSubview:container];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -3194,7 +3194,7 @@
         [UIView animateWithDuration:0.7f
                          animations:^
          {
-            [[self container]setFrame:CGRectMake(0, self.view.frame.size.height - [self container].frame.size.height, 320, [self container].frame.size.height)];
+            [[self container]setFrame:CGRectMake(0, self.view.frame.size.height - [self container].frame.size.height, self.tableV.frame.size.width, [self container].frame.size.height)];
          }
                          completion:^(BOOL finished)
          {
@@ -3231,7 +3231,7 @@
         [UIView animateWithDuration:0.7f
                          animations:^
          {
-             [[self container]setFrame:CGRectMake(0, self.view.frame.size.height + [self container].frame.size.height, 320, [self container].frame.size.height)];
+             [[self container]setFrame:CGRectMake(0, self.view.frame.size.height + [self container].frame.size.height, self.tableV.frame.size.width, [self container].frame.size.height)];
          }
                          completion:^(BOOL finished)
          {

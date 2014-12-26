@@ -88,7 +88,8 @@
     
     for (NSString *fieldName in self.misssingfields) {
         NSString *fieldPlaceHolder = [self.misssingfields objectForKey:fieldName];
-        UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(28, 50*i+((IS_IPHONE_5)?50:30), 264, 40)];
+        UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(28, 50*i+((IS_IPHONE_5)?50:30), (IS_IPHONE_6)?319:264, 40)];
+        textF.center = CGPointMake(self.scrollV.center.x, textF.center.y);
         textF.textColor = [UIColor blackColor];
         [textF.UserInfo setObject:fieldName forKey:@"key"];
         textF.tag = i;
@@ -101,13 +102,13 @@
         textF.backgroundColor = [UIColor whiteColor];
        
         [self.scrollV addSubview:textF];
-        self.scrollV.contentSize = CGSizeMake(320, textF.frame.origin.y+textF.frame.size.height + 10);
+        self.scrollV.contentSize = CGSizeMake(self.scrollV.frame.size.width, textF.frame.origin.y+textF.frame.size.height + 10);
         i++;
     }
     
     self.joinButton.frame = CGRectMake(28, self.scrollV.contentSize.height +7, self.joinButton.frame.size.width, self.joinButton.frame.size.height);
     
-    self.scrollV.contentSize = CGSizeMake(320, self.joinButton.frame.origin.y+self.joinButton.frame.size.height + 30);
+    self.scrollV.contentSize = CGSizeMake(self.scrollV.frame.size.width, self.joinButton.frame.origin.y+self.joinButton.frame.size.height + 30);
     
 }
 

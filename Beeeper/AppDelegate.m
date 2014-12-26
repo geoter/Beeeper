@@ -23,6 +23,13 @@
     
    //  [[DTO sharedDTO]addBugLog:@"test what" where:@"BPCreate/test what" json:nil];
     
+    if (IS_IPHONE_6) {
+        
+        UIViewController *rootViewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"WelcomeVCNavigation"];
+        self.window.rootViewController = rootViewController;
+        [self.window makeKeyAndVisible];
+    }
+    
     [self application:application didReceiveRemoteNotification:nil];
     
     [self createEditableCopyOfPlistIfNeeded];

@@ -201,8 +201,8 @@
                                 </connections>
                             </tableView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No one has wrote anything yet." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AMa-yj-FrK">
-                                <rect key="frame" x="0.0" y="222" width="320" height="28"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="27" y="222" width="320" height="28"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
                                 <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="deviceRGB"/>
                                 <nil key="highlightedColor"/>
@@ -220,7 +220,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nke-er-b0d" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="106.5" y="-68.5"/>
+            <point key="canvasLocation" x="2594.5" y="-2254.5"/>
         </scene>
         <!--Suggest BeeepVC-->
         <scene sceneID="y2k-ym-zxS">
@@ -1930,7 +1930,7 @@
                                         </connections>
                                     </button>
                                     <view userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="scaleToFill" id="krB-V2-BfP">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                                        <rect key="frame" x="326" y="13" width="27" height="24"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
@@ -2882,23 +2882,25 @@
             <objects>
                 <viewController storyboardIdentifier="WebBrowser" title="Web" id="FSW-j9-d5d" customClass="WebBrowserVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NTq-pF-gjj">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <webView contentMode="scaleToFill" scalesPageToFit="YES" id="Bwm-yJ-3yp">
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="delegate" destination="FSW-j9-d5d" id="DvE-gu-kKZ"/>
                                 </connections>
                             </webView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" id="d6D-Wv-dMP">
-                                <rect key="frame" x="150" y="274" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="178" y="324" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="Indicator" destination="d6D-Wv-dMP" id="e7z-hI-XMA"/>
                         <outlet property="webV" destination="Bwm-yJ-3yp" id="8pg-lj-8fK"/>
@@ -2906,19 +2908,19 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iTj-Iy-fcM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2844" y="5018"/>
+            <point key="canvasLocation" x="2629.5" y="5149.5"/>
         </scene>
         <!--Home FeedVC-->
         <scene sceneID="IcE-iF-UK8">
             <objects>
                 <viewController storyboardIdentifier="HomeFeedVC" automaticallyAdjustsScrollViewInsets="NO" id="OCe-de-zmO" customClass="HomeFeedVC" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="PPC-jg-CrU">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" canCancelContentTouches="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="fRg-t4-u8N">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="454"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="553"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.87450980389999999" green="0.89019607840000003" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewLayout key="collectionViewLayout" id="mCo-RR-ITJ" customClass="CHTCollectionViewWaterfallLayout"/>
                                 <cells>
@@ -3374,8 +3376,8 @@
                                 </connections>
                             </collectionView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="uKg-MT-cxy">
-                                <rect key="frame" x="117" y="258" width="87" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="145" y="258" width="87" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="add_friend_icon.png">
                                     <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -3385,8 +3387,8 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JSb-aU-6MZ">
-                                <rect key="frame" x="0.0" y="186" width="320" height="70"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="28" y="186" width="320" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <string key="text">You are not following anyone yet. 
 Start following friends and see here
 what they are Beeeping.</string>
@@ -3395,12 +3397,12 @@ what they are Beeeping.</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" id="hOc-KL-Tvf">
-                                <rect key="frame" x="0.0" y="454" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="0.0" y="553" width="375" height="50"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="W64-Bs-qEg">
-                                        <rect key="frame" x="18" y="1" width="49" height="47"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="22" y="1" width="49" height="47"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <state key="normal" image="tabbar-home.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -3411,8 +3413,8 @@ what they are Beeeping.</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="V1p-xE-oCJ">
-                                        <rect key="frame" x="258" y="1" width="55" height="47"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="312" y="1" width="55" height="47"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <inset key="contentEdgeInsets" minX="0.0" minY="7" maxX="0.0" maxY="0.0"/>
                                         <state key="normal" image="tabbar-notif.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -3428,21 +3430,9 @@ what they are Beeeping.</string>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
-                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Kct-50-wr7">
-                                        <rect key="frame" x="205" y="2" width="49" height="47"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" image="tabbar-timeline.png">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="selected" image="yellow-tabbar-timeline.png"/>
-                                        <state key="highlighted" image="yellow-tabbar-timeline.png"/>
-                                        <connections>
-                                            <action selector="tabbarButtonTapped:" destination="OCe-de-zmO" eventType="touchUpInside" id="LQE-7X-qn9"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="kId-SA-xGY">
-                                        <rect key="frame" x="74" y="1" width="49" height="47"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="89" y="1" width="49" height="47"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <state key="normal" image="search_icon_gray.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -3453,19 +3443,31 @@ what they are Beeeping.</string>
                                         </connections>
                                     </button>
                                     <view userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="scaleToFill" id="1SZ-x4-d5b">
-                                        <rect key="frame" x="272" y="13" width="27" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="326" y="13" width="27" height="24"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ZmQ-Ie-vqS">
-                                        <rect key="frame" x="136" y="3" width="49" height="45"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="164" y="3" width="49" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <state key="normal" backgroundImage="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="OCe-de-zmO" eventType="touchUpInside" id="IqS-CN-7zC"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Kct-50-wr7">
+                                        <rect key="frame" x="242" y="2" width="49" height="47"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                                        <state key="normal" image="tabbar-timeline.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" image="yellow-tabbar-timeline.png"/>
+                                        <state key="highlighted" image="yellow-tabbar-timeline.png"/>
+                                        <connections>
+                                            <action selector="tabbarButtonTapped:" destination="OCe-de-zmO" eventType="touchUpInside" id="LQE-7X-qn9"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -3478,8 +3480,7 @@ what they are Beeeping.</string>
                         <barButtonItem key="backBarButtonItem" title=" " id="qiB-xG-Izd"/>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="568"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="collectionV" destination="fRg-t4-u8N" id="zQA-Ja-xGl"/>
                         <outlet property="findFriendsButton" destination="uKg-MT-cxy" id="bH2-rK-48T"/>
@@ -3643,6 +3644,7 @@ what they are Beeeping.</string>
                                         </connections>
                                     </button>
                                     <view userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="scaleToFill" id="hzV-l3-Anl">
+                                        <rect key="frame" x="326" y="13" width="27" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
@@ -4540,6 +4542,7 @@ When a friend suggests you a Beeep, you will find it here.</string>
                                         </connections>
                                     </button>
                                     <view userInteractionEnabled="NO" alpha="0.0" tag="1" contentMode="scaleToFill" id="Fyr-mR-seV">
+                                        <rect key="frame" x="326" y="13" width="27" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>

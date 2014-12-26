@@ -74,7 +74,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, 320, 44);
+    self.kInitialViewFrame = CGRectMake(0, self.view.frame.size.height-44, self.view.frame.size.width, 44);
     
     UIView *container = [self container];
     [container addSubview:[self composeBarView]];

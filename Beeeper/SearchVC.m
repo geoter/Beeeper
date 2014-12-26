@@ -513,7 +513,7 @@
     SearchVC *sVC = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SearchVCNav"];
     
     sVC.initialSearchTerm = term;
-    sVC.topV.frame = CGRectMake(0, -sVC.topV.frame.size.height, 320, sVC.topV.frame.size.height);
+    sVC.topV.frame = CGRectMake(0, -sVC.topV.frame.size.height, vc.view.frame.size.width, sVC.topV.frame.size.height);
     sVC.tableV.alpha = 0;
 
     [vc.navigationController pushViewController:sVC animated:YES];
@@ -594,6 +594,8 @@
     //bottomV.frame = CGRectMake(bottomV.frame.origin.x, title.frame.origin.y + title.frame.size.height, bottomV.frame.size.width, bottomV.frame.size.height);
     
     UILabel *area = (id)[containerV viewWithTag:-2];
+    UILabel *areaIcon = (id)[containerV viewWithTag:-1];
+    
     area.frame = CGRectMake(37, 190, 108, 32);
     
    // area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
@@ -606,10 +608,13 @@
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
     area.text = [loc.venueStation capitalizedString];
     [area sizeToFit];
-    area.center = CGPointMake(containerV.center.x, area.center.y);
+    
+    CGPoint areaCenter = CGPointMake(cell.center.x-areaIcon.frame.size.width, area.center.y);
+    
+    area.center = areaCenter;
     area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
     
-    UILabel *areaIcon = (id)[containerV viewWithTag:-1];
+    
     areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+1.5, areaIcon.frame.size.width, areaIcon.frame.size.height);
     
     //now move are to center
@@ -747,7 +752,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
     //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake(148, 307);
+    return CGSizeMake((IS_IPHONE_6)?176:148, (IS_IPHONE_6)?330:307);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //

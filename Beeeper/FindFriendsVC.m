@@ -127,7 +127,7 @@
     
 
     
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 44)];
     /*the search bar widht must be > 1, the height must be at least 44
      (the real size of the search bar)*/
     searchBar.barTintColor = [UIColor whiteColor];
@@ -147,7 +147,7 @@
     
     //on the top of tableView
     
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 124)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 124)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
@@ -157,10 +157,19 @@
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*81, 1, 80, 80)];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateSelected];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateHighlighted];
+        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?96:81), 0, ((IS_IPHONE_6)?95:81), 80)];
+        
+        if (IS_IPHONE_6) {
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateHighlighted];
+        }
+        else{
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateHighlighted];
+        }
+
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag = i;
         [btn addTarget:self action:@selector(optionSelectedFromHeader:) forControlEvents:UIControlEventTouchUpInside];
@@ -188,7 +197,7 @@
     
     //search
     
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 44)];
     /*the search bar widht must be > 1, the height must be at least 44
      (the real size of the search bar)*/
     searchBar.barTintColor = [UIColor whiteColor];
@@ -210,17 +219,26 @@
     
     //UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, (selectedOption == MailButton)?163:124)];
 
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 168)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 168)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*81, 0, 80, 80)];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateSelected];
-        [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateHighlighted];
+        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?96:81), 0, ((IS_IPHONE_6)?95:81), 80)];
+        
+        if (IS_IPHONE_6) {
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateHighlighted];
+        }
+        else{
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d",i]] forState:UIControlStateHighlighted];
+        }
+        
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag = i;
         [btn addTarget:self action:@selector(optionSelectedFromHeader:) forControlEvents:UIControlEventTouchUpInside];

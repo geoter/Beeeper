@@ -45,7 +45,7 @@
     [super viewDidLoad];
     rowsToReload = [NSMutableArray array];
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
     [refreshControl addTarget:self action:@selector(getSuggestions) forControlEvents:UIControlEventValueChanged];
@@ -163,8 +163,8 @@
             [self hideLoading];
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getSuggestions not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                [alert show];
+//                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getSuggestions not Completed" message:@"" delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//                [alert show];
                 
             });
         }
@@ -265,6 +265,10 @@
         
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
         
@@ -277,7 +281,11 @@
     @try {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-            
+        
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         Suggestion_Object *suggestion = [suggestions objectAtIndex:indexPath.row];
         Who *w = suggestion.who;
         What_Suggest *what = suggestion.what;
@@ -346,11 +354,16 @@
         [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
                            placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         
-            return cell;
+        return cell;
     }
     @catch (NSException *exception) {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         return cell;
     }
     @finally {

@@ -39,6 +39,7 @@
     LocationManager *locManager;
     NSMutableArray *predefinedTags;
     UIImage *pickedImage;
+    BOOL hasLocation;
 }
 @property(nonatomic,strong) NSString *base64Image;
 @end
@@ -139,7 +140,7 @@
     }
     
     
-    datePicker = [[MyDateTimePicker alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 260)];
+    datePicker = [[MyDateTimePicker alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 260)];
     datePicker.backgroundColor = [UIColor whiteColor];
     
     [DZNPhotoPickerController registerService:DZNPhotoPickerControllerServiceGoogleImages
@@ -214,6 +215,8 @@
     [values setObject:(adress)?adress:@"" forKey:@"address"];
     [values setObject:[longitude stringValue] forKey:@"longitude"];
     [values setObject:[latitude stringValue] forKey:@"latitude"];
+    
+    hasLocation = YES;
 }
 
 - (void)locationError:(NSError *)error{
@@ -275,7 +278,7 @@
         backV.tag = 92;
         backV.backgroundColor = [ UIColor colorWithWhite:0 alpha:0];
 
-        datePicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 260);
+        datePicker.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 260);
         [backV addSubview:datePicker];
         
         [self.scrollV endEditing:YES];
@@ -530,7 +533,12 @@
 
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView{
     
-    [self.containerScrollV setContentOffset:CGPointMake(0, 170) animated:YES];
+    if (!(IS_IPHONE_6||IS_IPHONE_6P)) {
+         [self.containerScrollV setContentOffset:CGPointMake(0, 170) animated:YES];
+    }
+    else if (IS_IPHONE_6){
+        [self.containerScrollV setContentOffset:CGPointMake(0, 40) animated:YES];
+    }
     
     if ([textView.text isEqualToString:@""]) {
         textView.text = @"#";
@@ -539,7 +547,7 @@
             [textView setSelectedRange:NSMakeRange(1, 0)];
         }
 
-        textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+       // textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
     }
     
     return YES;
@@ -682,6 +690,8 @@
 
 - (IBAction)close:(id)sender {
     
+    [self.view endEditing:YES];
+    
     [UIView animateWithDuration:0.5f
                      animations:^
      {
@@ -752,6 +762,14 @@
         [values setObject:keywords forKey:@"keywords"];
       
         [values setObject:@"http://www.beeeper.com" forKey:@"src"];
+        
+        
+        if (!hasLocation) {
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Where are you?" message:@"Please go to Settings > Privacy > Location Services and set Beeeper to on." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
         
         BOOL proceed = [self areAllDataAvailable:values];
         
@@ -1063,7 +1081,7 @@
             
             GoogleImageSearchAPIObject *object = [userInfo objectForKey:@"GoogleSearchImageObject"];
             
-            image_url = [NSURL URLWithString:object.url];
+            //image_url = [NSURL URLWithString:object.url];
             
             img = [userInfo objectForKey:@"GoogleSearchImage"];
             
@@ -1078,7 +1096,7 @@
                 info_values = [info objectForKey:@"com.dzn.photoPicker.photoMetadata"];
             }
             
-            image_url = [info_values objectForKey:@"source_url"];
+            //image_url = [info_values objectForKey:@"source_url"];
             
             img = [info objectForKey:@"UIImagePickerControllerEditedImage"];
             
@@ -1089,7 +1107,7 @@
         self.selectedPhotoButton.hidden = NO;
         
         if (image_url == nil) {
-            NSData *imageData = UIImageJPEGRepresentation(img, 0.8);
+            NSData *imageData = UIImageJPEGRepresentation(img, 1.0);
             base64Image = [self base64forData:imageData];
             [values removeObjectForKey:@"image_url"];
         }
@@ -1178,7 +1196,7 @@
     
     [values removeObjectForKey:@"image_url"];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
+    NSData *imageData = UIImageJPEGRepresentation(image, 1);
     base64Image = [self base64forData:imageData];
     
     [self imageSelected];
@@ -1244,7 +1262,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //[self.scrollV setContentSize:CGSizeMake(749, self.scrollV.contentSize.height)];
     //[self.scrollV setContentOffset:CGPointMake((self.scrollV.contentSize.width - CGRectGetWidth(self.scrollV.frame)), 0.0)];
     
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
+    NSData *imageData = UIImageJPEGRepresentation(image, 1);
     base64Image = [self base64forData:imageData];
     
     [self imageSelected];

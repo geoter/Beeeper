@@ -91,11 +91,11 @@
         if (completed) {
             
             if (objs.count != 0) {
+                
                 [beeeps addObjectsFromArray:objs];
 
-                if (objs.count == 10) {
-                    loadNextPage = YES;
-                }
+                loadNextPage = YES;
+                
                 loading = NO;
 //                [self groupBeeepsByMonth];
             }
@@ -197,8 +197,8 @@
                 }
                 else{
                     if ([objs isKindOfClass:[NSString class]]) {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                        [alert show];
+//                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//                        [alert show];
                         
                     }
                 }
@@ -219,17 +219,20 @@
                 followers = objs.count;
                 UIButton *followersBtn = self.followersButton;
                 if (followersBtn != nil) {
-                   
-                    followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
                     
-                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
-                   
-                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
-                    [attText addAttribute:NSFontAttributeName
-                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
-                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                   dispatch_async (dispatch_get_main_queue(), ^{
+                       followersBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                       
+                       NSString *mtext = [NSString stringWithFormat:@"%d\nFollowers",followers];
+                       
+                       NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                       [attText addAttribute:NSFontAttributeName
+                                       value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                                       range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",followers]]];
+                       
+                       [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
+                   });
                     
-                    [followersBtn setAttributedTitle:attText forState: UIControlStateNormal];
                 }
             }
         }];
@@ -237,21 +240,25 @@
         [[BPUser sharedBP]getFollowingForUser:[self.user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
             
             if (completed) {
-                following = objs.count;
-                UIButton *followingBtn = self.followingButton;
-                if (followingBtn != nil) {
-                   
-                    followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-                    
-                    NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
-                    
-                    NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
-                    [attText addAttribute:NSFontAttributeName
-                                    value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
-                                    range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
-                    
-                    [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
-                }
+                
+                dispatch_async (dispatch_get_main_queue(), ^{
+           
+                    following = objs.count;
+                    UIButton *followingBtn = self.followingButton;
+                    if (followingBtn != nil) {
+                        
+                        followingBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+                        
+                        NSString *mtext = [NSString stringWithFormat:@"%d\nFollowing",following];
+                        
+                        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+                        [attText addAttribute:NSFontAttributeName
+                                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%d",following]]];
+                        
+                        [followingBtn setAttributedTitle:attText forState: UIControlStateNormal];
+                    }
+                });
                 
             }
         }];
@@ -326,7 +333,7 @@
     
     pendingImagesDict = [NSMutableDictionary dictionary];
     
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 
     CALayer * l = [self.profileImageBorderV layer];
     [l setMasksToBounds:YES];
@@ -464,6 +471,11 @@
             if (completed && objs.count >0) {
                 NSMutableDictionary *userDict = [objs firstObject];
                 
+                if (![[self.user objectForKey:@"id"] isEqualToString:[userDict objectForKey:@"id"]])
+                {
+                    return;
+                }
+                
                 [self.user addEntriesFromDictionary:userDict];
                 
                 userDownloaded = YES;
@@ -492,85 +504,95 @@
     }
     else{
         
-        [self hideLoading];
-        self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
-        
-        UIButton *totalBeeepsBtn;
-        if (self.mode == Timeline_My) {
-            totalBeeepsBtn = (UIButton *)[self.myTimelineMenuV viewWithTag:32];
-        }
-        else{
-            totalBeeepsBtn = (UIButton *)[self.othersTimelineMenuV viewWithTag:32];
-        }
-        
-        totalBeeepsBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        
-        id beeeps = [user objectForKey:@"beeep_count"];
-        
-        NSString *mtext = [NSString stringWithFormat:@"%@\nTotal Beeeps",(beeeps != nil)?beeeps:@"0"];
-        
-        NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
-        [attText addAttribute:NSFontAttributeName
-                        value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
-                        range:[mtext rangeOfString:[NSString stringWithFormat:@"%@",(beeeps != nil)?beeeps:@"0"]]];
-        
-        [totalBeeepsBtn setAttributedTitle:attText forState: UIControlStateNormal];
-        
-        NSString *city = [[user objectForKey:@"city"] capitalizedString];
-        
-        if (city != nil && city.length > 0) {
+        dispatch_async (dispatch_get_main_queue(), ^{
+           
+            [self hideLoading];
+            self.usernameLabel.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
+            self.usernameTopLabel.text = self.usernameLabel.text;
             
-            [UIView animateWithDuration:0.3f
-                     animations:^
-             {
-                 self.userCityLabel.alpha = 1;
-                 self.pinIcon.alpha = 1;
-             }
-                     completion:^(BOOL finished)
-             {
-                 
-             }
-             ];
+            UIButton *totalBeeepsBtn;
+            if (self.mode == Timeline_My) {
+                totalBeeepsBtn = (UIButton *)[self.myTimelineMenuV viewWithTag:32];
+            }
+            else{
+                totalBeeepsBtn = (UIButton *)[self.othersTimelineMenuV viewWithTag:32];
+            }
             
+            totalBeeepsBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
             
-            self.userCityLabel.hidden = NO;
-            self.pinIcon.hidden = NO;
+            id beeeps = [user objectForKey:@"beeep_count"];
             
-            self.userCityLabel.text = city;
-            [self.userCityLabel sizeToFit];
-            self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
-            self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
-
-        }
-        else{
+            NSString *mtext = [NSString stringWithFormat:@"%@\nTotal Beeeps",(beeeps != nil)?beeeps:@"0"];
             
-            [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
+            NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:mtext];
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15]
+                            range:[mtext rangeOfString:[NSString stringWithFormat:@"%@",(beeeps != nil)?beeeps:@"0"]]];
+            
+            [totalBeeepsBtn setAttributedTitle:attText forState: UIControlStateNormal];
+            
+            NSString *city = [[user objectForKey:@"city"] capitalizedString];
+            
+            if (city != nil && city.length > 0) {
                 
-                if (completed && objs.count >0) {
+                [UIView animateWithDuration:0.0f
+                         animations:^
+                 {
+                     self.userCityLabel.alpha = 1;
+                     self.pinIcon.alpha = 1;
+                 }
+                         completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+                
+                
+                self.userCityLabel.hidden = NO;
+                self.pinIcon.hidden = NO;
+                
+                self.userCityLabel.text = city;
+                [self.userCityLabel sizeToFit];
+                self.userCityLabel.center = CGPointMake(self.userCityLabel.superview.center.x, self.userCityLabel.center.y);
+                self.pinIcon.frame = CGRectMake(self.userCityLabel.frame.origin.x - 13, self.pinIcon.frame.origin.y, self.pinIcon.frame.size.width, self.pinIcon.frame.size.height);
 
-                    NSMutableDictionary *userDict = [objs firstObject];
-                    [self.user addEntriesFromDictionary:userDict];
+            }
+            else{
+                
+                [[BPUsersLookup sharedBP]usersLookup:@[[user objectForKey:@"id"]] completionBlock:^(BOOL completed,NSArray *objs){
                     
-                    userDownloaded = YES;
-                    
-                    [self setUserInfo];
-                    
-                }
-            }];
+                    if (completed && objs.count >0) {
 
-            
-            [UIView animateWithDuration:0.3f
-                             animations:^
-             {
-                 self.userCityLabel.alpha = 0;
-                 self.pinIcon.alpha = 0;
-             }
-                             completion:^(BOOL finished)
-             {
-                 
-             }
-             ];
-        }
+                        NSMutableDictionary *userDict = [objs firstObject];
+                        
+                        if (![[self.user objectForKey:@"id"] isEqualToString:[userDict objectForKey:@"id"]])
+                        {
+                            return;
+                        }
+                        
+                        [self.user addEntriesFromDictionary:userDict];
+                        
+                        userDownloaded = YES;
+                        
+                        [self setUserInfo];
+                        
+                    }
+                }];
+
+                
+                [UIView animateWithDuration:0.3f
+                                 animations:^
+                 {
+                     self.userCityLabel.alpha = 0;
+                     self.pinIcon.alpha = 0;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     
+                 }
+                 ];
+            }
+         });
     }
     
     if (!userDownloaded) {
@@ -580,7 +602,14 @@
           
             if (completed && objs.count >0) {
 
+                
                 NSMutableDictionary *userDict = [objs firstObject];
+                
+                if (![[self.user objectForKey:@"id"] isEqualToString:[userDict objectForKey:@"id"]])
+                {
+                    return;
+                }
+
                 [self.user addEntriesFromDictionary:userDict];
                 
                 userDownloaded = YES;
@@ -682,11 +711,14 @@
 -(void)viewWillAppear:(BOOL)animated{
   
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-  
-    [self getLocalData];
     
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
+    [self getLocalData];
+
     if (firstTime) {
+
         firstTime = NO;
         [self getTimeline:[self.user objectForKey:@"id"] option:Upcoming];
     }
@@ -704,7 +736,8 @@
         self.backBtn.hidden = NO;
         
         self.tabBar.hidden = YES;
-        self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y, self.tableV.frame.size.width, self.view.frame.size.height-self.tableV.frame.origin.y);
+        self.tableV.frame = CGRectMake(self.tableV.frame.origin.x, self.tableV.frame.origin.y,
+                                       self.tableV.frame.size.width, self.tableV.frame.size.height+self.tabBar.frame.size.height);
     }
     else{
         [self showBadgeIcon];
@@ -714,7 +747,7 @@
     
     [self setUserInfo];
     
-    [self.tableV reloadData];
+   // [self.tableV reloadData];
     
     for (UIButton *btn in self.tabBar.subviews) {
         
@@ -774,12 +807,12 @@
 
 
 -(void)createMenuButtons:(BOOL)animated{
-    
+   
     dispatch_async (dispatch_get_main_queue(), ^{
 
-    self.othersTimelineMenuV.hidden = (self.mode == Timeline_My);
-    self.myTimelineMenuV.hidden = !(self.mode == Timeline_My);
-    
+   
+    self.othersTimelineMenuV.alpha = !(self.mode == Timeline_My);
+    self.myTimelineMenuV.alpha = (self.mode == Timeline_My);
     
     if (self.mode == Timeline_My) {
         self.followersButton = (UIButton *)[self.myTimelineMenuV viewWithTag:33];
@@ -890,6 +923,10 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
         
@@ -907,7 +944,11 @@
     }
     
     cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            
+    
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     if (initialCellCenter.x == 0 && initialCellCenter.y == 0) {
         initialCellCenter = [cell viewWithTag:66].center;
     }
@@ -941,126 +982,137 @@
     UIImageView *reminderIcon = (id)[cell viewWithTag:-7];
     UIButton *beepItbutton = (id)[cell viewWithTag:-8];
     
-    Timeline_Object *b = [beeeps objectAtIndex:indexPath.row];
+    Timeline_Object *b;
     
-    if (self.mode != Timeline_My) {
-
-        beepItbutton.hidden = NO;
+    @try {
+        b = [beeeps objectAtIndex:indexPath.row];
         
-        double now_time = [[NSDate date]timeIntervalSince1970];
-        double event_timestamp = b.event.timestamp;
-        
-        if (now_time > event_timestamp) {
-            [beepItbutton setHidden:YES];
+        if (self.mode != Timeline_My) {
+            
+            beepItbutton.hidden = NO;
+            
+            double now_time = [[NSDate date]timeIntervalSince1970];
+            double event_timestamp = b.event.timestamp;
+            
+            if (now_time > event_timestamp) {
+                [beepItbutton setHidden:YES];
+            }
+            else{
+                [beepItbutton setHidden:NO];
+                [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
+            }
+            
         }
         else{
-            [beepItbutton setHidden:NO];
-            [beepItbutton setImage:[UIImage imageNamed:@"beeep_it_icon_event"] forState:UIControlStateNormal];
+            beepItbutton.hidden = YES;
         }
         
-        reminderIcon.hidden = YES;
-        reminderLabel.hidden = YES;
-    }
-    else{
-        beepItbutton.hidden = YES;
-        reminderIcon.hidden = NO;
-        reminderLabel.hidden = NO;
-    }
-    
-    titleLbl.text = [b.event.title capitalizedString];
-    
-    //EVENT DATE
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
-    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    [formatter setLocale:usLocale];
-    
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
-    NSString *dateStr = [formatter stringFromDate:date];
-    NSArray *components = [dateStr componentsSeparatedByString:@","];
-    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-    
-    NSString *month = [day_month objectAtIndex:1];
-    NSString *daynumber = [day_month objectAtIndex:2];
-    NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
-    NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
-    
-    timeLabel.text = hour;
-    
-    UILabel *dayLbl = (id)[cell viewWithTag:2];
-    UILabel *monthLbl = (id)[cell viewWithTag:1];
-    
-    dayLbl.text = daynumber;
-   // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
-    monthLbl.text = [month uppercaseString];
-   // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-    
-    NSString *alert_time = [self dailyLanguageFutureDate:b.beeep.beeepInfo.eventTime.intValue pastDate:b.beeep.beeepInfo.timestamp.intValue];
-    
-    reminderLabel.text = alert_time;
-    [reminderLabel sizeToFit];
-    reminderLabel.frame = CGRectMake(cell.frame.size.width-reminderLabel.frame.size.width-9, reminderLabel.frame.origin.y, reminderLabel.frame.size.width, reminderLabel.frame.size.height);
-    reminderIcon.frame = CGRectMake(reminderLabel.frame.origin.x-reminderIcon.frame.size.width-3, reminderIcon.frame.origin.y, reminderIcon.frame.size.width, reminderIcon.frame.size.height);
-    
-    //Venue
-    
-    UILabel *venueLbl = (id)[cell viewWithTag:5];
+        titleLbl.text = [b.event.title capitalizedString];
+        
+        //EVENT DATE
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [formatter setLocale:usLocale];
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:b.event.timestamp];
+        NSString *dateStr = [formatter stringFromDate:date];
+        NSArray *components = [dateStr componentsSeparatedByString:@","];
+        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+        
+        NSString *month = [day_month objectAtIndex:1];
+        NSString *daynumber = [day_month objectAtIndex:2];
+        NSString *year = [[[components lastObject] componentsSeparatedByString:@" "] firstObject];
+        NSString *hour = [[[components lastObject] componentsSeparatedByString:@" "] lastObject];
+        
+        timeLabel.text = hour;
+        
+        UILabel *dayLbl = (id)[cell viewWithTag:2];
+        UILabel *monthLbl = (id)[cell viewWithTag:1];
+        
+        dayLbl.text = daynumber;
+        // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
+        monthLbl.text = [month uppercaseString];
+        // monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+        
+        NSString *alert_time = [self dailyLanguageFutureDate:b.beeep.beeepInfo.eventTime.intValue pastDate:b.beeep.beeepInfo.timestamp.intValue];
+        
+        reminderLabel.text = alert_time;
+        [reminderLabel sizeToFit];
+        reminderLabel.frame = CGRectMake(self.tableV.frame.size.width-reminderLabel.frame.size.width-9, reminderLabel.frame.origin.y, reminderLabel.frame.size.width, reminderLabel.frame.size.height);
+        reminderIcon.frame = CGRectMake(reminderLabel.frame.origin.x-reminderIcon.frame.size.width-3, reminderIcon.frame.origin.y, reminderIcon.frame.size.width, reminderIcon.frame.size.height);
+        
+        //Venue
+        
+        UILabel *venueLbl = (id)[cell viewWithTag:5];
+        
+        NSString *jsonString = b.event.location;
+        NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+        venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
+        
+        UIImageView* areaIcon = (id)[cell viewWithTag:-1];
+        areaIcon.center = CGPointMake(areaIcon.center.x, venueLbl.center.y);
+        
+        //Likes,Beeeps,Comments
+        UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
+        UILabel *likesLbl = (id)[cell viewWithTag:-3];
+        UILabel *commentsLbl = (id)[cell viewWithTag:-4];
+        
+        likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
+        commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
+        beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
+        
+        likesLbl.hidden = (likesLbl.text.intValue == 0);
+        commentsLbl.hidden = (commentsLbl.text.intValue == 0);
+        beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
+        
+        NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+        
+        beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
+        
+        //Image
+        
+        UIImageView *imgV = (id)[cell viewWithTag:3];
+        
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
+                placeholderImage:[UIImage imageNamed:@"event_image"]];
+        
+        
+        if (b.event.timestamp < [[NSDate date]timeIntervalSince1970]) { //PAST
+            
+            UILabel *passedLbl = (UILabel *)[[cell viewWithTag:34] viewWithTag:35];
+            UIFont *font =[UIFont fontWithName:@"Mohave" size:9];
+            
+            //[passedLbl setFont:font];
+            [cell viewWithTag:34].hidden = NO;
+            reminderIcon.hidden = YES;
+            reminderLabel.hidden = YES;
+        }
+        else{
+            
+            [cell viewWithTag:34].hidden = YES;
+            
+            if (self.mode == Timeline_My) {
+                reminderIcon.hidden = NO;
+                reminderLabel.hidden = NO;
+            }
+            else{
+                reminderIcon.hidden = YES;
+                reminderLabel.hidden = YES;
+            }
+        }
 
-    NSString *jsonString = b.event.location;
-    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation capitalizedString];
-    
-    UIImageView* areaIcon = (id)[cell viewWithTag:-1];
-    areaIcon.center = CGPointMake(areaIcon.center.x, venueLbl.center.y);
-    
-    //Likes,Beeeps,Comments
-    UILabel *beeepsLbl = (id)[cell viewWithTag:-5];
-    UILabel *likesLbl = (id)[cell viewWithTag:-3];
-    UILabel *commentsLbl = (id)[cell viewWithTag:-4];
-    
-    likesLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.likes.count];
-    commentsLbl.text = [NSString stringWithFormat:@"%d",b.beeep.beeepInfo.comments.count];
-    beeepsLbl.text = [NSString stringWithFormat:@"%d",b.beeepersIds.count];
-    
-    likesLbl.hidden = (likesLbl.text.intValue == 0);
-    commentsLbl.hidden = (commentsLbl.text.intValue == 0);
-    beeepsLbl.hidden = (beeepsLbl.text.intValue == 0);
-    
-    NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-   
-    beepItbutton.hidden = ([b.beeepersIds indexOfObject:my_id] != NSNotFound);
-    
-    //Image
-    
-    UIImageView *imgV = (id)[cell viewWithTag:3];
-    
-    [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
-              placeholderImage:[UIImage imageNamed:@"event_image"]];
-    
-    
-    if (b.event.timestamp < [[NSDate date]timeIntervalSince1970]) { //PAST
-      
-        UILabel *passedLbl = (UILabel *)[[cell viewWithTag:34] viewWithTag:35];
-        UIFont *font =[UIFont fontWithName:@"Mohave" size:9];
-        
-        for (NSString *family in [UIFont familyNames]) {
-            NSLog(@"%@", [UIFont fontNamesForFamilyName:family]);
-        }
-        
-        //[passedLbl setFont:font];
-        [cell viewWithTag:34].hidden = NO;
-        reminderIcon.hidden = YES;
-        reminderLabel.hidden = YES;
     }
-    else{
-        [cell viewWithTag:34].hidden = YES;
-        reminderIcon.hidden = NO;
-        reminderLabel.hidden = NO;
+    @catch (NSException *exception) {
+        NSLog(@"aaa");
     }
-    
+    @finally {
+        
+    }
+
     return cell;
 }
 
@@ -1142,7 +1194,7 @@
     UILabel *textLbl = [[UILabel alloc]initWithFrame:CGRectMake((self.tableV.frame.size.width/2)-13, 0, 133, bgV.frame.size.height)];
     textLbl.textAlignment = NSTextAlignmentLeft;
     textLbl.textColor = [UIColor colorWithRed:132/255.0 green:139/255.0 blue:145/255.0 alpha:1];
-
+    textLbl.shadowColor = [UIColor clearColor];
     
     switch (chooseDaySelectedIndex) {
         case 0:
@@ -2004,9 +2056,9 @@
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
     Timeline_Object*b = [beeeps objectAtIndex:indexpath.row];
-    
+
     if (b.event.fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:b.event.fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
+        [[TabbarVC sharedTabbar]suggestPressed:b.event.fingerprint beeepers:b.beeepersIds controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -2017,8 +2069,16 @@
 
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender{
-    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    
+    if (sender.tag == 3) {
+        [self.tableV setContentOffset:CGPointZero animated:YES];
+    }
+    else{
+        [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    }
 }
+
+
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:self];
@@ -2376,11 +2436,11 @@
                     //   [self groupBeeepsByMonth];
                 }
                 else{
-                    if ([objs isKindOfClass:[NSString class]]) {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                        [alert show];
-                        
-                    }
+//                    if ([objs isKindOfClass:[NSString class]]) {
+//                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getTimeline Not Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//                        [alert show];
+//                        
+//                    }
                 }
             }];
             
@@ -2418,6 +2478,44 @@
     selectedDate = date;
     
     [self releaseCalendar:nil];
+}
+
+#pragma mark - Scroll View
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    NSLog(@"%.f",scrollView.contentOffset.y);
+   
+    [UIView animateWithDuration:0.2f
+                     animations:^
+     {
+         if (IS_IPHONE_6) {
+             if (scrollView.contentOffset.y > 137) {
+                 self.usernameTopLabel.alpha = 1;
+             }
+             else{
+                 self.usernameTopLabel.alpha = 0;
+             }
+         }
+         else if (IS_IPHONE_5){
+             if (scrollView.contentOffset.y > 120) {
+                 self.usernameTopLabel.alpha = 1;
+             }
+             else{
+                 self.usernameTopLabel.alpha = 0;
+             }
+         }
+         else if (IS_IPHONE_4_OR_LESS){
+             if (scrollView.contentOffset.y > 120) {
+                 self.usernameTopLabel.alpha = 1;
+             }
+             else{
+                 self.usernameTopLabel.alpha = 0;
+             }
+         }
+
+     }
+    completion:^(BOOL finished){}];
+    
 }
 
 #pragma mark - Group by date

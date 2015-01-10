@@ -102,22 +102,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     GoogleImageSearchAPIObject *object = [images objectAtIndex:indexPath.row];
     
-    [self.activityIndicator startAnimating];
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     
-    self.pageControl.currentPage = indexPath.row;
+    UIImageView *imgV = (id)[cell viewWithTag:1];
     
-    [self createFullScreen:indexPath.row];
-    
-    [UIView animateWithDuration:0.4f
-                     animations:^
-     {
-         self.fullScreenV.alpha = 1;
-     }
-                     completion:^(BOOL finished)
-     {
-
-     }
-     ];
+    [self donePressed:imgV];
 }
 
 
@@ -326,8 +315,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (IBAction)donePressed:(id)sender {
 
     
-    if (![sender isKindOfClass:[UIImage class]]) {
-        UIImageView *imgV = (id)[self.scrollV viewWithTag:selectedIndex.row+1];
+    if ([sender isKindOfClass:[UIImageView class]]) {
+        
+        UIImageView *imgV = (UIImageView *)sender;
         
         DZNPhotoEditorViewController *editor = [[DZNPhotoEditorViewController alloc] initWithImage:imgV.image cropMode:DZNPhotoEditorViewControllerCropModeCustom cropSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.width /1.5384)];
         [self.navigationController pushViewController:editor animated:YES];
@@ -335,12 +325,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         return;
     }
     
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    [userInfo setObject:[images objectAtIndex:selectedIndex.row] forKey:@"GoogleSearchImageObject"];
-
-    [userInfo setObject:sender forKey:@"GoogleSearchImage"];
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"GoogleImageSearchResult" object:nil userInfo:userInfo];
+    if ([sender isKindOfClass:[UIImage class]]) {
+        
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+        [userInfo setObject:[images objectAtIndex:selectedIndex.row] forKey:@"GoogleSearchImageObject"];
+        
+        [userInfo setObject:sender forKey:@"GoogleSearchImage"];
+        
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"GoogleImageSearchResult" object:nil userInfo:userInfo];
+    }
     
     [self dismissViewControllerAnimated:YES completion:NULL];
 }

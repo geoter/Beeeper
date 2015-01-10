@@ -102,10 +102,10 @@
                     loadNextPage = (objcts.count == pageLimit);
                     searchedPeople = [NSMutableArray arrayWithArray:objcts];
                     
-                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                    
-                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                     ];
+//                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                    
+//                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                     ];
                     
                     NSRange range = NSMakeRange(0, 1);
                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -147,7 +147,7 @@
     
     //on the top of tableView
     
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 124)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6)?136:124)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
@@ -157,7 +157,7 @@
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?96:81), 0, ((IS_IPHONE_6)?95:81), 80)];
+        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?94:81), 1, ((IS_IPHONE_6)?93:80), ((IS_IPHONE_6)?93:80))];
         
         if (IS_IPHONE_6) {
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
@@ -180,11 +180,11 @@
         }
     }
     
-    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+    searchBar.frame = CGRectMake(0, (IS_IPHONE_6)?((selectedOption == MailButton)?126:94):((selectedOption == MailButton)?125:80), searchBar.frame.size.width, searchBar.frame.size.height);
     
     [headerV addSubview:searchBar];
     
-    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,80, self.tableV.frame.size.width, 1)];
+    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,(IS_IPHONE_6)?94:80, self.tableV.frame.size.width, 1)];
     [bottomLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
     [headerV addSubview:bottomLine];
     
@@ -219,14 +219,14 @@
     
     //UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, (selectedOption == MailButton)?163:124)];
 
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 168)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6)?180:168)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?96:81), 0, ((IS_IPHONE_6)?95:81), 80)];
+         UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?94:81), 0, ((IS_IPHONE_6)?93:80), ((IS_IPHONE_6)?93:80))];
         
         if (IS_IPHONE_6) {
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
@@ -251,13 +251,13 @@
     
     if(selectedOption == MailButton){
         
-        UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,79, self.tableV.frame.size.width, 1)];
+        UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
         [topLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
         
         [headerV addSubview:topLine];
         
         UIButton *inviteSmsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        inviteSmsBtn.frame = CGRectMake(0,80, self.tableV.frame.size.width/2,45);
+        inviteSmsBtn.frame = CGRectMake(0,(IS_IPHONE_6)?94:81, self.tableV.frame.size.width/2,45);
         
         if (option == 0) {
             [inviteSmsBtn setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
@@ -275,7 +275,7 @@
         [headerV addSubview:inviteSmsBtn];
         
         UIButton *inviteEmailBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        inviteEmailBtn.frame = CGRectMake(inviteSmsBtn.frame.size.width,80, self.tableV.frame.size.width/2,45);
+        inviteEmailBtn.frame = CGRectMake(inviteSmsBtn.frame.size.width,(IS_IPHONE_6)?94:81, self.tableV.frame.size.width/2,45);
         
         if (option == 0) {
             
@@ -300,7 +300,7 @@
         [headerV addSubview:bottomLine];
     }
     
-    searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+     searchBar.frame = CGRectMake(0, (IS_IPHONE_6)?((selectedOption == MailButton)?138:93):((selectedOption == MailButton)?125:80), searchBar.frame.size.width, searchBar.frame.size.height);
     
     [headerV addSubview:searchBar];
     
@@ -575,10 +575,10 @@
                         loadNextPage = (objcts.count == pageLimit);
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
                         
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                        
-                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                         ];
+//                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                        
+//                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                         ];
                         
                         [self.tableV reloadData];
                         
@@ -1224,7 +1224,8 @@
     
     self.title = @"Find Friends";
     self.navigationController.navigationBar.topItem.title = self.title;
-  
+    self.navigationItem.title = self.title;
+
     [self.tableV reloadData];
     
     NSLog(@"%.2f",self.tableV.frame.origin.y + self.tableV.tableHeaderView.frame.size.height);
@@ -1280,6 +1281,10 @@
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
 
@@ -1298,6 +1303,10 @@
 
     cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     UITextField *txtF = (id)[cell viewWithTag:1];
     txtF.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
@@ -1306,98 +1315,100 @@
     UITextField *detailstxtF = (id)[cell viewWithTag:4];
     UIImageView *tickedV = (id)[cell viewWithTag:5];
     UIImageView *fbtickedV = (id)[cell viewWithTag:14];
-    
-    NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
-    
-    BOOL isBeeeper = NO;
-    
-    if (selectedOption == FacebookButton) {
-        if (indexPath.section == 0 && searchedBeeepers.count > 0) {
-            user = [searchedBeeepers objectAtIndex:indexPath.row];
-            isBeeeper = YES;
-        }
-        else{
-            user = [searchedFBFriends objectAtIndex:indexPath.row];
-            isBeeeper = NO;
-        }
-    }
-    
-     if (selectedOption != BeeeperButton) {
-         
-         if ((selectedOption == FacebookButton && !isBeeeper) || selectedOption == MailButton) {
-             
-             tickedV.hidden = NO;
-             fbtickedV.hidden = YES;
-             followBtn.hidden = YES;
-             
-             if ([selectedPeople indexOfObject:user] != NSNotFound) {
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
-             }
-             else{
-                 [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
-             }
-         }
-         else if (selectedOption == FacebookButton && isBeeeper) {
-             
-             tickedV.hidden = YES;
-             fbtickedV.hidden = YES;
-             followBtn.hidden = NO;
-             
-             NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
-             
-             if (following.boolValue) {
-                 [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
-             }
-             else{
-                 [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal];
-             }
-         }
-         else{
-             
-             tickedV.hidden = YES;
-             
-             NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
-             followBtn.hidden = ([my_id isEqualToString:[user objectForKey:@"id"]])?YES:NO;
-             fbtickedV.hidden = YES;
-             
-             NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
-             
-             if (following.boolValue) {
-                 [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
-             }
-             else{
-                 [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
-             }
-
-         }
-     }
-     else{
-    
-         if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
-             followBtn.hidden = YES;
-             tickedV.hidden = YES;
-             fbtickedV.hidden = YES;
-         }
-         else{
-         
-            followBtn.hidden = NO;
-            tickedV.hidden = YES;
-            fbtickedV.hidden = YES;
-             
-            NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
-            
-            if (following.boolValue) {
-                [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal] ;
+   
+    @try {
+        
+        NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
+        
+        BOOL isBeeeper = NO;
+        
+        if (selectedOption == FacebookButton) {
+            if (indexPath.section == 0 && searchedBeeepers.count > 0) {
+                user = [searchedBeeepers objectAtIndex:indexPath.row];
+                isBeeeper = YES;
             }
             else{
-                [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
+                user = [searchedFBFriends objectAtIndex:indexPath.row];
+                isBeeeper = NO;
             }
-         }
-     }
-
+        }
+        
+        if (selectedOption != BeeeperButton) {
             
-      if (selectedOption == FacebookButton && !isBeeeper) {
+            if ((selectedOption == FacebookButton && !isBeeeper) || selectedOption == MailButton) {
                 
+                tickedV.hidden = NO;
+                fbtickedV.hidden = YES;
+                followBtn.hidden = YES;
+                
+                if ([selectedPeople indexOfObject:user] != NSNotFound) {
+                    [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+                }
+                else{
+                    [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
+                }
+            }
+            else if (selectedOption == FacebookButton && isBeeeper) {
+                
+                tickedV.hidden = YES;
+                fbtickedV.hidden = YES;
+                followBtn.hidden = NO;
+                
+                NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+                
+                if (following.boolValue) {
+                    [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
+                }
+                else{
+                    [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal];
+                }
+            }
+            else{
+                
+                tickedV.hidden = YES;
+                
+                NSString *my_id = [[BPUser sharedBP].user objectForKey:@"id"];
+                followBtn.hidden = ([my_id isEqualToString:[user objectForKey:@"id"]])?YES:NO;
+                fbtickedV.hidden = YES;
+                
+                NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+                
+                if (following.boolValue) {
+                    [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal];
+                }
+                else{
+                    [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
+                }
+                
+            }
+        }
+        else{
+            
+            if ([[user objectForKey:@"id"]isEqualToString:[[BPUser sharedBP].user objectForKey:@"id"]]) {
+                followBtn.hidden = YES;
+                tickedV.hidden = YES;
+                fbtickedV.hidden = YES;
+            }
+            else{
+                
+                followBtn.hidden = NO;
+                tickedV.hidden = YES;
+                fbtickedV.hidden = YES;
+                
+                NSNumber *following = (NSNumber *)[user objectForKey:@"following"];
+                
+                if (following.boolValue) {
+                    [followBtn setImage:[UIImage imageNamed:@"invited_new.png"] forState:UIControlStateNormal] ;
+                }
+                else{
+                    [followBtn setImage:[UIImage imageNamed:@"invite_new.png"] forState:UIControlStateNormal] ;
+                }
+            }
+        }
+        
+        
+        if (selectedOption == FacebookButton && !isBeeeper) {
+            
             txtF.text = [user objectForKey:@"name"];
             
             NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -1419,16 +1430,16 @@
                 
                 [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
                              placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-
+                
             }
         }
         else{
-    
-        //applies for email && all other cases
-        
+            
+            //applies for email && all other cases
+            
             NSString *name =[[user objectForKey:@"name"] capitalizedString];
             NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
-
+            
             if (emailInviteSelectedOption == 0) {
                 
                 NSArray *phones= [user objectForKey:@"phones"];
@@ -1455,7 +1466,7 @@
                 }
                 
                 detailstxtF.text = phonesStr;
-
+                
             }
             else{
                 
@@ -1483,47 +1494,55 @@
                 }
                 
                 detailstxtF.text = emailsStr;
-
+                
             }
-
-        
-        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *imagePath = [user objectForKey:@"image_path"];
-        
-        @try {
-        
-            if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
+            
+            
+            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            
+            NSString *imagePath = [user objectForKey:@"image_path"];
+            
+            @try {
                 
-                [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
-                        placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-            }
-            else{
-                
-                userImage.image = nil;
-                
-                UIImage *imageContact = [user objectForKey:@"image"];
-                if (imageContact != nil) {
-                    userImage.image = imageContact;
-                    userImage.backgroundColor = [UIColor clearColor];
+                if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
+                    
+                    [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
+                                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
                 }
                 else{
-                    userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+                    
+                    userImage.image = nil;
+                    
+                    UIImage *imageContact = [user objectForKey:@"image"];
+                    if (imageContact != nil) {
+                        userImage.image = imageContact;
+                        userImage.backgroundColor = [UIColor clearColor];
+                    }
+                    else{
+                        userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
+                    }
+                    
                 }
                 
+                
+                
             }
-            
-            
+            @catch (NSException *exception) {
+                NSLog(@"provlima");
+            }
+            @finally {
+                
+            }
+        }
+        
 
-        }
-        @catch (NSException *exception) {
-            NSLog(@"provlima");
-        }
-        @finally {
-            
-        }
-        }
-    
+    }
+    @catch (NSException *exception) {
+        NSLog(@"aaa");
+    }
+    @finally {
+        
+    }
     
     return cell;
 }
@@ -2122,10 +2141,10 @@
                 
                     searchedPeople = [NSMutableArray arrayWithArray:objcts];
                 
-                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                    
-                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                     ];
+//                    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                    
+//                    [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                     ];
                     
                     self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                     self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
@@ -2205,10 +2224,10 @@
                         loadNextPage = (objcts.count == pageLimit);
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
                        
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                        
-                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                         ];
+//                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                        
+//                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                         ];
                         
                         self.noUsersFoundLabel.text = @"No users found on Beeeper.";
                         self.noUsersFoundLabel.hidden = (searchedPeople.count != 0);
@@ -2245,10 +2264,10 @@
                             searchedPeople = [NSMutableArray array];
                         }
                         
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                        
-                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                         ];
+//                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                        
+//                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                         ];
                     }
 
                     self.noUsersFoundLabel.text = @"";//@"No users found on Beeeper.";
@@ -2270,13 +2289,13 @@
                 
                 if (completed) {
                     if (objcts > 0) {
-                        loadNextPage = (objcts.count == pageLimit);
+                        loadNextPage = objcts.count > 0;
                         searchedPeople = [NSMutableArray arrayWithArray:objcts];
                         
-                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                        
-                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                         ];
+//                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                        
+//                        [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                         ];
                     }
                 }
                 
@@ -2350,14 +2369,16 @@
         
         if (completed) {
             
+            loadNextPage = objcts.count >0;
+            
             if (objcts.count > 0) {
-                loadNextPage = (objcts.count == pageLimit);
+//                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//                
+//                [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
+//                 ];
+
                 [searchedPeople addObjectsFromArray:objcts];
                 
-                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-                
-                [searchedPeople sortUsingDescriptors:[NSArray arrayWithObject:sort]
-                 ];
             }
         }
         
@@ -2368,14 +2389,14 @@
 
 -(void)getPeople:(NSString *)searchString WithCompletionBlock:(completed)compbloc{
     
-    if (searchString == nil) {
+    if (searchString == nil || [searchString  isEqualToString:@""]) {
         searchString = @"";
     }
     
     self.search_completed = compbloc;
     searchStr = searchString;
     
-    pageLimit = 20;
+    pageLimit = 50;
     
     NSMutableString *URL = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search"];
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/user/search?"];
@@ -2393,7 +2414,6 @@
         }
     }
     
-    NSURL *requestURL = [NSURL URLWithString:URLwithVars];
     
     //email,name,lastname,timezone,password,city,state,country,sex
     //fbid,twid,active,locked,lastlogin,image_path,username
@@ -2422,7 +2442,7 @@
 
     NSArray *people = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    if (people == nil || (people.count == 0 && searchStr.length == 0)) {
+    if (people == nil) {
         [self getPeople:searchStr WithCompletionBlock:self.search_completed];
     }
     

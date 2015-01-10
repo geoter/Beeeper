@@ -12,7 +12,7 @@
 #import "TimelineVC.h"
 #import "BeeepNotifications.h"
 
-@interface NotificationsVC ()
+@interface NotificationsVC ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSMutableArray *notifications;
     NSMutableDictionary *pendingImagesDict;
@@ -38,7 +38,7 @@
     
     rowsToReload = [NSMutableArray array];
 
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor grayColor];
     [refreshControl addTarget:self action:@selector(getNotifications) forControlEvents:UIControlEventValueChanged];
@@ -55,8 +55,9 @@
         if (completed && objcts.count > 0) {
             
             notifications = [NSMutableArray arrayWithArray:objcts];
+
+            dispatch_async (dispatch_get_main_queue(), ^{[self.tableV reloadData];});
             
-            [self.tableV reloadData];
         }
         else{
             [self showLoading];
@@ -153,6 +154,7 @@
     
     self.title = @"Notifications";
     self.navigationController.navigationBar.topItem.title = self.title;
+    self.navigationItem.title = self.title;
     
     for (UIButton *btn in self.tabBar.subviews) {
         
@@ -198,14 +200,14 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    int returnValue = (notifications.count>0 && loadNextPage)?(notifications.count+1):notifications.count;
+    return returnValue;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    int returnValue = (notifications.count>0 && loadNextPage)?(notifications.count+1):notifications.count;
-    return returnValue;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -214,11 +216,15 @@
     static NSString *CellIdentifier;
     UITableViewCell *cell;
     
-    if (loadNextPage && indexPath.row == notifications.count && notifications.count > 0) {
+    if (loadNextPage && indexPath.section == notifications.count && notifications.count > 0) {
         
         CellIdentifier = @"LoadMoreCell";
         
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
         
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
@@ -234,7 +240,7 @@
     cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil) {
-        NSLog(@"EMPTY CELL");
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     UIImageView *imgV = (UIImageView *)[cell viewWithTag:1];
@@ -245,16 +251,10 @@
     UILabel *txtV = (id)[cell viewWithTag:3];
     txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
 
-    Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+    Activity_Object *activity = [notifications objectAtIndex:indexPath.section];
    
     @try {
 
-        if(!activity.read){
-            cell.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
-        }
-        else{
-            cell.backgroundColor = [UIColor whiteColor];
-        }
         
         Who *w = [[activity.who firstObject] copy];
         Whom *wm = [[activity.whom firstObject] copy];
@@ -311,9 +311,12 @@
         
     }
     
-    
-    UIView *line = [cell viewWithTag:88];
-    line.frame = CGRectMake(0, cell.frame.size.height-1, self.tableV.frame.size.width, 1);
+    if(!activity.read){
+        cell.contentView.backgroundColor = [UIColor colorWithRed:255/255.0 green:253/255.0 blue:236.0/255.0 alpha:1];
+    }
+    else{
+        cell.contentView.backgroundColor = [UIColor whiteColor];
+    }
     
     return cell;
 }
@@ -322,12 +325,12 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Activity_Object *activity = [notifications objectAtIndex:indexPath.row];
+    Activity_Object *activity = [notifications objectAtIndex:indexPath.section];
 
     [[BPUser sharedBP]markNotificationRead:activity.internalBaseClassIdentifier completionBlock:^(BOOL completed){
         if (completed) {
             activity.read = YES;
-            [self.tableV reloadData];
+            dispatch_async (dispatch_get_main_queue(), ^{[self.tableV reloadData];});
         }
     }];
     
@@ -337,6 +340,7 @@
         
         viewController.tml = activity;
         viewController.redirectToComments = ([activity.did rangeOfString:@"comment"].location != NSNotFound);
+        viewController.redirectToLikes = ([activity.did rangeOfString:@"liked"].location != NSNotFound);
         [self.navigationController pushViewController:viewController animated:YES];
     }
     else{
@@ -454,10 +458,21 @@
         else if(activity.eventActivity.count > 0){
             
             EventActivity *event = [activity.eventActivity firstObject];
+            
+            BeeepNotifications *beeepNotif = [activity.beeepNotifications firstObject];
+            BeeepsActivity *beeep = [beeepNotif.beeepObject firstObject];
+            
             NSString *event_title = [[event.title unicodeEncode] capitalizedString];
             [attText addAttribute:NSFontAttributeName
                             value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
                             range:[formattedString rangeOfString:event_title]];
+            
+            NSString *startingIn = [NSString stringWithFormat:@"%@",[self dailyLanguageLongFutureDate:beeep.eventTime pastDate:beeep.timestamp]];
+            
+            [attText addAttribute:NSFontAttributeName
+                            value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:12]
+                            range:[formattedString rangeOfString:startingIn]];
+
             
         }
         else{
@@ -479,20 +494,30 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    
+    if (loadNextPage && section == notifications.count && notifications.count > 0) {
+        return 0;
+    }
     return 1;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 1)];
+    line.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
+    return line;
 }
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (indexPath.row == notifications.count) {
+    if (indexPath.section == notifications.count) {
         return 40;
     }
     else{
         
         @try {
            
-            NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.row]];
+            NSAttributedString *str = [self textForNotification:[notifications objectAtIndex:indexPath.section]];
             
             CGSize textViewSize = [self frameForText:str constrainedToSize:CGSizeMake((IS_IPHONE_6)?267:212, CGFLOAT_MAX)];
             
@@ -733,9 +758,13 @@
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender{
     
-    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    if (sender.tag == 4) {
+        [self.tableV setContentOffset:CGPointZero animated:YES];
+    }
+    else{
+        [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    }
 }
-
 
 - (IBAction)addNewBeeep:(id)sender {
     [[TabbarVC sharedTabbar]addBeeepPressed:self];

@@ -74,7 +74,7 @@
     
     if ([self.collectionV viewWithTag:234] == nil) {
         
-        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.collectionV.frame.size.width, 60)];
         refreshControl.tag = 234;
         refreshControl.tintColor = [UIColor whiteColor];
         [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -220,20 +220,20 @@
                     events = nil;
                     beeeps = [NSMutableArray arrayWithArray:objs];
                 }
-                else if ([objs isKindOfClass:[NSString class]]) {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs is not NSArray class" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                        [alert show];
-                    
-                }
+//                else if ([objs isKindOfClass:[NSString class]]) {
+//                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed Completed but objs is not NSArray class" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//                        [alert show];
+//                    
+//                }
                 
                 [self refreshCollectionView];
                 
             }
-            else{
-                
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed NOT Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
-                [alert show];
-            }
+//            else{
+//                
+//                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFriendsFeed NOT Completed" message:(NSString *)objs delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
+//                [alert show];
+//            }
 
             
             [self hideLoading];
@@ -454,290 +454,170 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (events != nil) {
+  
+    UICollectionViewCell *cell;
+
+    Friendsfeed_Object *event = [beeeps objectAtIndex:indexPath.row];
+
+    double now_time = [[NSDate date]timeIntervalSince1970];
+    double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
     
-        UICollectionViewCell * cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallLite" forIndexPath:indexPath];
-        
-        //        cell.layer.borderWidth = 1.0;
-//        cell.layer.borderColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:0.2].CGColor;
-
-        Event_Search *event = [events objectAtIndex:indexPath.row];
-        
-        double now_time = [[NSDate date]timeIntervalSince1970];
-        double event_timestamp = event.timestamp;
-        
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
-        
-        NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:usLocale];
-        
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:event.timestamp];
-        NSString *dateStr = [formatter stringFromDate:date];
-        NSArray *components = [dateStr componentsSeparatedByString:@","];
-        NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-        
-        NSString *month = [day_month objectAtIndex:1];
-        NSString *daynumber = [day_month objectAtIndex:2];
-        
-        UIView *containerV = [cell viewWithTag:55];
-
-        UILabel *monthLbl = (id)[containerV viewWithTag:1];
-        UILabel *dayLbl = (id)[containerV viewWithTag:2];
-        UIImageView *imageV = (id)[containerV viewWithTag:3];
-        UILabel *titleLbl = (id)[containerV viewWithTag:4];
-        
-      //  monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-       // monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
-        monthLbl.text = [month uppercaseString];
-        
-      //  dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
-        dayLbl.text = daynumber;
-       // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
-        
-        //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
-        
-      //  titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-       // titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
-        
-        //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
-        //    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
-        
-        //    [paragrahStyle setAlignment:NSTextAlignmentCenter];
-        //
-        //    [paragrahStyle setMaximumLineHeight:18];
-        //
-        //    [titleStr addAttribute:NSFontAttributeName value:titleLbl.font range:NSMakeRange(0, [event.title length])];
-        //    [titleStr addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [event.title length])];
-        
-        titleLbl.text = [event.title capitalizedString];
-        [titleLbl sizeToFit];
-        [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
-        
-        //    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
-        
-        //    titleLbl.frame = CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 116, size.height + 5);
-        
-        UIView *bottomV = (id)[cell viewWithTag:5];
-        
-        //bottomV.frame = CGRectMake(bottomV.frame.origin.x, title.frame.origin.y + title.frame.size.height, bottomV.frame.size.width, bottomV.frame.size.height);
-        
-        UILabel *area = (id)[containerV viewWithTag:-2];
-        area.frame = CGRectMake(37, 190, 108, 32);
-        
-      //  area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
-        area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        NSString *jsonString = event.location;
-        
-        if (jsonString != nil) {
-            NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            
-            EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            area.text = [loc.venueStation capitalizedString];
-            [area sizeToFit];
-        }
-
-        if (area.frame.size.width > 130  && now_time > event_timestamp) {
-            [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
-        }
-        
-        area.center = CGPointMake(containerV.center.x, area.center.y);
-        area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height-1, area.frame.size.width, area.frame.size.height);
-        
-        UIImageView *areaIcon = (id)[containerV viewWithTag:-1];
-        areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+1.5, areaIcon.frame.size.width, areaIcon.frame.size.height);
-        
-        //now move are to center
-        area.textAlignment = NSTextAlignmentCenter;
-        
-        UILabel *favorites = (id)[containerV viewWithTag:-3];
-        UILabel *comments = (id)[containerV viewWithTag:-4];
-        UILabel *beeeps = (id)[containerV viewWithTag:-5];
-        favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-        comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-        beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-
-        
-        beeeps.text = [NSString stringWithFormat:@"%d",(int)event.beeepedBy.count];
-        favorites.text = [NSString stringWithFormat:@"%d",(int)event.likes.count];
-        comments.text = [NSString stringWithFormat:@"%d",(int)event.comments.count];
-        
-        favorites.hidden = (favorites.text.intValue == 0);
-        comments.hidden = (comments.text.intValue == 0);
-        beeeps.hidden = (beeeps.text.intValue == 0);
-        
-        
-      //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-                placeholderImage:[UIImage imageNamed:@"event_image"]];
-        
-        UIView *beeepedByView = (id)[containerV viewWithTag:32];
-        
-        //disable Beeep button if past event
-        
-        UIButton *beeepBtn = (id)[containerV viewWithTag:99];
-        UIView *passed =(id)[containerV viewWithTag:34];
-       
-        return cell;
+    if (now_time > event_timestamp) {
+       cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallDisabled" forIndexPath:indexPath];
     }
     else{
-        
-            UICollectionViewCell *cell;
-        
-            Friendsfeed_Object *event = [beeeps objectAtIndex:indexPath.row];
-        
-            double now_time = [[NSDate date]timeIntervalSince1970];
-            double event_timestamp = event.eventFfo.eventDetailsFfo.timestamp;
-            
-            if (now_time > event_timestamp) {
-               cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfallDisabled" forIndexPath:indexPath];
-            }
-            else{
-               cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfall" forIndexPath:indexPath];
-            }
-        
-            NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
-            
-            NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-            [formatter setLocale:usLocale];
-            
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:event.eventFfo.eventDetailsFfo.timestamp];
-            NSString *dateStr = [formatter stringFromDate:date];
-            NSArray *components = [dateStr componentsSeparatedByString:@","];
-            NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
-            
-            NSString *month = [day_month objectAtIndex:1];
-            NSString *daynumber = [day_month objectAtIndex:2];
-            
-            UIView *containerV = [cell viewWithTag:55];
-            
-            UILabel *monthLbl = (id)[containerV viewWithTag:1];
-            UILabel *dayLbl = (id)[containerV viewWithTag:2];
-            UIImageView *imageV = (id)[containerV viewWithTag:3];
-            UILabel *titleLbl = (id)[containerV viewWithTag:4];
-            
-            //monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-            //monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
-            monthLbl.text = [month uppercaseString];
-            
-           // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
-            dayLbl.text = daynumber;
-           // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
-            
-            //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
-
-           // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
-          //  titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
-            
-        //    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
-        //    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
-            
-        //    [paragrahStyle setAlignment:NSTextAlignmentCenter];
-        //    
-        //    [paragrahStyle setMaximumLineHeight:18];
-        //    
-        //    [titleStr addAttribute:NSFontAttributeName value:titleLbl.font range:NSMakeRange(0, [event.title length])];
-        //    [titleStr addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [event.title length])];
-           
-            titleLbl.text = [event.eventFfo.eventDetailsFfo.title capitalizedString];
-            [titleLbl sizeToFit];
-            [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
-            
-        //    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
-            
-        //    titleLbl.frame = CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 116, size.height + 5);
-            
-            UIView *bottomV = (id)[cell viewWithTag:5];
-            
-            //bottomV.frame = CGRectMake(bottomV.frame.origin.x, title.frame.origin.y + title.frame.size.height, bottomV.frame.size.width, bottomV.frame.size.height);
-            
-            UILabel *area = (id)[containerV viewWithTag:-2];
-            area.frame = CGRectMake(37, 190, 108, 32);
-            
-            //area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
-            area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-        
-        
-        @try {
-            
-            NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
-            NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            
-            EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            area.text = [loc.venueStation capitalizedString];
-            [area sizeToFit];
-            area.center = CGPointMake(containerV.center.x, area.center.y);
-            area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+3, area.frame.size.width, area.frame.size.height);
-            
-            if (area.frame.size.width > 130  && now_time > event_timestamp) {
-                [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
-            }
-            
-            UIImageView *areaIcon = (id)[containerV viewWithTag:-1];
-            areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+1.5, areaIcon.frame.size.width, areaIcon.frame.size.height);
-            
-            //now move are to center
-            area.textAlignment = NSTextAlignmentCenter;
-
-        }
-        @catch (NSException *exception) {
-            NSLog(@"ESKASEEE");
-        }
-        @finally {
-    
-        }
-            
-            UILabel *favorites = (id)[containerV viewWithTag:-3];
-            UILabel *comments = (id)[containerV viewWithTag:-4];
-            UILabel *beeeps = (id)[containerV viewWithTag:-5];
-            favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-            comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-            beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-            
-            Beeeps *b = [event.beeepFfo.beeeps firstObject];
-            
-            favorites.text = [NSString stringWithFormat:@"%d",(int)b.likes.count];
-            comments.text = [NSString stringWithFormat:@"%d",(int)b.comments.count];
-            beeeps.text = [NSString stringWithFormat:@"%d",(int)event.eventFfo.beeepedBy.count];
-            
-            favorites.hidden = (favorites.text.intValue == 0);
-            comments.hidden = (comments.text.intValue == 0);
-            beeeps.hidden = (beeeps.text.intValue == 0);
-        
-            float centerOfPassedIcon = (favorites.frame.origin.y - area.frame.origin.y-area.frame.size.height)/2;
-        
-            UIImageView *passedIcon = (UIImageView *)[cell viewWithTag:67];
-        
-            passedIcon.center = CGPointMake(passedIcon.center.x, favorites.frame.origin.y - centerOfPassedIcon);
-           // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-            
-            [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.eventFfo.eventDetailsFfo.imageUrl]]
-                placeholderImage:[UIImage imageNamed:@"event_image"]];
-        
-            UIView *beeepedByView = (id)[containerV viewWithTag:32];
-            UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:34];
-            UILabel *beeepedByLabel =(id)[beeepedByView viewWithTag:35];
-            UILabel *beeepedByNameLabel =(id)[beeepedByView viewWithTag:33];
-            
-            beeepedByLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
-            beeepedByLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
-
-            beeepedByNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
-            beeepedByNameLabel.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
-            
-            beeepedByNameLabel.text = [event.whoFfo.name capitalizedString];
-            
-           // NSString *who_extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
-        
-            [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.whoFfo.imagePath]]
-                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-            //disable Beeep button if past event
-        
-            return cell;
+       cell = [cv dequeueReusableCellWithReuseIdentifier:@"EventCellWaterfall" forIndexPath:indexPath];
     }
+
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"EEEE, MMM dd, yyyy HH:mm"];
+    
+    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    [formatter setLocale:usLocale];
+    
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:event.eventFfo.eventDetailsFfo.timestamp];
+    NSString *dateStr = [formatter stringFromDate:date];
+    NSArray *components = [dateStr componentsSeparatedByString:@","];
+    NSArray *day_month= [[components objectAtIndex:1]componentsSeparatedByString:@" "];
+    
+    NSString *month = [day_month objectAtIndex:1];
+    NSString *daynumber = [day_month objectAtIndex:2];
+    
+    UIView *containerV = [cell viewWithTag:55];
+    
+    UILabel *monthLbl = (id)[containerV viewWithTag:1];
+    UILabel *dayLbl = (id)[containerV viewWithTag:2];
+    UIImageView *imageV = (id)[containerV viewWithTag:3];
+    UILabel *titleLbl = (id)[containerV viewWithTag:4];
+    
+    //monthLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    //monthLbl.textColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0/255.0 alpha:1];
+    monthLbl.text = [month uppercaseString];
+    
+   // dayLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
+    dayLbl.text = daynumber;
+   // dayLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+    
+    //imageV.image = [UIImage imageNamed:[event objectForKey:@"image"]];
+
+   // titleLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
+  //  titleLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+    
+//    NSMutableAttributedString *titleStr = [[NSMutableAttributedString alloc]initWithString:[event.title capitalizedString]];
+//    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
+    
+//    [paragrahStyle setAlignment:NSTextAlignmentCenter];
+//    
+//    [paragrahStyle setMaximumLineHeight:18];
+//    
+//    [titleStr addAttribute:NSFontAttributeName value:titleLbl.font range:NSMakeRange(0, [event.title length])];
+//    [titleStr addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [event.title length])];
+   
+    titleLbl.text = [event.eventFfo.eventDetailsFfo.title capitalizedString];
+    [titleLbl sizeToFit];
+    [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
+    
+//    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
+    
+//    titleLbl.frame = CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 116, size.height + 5);
+    
+    UIView *bottomV = (id)[cell viewWithTag:5];
+    
+    //bottomV.frame = CGRectMake(bottomV.frame.origin.x, title.frame.origin.y + title.frame.size.height, bottomV.frame.size.width, bottomV.frame.size.height);
+    
+    UILabel *area = (id)[containerV viewWithTag:-2];
+    
+    
+    UIImageView *areaIcon = (id)[containerV viewWithTag:-1];
+    
+    area.frame = CGRectMake(area.frame.origin.x, 190, 108, 32);
+    
+    //area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+    area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+   
+
+@try {
+    
+    NSString *jsonString = event.eventFfo.eventDetailsFfo.location;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    
+    EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
+    area.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
+    [area sizeToFit];
+
+    CGPoint areaCenter = CGPointMake(cell.frame.size.width/2, area.center.y);
+    
+    area.center = areaCenter;
+    
+    area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height, area.frame.size.width, area.frame.size.height);
+
+    
+    if (area.frame.size.width > 130  && now_time > event_timestamp) {
+        [area setFrame:CGRectMake(15, area.frame.origin.y, 130, area.frame.size.height)];
+    }
+    
+    areaIcon.frame = CGRectMake(area.frame.origin.x-9, area.frame.origin.y+1.5, areaIcon.frame.size.width, areaIcon.frame.size.height);
+    
+    //now move are to center
+    area.textAlignment = NSTextAlignmentCenter;
+
+}
+@catch (NSException *exception) {
+    NSLog(@"ESKASEEE");
+}
+@finally {
+
+}
+    
+    UILabel *favorites = (id)[containerV viewWithTag:-3];
+    UILabel *comments = (id)[containerV viewWithTag:-4];
+    UILabel *beeeps = (id)[containerV viewWithTag:-5];
+    favorites.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+    comments.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+    beeeps.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+    
+    Beeeps *b = [event.beeepFfo.beeeps firstObject];
+    
+    favorites.text = [NSString stringWithFormat:@"%d",(int)b.likes.count];
+    comments.text = [NSString stringWithFormat:@"%d",(int)b.comments.count];
+    beeeps.text = [NSString stringWithFormat:@"%d",(int)event.eventFfo.beeepedBy.count];
+    
+    favorites.hidden = (favorites.text.intValue == 0);
+    comments.hidden = (comments.text.intValue == 0);
+    beeeps.hidden = (beeeps.text.intValue == 0);
+
+    float centerOfPassedIcon = (favorites.frame.origin.y - area.frame.origin.y-area.frame.size.height)/2;
+
+    UIImageView *passedIcon = (UIImageView *)[cell viewWithTag:34];
+
+    passedIcon.center = CGPointMake(passedIcon.center.x, favorites.frame.origin.y - centerOfPassedIcon);
+   // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+    
+    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.eventFfo.eventDetailsFfo.imageUrl]]
+        placeholderImage:[UIImage imageNamed:@"event_image"]];
+
+    UIView *beeepedByView = (id)[containerV viewWithTag:32];
+    UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:45];
+    UILabel *beeepedByLabel =(id)[beeepedByView viewWithTag:35];
+    UILabel *beeepedByNameLabel =(id)[beeepedByView viewWithTag:33];
+    
+    beeepedByLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
+    beeepedByLabel.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
+
+    beeepedByNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
+    beeepedByNameLabel.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
+    
+    beeepedByNameLabel.text = [event.whoFfo.name capitalizedString];
+    
+   // NSString *who_extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
+
+    [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.whoFfo.imagePath]]
+             placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    //disable Beeep button if past event
+
+    return cell;
+    
 
 }
 
@@ -1288,6 +1168,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)suggestEventAtIndexPath:(NSIndexPath *)indexpath{
     
     NSString *localFingerPrint;
+    NSArray *beeepers;
     
     if (beeeps != nil || selectedIndex == 1) {
             
@@ -1297,17 +1178,22 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
         localFingerPrint = ffo.eventFfo.eventDetailsFfo.fingerprint;
         
+        beeepers = ffo.eventFfo.beeepedBy;
+        
     }
     else{
         
         Event_Search *event = [events objectAtIndex:indexpath.row];
         
         localFingerPrint = event.fingerprint;
+        
+        beeepers = event.beeepedBy;
     }
     
     if (localFingerPrint) {
         
-        [[TabbarVC sharedTabbar]suggestPressed:localFingerPrint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
+        
+        [[TabbarVC sharedTabbar]suggestPressed:localFingerPrint beeepers:beeepers controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -1396,7 +1282,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }*/
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender{
-    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    
+    if (sender.tag == 1) {
+        [self.collectionV setContentOffset:CGPointZero animated:YES];
+    }
+    else{
+        [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    }
 }
 
 - (IBAction)addNewBeeep:(id)sender {

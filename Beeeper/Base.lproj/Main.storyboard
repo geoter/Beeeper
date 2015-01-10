@@ -130,7 +130,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                 </view>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleAspectFill" image="nba_494_384.png" id="g0c-oz-VBy">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleAspectFill" image="event_image.png" id="g0c-oz-VBy">
                                                     <rect key="frame" x="0.0" y="0.0" width="72" height="59"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -661,10 +661,10 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
         <image name="back.png" width="55" height="19"/>
         <image name="checkbox_empty.png" width="25" height="24"/>
         <image name="editProfileBtn.png" width="12" height="13"/>
+        <image name="event_image.png" width="304" height="199"/>
         <image name="icon-facebook2.png" width="217" height="215"/>
         <image name="icon-twitter2.png" width="214" height="215"/>
         <image name="invite_new.png" width="46" height="30"/>
-        <image name="nba_494_384.png" width="247" height="192"/>
         <image name="user_icon_180x180.png" width="90" height="90"/>
         <image name="welcome_screen_0.png" width="320" height="568"/>
     </resources>

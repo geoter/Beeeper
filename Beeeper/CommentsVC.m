@@ -123,7 +123,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil) {
-        NSLog(@"EMPTY CELL");
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     UILabel *txtV = (id)[cell viewWithTag:3];
@@ -223,10 +223,23 @@
         
         CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
         
-        return (textViewSize.height + 36 + 8);
+        CGFloat height = textViewSize.height;
+        CGFloat minHeight = 60;
+        
+        if (IS_IPHONE_6) {
+            minHeight = 76;
+        }
+        return (height>minHeight)?height:minHeight;
     }
     else{
-        return 60;
+        
+        CGFloat minHeight = 60;
+        
+        if (IS_IPHONE_6) {
+            minHeight = 76;
+        }
+
+        return minHeight;
     }
     
 }
@@ -440,52 +453,89 @@
 
     }
     else if ([self.event_beeep_object isKindOfClass:[Activity_Object class]]){
+       
         Activity_Object *activity = self.event_beeep_object;
-        
-        NSString *fingerprint;
         
         if(activity.eventActivity.count > 0){
             EventActivity *event = [activity.eventActivity firstObject];
-            fingerprint = event.fingerprint;
+           
+            NSString *fingerprint = event.fingerprint;
+            
+            [[EventWS sharedBP]postComment:text Event:fingerprint WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                if (completed) {
+                    
+                    NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                    NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                    NSString *myID = [[BPUser sharedBP].user objectForKey:@"id"];
+                    Comments *c = [[Comments alloc]init];
+                    
+                    c.comment = [[Comment alloc]init];
+                    c.comment.comment = text;
+                    c.comment.timestamp = [[NSDate date]timeIntervalSince1970];
+                    
+                    c.commenter = [[Commenter alloc]init];
+                    c.commenter.name = name;
+                    c.commenter.lastname = surname;
+                    //                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                    c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    [comments addObject:c];
+                    
+                    [self.tableV reloadData];
+                    [self prependTextToTextView:text];
+                    [composeBarView setText:@"" animated:YES];
+                    [composeBarView resignFirstResponder];
+                    
+                }else{
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    });
+                }
+            }];
         }
         else if(activity.beeepInfoActivity.eventActivity.count >0){
-            EventActivity *event = [activity.beeepInfoActivity.eventActivity firstObject];
-            fingerprint = event.fingerprint;
+            BeeepActivity *beeepAct = [activity.beeepInfoActivity.beeepActivity firstObject];
+            BeeepsActivity *bps = [beeepAct.beeepsActivity firstObject];
+            
+            [[EventWS sharedBP]postComment:text BeeepId:bps.weight user:[[BPUser sharedBP].user objectForKey:@"id"] WithCompletionBlock:^(BOOL completed,NSArray *objs){
+                if (completed) {
+                    
+                    NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
+                    NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
+                    NSString *myID = [[BPUser sharedBP].user objectForKey:@"id"];
+                    Comments *c = [[Comments alloc]init];
+                    
+                    c.comment = [[Comment alloc]init];
+                    c.comment.comment = text;
+                    c.comment.timestamp = [[NSDate date]timeIntervalSince1970];
+                    
+                    c.commenter = [[Commenter alloc]init];
+                    c.commenter.name = name;
+                    c.commenter.lastname = surname;
+                    // c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
+                    c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
+                    [comments addObject:c];
+                    
+                    [self.tableV reloadData];
+                    [self prependTextToTextView:text];
+                    [composeBarView setText:@"" animated:YES];
+                    [composeBarView resignFirstResponder];
+                    
+                }
+                else{
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alert show];
+                    });
+                }
+            }];
         }
         
-        [[EventWS sharedBP]postComment:text Event:fingerprint WithCompletionBlock:^(BOOL completed,NSArray *objs){
-            if (completed) {
-                
-                NSString *name = [[BPUser sharedBP].user objectForKey:@"name"];
-                NSString *surname = [[BPUser sharedBP].user objectForKey:@"lastname"];
-                NSString *myID = [[BPUser sharedBP].user objectForKey:@"id"];
-                Comments *c = [[Comments alloc]init];
-                
-                c.comment = [[Comment alloc]init];
-                c.comment.comment = text;
-                c.comment.timestamp = [[NSDate date]timeIntervalSince1970];
-                
-                c.commenter = [[Commenter alloc]init];
-                c.commenter.name = name;
-                c.commenter.lastname = surname;
-//                c.commenter.imagePath = [NSString stringWithFormat:@"//assets.beeeper.com/img/user/%@.jpg",myID];
-                c.commenter.imagePath = [[BPUser sharedBP].user objectForKey:@"image_path"];
-                [comments addObject:c];
-                
-                [self.tableV reloadData];
-                [self prependTextToTextView:text];
-                [composeBarView setText:@"" animated:YES];
-                [composeBarView resignFirstResponder];
-                
-            }else{
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Something went wrong. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
-                });
-            }
-        }];
+
         
     }else if ([self.event_beeep_object isKindOfClass:[Suggestion_Object class]]){
         

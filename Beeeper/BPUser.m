@@ -1130,7 +1130,7 @@ static BPUser *thisWebServices = nil;
     
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"limit=%d",notifsPageLimit]];
-    [array addObject:[NSString stringWithFormat:@"time=%d",(int)[[NSDate date] timeIntervalSince1970]]];
+    //[array addObject:[NSString stringWithFormat:@"time=%d",(int)[[NSDate date] timeIntervalSince1970]]];
     
     for (NSString *str in array) {
         [URLwithVars appendFormat:@"%@",str];
@@ -1400,7 +1400,6 @@ static BPUser *thisWebServices = nil;
     
     NSMutableString *URLwithVars = [[NSMutableString alloc]initWithString:@"https://api.beeeper.com/1/notification/shownew?"];
     NSURL *URL = [NSURL URLWithString:@"https://api.beeeper.com/1/notification/shownew"];
-    
     
     NSMutableArray *array = [NSMutableArray array];
     [array addObject:[NSString stringWithFormat:@"limit=%d",notifsPageLimit]];

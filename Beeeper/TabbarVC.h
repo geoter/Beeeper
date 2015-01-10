@@ -21,7 +21,7 @@
 
 - (void)addBeeepPressed:(id)sender;
 - (void)reBeeepPressed:(id)sender_tml image:(UIImage *)image controller:(UIViewController *)sender;
-- (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur;
+- (void)suggestPressed:(id)fingerprint beeepers:(NSArray *)beeepers controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur;
 
 - (IBAction)tabbarButtonTapped:(id)sender;
 - (void)showAlert:(NSString *)title text:(NSString *)text;

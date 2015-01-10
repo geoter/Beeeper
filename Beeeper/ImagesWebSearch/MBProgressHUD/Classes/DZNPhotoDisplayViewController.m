@@ -777,6 +777,11 @@ Returns the custom collection view layout.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDZNTagCellViewIdentifier];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDZNTagCellViewIdentifier];
+    }
+    
     NSString *text = @"";
     
     if (indexPath.row < _tagList.count) {

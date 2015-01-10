@@ -18,7 +18,7 @@
 @property (nonatomic,assign) BOOL sendNotificationWhenFinished;
 @property (weak, nonatomic) IBOutlet UIButton *topRightButton;
 @property (nonatomic,strong) NSMutableArray *selectedPeople;
-
+@property (nonatomic,strong) NSMutableArray *beeepers;
 @property (weak, nonatomic) IBOutlet UIImageView *blurredImageV;
 @property (nonatomic,strong) UIView *superviewToBlur;
 @property (weak, nonatomic) IBOutlet UIView *blurContainerV;

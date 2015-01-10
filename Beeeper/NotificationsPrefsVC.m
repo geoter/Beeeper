@@ -63,7 +63,7 @@
     UISwitch *toggleComments = (id)[[self.scrollV viewWithTag:19]viewWithTag:21];
    // UISwitch *toggleFriendsJoined = (id)[[self.scrollV viewWithTag:22]viewWithTag:24];
     UISwitch *toggleSuggestions = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
-    UISwitch *toggleBeeepTrigger = (id)[[self.scrollV viewWithTag:25]viewWithTag:27];
+    UISwitch *toggleBeeepTrigger = (id)[[self.scrollV viewWithTag:26]viewWithTag:28];
     
     NSString *beeep = [downloadedSettings objectForKey:@"beeep"];
     NSString *like = [downloadedSettings objectForKey:@"like"];
@@ -198,7 +198,7 @@
         [self.view addSubview:loadingBGV];
         [self.view bringSubviewToFront:loadingBGV];
         
-        [UIView animateWithDuration:0.3f
+        [UIView animateWithDuration:0.0f
                          animations:^
          {
              loadingBGV.alpha = 1;

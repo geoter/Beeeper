@@ -81,12 +81,11 @@
         
         if (completed) {
             
-            if (objcts.count != 0) {
-                
-                [activities addObjectsFromArray:objcts];
-                loadNextPage = (objcts.count == [BPActivity sharedBP].pageLimit);
-                [self groupActivitiesByMonth];
-            }
+            loadNextPage = (objcts.count != 0);
+
+            [activities addObjectsFromArray:objcts];
+            [self groupActivitiesByMonth];
+
         }
     }];
 
@@ -106,7 +105,7 @@
         if (completed) {
             
             activities = [NSMutableArray arrayWithArray:objcts];
-            loadNextPage = (objcts.count == [BPActivity sharedBP].pageLimit);
+            loadNextPage = (objcts.count>0);
             
             if (activities.count > 0) {
                 self.noActivityFound.hidden = YES;
@@ -257,12 +256,14 @@
     [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"Activity";
+    self.navigationController.navigationBar.topItem.title = self.title;
+    self.navigationItem.title = self.title;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.topItem.title = @"Activity";
 }
 
 -(void)goBack{
@@ -299,6 +300,10 @@
         
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
         UIActivityIndicatorView *indicator = (id)[cell viewWithTag:55];
         [indicator startAnimating];
         
@@ -312,6 +317,9 @@
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
         
         NSMutableArray *filtered_activities = [self activitiesForSection:indexPath.section];
         Activity_Object *activity = [filtered_activities objectAtIndex:indexPath.row];
@@ -429,6 +437,9 @@
     @catch (NSException *exception) {
         static NSString *CellIdentifier = @"Cell";
         UITableViewCell *cell = [self.tableV dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
         return cell;
     }
     @finally {
@@ -629,7 +640,7 @@
         [self.view addSubview:loadingBGV];
         [self.view bringSubviewToFront:loadingBGV];
         
-        [UIView animateWithDuration:0.3f
+        [UIView animateWithDuration:0.0f
                          animations:^
          {
              loadingBGV.alpha = 1;

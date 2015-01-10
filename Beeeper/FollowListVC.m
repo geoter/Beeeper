@@ -58,6 +58,20 @@
     
     [self showLoading];
     
+    
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    
+    if(status == NotReachable)
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Internet connection" message:@"Please enable Wifi or Cellular data." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        
+        [alert show];
+        return;
+    }
+
 
      if (self.mode == FollowersMode) {
          
@@ -227,9 +241,9 @@
                          following = true_following;
                  }
                  
-                 [self updateUsersCount];
+                  [self updateUsersCount];
                  [self.tableV reloadData];
-                 [self hideLoading];
+//                 [self hideLoading];
                  
                  }
              }
@@ -262,33 +276,33 @@
                      
                      following = true_following;
                      [self.tableV reloadData];
-                     [self hideLoading];
                  }
+                 
              }
-             else{
-                 [self hideLoading];
-             }
-
+             
+             [self hideLoading];
          }];
      }
 
 }
 
 -(void)updateUsersCount{
-    
-    if (people.count == 0) {
-        self.nousersLabel.hidden= NO;
-    }
-    else{
-        self.nousersLabel.hidden = YES;
-    }
-    
-    UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
-    numberLbl.textAlignment = NSTextAlignmentRight;
-    numberLbl.text = [NSString stringWithFormat:@"%d",people.count];
-    numberLbl.textColor = [UIColor whiteColor];
-    numberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+    dispatch_async (dispatch_get_main_queue(), ^{
+           
+        if (people.count == 0) {
+            self.nousersLabel.hidden= NO;
+        }
+        else{
+            self.nousersLabel.hidden = YES;
+        }
+        
+        UILabel *numberLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
+        numberLbl.textAlignment = NSTextAlignmentRight;
+        numberLbl.text = [NSString stringWithFormat:@"%d",people.count];
+        numberLbl.textColor = [UIColor whiteColor];
+        numberLbl.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:numberLbl];
+        });
 
 }
 
@@ -327,6 +341,11 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     ((UILabel *)[cell viewWithTag:2]).font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     
     UIButton *btn = (id)[cell viewWithTag:3];
@@ -513,7 +532,7 @@
         [self.view addSubview:loadingBGV];
         [self.view bringSubviewToFront:loadingBGV];
       
-        [UIView animateWithDuration:0.3f
+        [UIView animateWithDuration:0.0f
                          animations:^
          {
              loadingBGV.alpha = 1;
@@ -529,9 +548,9 @@
 }
 
 -(void)hideLoading{
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-       
-   
+        
         UIView *loadingBGV = (id)[self.view viewWithTag:-434];
         MONActivityIndicatorView *indicatorView = (id)[loadingBGV viewWithTag:-565];
         [indicatorView stopAnimating];

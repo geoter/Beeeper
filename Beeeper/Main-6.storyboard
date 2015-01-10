@@ -15,7 +15,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="61" sectionHeaderHeight="22" sectionFooterHeight="22" id="ytw-R8-J6B">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <prototypes>
@@ -110,12 +110,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="bw5-rG-Kvw">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="7" y="0.0" width="361" height="668"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.89019607840000003" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="kaP-VX-z11">
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="7"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
@@ -129,15 +130,15 @@
                                             <subviews>
                                                 <view contentMode="scaleToFill" id="QWi-CN-IAh">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="59"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                 </view>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleAspectFill" image="nba_494_384.png" id="v1k-WB-Ztf">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleAspectFill" image="event_image.png" id="v1k-WB-Ztf">
                                                     <rect key="frame" x="0.0" y="0.0" width="72" height="59"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vw3-st-4cC">
-                                                    <rect key="frame" x="78" y="11" width="284" height="40"/>
+                                                    <rect key="frame" x="78" y="11" width="282" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -252,7 +253,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
         <!--Sign Up EmailVC-->
         <scene sceneID="eAk-Cm-nBd">
             <objects>
-                <viewController id="Fyi-Kj-P7U" customClass="SignUp_Email_VC" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Fyi-Kj-P7U" customClass="SignUp_Email_VC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FNr-GU-Kh6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -262,14 +263,14 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create Account" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ee5-cI-fQj">
-                                        <rect key="frame" x="91" y="44" width="192" height="36"/>
+                                        <rect key="frame" x="91" y="77" width="192" height="36"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" id="kVV-tE-HSf" customClass="TKRoundedView">
-                                        <rect key="frame" x="55" y="108" width="264" height="40"/>
+                                        <rect key="frame" x="55" y="141" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First and Last name" minimumFontSize="17" id="hxZ-Y3-FOb" customClass="BorderTextField">
@@ -286,7 +287,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="T5A-xW-U2h">
-                                        <rect key="frame" x="55" y="395" width="264" height="42"/>
+                                        <rect key="frame" x="55" y="428" width="264" height="42"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
@@ -299,7 +300,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" id="be2-MR-9bL" customClass="TKRoundedView">
-                                        <rect key="frame" x="55" y="160" width="264" height="40"/>
+                                        <rect key="frame" x="55" y="193" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" id="TsW-N0-H5N" customClass="BorderTextField">
@@ -316,7 +317,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <view contentMode="scaleToFill" id="CNm-yr-0dt" customClass="TKRoundedView">
-                                        <rect key="frame" x="55" y="212" width="264" height="40"/>
+                                        <rect key="frame" x="55" y="245" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" id="mUM-dx-glw" customClass="BorderTextField">
@@ -333,7 +334,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <view contentMode="scaleToFill" id="fCI-ZS-fGf" customClass="TKRoundedView">
-                                        <rect key="frame" x="55" y="264" width="264" height="40"/>
+                                        <rect key="frame" x="55" y="297" width="264" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="17" id="lO9-qQ-dwK" customClass="BorderTextField">
@@ -350,14 +351,14 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I agree to the Terms of Use Agreement and Privacy Policy" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="RlK-gw-CaN">
-                                        <rect key="frame" x="91" y="309" width="217" height="46"/>
+                                        <rect key="frame" x="91" y="342" width="217" height="46"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Y1I-PJ-iT7">
-                                        <rect key="frame" x="55" y="318" width="26" height="25"/>
+                                        <rect key="frame" x="55" y="351" width="26" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" image="checkbox_empty.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -367,7 +368,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="oaS-aX-uUr">
-                                        <rect key="frame" x="89" y="316" width="209" height="14"/>
+                                        <rect key="frame" x="89" y="349" width="209" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -377,7 +378,7 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gJG-Jh-R79">
-                                        <rect key="frame" x="89" y="332" width="181" height="15"/>
+                                        <rect key="frame" x="89" y="365" width="181" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -540,10 +541,10 @@ Start making Beeeps, likes, comments or suggestions and all your actions will ap
         <image name="add_friend_icon_yellow.png" width="24" height="25"/>
         <image name="back.png" width="55" height="19"/>
         <image name="checkbox_empty.png" width="25" height="24"/>
+        <image name="event_image.png" width="304" height="199"/>
         <image name="icon-facebook2.png" width="217" height="215"/>
         <image name="icon-twitter2.png" width="214" height="215"/>
         <image name="invite_new.png" width="46" height="30"/>
-        <image name="nba_494_384.png" width="247" height="192"/>
         <image name="user_icon_180x180.png" width="90" height="90"/>
         <image name="welcome_screen_0_6.png" width="375" height="667"/>
     </resources>

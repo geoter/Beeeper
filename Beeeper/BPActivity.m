@@ -154,15 +154,7 @@ static BPActivity *thisWebServices = nil;
     
     NSArray *beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
     
-    if (beeeps == nil) {
-        
-        responseString = [responseString stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-        responseString = [responseString stringByReplacingOccurrencesOfString:@"\"{" withString:@"{"];
-        responseString = [responseString stringByReplacingOccurrencesOfString:@"}\"" withString:@"}"];
-        
-        beeeps = [responseString objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines];
-    }
-
+   
     if ([beeeps isKindOfClass:[NSArray class]]) {
       
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -241,11 +233,10 @@ static BPActivity *thisWebServices = nil;
 //        NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage:) object:activity];
 //        [operationQueue addOperation:invocationOperation];
         
-        [bs addObject:activity];
-    }
-    
-    if (bs.count == 0) {
-        [[DTO sharedDTO]addBugLog:@"bs.count == 0" where:@"bpactivity/parseResponseString" json:responseString];
+        if ([b isKindOfClass:[NSString class]]) {
+            [bs addObject:activity];
+        }
+
     }
     
     compbloc(YES,bs);
@@ -476,13 +467,13 @@ static BPActivity *thisWebServices = nil;
     NSArray *eventArray;
     
     if ([eventObject isKindOfClass:[NSDictionary class]]) {
-        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventObject];
+        Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:eventObject];
         self.beeep_completed(YES,beeep);
 
     }
     else if ([eventObject isKindOfClass:[NSArray class]]){
         eventArray = eventObject;
-        Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:[eventArray firstObject]];
+        Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:[eventArray firstObject]];
         self.beeep_completed(YES,beeep);
     }
     else{

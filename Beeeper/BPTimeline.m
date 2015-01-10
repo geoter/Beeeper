@@ -21,6 +21,7 @@ static BPTimeline *thisWebServices = nil;
     int option;
     int requestEmptyResultsCounter;
     NSTimeInterval timeStamp;
+    AFHTTPRequestOperationManager *manager;
 }
 @end
 
@@ -68,7 +69,8 @@ static BPTimeline *thisWebServices = nil;
 }
 
 -(void)nextPageTimelineForUserID:(NSString *)user_id option:(int)optionn WithCompletionBlock:(completed)compbloc{
- 
+
+    
     order = (option == Upcoming || optionn == -1)?@"ASC":@"DESC";
     userID = user_id;
     
@@ -99,7 +101,7 @@ static BPTimeline *thisWebServices = nil;
     
     self.completed = compbloc;
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.operationQueue cancelAllOperations];
     
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
@@ -151,7 +153,11 @@ static BPTimeline *thisWebServices = nil;
     
     self.completed = compbloc;
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    if(!manager){
+        manager = [AFHTTPRequestOperationManager manager];
+    }
+    
+    [manager.operationQueue cancelAllOperations];
     
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     

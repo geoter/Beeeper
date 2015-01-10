@@ -34,6 +34,8 @@
     #import "UIView+Badge.h"
     #import "SDWebImage/MKAnnotationView+WebCache.h"
     #import "AFNetworking.h"
+    #import "NSString+Trimming.h"
+    #import "iRate.h"
 
 
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)

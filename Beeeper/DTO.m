@@ -327,13 +327,13 @@ static DTO *thisDTO = nil;
             NSArray *eventArray;
             
             if ([eventObject isKindOfClass:[NSDictionary class]]) {
-                Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:eventObject];
+                Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:eventObject];
                 compbloc(YES,beeep);
                 
             }
             else if ([eventObject isKindOfClass:[NSArray class]]){
                 eventArray = eventObject;
-                Beeep_Object *beeep = [Beeep_Object modelObjectWithDictionary:[eventArray firstObject]];
+                Timeline_Object *beeep = [Timeline_Object modelObjectWithDictionary:[eventArray firstObject]];
                 compbloc(YES,beeep);
             }
             else{

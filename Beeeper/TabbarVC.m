@@ -17,7 +17,7 @@
 
 @interface TabbarVC ()<UINavigationControllerDelegate,UIAlertViewDelegate>
 {
-
+    NSMutableArray *viewControllers;
 }
 @end
 
@@ -38,6 +38,8 @@ static TabbarVC *thisWebServices = nil;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    viewControllers = [NSMutableArray array];
     
     [[DTO sharedDTO]getSuggestions];
     
@@ -90,7 +92,7 @@ static TabbarVC *thisWebServices = nil;
         [self performSelector:@selector(updateNotificationsBadge) withObject:nil afterDelay:60];
     }];
     
-   }
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -312,14 +314,16 @@ static TabbarVC *thisWebServices = nil;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
-- (void)suggestPressed:(id)fingerprint controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur{
+- (void)suggestPressed:(id)fingerprint beeepers:(NSArray *)beeepers controller:(UIViewController *)sender sendNotificationWhenFinished:(BOOL)sendWhenFinished selectedPeople:(NSMutableArray *)selectedPeople showBlur:(BOOL)showBlur{
     
+
     SuggestBeeepVC *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"SuggestBeeepVC"];
     viewController.fingerprint = fingerprint;
     viewController.superviewToBlur = sender.navigationController.view;
     viewController.selectedPeople = selectedPeople;
     viewController.sendNotificationWhenFinished = sendWhenFinished;
     viewController.showBlur = showBlur;
+    viewController.beeepers = [NSMutableArray arrayWithArray:beeepers];
 
     [self.parentViewController.view addSubview:viewController.view];
     [self.parentViewController addChildViewController:viewController];
@@ -371,7 +375,18 @@ static TabbarVC *thisWebServices = nil;
             break;
     }
     
-
+//    BOOL mpike;
+//    
+//    for (UIViewController *viewcontroller in viewControllers) {
+//        if ([viewcontroller isKindOfClass:[vC class]]) {
+//            vC = viewcontroller;
+//            mpike = YES;
+//        }
+//    }
+//    
+//    if (!mpike) {
+//        [viewControllers addObject:vC];
+//    }
     
     UINavigationController *navVC = [[UINavigationController alloc]initWithRootViewController:vC];
     navVC.navigationBar.translucent = NO;

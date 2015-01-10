@@ -285,7 +285,7 @@
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
             EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-            venue = [loc.venueStation uppercaseString];
+            venue = [[loc.venueStation uppercaseString] stringByTrimmingWhitespaceFromFront];
         }
         
         
@@ -501,7 +501,6 @@
                   
                   [self sendFacebookNoApp];
                   
-                  
               }
 
               
@@ -539,6 +538,7 @@
               params.picture = url;
               params.name = beeepTitle;
               params.linkDescription = shareTextFB;
+              //actions
               
               // If the Facebook app is installed and we can present the share dialog
               if ([FBDialogs canPresentShareDialogWithParams:params]) {
@@ -912,7 +912,7 @@
                   
                     
                     @try {
-                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:message message:info delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
                     }
                     @catch (NSException *exception) {
@@ -946,14 +946,14 @@
 - (IBAction)beeepTimeSelected:(id)sender {
     UIViewController *viewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"BeeepTimeVC"];
     
-    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, 320, viewController.view.frame.size.height)];
+    [viewController.view setFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, viewController.view.frame.size.height)];
     [self.view addSubview:viewController.view];
     [self addChildViewController:viewController];
     
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         viewController.view.frame = CGRectMake(0, 0, 320, viewController.view.frame.size.height);
+         viewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, viewController.view.frame.size.height);
      }
                      completion:^(BOOL finished)
      {
@@ -971,24 +971,31 @@
     Friendsfeed_Object *ffo = tml;
     Suggestion_Object *sgo = tml;
     
+    NSArray *beeepers;
+    
     if ([tml isKindOfClass:[Timeline_Object class]]) {
         fingerPrintLocal = t.beeep.beeepInfo.fingerprint;
+        beeepers = t.beeepersIds;
     }
     else if ([tml isKindOfClass:[Event_Show_Object class]]){
         Event_Show_Object *activity = tml;
         
         fingerPrintLocal = activity.eventInfo.fingerprint;
+        beeepers = activity.beeepedBy;
         
     }
     else if([tml isKindOfClass:[Suggestion_Object class]]){
         fingerPrintLocal = sgo.what.fingerprint;
+        beeepers = sgo.beeepersIds;
     }
     else if ([tml isKindOfClass:[Event_Search class]]){
         Event_Search *eventS = tml;
         fingerPrintLocal = eventS.fingerprint;
+        beeepers = eventS.beeepedBy;
     }
     
     else{
+        beeepers = ffo.eventFfo.beeepedBy;
         fingerPrintLocal = ffo.eventFfo.eventDetailsFfo.fingerprint;
     }
     
@@ -1001,7 +1008,7 @@
             selectedPeople = [NSMutableArray arrayWithArray:followers];
         }
         
-        [[TabbarVC sharedTabbar]suggestPressed:fingerPrintLocal controller:self sendNotificationWhenFinished:YES selectedPeople:selectedPeople showBlur:NO];
+        [[TabbarVC sharedTabbar]suggestPressed:fingerPrintLocal beeepers:beeepers controller:self sendNotificationWhenFinished:YES selectedPeople:selectedPeople showBlur:NO];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There was a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];

@@ -194,7 +194,7 @@
     
     self.tapG.enabled = NO;
     
-    suggestionValues = [NSArray arrayWithObjects:@"upcoming",@"tv",@"movies",@"music",@"deals",@"sports", nil];
+    suggestionValues = [NSArray arrayWithObjects:@"upcoming",@"tv",@"movies",@"music",@"deals",@"sports",@"theater", nil];
     
     filteredResults = [NSMutableArray arrayWithArray:suggestionValues];
     
@@ -237,6 +237,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell" forIndexPath:indexPath];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SearchCell"];
+    }
+    
     UILabel *searchResultLabel = (UILabel *)[cell viewWithTag:1];
     searchResultLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:23];
     
@@ -292,11 +297,9 @@
             events = [NSMutableArray arrayWithArray:evnts];
             
             if (events.count != 0) {
-                
-                if (events.count == [EventWS sharedBP].pageLimit) {
-                    loadNextPage = YES;
-                }
-                
+ 
+                loadNextPage = (events.count == [EventWS sharedBP].pageLimit);
+
                 self.collectionV.hidden = NO;
                 [self.collectionV reloadData];
                 
@@ -475,15 +478,19 @@
             filteredResults = [NSMutableArray array];
         }
         
-        if (filteredResults.count == 0) {
-            self.tapG.enabled = YES;
-            filteredResults = [NSMutableArray arrayWithObject:@"No results found"];
+        if (txtF.text.length > 0) {
+           
+            if (filteredResults.count == 0) {
+                self.tapG.enabled = YES;
+                filteredResults = [NSMutableArray arrayWithObject:@"No results found"];
+            }
+            else{
+                self.tapG.enabled = NO;
+            }
+            
+            [self.tableV reloadData];
         }
-        else{
-            self.tapG.enabled = NO;
-        }
-        
-        [self.tableV reloadData];
+
         
     }];
 
@@ -492,10 +499,8 @@
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
     NSString * searchStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
-    if (searchStr.length < 2) {
-        if (searchStr.length == 0) {
-            [self resetSearch];
-        }
+    if (searchStr.length == 0) {
+        [self resetSearch];
     }
     
     return YES;
@@ -596,7 +601,7 @@
     UILabel *area = (id)[containerV viewWithTag:-2];
     UILabel *areaIcon = (id)[containerV viewWithTag:-1];
     
-    area.frame = CGRectMake(37, 190, 108, 32);
+    area.frame = CGRectMake(area.frame.origin.x, 190, 108, 32);
     
    // area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:13];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
@@ -606,10 +611,10 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    area.text = [loc.venueStation capitalizedString];
+    area.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
     [area sizeToFit];
     
-    CGPoint areaCenter = CGPointMake(cell.center.x-areaIcon.frame.size.width, area.center.y);
+    CGPoint areaCenter = CGPointMake(cell.frame.size.width/2, area.center.y);
     
     area.center = areaCenter;
     area.frame = CGRectMake(area.frame.origin.x, titleLbl.frame.origin.y+titleLbl.frame.size.height+1, area.frame.size.width, area.frame.size.height);
@@ -1013,7 +1018,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Event_Search *event = [events objectAtIndex:indexpath.row];
     
     if (event.fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:event.fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
+
+        [[TabbarVC sharedTabbar]suggestPressed:event.fingerprint beeepers:event.beeepedBy controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -1068,8 +1074,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (IBAction)tabbarButtonTapped:(UIButton *)sender{
     
-    [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    if (sender.tag == 2) {
+        [self.tableV setContentOffset:CGPointZero animated:YES];
+        [self.collectionV setContentOffset:CGPointZero animated:YES];
+    }
+    else{
+        [[TabbarVC sharedTabbar]tabbarButtonTapped:sender];
+    }
 }
+
 
 
 - (IBAction)addNewBeeep:(id)sender {

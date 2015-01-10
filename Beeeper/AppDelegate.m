@@ -23,6 +23,16 @@
     
    //  [[DTO sharedDTO]addBugLog:@"test what" where:@"BPCreate/test what" json:nil];
     
+    [iRate sharedInstance].applicationBundleID = @"com.Beeeper.Beeeper";
+    [iRate sharedInstance].onlyPromptIfLatestVersion = YES;
+    [iRate sharedInstance].appStoreID = 938723756;
+    [iRate sharedInstance].applicationName = @"Beeeper";
+    [iRate sharedInstance].daysUntilPrompt = 14;
+    [iRate sharedInstance].usesUntilPrompt = 10;
+    [iRate sharedInstance].remindPeriod = 10;
+    //enable preview mode
+//    [iRate sharedInstance].previewMode = YES;
+    
     if (IS_IPHONE_6) {
         
         UIViewController *rootViewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"WelcomeVCNavigation"];
@@ -30,7 +40,7 @@
         [self.window makeKeyAndVisible];
     }
     
-    [self application:application didReceiveRemoteNotification:nil];
+    //[self application:application didReceiveRemoteNotification:nil];
     
     [self createEditableCopyOfPlistIfNeeded];
     
@@ -52,62 +62,78 @@
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
          (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
     }
+  
+    @try {
     
-    if (launchOptions != nil)
-    {
-        NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-        if (userInfo != nil)
+        if (launchOptions != nil)
         {
-            @try {
-                if (userInfo) {
-                    
-                    NSString *w = [userInfo objectForKey:@"w"];
-                    
-                    if (w != nil) {
-                        [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
-                    }
-                    
-                    NSString *l = [userInfo objectForKey:@"l"];
-                    
-                    if (l != nil) {
-                        [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
-                    }
-                    
-                    
-                    NSString *c = [userInfo objectForKey:@"c"];
-                    
-                    if (c != nil) {
-                        [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
-                    }
-                    
-                    
-                    NSString *s = [userInfo objectForKey:@"s"];
-                    
-                    if (s != nil) {
-                        [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
-                    }
-                    
-                    NSString *u = [userInfo objectForKey:@"u"];
-                    
-                    if (u != nil) {
-                        [[DTO sharedDTO]setUserIDforPush:u];
+            NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+            
+            if (userInfo == nil) {
+                UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+                userInfo = notification.userInfo;
+            }
+            
+            if (userInfo != nil)
+            {
+                @try {
+                    if (userInfo) {
+                        
+                        NSString *w = [userInfo objectForKey:@"w"];
+                        
+                        if (w != nil) {
+                            [[DTO sharedDTO]setWeightForPush:w caseStr:@"w"];
+                        }
+                        
+                        NSString *l = [userInfo objectForKey:@"l"];
+                        
+                        if (l != nil) {
+                            [[DTO sharedDTO]setWeightForPush:l caseStr:@"l"];
+                        }
+                        
+                        
+                        NSString *c = [userInfo objectForKey:@"c"];
+                        
+                        if (c != nil) {
+                            [[DTO sharedDTO]setWeightForPush:c caseStr:@"c"];
+                        }
+                        
+                        
+                        NSString *s = [userInfo objectForKey:@"s"];
+                        
+                        if (s != nil) {
+                            [[DTO sharedDTO]setFingerprintForPush:s caseStr:@"s"];
+                        }
+                        
+                        NSString *u = [userInfo objectForKey:@"u"];
+                        
+                        if (u != nil) {
+                            [[DTO sharedDTO]setUserIDforPush:u];
+                        }
                     }
                 }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"Catch");
-            }
-            @finally {
+                @catch (NSException *exception) {
+                    NSLog(@"Catch");
+                }
+                @finally {
+                    
+                }
                 
             }
-
+        }
+        else{
+            [[DTO sharedDTO]setWeightForPush:nil caseStr:nil];
+            [[DTO sharedDTO]setFingerprintForPush:nil caseStr:nil];
+            [[DTO sharedDTO]setUserIDforPush:nil];
         }
     }
-    else{
-        [[DTO sharedDTO]setWeightForPush:nil caseStr:nil];
-        [[DTO sharedDTO]setFingerprintForPush:nil caseStr:nil];
-        [[DTO sharedDTO]setUserIDforPush:nil];
+    @catch (NSException *exception) {
+        
     }
+    @finally {
+        
+    }
+    
     
     
 //    UINavigationController *navVC = (id)self.window.rootViewController;
@@ -387,7 +413,7 @@
         
         [[DTO sharedDTO]setWeightForPush:[apsInfo objectForKey:@"w"] caseStr:@"w"];
         
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
+         [[NSNotificationCenter defaultCenter]postNotificationName:@"PUSH" object:nil];
         
     }
     @catch (NSException *exception) {

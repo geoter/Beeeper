@@ -39,7 +39,7 @@
     NSMutableDictionary *pendingImagesDict;
     BOOL isLiker;
     
-    Beeep_Object *beeep_Objct; //-(void)showEventForActivityWithBeeep
+    Timeline_Object *beeep_Objct; //-(void)showEventForActivityWithBeeep
     
     NSString *fingerprint;
     NSString *websiteURL;
@@ -187,10 +187,10 @@
             
             fingerprint = [NSString stringWithString:[[activity.beeepInfoActivity.eventActivity firstObject]valueForKeyPath:@"fingerprint"]];
             
-            [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
+            [[BPActivity sharedBP]getBeeepInfoFromActivity:tml WithCompletionBlock:^(BOOL completed,Timeline_Object *beeep){
                 if (completed) {
                     beeep_Objct = beeep;
-                    comments = beeep_Objct.comments;
+                    comments = beeep_Objct.beeep.beeepInfo.comments;
                     
                     if (event_show_Objct != nil || (event_show_Objct == nil && activity.eventActivity.count == 0)) {
                         tinyURL = [NSString stringWithFormat:@"beeep.it/%@", [event_show_Objct.tinyUrl uppercaseString]];
@@ -269,10 +269,10 @@
     }
     else if ([tml isKindOfClass:[NSString class]]){ //Notification
         
-        [[DTO sharedDTO]getBeeep:tml WithCompletionBlock:^(BOOL completed,Beeep_Object *beeep){
+        [[DTO sharedDTO]getBeeep:tml WithCompletionBlock:^(BOOL completed,Timeline_Object *beeep){
             if (completed) {
                 
-                fingerprint = beeep.fingerprint;
+                fingerprint = beeep.event.fingerprint;
                 beeep_Objct = beeep;
                 
                 [[EventWS sharedBP]getEvent:fingerprint WithCompletionBlock:^(BOOL completed,Event_Show_Object *event){
@@ -392,7 +392,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation capitalizedString];
+    venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -707,7 +707,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation capitalizedString];
+    venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -1029,7 +1029,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
     EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-    venueLbl.text = [loc.venueStation capitalizedString];
+    venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
     
     CGPoint oldCenter = self.titleLabel.center;
     [self.titleLabel sizeToFit];
@@ -1372,7 +1372,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation capitalizedString];
+        venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
         
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
@@ -1643,7 +1643,7 @@
     NSDate *date;
     
     Event_Show_Object* event = event_show_Objct;
-    Beeep_Object* beeep = beeep_Objct;
+    Timeline_Object* beeep = beeep_Objct;
     
     date = [NSDate dateWithTimeIntervalSince1970:event.eventInfo.timestamp];
     
@@ -1704,7 +1704,7 @@
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
         EventLocation *loc = [EventLocation modelObjectWithDictionary:dict];
-        venueLbl.text = [loc.venueStation capitalizedString];
+        venueLbl.text = [[loc.venueStation capitalizedString] stringByTrimmingWhitespaceFromFront];
         
         CGPoint oldCenter = self.titleLabel.center;
         [self.titleLabel sizeToFit];
@@ -1791,11 +1791,11 @@
     else{
         
         if (!likers) {
-            likers = [NSMutableArray arrayWithArray:beeep.likes];
+            likers = [NSMutableArray arrayWithArray:beeep.beeep.beeepInfo.likes];
         }
         
         if (!comments) {
-            comments = beeep.comments;
+            comments = beeep.beeep.beeepInfo.comments;
         }
         
         likesLbl.text = [NSString stringWithFormat:@"%d",(int)likers.count];
@@ -2034,7 +2034,9 @@
 -(void)suggestIt{
     
     if (fingerprint != nil) {
-        [[TabbarVC sharedTabbar]suggestPressed:fingerprint controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
+        
+        
+        [[TabbarVC sharedTabbar]suggestPressed:fingerprint beeepers:beeepers controller:self sendNotificationWhenFinished:NO selectedPeople:nil showBlur:YES];
     }
     else{
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"There is a problem with this Beeep. Please refresh and try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
@@ -2729,7 +2731,7 @@
         [self showComments:nil];
     }
     else{
-        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:1.5];
+        [self performSelector:@selector(showCommentsWillDelay) withObject:nil afterDelay:0.4];
     }
 }
 
@@ -2740,7 +2742,7 @@
         [self showLikes:nil];
     }
     else{
-        [self performSelector:@selector(showLikesWillDelay) withObject:nil afterDelay:1.5];
+        [self performSelector:@selector(showLikesWillDelay) withObject:nil afterDelay:0.4];
     }
 }
 
@@ -3068,6 +3070,10 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     UILabel *nameLbl = (id)[cell viewWithTag:1];
     nameLbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13];
     nameLbl.textColor = [UIColor colorWithRed:35/255.0 green:44/255.0 blue:59/255.0 alpha:1];
@@ -3438,7 +3444,7 @@
         [self.view addSubview:loadingBGV];
         [self.view bringSubviewToFront:loadingBGV];
         
-        [UIView animateWithDuration:0.3f
+        [UIView animateWithDuration:0.0f
                          animations:^
          {
              loadingBGV.alpha = 1;

@@ -46,6 +46,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *notificationsButton;
 
 @property(nonatomic,assign) BOOL following;
+@property (weak, nonatomic) IBOutlet UILabel *usernameTopLabel;
 
 - (IBAction)calendarPressed:(id)sender;
 - (IBAction)addFriend:(id)sender;

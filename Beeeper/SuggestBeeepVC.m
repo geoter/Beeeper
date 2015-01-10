@@ -9,6 +9,7 @@
 #import "SuggestBeeepVC.h"
 #import "BPSuggestions.h"
 #import "FindFriendsVC.h"
+#import "BeeepedBy.h"
 
 @interface SuggestBeeepVC ()
 {
@@ -73,7 +74,7 @@
     UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 0, 60)];
     [self.tableV addSubview:refreshView];
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     refreshControl.tag = 234;
     refreshControl.tintColor = [UIColor lightGrayColor];
     [refreshControl addTarget:self action:@selector(getFollowers) forControlEvents:UIControlEventValueChanged];
@@ -143,8 +144,8 @@
             else{
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser not Completed" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
+//                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"getFollowersForUser not Completed" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//                    [alert show];
 
                  });
             }
@@ -201,11 +202,18 @@
 }
 
 - (IBAction)donePressed:(id)sender {
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"Suggest Followers Selected" object:nil userInfo:[NSDictionary dictionaryWithObject:selectedPeople forKey:@"followers"]];
     [self closePressed:nil];
 }
 
 - (IBAction)sendPressed:(id)sender {
+    
+    if (selectedPeople.count == 0) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Beeepers selected" message:@"Please select at least on Beeeper user." delegate:selectedPeople cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     
     @try {
         NSMutableArray *users_ids = [NSMutableArray array];
@@ -375,14 +383,38 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    
+    NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
+    
+    NSString *CellIdentifier;
+    
+    if ([self isBeeeper:user]) {
+        CellIdentifier = @"CellBeeeped";
+    }
+    else{
+        CellIdentifier = @"Cell";
+    }
+    
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     UIImageView *userImage = (id)[cell viewWithTag:1];
     UILabel *nameLbl = (id)[cell viewWithTag:2];
     UIImageView *tickedV = (id)[cell viewWithTag:3];
+
     
-    NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
+    if ([self isBeeeper:user]) {
+        cell.contentView.alpha = 0.5;
+        cell.userInteractionEnabled = NO;
+    }
+    else{
+        cell.userInteractionEnabled = YES;
+        cell.contentView.alpha = 1;
+    }
     
     nameLbl.text = [[NSString stringWithFormat:@"%@ %@",[user objectForKey:@"name"],[user objectForKey:@"lastname"]] capitalizedString];
     
@@ -405,12 +437,16 @@
     }
     //NSString *extension = [[imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    
-    if ([self isSelected:user]) {
-        [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+    if ([self isBeeeper:user]) {
+            [tickedV setImage:[UIImage imageNamed:@"suggest_selected_gray"]];
     }
     else{
-        [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
+        if ([self isSelected:user]) {
+            [tickedV setImage:[UIImage imageNamed:@"suggest_selected"]];
+        }
+        else{
+            [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
+        }
     }
 
     
@@ -437,7 +473,7 @@
     UIImageView *tickedV = (id)[cell viewWithTag:3];
 
     NSDictionary *user = [filteredPeople objectAtIndex:indexPath.row];
-
+    
     if (![self isSelected:user]) {
         [selectedPeople addObject:user];
         tickedV.alpha = 0;
@@ -496,6 +532,36 @@
 
 -(void)manageUser:(NSDictionary *)dict{
     
+}
+
+-(BOOL)isBeeeper:(NSDictionary *)user{
+    
+    for (id userO in self.beeepers) {
+        
+        if ([userO isKindOfClass:[NSDictionary class]]) {
+            
+            if ([[user objectForKey:@"id"] isEqualToString:[userO objectForKey:@"id"]]) {
+                return YES;
+            }
+        }
+        else if ([userO isKindOfClass:[BeeepedBy class]]){
+            if ([[user objectForKey:@"id"] isEqualToString:[(BeeepedBy *)userO beeepedByIdentifier]]) {
+                return YES;
+            }
+        }
+        else{ //nsstring
+            
+            NSString *userStr = (NSString *)userO;
+            
+            if ([userStr isEqualToString:[user objectForKey:@"id"]]) {
+                return YES;
+            }
+        }
+        
+        
+    }
+    
+    return NO;
 }
 
 @end

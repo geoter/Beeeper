@@ -31,7 +31,7 @@
         self.originalFrame = frame;
         self.backgroundColor = [UIColor clearColor];
         
-        UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 1)];
+        UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, 1)];
         line.backgroundColor = [UIColor colorWithRed:223/255.0 green:227/255.0 blue:230/255.0 alpha:1];
         [self addSubview:line];
         

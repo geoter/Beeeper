@@ -74,7 +74,7 @@
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     if (!IS_IPHONE_5) {
-        self.scrollV.frame = CGRectMake(0, 0, 320, self.scrollV.frame.size.height);
+        self.scrollV.frame = CGRectMake(0, 0, self.view.frame.size.width, self.scrollV.frame.size.height);
     }
 }
 

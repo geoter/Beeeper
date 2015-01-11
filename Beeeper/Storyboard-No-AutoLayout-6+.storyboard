@@ -250,53 +250,6 @@
                                 <rect key="frame" x="54" y="89" width="307" height="558"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8HO-WZ-zVD">
-                                        <rect key="frame" x="242" y="5" width="62" height="36"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
-                                        <state key="normal" title="Send">
-                                            <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="sendPressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="gfa-yi-NAa"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FBP-oq-rYe">
-                                        <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" image="closeXblack.png">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="closePressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="qpd-XP-DYC"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading.." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7IP-bT-Yzk">
-                                        <rect key="frame" x="0.0" y="234" width="300" height="80"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
-                                        <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="deviceRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="R9d-hC-0Zi">
-                                        <rect key="frame" x="107" y="306" width="87" height="40"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" image="add_friend_icon_yellow.png">
-                                            <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="findFriendsPressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="cny-bV-Rda"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggest it" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="C1m-Q6-xsB">
-                                        <rect key="frame" x="0.0" y="39" width="307" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
-                                        <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="47" sectionHeaderHeight="22" sectionFooterHeight="22" id="hzz-aU-PQR">
                                         <rect key="frame" x="0.0" y="141" width="307" height="417"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -369,6 +322,53 @@
                                             <outlet property="delegate" destination="ei0-r1-23T" id="XKu-9S-Kq3"/>
                                         </connections>
                                     </tableView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8HO-WZ-zVD">
+                                        <rect key="frame" x="242" y="5" width="62" height="36"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
+                                        <state key="normal" title="Send">
+                                            <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="sendPressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="gfa-yi-NAa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FBP-oq-rYe">
+                                        <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="closeXblack.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="closePressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="qpd-XP-DYC"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading.." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7IP-bT-Yzk">
+                                        <rect key="frame" x="0.0" y="234" width="300" height="80"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                        <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="deviceRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="R9d-hC-0Zi">
+                                        <rect key="frame" x="107" y="306" width="87" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="add_friend_icon_yellow.png">
+                                            <color key="titleColor" red="0.94117647059999998" green="0.81568627449999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="findFriendsPressed:" destination="ei0-r1-23T" eventType="touchUpInside" id="cny-bV-Rda"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggest it" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="C1m-Q6-xsB">
+                                        <rect key="frame" x="0.0" y="39" width="307" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                        <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select friends to send this Beeep to." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zyu-lo-cjA">
                                         <rect key="frame" x="0.0" y="61" width="300" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -3924,7 +3924,7 @@ what they are Beeeping.</string>
                                                             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
                                                             <inset key="titleEdgeInsets" minX="-16" minY="19" maxX="0.0" maxY="0.0"/>
-                                                            <inset key="imageEdgeInsets" minX="54" minY="-2" maxX="0.0" maxY="10"/>
+                                                            <inset key="imageEdgeInsets" minX="58" minY="-2" maxX="0.0" maxY="10"/>
                                                             <state key="normal" title="Suggestions" image="suggestionsBtn.png">
                                                                 <color key="titleColor" red="0.51764705879999995" green="0.5450980392" blue="0.56862745100000001" alpha="1" colorSpace="deviceRGB"/>
                                                             </state>
@@ -4590,7 +4590,7 @@ what they are Beeeping.</string>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" minimumFontSize="17" clearButtonMode="always" id="aGZ-ZW-kiv">
-                                                        <rect key="frame" x="36" y="0.0" width="261" height="30"/>
+                                                        <rect key="frame" x="36" y="0.0" width="293" height="30"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -4738,7 +4738,7 @@ Please search with another keyword.</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view autoresizesSubviews="NO" clipsSubviews="YES" tag="66" contentMode="scaleToFill" id="0Rm-k6-QFj" customClass="TimelineCellView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="508" height="80"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <subviews>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="5" id="UYR-Dc-wQH">
@@ -4817,7 +4817,7 @@ Please search with another keyword.</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <activityIndicatorView opaque="NO" tag="55" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="white" id="tEj-aX-cUy">
-                                                    <rect key="frame" x="2431" y="8" width="20" height="20"/>
+                                                    <rect key="frame" x="3192" y="8" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                                 </activityIndicatorView>
                                             </subviews>

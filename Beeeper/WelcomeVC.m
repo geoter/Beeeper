@@ -429,7 +429,7 @@
     backV.backgroundColor = [UIColor colorWithRed:240/255.0 green:208/255.0 blue:0 alpha:1];
     UIImageView *imgV = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"beeeper-logo-Splash"]];
     imgV.tag = 454;
-    imgV.center = CGPointMake(backV.center.x,(IS_IPHONE_6P)?backV.center.y-22:backV.center.y-22);
+    imgV.center = CGPointMake(backV.center.x,(IS_IPHONE_6P)?backV.center.y:backV.center.y-22);
     [backV addSubview:imgV];
     backV.tag = 323;
     [self.view addSubview:backV];

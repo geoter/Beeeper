@@ -250,11 +250,12 @@
     
     UILabel *txtV = (id)[cell viewWithTag:3];
     txtV.font =  [UIFont fontWithName:@"HelveticaNeue" size:13];
-
-    Activity_Object *activity = [notifications objectAtIndex:indexPath.section];
-   
+    
+    Activity_Object *activity;
+    
     @try {
-
+        
+        activity = [notifications objectAtIndex:indexPath.section];
         
         Who *w = [[activity.who firstObject] copy];
         Whom *wm = [[activity.whom firstObject] copy];

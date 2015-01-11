@@ -711,7 +711,6 @@
 
 - (IBAction)nextPressed:(UIButton *)sender {
     
-    
     //adjust format of keywords
     @try {
     
@@ -781,11 +780,14 @@
             [sender addSubview:activityInd];
             [activityInd startAnimating];
             
+            [sender setUserInteractionEnabled:NO];
+            
             [[BPCreate sharedBP]eventCreate:values completionBlock:^(BOOL completed,id objs){
                 
                 [activityInd stopAnimating];
                 [activityInd removeFromSuperview];
                 [sender setTitle:@"NEXT" forState:UIControlStateNormal];
+                [sender setUserInteractionEnabled:YES];
                 
                 if (completed) {
                    

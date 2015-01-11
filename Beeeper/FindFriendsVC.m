@@ -717,7 +717,10 @@
 }
 
 -(void)requestFBFriends{
-    
+//    
+//    [self inviteFBFriendsPressed];
+//    
+//    return;
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]){
         
         ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore

@@ -320,7 +320,7 @@
     
     signupMethod = @"FB";
     
-   [self fbSignupwithAccount:fbSelectedAccountIndex];
+    [self fbSignup];
     
 }
 
@@ -508,207 +508,259 @@
     
 }
 
--(void)fbSignupwithAccount:(int)row{
+-(void)fbSignup{
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideLoading) name:@"FBLoginFailed" object:nil];
+    
+    // If the session state is any of the two "open" states when the button is clicked
+    if (FBSession.activeSession.state == FBSessionStateOpen
+        || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+        
+        [self facebookLoginForSignup];
+        
+        // Close the session and remove the access token from the cache
+        // The session state handler (in the app delegate) will be called automatically
+        //[FBSession.activeSession closeAndClearTokenInformation];
+        
+        //AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+        // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+        //[appDelegate sessionStateChanged:FBSession.activeSession state:FBSession.activeSession.state error:NULL];
+        
+        // If the session state is not any of the two "open" states when the button is clicked
+    } else {
+        // Open a session showing the user the login UI
+        // You must ALWAYS ask for basic_info permissions when opening a session
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"email"]
+                                           allowLoginUI:YES
+                                      completionHandler:
+         ^(FBSession *session, FBSessionState state, NSError *error) {
+             
+             
+             
+             if (FBSessionStateOpen == state) {
+                 [self facebookLoginForSignup];
+             }
+             else{
+                 
+                 if (!facebookLoginAlreadyFailed) {
+                     
+                     facebookLoginAlreadyFailed = YES;
+                     
+                     [FBSession.activeSession closeAndClearTokenInformation];
+                     
+                     [self facebookLoginForSignup];
+                 }
+                 else{
+                     
+                     // Retrieve the app delegate
+                     AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+                     // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+                     [appDelegate sessionStateChanged:session state:state error:error];
+                     
+                     [self hideLoading];
+                 }
+                 
+             }
+         }];
+    }
+}
+
+-(void)facebookLoginForSignup{
+    
+    facebookLoginAlreadyFailed = NO;
     
     [self showLoading];
     
-    ACAccount *fbAccount = [accounts objectAtIndex:row];
-    
-    NSURL* URL = [NSURL URLWithString:@"https://graph.facebook.com/me"];
-    
-    SLRequest* request = [SLRequest requestForServiceType:SLServiceTypeFacebook
-                                            requestMethod:SLRequestMethodGET
-                                                      URL:URL
-                                               parameters:nil];
-    
-    [request setAccount:fbAccount]; // Authentication - Requires user context
-    
-    [request performRequestWithHandler:^(NSData* responseData, NSHTTPURLResponse* urlResponse, NSError* error) {
-        
-        NSDictionary *fbDict = [NSJSONSerialization
-                                JSONObjectWithData:responseData
-                                options:kNilOptions
-                                error:&error];
-        
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-      
-        NSString *email = [[fbAccount valueForKey:@"properties"] objectForKey:@"ACUIDisplayUsername"];
-        
-        if (email == nil) {
-            email = [fbDict objectForKey:@"email"];
-        }
-        
-        NSString *username = [fbDict objectForKey:@"username"];
-        
-        if (username == nil) {
-            username = [NSString stringWithFormat:@"%@.%@",[fbDict objectForKey:@"first_name"],[fbDict objectForKey:@"last_name"]];
-        }
-        
-        hasUsername = (username != nil && username.length > 1);
-        hasEmail = ([email isKindOfClass:[NSString class]] && email.length >0);
-        
-        hasFirstName = ([[fbDict objectForKey:@"first_name"]isKindOfClass:[NSString class]] && [fbDict objectForKey:@"first_name"] != nil);
-        hasLastName = ([[fbDict objectForKey:@"last_name"] isKindOfClass:[NSString class]] && [fbDict objectForKey:@"last_name"] != nil);
-        hasName = NO;
-        
-        hasSex = ([fbDict objectForKey:@"gender"] != nil);
-        
-        
-        if (hasUsername) {
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"user info: %@", result);
             
-            [dict setObject:username forKey:@"username"];
-
-            NSString * fbID  = [fbDict objectForKey:@"id"];
+            NSMutableDictionary *fbDict  = [NSMutableDictionary dictionaryWithDictionary:result];
             
-            NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
-            [dict setObject:userImageURL forKey:@"image_path"];
-        }
-
-       
-        
-        if (hasEmail) {
-            [dict setObject:email forKey:@"email"];
-        }
-        
-        NSMutableString *nameStr = [[NSMutableString alloc]init];
-        
-        if (hasFirstName) {
-            hasName = YES;
-            [nameStr appendString:[fbDict objectForKey:@"first_name"]];
-        }
-        
-        if (hasLastName) {
-            hasName = YES;
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            
+            NSString *email = [fbDict objectForKey:@"email"];
+            
+            NSString *username = [fbDict objectForKey:@"username"];
+            
+            if (username == nil) {
+                username = [NSString stringWithFormat:@"%@.%@",[fbDict objectForKey:@"first_name"],[fbDict objectForKey:@"last_name"]];
+            }
+            
+            hasUsername = (username != nil && username.length > 1);
+            hasEmail = ([email isKindOfClass:[NSString class]] && email.length >0);
+            
+            hasFirstName = ([[fbDict objectForKey:@"first_name"]isKindOfClass:[NSString class]] && [fbDict objectForKey:@"first_name"] != nil);
+            hasLastName = ([[fbDict objectForKey:@"last_name"] isKindOfClass:[NSString class]] && [fbDict objectForKey:@"last_name"] != nil);
+            hasName = NO;
+            
+            hasSex = ([fbDict objectForKey:@"gender"] != nil);
+            
+            
+            if (hasUsername) {
+                
+                [dict setObject:username forKey:@"username"];
+                
+                NSString * fbID  = [fbDict objectForKey:@"id"];
+                
+                NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
+                [dict setObject:userImageURL forKey:@"image_path"];
+            }
+            
+            
+            
+            if (hasEmail) {
+                [dict setObject:email forKey:@"email"];
+            }
+            
+            NSMutableString *nameStr = [[NSMutableString alloc]init];
             
             if (hasFirstName) {
-                [nameStr appendFormat:@" %@",[fbDict objectForKey:@"last_name"]];
-            }
-            else{
-                [nameStr appendString:[fbDict objectForKey:@"last_name"]];
+                hasName = YES;
+                [nameStr appendString:[fbDict objectForKey:@"first_name"]];
             }
             
-        }
-        
-        if (hasName) {
-            [dict setObject:[NSString stringWithString:nameStr] forKey:@"name"];
-        }
-        
-        
-        if (hasSex) {
-            [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
-        }
-        
-        @try {
-            [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"fb id nil");
-            [self hideLoading];
-            return;
-        }
-        @finally {
-            
-        }
-        
-        
-        float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
-        
-        [dict setObject:[NSString stringWithFormat:@"%.1f",timezoneoffset] forKey:@"timezone"];
-        [dict setObject:@"" forKey:@"password"];
-        [dict setObject:@"0" forKey:@"locked"];
-        
-        
-        CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
-        CLLocation *userloc = [DTO sharedDTO].userLocation;
-        
-        if (userPlace != nil && userloc != nil) {
-            
-            NSString *city = userPlace.locality;
-            NSString *state = userPlace.administrativeArea;
-            NSString *country = userPlace.country;
-            
-            hasCity = (city != nil);
-            hasState = (state != nil);
-            hasCountry = (country != nil);
-            
-            if (hasCity) {
-                [dict setObject:city forKey:@"city"];
-            }
-            if (hasState) {
-                [dict setObject:state forKey:@"state"];
-            }
-            if (hasCountry) {
-                [dict setObject:country forKey:@"country"];
-            }
-            
-            NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
-            
-            NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
-            
-            [dict setObject:lat forKey:@"long"];
-            [dict setObject:lon forKey:@"lat"];
-            
-            weHaveAllInfoNeeded = (hasUsername && hasEmail && hasName && hasCity && hasState && hasCountry);
-            
-            if (!weHaveAllInfoNeeded) {
+            if (hasLastName) {
+                hasName = YES;
                 
-                if (missingInfo == nil) {
-                    
-                    missingInfo = [NSMutableDictionary dictionary];
-                    
-                    if (!hasUsername) {
-                        [missingInfo setObject:@"Username" forKey:@"username"];
-                    }
-                    if (!hasEmail) {
-                        [missingInfo setObject:@"Email" forKey:@"email"];
-                    }
-                    
-                    if (!hasName) {
-                        [missingInfo setObject:@"First and Last name" forKey:@"name"];
-                    }
-                    
-                    if (!hasCity) {
-                        [missingInfo setObject:@"City" forKey:@"city"];
-                    }
-                    if (!hasState) {
-                        [missingInfo setObject:@"State" forKey:@"state"];
-                    }
-                    if (!hasCountry) {
-                        [missingInfo setObject:@"Country" forKey:@"country"];
-                    }
-                    
+                if (hasFirstName) {
+                    [nameStr appendFormat:@" %@",[fbDict objectForKey:@"last_name"]];
+                }
+                else{
+                    [nameStr appendString:[fbDict objectForKey:@"last_name"]];
                 }
                 
             }
             
-            if (missingInfo.allKeys.count != 0) {
-                
-                MissingFields *mf = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"MissingFields"];
-                mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
-                mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
-                mf.delegate = self;
-                
-                missingInfo = nil;
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self hideLoading];
-                    [self.navigationController pushViewController:mf animated:YES];
-                });
-                
+            if (hasName) {
+                [dict setObject:[NSString stringWithString:nameStr] forKey:@"name"];
+            }
+            
+            
+            if (hasSex) {
+                [dict setObject:[fbDict objectForKey:@"gender"] forKey:@"sex"];
+            }
+            
+            @try {
+                [dict setObject:[fbDict objectForKey:@"id"] forKey:@"fbid"];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"fb id nil");
+                [self hideLoading];
                 return;
             }
-            else{
-                [self signUpSocialUser:dict];
+            @finally {
+                
             }
             
-        }
-        else{
             
-            [self hideLoadingWithTitle:@"Where are you?" ErrorMessage:@"Please go to Settings > Privacy > Location Services and set Beeeper to on."];
+            float timezoneoffset = ([[NSTimeZone systemTimeZone] secondsFromGMT])/60;
+            
+            [dict setObject:[NSString stringWithFormat:@"%.1f",timezoneoffset] forKey:@"timezone"];
+            [dict setObject:@"" forKey:@"password"];
+            [dict setObject:@"0" forKey:@"locked"];
+            
+            
+            CLPlacemark *userPlace = [DTO sharedDTO].userPlace;
+            CLLocation *userloc = [DTO sharedDTO].userLocation;
+            
+            if (userPlace != nil && userloc != nil) {
+                
+                NSString *city = userPlace.locality;
+                NSString *state = userPlace.administrativeArea;
+                NSString *country = userPlace.country;
+                
+                hasCity = (city != nil);
+                hasState = (state != nil);
+                hasCountry = (country != nil);
+                
+                if (hasCity) {
+                    [dict setObject:city forKey:@"city"];
+                }
+                if (hasState) {
+                    [dict setObject:state forKey:@"state"];
+                }
+                if (hasCountry) {
+                    [dict setObject:country forKey:@"country"];
+                }
+                
+                NSString *lat = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.latitude];
+                
+                NSString *lon = [[NSString alloc] initWithFormat:@"%g", userloc.coordinate.longitude];
+                
+                [dict setObject:lat forKey:@"long"];
+                [dict setObject:lon forKey:@"lat"];
+                
+                weHaveAllInfoNeeded = (hasUsername && hasEmail && hasName && hasCity && hasState && hasCountry);
+                
+                if (!weHaveAllInfoNeeded) {
+                    
+                    if (missingInfo == nil) {
+                        
+                        missingInfo = [NSMutableDictionary dictionary];
+                        
+                        if (!hasUsername) {
+                            [missingInfo setObject:@"Username" forKey:@"username"];
+                        }
+                        if (!hasEmail) {
+                            [missingInfo setObject:@"Email" forKey:@"email"];
+                        }
+                        
+                        if (!hasName) {
+                            [missingInfo setObject:@"First and Last name" forKey:@"name"];
+                        }
+                        
+                        if (!hasCity) {
+                            [missingInfo setObject:@"City" forKey:@"city"];
+                        }
+                        if (!hasState) {
+                            [missingInfo setObject:@"State" forKey:@"state"];
+                        }
+                        if (!hasCountry) {
+                            [missingInfo setObject:@"Country" forKey:@"country"];
+                        }
+                        
+                    }
+                    
+                }
+                
+                if (missingInfo.allKeys.count != 0) {
+                    
+                    MissingFields *mf = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Storyboard-No-AutoLayout"] instantiateViewControllerWithIdentifier:@"MissingFields"];
+                    mf.fields = [NSMutableDictionary dictionaryWithDictionary:dict];
+                    mf.misssingfields = [NSMutableDictionary dictionaryWithDictionary:missingInfo];
+                    mf.delegate = self;
+                    
+                    missingInfo = nil;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self hideLoading];
+                        [self.navigationController pushViewController:mf animated:YES];
+                    });
+                    
+                    return;
+                }
+                else{
+                    
+                    [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",[fbDict objectForKey:@"id"]]];
+                    
+                    [self signUpSocialUser:dict];
+                }
+                
+            }
+            else{
+                
+                [self hideLoadingWithTitle:@"Where are you?" ErrorMessage:@"Please go to Settings > Privacy > Location Services and set Beeeper to on."];
+            }
+            
+            
+        } else {
+            // An error occurred, we need to handle the error
+            // See: https://developers.facebook.com/docs/ios/errors
         }
-        
-        
     }];
+    
 }
 
 -(void)signUpSocialUser:(NSDictionary *)dict{
@@ -771,7 +823,7 @@
     } else {
         // Open a session showing the user the login UI
         // You must ALWAYS ask for basic_info permissions when opening a session
-        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"email"]
                                            allowLoginUI:YES
                                       completionHandler:
          ^(FBSession *session, FBSessionState state, NSError *error) {
@@ -810,6 +862,8 @@
     
     facebookLoginAlreadyFailed = NO;
     
+    static int number_of_attempts = 0;
+    
     [self showLoading];
     
     [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -819,16 +873,43 @@
             
             NSMutableDictionary *dict  = [NSMutableDictionary dictionaryWithDictionary:result];
             
+            NSString *fbID = [result objectForKey:@"id"];
             NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [result objectForKey:@"id"]];
             [dict setObject:userImageURL forKey:@"image"];
             
-            [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
+            [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *responseString){
                 if (completed) {
-                    
-                    [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",[dict objectForKey:@"id"]]];
-                    
-                    [self loginPressed:@"FB"];
+                    [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",fbID]];
+                    [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
                 }
+                else{
+                    if (fbID != nil && number_of_attempts < 3) {
+                        [self loginFBuser];
+                        number_of_attempts ++;
+                    }
+                    else{
+                        number_of_attempts = 0;
+                        
+                        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+                        [reachability startNotifier];
+                        
+                        NetworkStatus status = [reachability currentReachabilityStatus];
+                        
+                        if(status == NotReachable)
+                        {
+                            [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
+                        }
+                        else{
+                            if ([responseString rangeOfString:@"fb user login failure"].location != NSNotFound) {
+                                [self fbSignup];
+                            }
+                            else{
+                                [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:(responseString)?responseString:@"Please try again."];
+                            }
+                        }
+                    }
+                }
+
                
             }];
         } else {
@@ -838,6 +919,7 @@
     }];
     
 }
+
 
 - (IBAction)twitterLoginPressed:(id)sender {
     

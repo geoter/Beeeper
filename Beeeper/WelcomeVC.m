@@ -224,7 +224,7 @@
     } else {
         // Open a session showing the user the login UI
         // You must ALWAYS ask for basic_info permissions when opening a session
-        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile",@"email"]
                                            allowLoginUI:YES
                                       completionHandler:
          ^(FBSession *session, FBSessionState state, NSError *error) {
@@ -434,20 +434,23 @@
 }
 
 -(void)hideSplashScreen{
+    dispatch_async (dispatch_get_main_queue(), ^{
+           
+        UIView *backV = (id)[self.view viewWithTag:323];
+        UIImageView *imgV = (id)[backV viewWithTag:454];
+        
+        [UIView animateWithDuration:0.5
+                         animations:^{
+                             CGAffineTransform transform = imgV.transform;
+                             imgV.transform = CGAffineTransformScale(transform, 1.5 , 1.5);
+                             backV.alpha = 0;
+                             
+                         } completion:^(BOOL finished){
+                             [backV removeFromSuperview];
+                         }];
     
-    UIView *backV = (id)[self.view viewWithTag:323];
-    UIImageView *imgV = (id)[backV viewWithTag:454];
+    });
     
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         CGAffineTransform transform = imgV.transform;
-                         imgV.transform = CGAffineTransformScale(transform, 1.5 , 1.5);
-                         backV.alpha = 0;
-                         
-                     } completion:^(BOOL finished){
-                               [backV removeFromSuperview];
-                     }];
-
 }
 
 @end

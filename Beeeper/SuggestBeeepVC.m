@@ -207,7 +207,7 @@
     [self closePressed:nil];
 }
 
-- (IBAction)sendPressed:(id)sender {
+- (IBAction)sendPressed:(UIButton *)sender {
     
     if (selectedPeople.count == 0) {
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Beeepers selected" message:@"Please select at least on Beeeper user." delegate:selectedPeople cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -222,7 +222,20 @@
             [users_ids addObject:[user objectForKey:@"id"]];
         }
         
+        [sender setUserInteractionEnabled:NO];
+
+        UIActivityIndicatorView *activityInd = [[UIActivityIndicatorView alloc]initWithFrame:sender.bounds];
+        activityInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+        [sender setTitle:@"" forState:UIControlStateNormal];
+        [sender addSubview:activityInd];
+        [activityInd startAnimating];
+        
         [[BPSuggestions sharedBP]suggestEvent:self.fingerprint toUsers:users_ids withCompletionBlock:^(BOOL completed,NSArray *objs){
+            
+            [activityInd removeFromSuperview];
+            [sender setTitle:@"Send" forState:UIControlStateNormal];
+            [sender setUserInteractionEnabled:YES];
+            
             if (completed) {
                 [SVProgressHUD setBackgroundColor:[UIColor colorWithRed:52/255.0 green:134/255.0 blue:57/255.0 alpha:1]];
                 [SVProgressHUD showSuccessWithStatus:@"Suggested!"];

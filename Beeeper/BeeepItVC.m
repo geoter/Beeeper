@@ -795,7 +795,7 @@
 
 }
 
-- (IBAction)beeepIt:(id)sender {
+- (IBAction)beeepIt:(UIButton *)sender {
     
     Timeline_Object *t = tml; //one of those two will be used
     Friendsfeed_Object *ffo = tml;
@@ -835,7 +835,21 @@
     NSString *beepTime= [NSString stringWithFormat:@"%d",beep_time];
     //Edw exei provlima,otan pas na kaneis kenurgio beep,mallon to fingerprint ine keno
     if (timestamp > 0 && fingerPrint != nil) { //Create beeep
+        
+        UIActivityIndicatorView *activityInd = [[UIActivityIndicatorView alloc]initWithFrame:sender.bounds];
+        activityInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+        [sender setImage:nil forState:UIControlStateNormal];
+        [sender addSubview:activityInd];
+        [activityInd startAnimating];
+        
+        sender.userInteractionEnabled = NO;
+        
         [[BPCreate sharedBP]beeepCreate:fingerPrint beeep_time:beepTime completionBlock:^(BOOL completed,NSDictionary *objs){
+            
+            sender.userInteractionEnabled = YES;
+            [activityInd stopAnimating];
+            [activityInd removeFromSuperview];
+            [sender setImage:[UIImage imageNamed:@"beeepItIcon"] forState:UIControlStateNormal];
             if (completed) {
                 
                 if ([objs isKindOfClass:[NSDictionary class]]) {

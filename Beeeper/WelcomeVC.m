@@ -86,50 +86,7 @@
 
     if ([method rangeOfString:@"FB"].location != NSNotFound) {
         
-        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
-        {
-            @try {
-                
-                ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
-                
-                ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-                
-                NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                         @"222125061288499", ACFacebookAppIdKey,
-                                         [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
-                                         nil];
-                NSArray *accounts = [accountStore accountsWithAccountType:fbAcc];
-                
-                ACAccount *fbAccount;
-                
-                for (ACAccount *acc in accounts) {
-                     NSString  *fbID = [NSString stringWithFormat:@"%@",[acc valueForKeyPath:@"properties.uid"]];
-                    if ([method rangeOfString:fbID].location != NSNotFound) {
-                        fbAccount = acc;
-                    }
-                }
-                
-                if (fbAccount != nil) {
-                    
-                    [self attemptFBLogin:fbAccount];
-                    
-                }
-                else{
-                    [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
-                }
-                
-            }
-            @catch (NSException *exception) {
-                [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:1.0];
-            }
-            @finally {
-                
-            }
-        }
-        else
-        {
-            [self performSelector:@selector(hideSplashScreen) withObject:nil afterDelay:0.0];
-        }
+        [self fbLogin];
 
     }
     else if ([method rangeOfString:@"TW"].location != NSNotFound){
@@ -243,29 +200,71 @@
 
 -(void)attemptFBLogin:(ACAccount *)account{
     
-    id fbID = [account valueForKeyPath:@"properties.uid"];
-    NSLog(@"Facebook ID: %@, FullName: %@", fbID, account.userFullName);
+    [self fbLogin];
+}
+
+- (void)fbLogin
+{
     
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    
-    [dict setObject:fbID forKey:@"id"];
-    
-    NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
-    [dict setObject:userImageURL forKey:@"image"];
-    
-    
-    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
-        dispatch_async (dispatch_get_main_queue(), ^{
-            
-            if (completed) {
-                [self loginPressed:@"FB"];
-            }
-            else{
-                [self hideSplashScreen];
-            }
-        });
+    // If the session state is any of the two "open" states when the button is clicked
+    if (FBSession.activeSession.state == FBSessionStateOpen
+        || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
         
+        [self loginFBuser];
+        
+        // Close the session and remove the access token from the cache
+        // The session state handler (in the app delegate) will be called automatically
+        //[FBSession.activeSession closeAndClearTokenInformation];
+        
+        //AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+        // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+        //[appDelegate sessionStateChanged:FBSession.activeSession state:FBSession.activeSession.state error:NULL];
+        
+        // If the session state is not any of the two "open" states when the button is clicked
+    } else {
+        // Open a session showing the user the login UI
+        // You must ALWAYS ask for basic_info permissions when opening a session
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:YES
+                                      completionHandler:
+         ^(FBSession *session, FBSessionState state, NSError *error) {
+             
+             
+             
+             if (FBSessionStateOpen == state) {
+                 [self loginFBuser];
+             }
+             else{
+                 [self hideSplashScreen];
+             }
+         }];
+    }
+}
+
+-(void)loginFBuser{
+    
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"user info: %@", result);
+            
+            NSMutableDictionary *dict  = [NSMutableDictionary dictionaryWithDictionary:result];
+            
+            NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [result objectForKey:@"id"]];
+            [dict setObject:userImageURL forKey:@"image"];
+            
+            [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    [self loginPressed:@"FB"];
+                }
+                
+            }];
+        } else {
+            // An error occurred, we need to handle the error
+            // See: https://developers.facebook.com/docs/ios/errors
+        }
     }];
+    
 }
 
 - (IBAction)loginPressed:(id)sender {

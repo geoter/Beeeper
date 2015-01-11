@@ -40,6 +40,8 @@
     
     int fbSelectedAccountIndex;
     int twSelectedAccountIndex;
+    
+    int facebookLoginAlreadyFailed;
 }
 @property (nonatomic,strong)  ACAccountStore *accountStore;
 @end
@@ -746,110 +748,94 @@
 
 #pragma mark - Autologin
 
-- (IBAction)fbLoginPressed:(id)sender {
+- (IBAction)fbLoginPressed:(id)sender
+{
     
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    [reachability startNotifier];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideLoading) name:@"FBLoginFailed" object:nil];
     
-    NetworkStatus status = [reachability currentReachabilityStatus];
-    
-    if(status == NotReachable)
-    {
-        [self hideLoadingWithTitle:@"No Internet connection" ErrorMessage:@"Please enable Wifi or Cellular data."];
-        return;
-    }
-    
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) // check Facebook is configured in Settings or not
-    {
-        accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
+    // If the session state is any of the two "open" states when the button is clicked
+    if (FBSession.activeSession.state == FBSessionStateOpen
+        || FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
         
-        ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+        [self loginFBuser];
         
-        NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 @"222125061288499", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
-                                 nil];
+        // Close the session and remove the access token from the cache
+        // The session state handler (in the app delegate) will be called automatically
+         //[FBSession.activeSession closeAndClearTokenInformation];
         
-        [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
-         {
-             if (granted)
-             {
-                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
-                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
+        //AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+        // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+        //[appDelegate sessionStateChanged:FBSession.activeSession state:FBSession.activeSession.state error:NULL];
+        
+        // If the session state is not any of the two "open" states when the button is clicked
+    } else {
+        // Open a session showing the user the login UI
+        // You must ALWAYS ask for basic_info permissions when opening a session
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:YES
+                                      completionHandler:
+         ^(FBSession *session, FBSessionState state, NSError *error) {
+             
+            
+             
+             if (FBSessionStateOpen == state) {
+                 [self loginFBuser];
+             }
+             else{
                  
-                 if (usernames.count > 1) {
+                 if (!facebookLoginAlreadyFailed) {
                      
-                     [self hideLoading];
+                     facebookLoginAlreadyFailed = YES;
                      
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
-                     popup.tag = 79;
+                     [FBSession.activeSession closeAndClearTokenInformation];
                      
-                     for (NSString *name in usernames) {
-                         [popup addButtonWithTitle:name];
-                     }
-                     
-                     [popup addButtonWithTitle:@"Cancel"];
-                     
-                     popup.cancelButtonIndex = popup.numberOfButtons -1;
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [popup showInView:self.view];
-                     });
-                     
-                 }
-                 else if(usernames.count == 1){
-                     
-                     fbSelectedAccountIndex = 0;
-                     
-                     ACAccount *fbAccount = [[accountStore accountsWithAccountType:fbAcc] firstObject];
-                     
-                     [self attemptFBLogin:fbAccount];
-                     
+                     [self fbLoginPressed:nil];
                  }
                  else{
                      
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         
-                         [self hideLoading];
-                         
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings> Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert show];
-                     });
+                     // Retrieve the app delegate
+                     AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+                     // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+                     [appDelegate sessionStateChanged:session state:state error:error];
                      
+                     [self hideLoading];
                  }
-             }
-             else
-             {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     
-                     [self performSelectorOnMainThread:@selector(hideLoading) withObject:nil waitUntilDone:NO];
-                     
-                     if (error == nil) {
-                         NSLog(@"User Has disabled your app from settings...");
-                         [self hideLoadingWithTitle:@"Beeeper Disabled" ErrorMessage:@"Please go to Settings > Facebook and set Beeeper to on."];
-                     }
-                     else
-                     {
-                         NSLog(@"Error in Login: %@", error);
-                         
-                         [self hideLoadingWithTitle:@"Error" ErrorMessage:@"Something went wrong.Please try again."];
-                         
-                     }
-                     
-                 });
+
              }
          }];
     }
-    else
-    {
-        
-        [self hideLoadingWithTitle:@"No Facebook account found" ErrorMessage: @"Please go to Settings > Facebook and sign in with your Facebook account."];
-        
-        NSLog(@"Not Configured in Settings......"); // show user an alert view that Twitter is not configured in settings.
-        
-        
-    }
+}
+
+-(void)loginFBuser{
     
+    facebookLoginAlreadyFailed = NO;
+    
+    [self showLoading];
+    
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // Success! Include your code to handle the results here
+            NSLog(@"user info: %@", result);
+            
+            NSMutableDictionary *dict  = [NSMutableDictionary dictionaryWithDictionary:result];
+            
+            NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [result objectForKey:@"id"]];
+            [dict setObject:userImageURL forKey:@"image"];
+            
+            [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *user){
+                if (completed) {
+                    
+                    [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",[dict objectForKey:@"id"]]];
+                    
+                    [self loginPressed:@"FB"];
+                }
+               
+            }];
+        } else {
+            // An error occurred, we need to handle the error
+            // See: https://developers.facebook.com/docs/ios/errors
+        }
+    }];
     
 }
 
@@ -1022,61 +1008,6 @@
     
 }
 
-- (void)attemptFBLogin:(ACAccount *)account{
-    
-    [self showLoading];
-    
-    static int number_of_attempts = 0;
-    
-    id fbID = [account valueForKeyPath:@"properties.uid"];
-    NSLog(@"Facebook ID: %@, FullName: %@", fbID, account.userFullName);
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    
-    [dict setObject:fbID forKey:@"id"];
-    
-    NSString *userImageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", fbID];
-    [dict setObject:userImageURL forKey:@"image"];
-    
-    //fb user login failure
-    //tw user login failure
-    //user not found
-    
-    [[BPUser sharedBP]loginFacebookUser:dict completionBlock:^(BOOL completed,NSString *responseString){
-        if (completed) {
-            [self setSelectedLoginMethod:[NSString stringWithFormat:@"FB-%@",fbID]];
-            [self performSelector:@selector(loginPressed:) withObject:nil afterDelay:0.0];
-        }
-        else{
-            if (fbID != nil && number_of_attempts < 3) {
-                [self attemptFBLogin:account];
-                number_of_attempts ++;
-            }
-            else{
-                number_of_attempts = 0;
-                
-                Reachability *reachability = [Reachability reachabilityForInternetConnection];
-                [reachability startNotifier];
-                
-                NetworkStatus status = [reachability currentReachabilityStatus];
-                
-                if(status == NotReachable)
-                {
-                    [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:@"Make sure you are connected to the Internet and try again."];
-                }
-                else{
-                    if ([responseString rangeOfString:@"fb user login failure"].location != NSNotFound) {
-                        [self fbSignupwithAccount:fbSelectedAccountIndex];
-                    }
-                    else{
-                        [self hideLoadingWithTitle:@"Facebook login failed." ErrorMessage:(responseString)?responseString:@"Please try again."];
-                    }
-                }
-            }
-        }
-        
-    }];
-}
 
 - (void)setSelectedLoginMethod:(id)value{
     
@@ -1114,11 +1045,7 @@
         return;
     }
     
-    if(actionSheet.tag == 79){
-        fbSelectedAccountIndex = buttonIndex;
-        [self attemptFBLogin:[accounts objectAtIndex:fbSelectedAccountIndex]];
-    }
-    else if (actionSheet.tag == 80) { // twitter
+    if (actionSheet.tag == 80) { // twitter
         twSelectedAccountIndex = buttonIndex;
         [self attemptTwitterLogin:[accounts objectAtIndex:twSelectedAccountIndex]];
     }

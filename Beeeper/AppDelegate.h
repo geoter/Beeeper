@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
-#import "LoginVC.h"
+#import "ChooseLoginVC.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 {
-    LoginVC *loginVC;
+    ChooseLoginVC *loginVC;
 }
 @property (strong, nonatomic) UIWindow *window;
 

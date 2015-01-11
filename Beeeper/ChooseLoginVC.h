@@ -16,5 +16,5 @@
 - (IBAction)forgotPassPressed:(id)sender;
 - (IBAction)fbLoginPressed:(id)sender;
 - (IBAction)twitterLoginPressed:(id)sender;
-
+- (void)hideLoading;
 @end

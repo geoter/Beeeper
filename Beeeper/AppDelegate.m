@@ -142,42 +142,18 @@
 //    
 //    
 //    
-//    // Whenever a person opens the app, check for a cached session
-//    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
-//        NSLog(@"Found a cached session");
-//        // If there's one, just open the session silently, without showing the user the login UI
-//        [FBSession openActiveSessionWithReadPermissions:@[@"basic_info"]
-//                                           allowLoginUI:NO
-//                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-//                                          // Handler for session state changes
-//                                          // This method will be called EACH time the session state changes,
-//                                          // also for intermediate states and NOT just when the session open
-//                                          [self sessionStateChanged:session state:state error:error];
-//                                      }];
-//        
-//        // If there's no cached session, we will show a login button
-//    } else { //check for Twitter
-//        
-//        ACAccountStore *account = [[ACAccountStore alloc] init];
-//        ACAccountType *accountType = [account accountTypeWithAccountTypeIdentifier:
-//                                      ACAccountTypeIdentifierTwitter];
-//        
-//        if (accountType.accessGranted) {
-//            // Get account and communicate with Twitter API
-//            NSArray *arrayOfAccounts = [account
-//                                        accountsWithAccountType:accountType];
-//            
-//            if ([arrayOfAccounts count] > 0)
-//            {
-//                ACAccount *twitterAccount = [arrayOfAccounts lastObject];
-//                [loginVC performSegueWithIdentifier:@"home" sender:loginVC];
-//            }
-//
-//        }
-//        
-//    }
-
-
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+        
+        // If there's one, just open the session silently, without showing the user the login UI
+        [FBSession openActiveSessionWithReadPermissions:@[@"public_profile"]
+                                           allowLoginUI:NO
+                                      completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                          // Handler for session state changes
+                                          // This method will be called EACH time the session state changes,
+                                          // also for intermediate states and NOT just when the session open
+                                          [self sessionStateChanged:session state:state error:error];
+                                      }];
+    }
     
     return YES;
 }
@@ -216,14 +192,14 @@
     if (!error && state == FBSessionStateOpen){
         NSLog(@"Session opened");
         // Show the user the logged-in UI
-        [self userLoggedIn];
+        //[self userLoggedIn];
         return;
     }
     if (state == FBSessionStateClosed || state == FBSessionStateClosedLoginFailed){
         // If the session is closed
         NSLog(@"Session closed");
         // Show the user the logged-out UI
-        [self userLoggedOut];
+       // [self userLoggedOut];
     }
     
     // Handle errors
@@ -263,35 +239,21 @@
         // Clear this token
         [FBSession.activeSession closeAndClearTokenInformation];
         // Show the user the logged-out UI
-        [self userLoggedOut];
+        //[self userLoggedOut];
     }
 }
 
-// Show the user the logged-out UI
-- (void)userLoggedOut
-{
-    // Set the button title as "Log in with Facebook"
-//    UIButton *loginButton = [self.customLoginViewController loginButton];
-//    [loginButton setTitle:@"Log in with Facebook" forState:UIControlStateNormal];
-//    
-//    // Confirm logout message
-//    [self showMessage:@"You're now logged out" withTitle:@""];
-}
-
-// Show the user the logged-in UI
-- (void)userLoggedIn
-{
-    [loginVC fbLoginPressed:nil];
-}
 
 // Show an alert message
 - (void)showMessage:(NSString *)text withTitle:(NSString *)title
 {
-    [[[UIAlertView alloc] initWithTitle:title
+   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                 message:text
                                delegate:self
-                      cancelButtonTitle:@"OK!"
-                      otherButtonTitles:nil] show];
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"FBLoginFailed" object:nil];
 }
 
 // During the Facebook login flow, your app passes control to the Facebook iOS app or Facebook in a mobile browser.

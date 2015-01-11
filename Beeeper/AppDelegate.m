@@ -33,8 +33,8 @@
     //enable preview mode
 //    [iRate sharedInstance].previewMode = YES;
     
-    if (IS_IPHONE_6) {
-        
+    if (IS_IPHONE_6P || IS_IPHONE_6) {
+   
         UIViewController *rootViewController = [[[DTO sharedDTO]storyboardWithNameDeviceSpecific:@"Main"] instantiateViewControllerWithIdentifier:@"WelcomeVCNavigation"];
         self.window.rootViewController = rootViewController;
         [self.window makeKeyAndVisible];

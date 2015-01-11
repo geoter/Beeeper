@@ -1233,7 +1233,7 @@
                                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </state>
-                                                <state key="highlighted" title="5 minutes before">
+                                                <state key="highlighted" title="5 min before">
                                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="titleShadowColor" red="0.97647064924240112" green="0.84313732385635376" blue="0.18823531270027161" alpha="0.0" colorSpace="deviceRGB"/>
                                                 </state>

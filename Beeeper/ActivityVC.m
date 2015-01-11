@@ -454,7 +454,7 @@
         return 51;
     }
     else{
-        return 60;
+        return (IS_IPHONE_6P)?70:60;
     }
 }
 

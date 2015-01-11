@@ -226,7 +226,7 @@
         CGFloat height = textViewSize.height;
         CGFloat minHeight = 60;
         
-        if (IS_IPHONE_6) {
+        if (IS_IPHONE_6 || IS_IPHONE_6P) {
             minHeight = 76;
         }
         return (height>minHeight)?height:minHeight;
@@ -235,7 +235,7 @@
         
         CGFloat minHeight = 60;
         
-        if (IS_IPHONE_6) {
+        if (IS_IPHONE_6 || IS_IPHONE_6P) {
             minHeight = 76;
         }
 

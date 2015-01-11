@@ -515,7 +515,7 @@
    
     titleLbl.text = [event.eventFfo.eventDetailsFfo.title capitalizedString];
     [titleLbl sizeToFit];
-    [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y, 119, titleLbl.frame.size.height)];
+    [titleLbl setFrame:CGRectMake(titleLbl.frame.origin.x, titleLbl.frame.origin.y,119, titleLbl.frame.size.height)];
     
 //    CGSize size = [self frameForText:titleLbl.attributedText constrainedToSize:CGSizeMake(116, CGFLOAT_MAX)];
     
@@ -530,7 +530,7 @@
     
     UIImageView *areaIcon = (id)[containerV viewWithTag:-1];
     
-    area.frame = CGRectMake(area.frame.origin.x, 190, 108, 32);
+    area.frame = CGRectMake(area.frame.origin.x, (IS_IPHONE_6P)?224:190, 108, 32);
     
     //area.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
     area.textColor = [UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1];
@@ -696,7 +696,16 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
 //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
 //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return (IS_IPHONE_6)?CGSizeMake(176, (selectedIndex == 1)?350:303):CGSizeMake(148, (selectedIndex == 1)?327:303);
+    if (IS_IPHONE_6P) {
+        return CGSizeMake(196, 383);
+    }
+    else if (IS_IPHONE_6){
+        return CGSizeMake(176, 350);
+    }
+    else{
+        return CGSizeMake(148, 327);
+    }
+    
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //

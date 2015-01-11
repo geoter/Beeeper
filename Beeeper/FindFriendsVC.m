@@ -33,7 +33,6 @@
     
     NSMutableArray *searchedPeople;
     NSMutableArray *searchedBeeepers;
-    NSMutableArray *searchedFBFriends;
     
     UIGestureRecognizer* cancelGesture;
     
@@ -124,9 +123,7 @@
 -(void)createTableViewHeader{
     
     //search
-    
 
-    
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 44)];
     /*the search bar widht must be > 1, the height must be at least 44
      (the real size of the search bar)*/
@@ -147,7 +144,7 @@
     
     //on the top of tableView
     
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6)?136:124)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6|| IS_IPHONE_6P)?136:124)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     UIView *topLine = [[UIView alloc]initWithFrame:CGRectMake(0,0, self.tableV.frame.size.width, 1)];
@@ -157,12 +154,31 @@
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?94:81), 1, ((IS_IPHONE_6)?93:80), ((IS_IPHONE_6)?93:80))];
         
-        if (IS_IPHONE_6) {
+        CGRect rect;
+        
+        if (IS_IPHONE_6P) {
+            rect =  CGRectMake(i*105, 1, 104, 93);
+        }
+        else if (IS_IPHONE_6){
+            rect =  CGRectMake(i*94, 1, 93, 93);
+        }
+        else{
+            rect =  CGRectMake(i*81, 1, 80, 80);
+        }
+        
+        UIButton *btn = [[UIButton alloc]initWithFrame:rect];
+        
+        if (IS_IPHONE_6 ) {
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateSelected];
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateHighlighted];
+        }
+        else if (IS_IPHONE_6P) {
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6+",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6+",i]] forState:UIControlStateHighlighted];
         }
         else{
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
@@ -180,11 +196,19 @@
         }
     }
     
-    searchBar.frame = CGRectMake(0, (IS_IPHONE_6)?((selectedOption == MailButton)?126:94):((selectedOption == MailButton)?125:80), searchBar.frame.size.width, searchBar.frame.size.height);
+    if (IS_IPHONE_6) {
+       searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?126:94, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
+    else if (IS_IPHONE_6P){
+        searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?126:94, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
+    else{
+    searchBar.frame = CGRectMake(0,(selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
     
     [headerV addSubview:searchBar];
     
-    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,(IS_IPHONE_6)?94:80, self.tableV.frame.size.width, 1)];
+    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,(IS_IPHONE_6 || IS_IPHONE_6P)?94:80, self.tableV.frame.size.width, 1)];
     [bottomLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
     [headerV addSubview:bottomLine];
     
@@ -219,19 +243,37 @@
     
     //UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, (selectedOption == MailButton)?163:124)];
 
-    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6)?180:168)];
+    UIView *headerV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, (IS_IPHONE_6 || IS_IPHONE_6P)?180:168)];
     headerV.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1.0];
     
     
     //Buttons
     
     for (int i = 0; i <= 3; i++) {
-         UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(i*((IS_IPHONE_6)?94:81), 0, ((IS_IPHONE_6)?93:80), ((IS_IPHONE_6)?93:80))];
+       
+        CGRect rect;
+        
+        if (IS_IPHONE_6P) {
+            rect =  CGRectMake(i*105, 1, 104, 93);
+        }
+        else if (IS_IPHONE_6){
+            rect =  CGRectMake(i*94, 1, 93, 93);
+        }
+        else{
+            rect =  CGRectMake(i*81, 1, 80, 80);
+        }
+        
+        UIButton *btn = [[UIButton alloc]initWithFrame:rect];
         
         if (IS_IPHONE_6) {
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateSelected];
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6",i]] forState:UIControlStateHighlighted];
+        }
+        else if (IS_IPHONE_6P) {
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6+",i]] forState:UIControlStateSelected];
+            [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_6+",i]] forState:UIControlStateHighlighted];
         }
         else{
             [btn setImage:[UIImage imageNamed:[NSString stringWithFormat:@"option_%d_gray",i]] forState:UIControlStateNormal];
@@ -257,7 +299,7 @@
         [headerV addSubview:topLine];
         
         UIButton *inviteSmsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        inviteSmsBtn.frame = CGRectMake(0,(IS_IPHONE_6)?94:81, self.tableV.frame.size.width/2,45);
+        inviteSmsBtn.frame = CGRectMake(0,(IS_IPHONE_6 || IS_IPHONE_6P)?94:81, self.tableV.frame.size.width/2,45);
         
         if (option == 0) {
             [inviteSmsBtn setBackgroundColor:[UIColor colorWithRed:163/255.0 green:172/255.0 blue:179/255.0 alpha:1]];
@@ -275,7 +317,7 @@
         [headerV addSubview:inviteSmsBtn];
         
         UIButton *inviteEmailBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        inviteEmailBtn.frame = CGRectMake(inviteSmsBtn.frame.size.width,(IS_IPHONE_6)?94:81, self.tableV.frame.size.width/2,45);
+        inviteEmailBtn.frame = CGRectMake(inviteSmsBtn.frame.size.width,(IS_IPHONE_6 || IS_IPHONE_6P)?94:81, self.tableV.frame.size.width/2,45);
         
         if (option == 0) {
             
@@ -294,13 +336,25 @@
         
         [headerV addSubview:inviteEmailBtn];
         
-        UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,inviteEmailBtn.frame.origin.y+inviteEmailBtn.frame.size.height, self.tableV.frame.size.width, 1)];
+        UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,inviteEmailBtn.frame.origin.y+inviteEmailBtn.frame.size.height+1, self.tableV.frame.size.width, 1)];
         [bottomLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
         
         [headerV addSubview:bottomLine];
     }
     
-     searchBar.frame = CGRectMake(0, (IS_IPHONE_6)?((selectedOption == MailButton)?138:93):((selectedOption == MailButton)?125:80), searchBar.frame.size.width, searchBar.frame.size.height);
+    if (IS_IPHONE_6) {
+        searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?138:93, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
+    else if (IS_IPHONE_6P){
+        searchBar.frame = CGRectMake(0, (selectedOption == MailButton)?138:93, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
+    else{
+        searchBar.frame = CGRectMake(0,(selectedOption == MailButton)?125:80, searchBar.frame.size.width, searchBar.frame.size.height);
+    }
+
+    UIView *bottomLine = [[UIView alloc]initWithFrame:CGRectMake(0,(IS_IPHONE_6 || IS_IPHONE_6P)?94:80, self.tableV.frame.size.width, 1)];
+    [bottomLine setBackgroundColor:[UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1]];
+    [headerV addSubview:bottomLine];
     
     [headerV addSubview:searchBar];
     
@@ -717,183 +771,120 @@
 }
 
 -(void)requestFBFriends{
-//    
-//    [self inviteFBFriendsPressed];
-//    
-//    return;
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]){
-        
-        ACAccountStore *accountStore = [[ACAccountStore alloc] init]; // you have to retain ACAccountStore
-        
-        ACAccountType *fbAcc = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-        
-        NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 @"222125061288499", ACFacebookAppIdKey,
-                                 [NSArray arrayWithObjects:@"email",@"user_friends",nil], ACFacebookPermissionsKey,
-                                 nil];
-
-        
-        [accountStore requestAccessToAccountsWithType:fbAcc options:options completion:^(BOOL granted, NSError *error)
-         {
-             if (granted)
-             {
-              
-                 accounts = [NSArray arrayWithArray:[accountStore accountsWithAccountType:fbAcc]];
-                 usernames = [NSArray arrayWithArray:[accounts valueForKey:@"username"]];
-                 
-                 if (usernames.count == 0) {
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         
-                         [self hideLoading];
-                         
-                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                         [alert show];
-                     });
-                     
-                     
-                     return ;
-                 }
-
-                
-                 if (usernames.count > 1) {
-                 
-                     [self hideLoading];
-                     
-                     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
-                     
-                     popup.tag = 55;
-                     
-                     for (NSString *name in usernames) {
-                         [popup addButtonWithTitle:name];
-                     }
-                     
-                     [popup addButtonWithTitle:@"Cancel"];
-                     
-                     popup.cancelButtonIndex = popup.numberOfButtons -1;
-                     
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [popup showInView:self.view];
-                     });
-                 }
-                 else{
-                 
-                     ACAccount *facebookAccount = [accounts firstObject];
-                  
-                     [self requestFBFriendsForAccount:facebookAccount];
-                 }
-             }
-             else{
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     
-                     NSLog(@"%@",error);
-                     
-                     [self hideLoading];
-                     
-                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Facebook Access was denied" message:(error)?error.localizedDescription:@"Please go to Settings > Facebook and enable Beeeper." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                     [alert show];
-                 });
-             }
-         }];
-        
-    }
-    else{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            [self hideLoading];
-            
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No accounts found" message:@"Please go to Settings > Facebook and sign in with your Facebook account." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        });
-    }
-}
-
--(void)requestFBFriendsForAccount:(ACAccount *)facebookAccount{
     
-    [self showLoading];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideLoading) name:@"FBLoginFailed" object:nil];
     
-    NSString *accessToken = [NSString stringWithFormat:@"%@",facebookAccount.credential.oauthToken];
-    NSDictionary *parameters = @{@"access_token": accessToken,@"fields":@"id,name"};
-    NSURL *feedURL = [NSURL URLWithString:@"https://graph.facebook.com/me/friends"];
-    SLRequest *feedRequest = [SLRequest
-                              requestForServiceType:SLServiceTypeFacebook
-                              requestMethod:SLRequestMethodGET
-                              URL:feedURL
-                              parameters:parameters];
-    feedRequest.account = facebookAccount;
-    [feedRequest performRequestWithHandler:^(NSData *responseData,
-                                             NSHTTPURLResponse *urlResponse, NSError *error)
-     {
-         
-         NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                            options:0 error:NULL];
-         NSArray *friends = [responseDictionary objectForKey:@"data"];
-         
-         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-         friends=[friends sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-         NSArray *fb_ids = [friends valueForKey:@"id"];
-         NSString *friendStr = [fb_ids componentsJoinedByString:@","];
-         
-         fbPeople = [NSMutableArray arrayWithArray:friends];
-         searchedFBFriends = [NSMutableArray arrayWithArray:friends];
+    
+    // Open a session showing the user the login UI
+    // You must ALWAYS ask for basic_info permissions when opening a session
+    [FBSession openActiveSessionWithReadPermissions:@[@"user_friends"]
+                                       allowLoginUI:YES
+                                  completionHandler:
+     ^(FBSession *session, FBSessionState state, NSError *error) {
          
          
-         [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+         
+         if (FBSessionStateOpen == state) {
+             [self loginFBuser];
+         }
+         else{
              
-             if (selectedOption == FacebookButton) {
-                
-                 if (completed) {
-                     
-                     if (objcts && objcts.count>0) {
-                         
-                         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                         NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-                         
-                         beeepers = [NSMutableArray arrayWithArray:friends];
-                         searchedBeeepers = [NSMutableArray arrayWithArray:friends];
-                         
-                         dispatch_async(dispatch_get_main_queue(), ^{
-
-                             self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
-                
-                             self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
-                             
-                             [self.tableV reloadData];
-                             
-                             [self hideLoading];
-                         });
-                         
-                     }
-                     else{
-                         
-                         self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
-                         
-                         self.noUsersFoundLabel.hidden = (searchedBeeepers.count + searchedFBFriends.count != 0);
-                         
-                         [self.tableV reloadData];
-                         
-                         [self hideLoading];
-                     }
-                 }
-                 else{
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         
-                         [self hideLoading];
-                         [self.tableV reloadData];
-                         
-//                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//                         [alert show];
-                     });
-                     
-                     
-                 }
-             }
-         }];
-         
-         
+             // Retrieve the app delegate
+             AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+             // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+             [appDelegate sessionStateChanged:session state:state error:error];
+             
+             [self hideLoading];
+             
+         }
      }];
-
+    
 }
+
+-(void)loginFBuser{
+    
+    [FBRequestConnection startWithGraphPath:@"/me/friends"
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+
+                              
+                             NSArray *friends = [result objectForKey:@"data"];
+                              
+                              if (friends == nil) {
+                                  [self hideLoading];
+                                  return;
+                              }
+                              
+                              NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                              friends=[friends sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                              NSArray *fb_ids = [friends valueForKey:@"id"];
+                              NSString *friendStr = [fb_ids componentsJoinedByString:@","];
+                              
+                              fbPeople = [NSMutableArray arrayWithArray:friends];
+                              
+                              [[BPUser sharedBP]beeepersFromFB_IDs:friendStr WithCompletionBlock:^(BOOL completed,NSArray *objcts){
+                                  
+                                  if (selectedOption == FacebookButton) {
+                                      
+                                      if (completed) {
+                                          
+                                          if (objcts && objcts.count>0) {
+                                              
+                                              NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+                                              NSArray *friends=[objcts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+                                              
+                                              beeepers = [NSMutableArray arrayWithArray:friends];
+                                              searchedBeeepers = [NSMutableArray arrayWithArray:friends];
+                                              
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  
+                                                  self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
+                                                  
+                                                  self.noUsersFoundLabel.hidden = YES;//(searchedBeeepers.count != 0);
+                                                  
+                                                  [self.tableV reloadData];
+                                                  
+                                                  [self hideLoading];
+                                              });
+                                              
+                                          }
+                                          else{
+                                              
+                                              self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
+                                              
+                                              self.noUsersFoundLabel.hidden = YES
+                                              ;//(searchedBeeepers.count != 0);
+                                              
+                                              [self.tableV reloadData];
+                                              
+                                              [self hideLoading];
+                                          }
+                                      }
+                                      else{
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              
+                                              [self hideLoading];
+                                              [self.tableV reloadData];
+                                              
+                                              //                         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Something went wrong" message:@"Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                              //                         [alert show];
+                                          });
+                                          
+                                          
+                                      }
+                                  }
+                              }];
+                              
+                          }];
+}
+
+
+
 
 -(void)requestTWFriends{
     
@@ -1216,9 +1207,6 @@
         [self requestTWFriendsForAccount:[accounts objectAtIndex:buttonIndex]];
 
     }
-    else{
-        [self requestFBFriendsForAccount:[accounts objectAtIndex:buttonIndex]];
-    }
     
 }
 
@@ -1246,11 +1234,6 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-
-    if (selectedOption == FacebookButton && searchedBeeepers.count > 0) {
-        return 2;
-    }
-    
     return 1;
 }
 
@@ -1259,14 +1242,7 @@
     // Return the number of rows in the section.
     
     if (selectedOption == FacebookButton) {
-        if (section == 0 && searchedBeeepers.count > 0) {
-            return searchedBeeepers.count;
-        }
-        else{
-            return searchedFBFriends.count;
-        }
-        
-        return 0;
+         return searchedBeeepers.count;
     }
     
     return (searchedPeople.count>0 && loadNextPage && selectedOption == BeeeperButton)?(searchedPeople.count+1):searchedPeople.count;
@@ -1323,22 +1299,14 @@
         
         NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
         
-        BOOL isBeeeper = NO;
         
         if (selectedOption == FacebookButton) {
-            if (indexPath.section == 0 && searchedBeeepers.count > 0) {
-                user = [searchedBeeepers objectAtIndex:indexPath.row];
-                isBeeeper = YES;
-            }
-            else{
-                user = [searchedFBFriends objectAtIndex:indexPath.row];
-                isBeeeper = NO;
-            }
+            user = [searchedBeeepers objectAtIndex:indexPath.row];
         }
         
         if (selectedOption != BeeeperButton) {
             
-            if ((selectedOption == FacebookButton && !isBeeeper) || selectedOption == MailButton) {
+            if (selectedOption == MailButton) {
                 
                 tickedV.hidden = NO;
                 fbtickedV.hidden = YES;
@@ -1351,7 +1319,7 @@
                     [tickedV setImage:[UIImage imageNamed:@"suggest_unselected"]];
                 }
             }
-            else if (selectedOption == FacebookButton && isBeeeper) {
+            else if (selectedOption == FacebookButton) {
                 
                 tickedV.hidden = YES;
                 fbtickedV.hidden = YES;
@@ -1409,134 +1377,105 @@
             }
         }
         
+        //applies for email && all other cases
         
-        if (selectedOption == FacebookButton && !isBeeeper) {
+        NSString *name =[[user objectForKey:@"name"] capitalizedString];
+        NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
+        
+        if (emailInviteSelectedOption == 0) {
             
-            txtF.text = [user objectForKey:@"name"];
+            NSArray *phones= [user objectForKey:@"phones"];
+            NSMutableString *phonesStr = [[NSMutableString alloc]init];
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            if (phones.count > 0) {
+                
+                for (NSString *phone in phones) {
+                    [phonesStr appendFormat:@"%@ ,",phone];
+                }
+                [phonesStr deleteCharactersInRange:NSMakeRange([phonesStr length]-1, 1)];
+                
+            }
             
-            NSString *imagePath = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture",[user objectForKey:@"id"]];
-            
-            NSString *imageName = [NSString stringWithFormat:@"%@",[imagePath MD5]];
-            
-            NSString *localPath = [documentsDirectoryPath stringByAppendingPathComponent:imageName];
-            
-            if ([[NSFileManager defaultManager]fileExistsAtPath:localPath]) {
-                userImage.backgroundColor = [UIColor clearColor];
-                userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                UIImage *img = [UIImage imageWithContentsOfFile:localPath];
-                userImage.image = img;
+            if (name && lastname) {
+                txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
+            }
+            else if(name == nil && lastname == nil && phones.count > 0){
+                
+                txtF.text = phonesStr;
             }
             else{
-                userImage.backgroundColor = [UIColor lightGrayColor];
-                
-                [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
-                             placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-                
+                txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
             }
+            
+            detailstxtF.text = phonesStr;
+            
         }
         else{
             
-            //applies for email && all other cases
+            NSArray *emails= [user objectForKey:@"emails"];
+            NSMutableString *emailsStr = [[NSMutableString alloc]init];
             
-            NSString *name =[[user objectForKey:@"name"] capitalizedString];
-            NSString *lastname =[[user objectForKey:@"lastname"] capitalizedString];
+            if (emails.count > 0) {
+                
+                for (NSString *email in emails) {
+                    [emailsStr appendFormat:@"%@ ,",email];
+                }
+                [emailsStr deleteCharactersInRange:NSMakeRange([emailsStr length]-1, 1)];
+                
+            }
             
-            if (emailInviteSelectedOption == 0) {
+            if (name && lastname) {
+                txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
+            }
+            else if(name == nil && lastname == nil && emails.count > 0){
                 
-                NSArray *phones= [user objectForKey:@"phones"];
-                NSMutableString *phonesStr = [[NSMutableString alloc]init];
+                txtF.text = emailsStr;
+            }
+            else{
+                txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
+            }
+            
+            detailstxtF.text = emailsStr;
+            
+        }
+        
+        
+        NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *imagePath = [user objectForKey:@"image_path"];
+        
+        @try {
+            
+            if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
                 
-                if (phones.count > 0) {
-                    
-                    for (NSString *phone in phones) {
-                        [phonesStr appendFormat:@"%@ ,",phone];
-                    }
-                    [phonesStr deleteCharactersInRange:NSMakeRange([phonesStr length]-1, 1)];
-                    
-                }
-                
-                if (name && lastname) {
-                    txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
-                }
-                else if(name == nil && lastname == nil && phones.count > 0){
-                    
-                    txtF.text = phonesStr;
-                }
-                else{
-                    txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
-                }
-                
-                detailstxtF.text = phonesStr;
-                
+                [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
+                             placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
             }
             else{
                 
-                NSArray *emails= [user objectForKey:@"emails"];
-                NSMutableString *emailsStr = [[NSMutableString alloc]init];
+                userImage.image = nil;
                 
-                if (emails.count > 0) {
-                    
-                    for (NSString *email in emails) {
-                        [emailsStr appendFormat:@"%@ ,",email];
-                    }
-                    [emailsStr deleteCharactersInRange:NSMakeRange([emailsStr length]-1, 1)];
-                    
-                }
-                
-                if (name && lastname) {
-                    txtF.text = [NSString stringWithFormat:@"%@ %@",[[user objectForKey:@"name"] capitalizedString],[[user objectForKey:@"lastname"] capitalizedString]];
-                }
-                else if(name == nil && lastname == nil && emails.count > 0){
-                    
-                    txtF.text = emailsStr;
+                UIImage *imageContact = [user objectForKey:@"image"];
+                if (imageContact != nil) {
+                    userImage.image = imageContact;
+                    userImage.backgroundColor = [UIColor clearColor];
                 }
                 else{
-                    txtF.text = [NSString stringWithFormat:@"%@",([[user objectForKey:@"name"] capitalizedString])?[[user objectForKey:@"name"] capitalizedString]:[[user objectForKey:@"lastname"] capitalizedString]];
+                    userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
                 }
                 
-                detailstxtF.text = emailsStr;
-                
             }
             
             
-            NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             
-            NSString *imagePath = [user objectForKey:@"image_path"];
-            
-            @try {
-                
-                if (imagePath != nil && ![imagePath isKindOfClass:[NSNull class]]) {
-                    
-                    [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
-                                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
-                }
-                else{
-                    
-                    userImage.image = nil;
-                    
-                    UIImage *imageContact = [user objectForKey:@"image"];
-                    if (imageContact != nil) {
-                        userImage.image = imageContact;
-                        userImage.backgroundColor = [UIColor clearColor];
-                    }
-                    else{
-                        userImage.image = [UIImage imageNamed:@"user_icon_180x180"];
-                    }
-                    
-                }
-                
-                
-                
-            }
-            @catch (NSException *exception) {
-                NSLog(@"provlima");
-            }
-            @finally {
-                
-            }
         }
+        @catch (NSException *exception) {
+            NSLog(@"provlima");
+        }
+        @finally {
+            
+        }
+        
         
 
     }
@@ -1560,12 +1499,7 @@
     NSMutableDictionary *user = (selectedOption == FacebookButton)?nil:[searchedPeople objectAtIndex:indexPath.row];
    
     if (selectedOption == FacebookButton) {
-        if (searchedBeeepers.count > 0 && indexPath.section == 0) {
-            user  = [searchedBeeepers objectAtIndex:indexPath.row];
-        }
-        else{
-            user  = [searchedFBFriends objectAtIndex:indexPath.row];
-        }
+        user  = [searchedBeeepers objectAtIndex:indexPath.row];
     }
     
     BOOL isBeeeper = (beeepers != nil && [beeepers indexOfObject:user] != NSNotFound);
@@ -1844,30 +1778,11 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (selectedOption == FacebookButton) {
-        if (indexPath.section == 1) {
-            if (indexPath.row == searchedFBFriends.count) {
-                return 40;
-            }
-            else{
-                return 61;
-            }
-        }
-        else if (indexPath.section == 0 && searchedBeeepers.count == 0){
-           
-            if (indexPath.row == searchedFBFriends.count) {
-                return 40;
-            }
-            else{
-                return 61;
-            }
+        if (indexPath.row == searchedBeeepers.count) {
+            return 40;
         }
         else{
-            if (indexPath.row == searchedBeeepers.count) {
-                return 40;
-            }
-            else{
-                return 61;
-            }
+            return (IS_IPHONE_6P)?71:61;
         }
     }
     
@@ -1875,7 +1790,7 @@
         return 40;
     }
     else{
-        return 61;
+        return (IS_IPHONE_6P)?71:61;
     }
 }
 
@@ -1891,7 +1806,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
-    if (selectedOption == FacebookButton && searchedBeeepers.count+searchedFBFriends.count > 0) {
+    if (selectedOption == FacebookButton) {
        
         UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 47)];
         header.backgroundColor = [UIColor colorWithRed:218/255.0 green:223/255.0 blue:226/255.0 alpha:1];
@@ -1902,60 +1817,64 @@
         
         [header addSubview:lbl];
         
+        if (searchedBeeepers.count == 1) {
+            lbl.text = [NSString stringWithFormat:@"%d Facebook Friend on Beeeper",searchedBeeepers.count];
+        }
+        else{
+            lbl.text = [NSString stringWithFormat:@"%d Facebook Friends on Beeeper",searchedBeeepers.count];
+        }
+        
         if (searchedBeeepers.count > 0) {
-            
-            if (section == 0) {
-                
-                if (searchedBeeepers.count == 1) {
-                    lbl.text = [NSString stringWithFormat:@"%d Friend on Beeeper",searchedBeeepers.count];
-                }
-                else{
-                    lbl.text = [NSString stringWithFormat:@"%d Friends on Beeeper",searchedBeeepers.count];
-                }
                 
                 UIButton *followAll = [UIButton buttonWithType:UIButtonTypeCustom];
                 [followAll setImage:[UIImage imageNamed:@"follow_all"] forState:UIControlStateNormal];
                 [followAll setFrame:CGRectMake(header.frame.size.width-95, 0, 95, header.frame.size.height)];
                 [followAll addTarget:self action:@selector(followAllPressed:) forControlEvents:UIControlEventTouchUpInside];
                 [header addSubview:followAll];
-                
-                return header;
-            }
-            else{ //fb header
-
+            
+            
+        }
+        
+        return header;
+    }
+   
+    return nil;
     
-                lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",searchedFBFriends.count];
-                
-                
-//                UIButton *selectAll = [UIButton buttonWithType:UIButtonTypeCustom];
-//                [selectAll setImage:[UIImage imageNamed:@"select_all"] forState:UIControlStateNormal];
-//                [selectAll setFrame:CGRectMake(header.frame.size.width-95, 0, 95, header.frame.size.height)];
-//                [selectAll addTarget:self action:@selector(selectAllPressed:) forControlEvents:UIControlEventTouchUpInside];
-//                [header addSubview:selectAll];
-                
-                return header;
-            }
-            
-        }
-        else{
-            
-            //fb header
-            lbl.text = [NSString stringWithFormat:@"%d Friends from Facebook",searchedFBFriends.count];
-            return header;
-        }
-    }
-    else{
-        return nil;
-    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303, 1)];
+    
+    if (selectedOption == FacebookButton) {
+       
+        UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 61)];
+        header.backgroundColor = [UIColor whiteColor];
+        
+        UIButton *btn  = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 190, 35)];
+        [btn setBackgroundColor:[UIColor colorWithRed:70/255.0 green:98/255.0 blue:158/255.0 alpha:1]];
+        
+        [btn setTitle:@"Invite friends from Facebook" forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:12];
+        btn.layer.cornerRadius = 5;
+        btn.center = header.center;
+        [btn addTarget:self action:@selector(invitePressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [header addSubview:btn];
+        
+        return header;
+    }
+    
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableV.frame.size.width, 1)];
     header.backgroundColor = [UIColor clearColor];
     return header;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+
+    if (selectedOption == FacebookButton) {
+        return 61;
+    }
+    
     return 1;
 }
 
@@ -2167,10 +2086,9 @@
     }
     else if (selectedOption == FacebookButton){
         searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
-        searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
         
         self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
-        self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
+        self.noUsersFoundLabel.hidden = YES;//(searchedBeeepers.count != 0);
         
         [self.tableV reloadData];
     }
@@ -2209,9 +2127,9 @@
         }
         else if (selectedOption == FacebookButton){
             searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
-            searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
+
             self.noUsersFoundLabel.text = @"No one of your Facebook friends\nis on Beeeper yet.";
-            self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
+            self.noUsersFoundLabel.hidden = YES;//(searchedBeeepers.count != 0);
             
             [self.tableV reloadData];
         }
@@ -2330,16 +2248,13 @@
          
          if (searchText.length > 0) {
              searchedBeeepers = [NSMutableArray arrayWithArray:[beeepers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
-             
-            searchedFBFriends = [NSMutableArray arrayWithArray:[fbPeople filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(name contains[cd] %@)", searchText]]];
          }
          else{
              searchedBeeepers = [NSMutableArray arrayWithArray:beeepers];
-             searchedFBFriends = [NSMutableArray arrayWithArray:fbPeople];
          }
         
          self.noUsersFoundLabel.text = @"";//@"No one of your Facebook friends\nis on Beeeper yet.";
-         self.noUsersFoundLabel.hidden = (searchedFBFriends.count+searchedBeeepers.count != 0);
+         self.noUsersFoundLabel.hidden = (searchedBeeepers.count != 0);
          
          [self.tableV reloadData];
      }
@@ -2528,9 +2443,9 @@
     if (selectedOption == FacebookButton){
         
         
-        NSMutableDictionary* params =   [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                         [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"to",
-                                         nil];
+//        NSMutableDictionary* params =   [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//                                         [[selectedPeople valueForKey:@"id"] componentsJoinedByString:@","], @"to",
+//                                         nil];
         
         
         NSString *title = @"Beeeper invitation";
@@ -2543,7 +2458,7 @@
         [FBWebDialogs presentRequestsDialogModallyWithSession:FBSession.activeSession
                                                       message:message
                                                         title:title
-                                                   parameters:params
+                                                   parameters:nil
                                                       handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
                                                           if (error)
                                                           {

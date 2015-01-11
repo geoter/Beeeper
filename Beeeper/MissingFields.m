@@ -88,7 +88,7 @@
     
     for (NSString *fieldName in self.misssingfields) {
         NSString *fieldPlaceHolder = [self.misssingfields objectForKey:fieldName];
-        UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(28, 50*i+((IS_IPHONE_5)?50:30), (IS_IPHONE_6)?319:264, 40)];
+        UITextField *textF = [[UITextField alloc]initWithFrame:CGRectMake(28, 50*i+((IS_IPHONE_5)?50:30), (IS_IPHONE_6 || IS_IPHONE_6P)?319:264, 40)];
         textF.center = CGPointMake(self.scrollV.center.x, textF.center.y);
         textF.textColor = [UIColor blackColor];
         [textF.UserInfo setObject:fieldName forKey:@"key"];
@@ -123,8 +123,8 @@
     UIView *v = [self.scrollV viewWithTag:100+textField.tag];
     v.backgroundColor = textField.textColor;
     
-    if (textField.frame.origin.y > ((IS_IPHONE_5)?200:100)) {
-        [self.scrollV setContentOffset:CGPointMake(0, textField.frame.origin.y - ((IS_IPHONE_5)?200:100)) animated:YES];
+    if (textField.frame.origin.y > ((IS_IPHONE_5 || IS_IPHONE_4_OR_LESS)?200:100)) {
+        [self.scrollV setContentOffset:CGPointMake(0, textField.frame.origin.y - ((IS_IPHONE_5 || IS_IPHONE_4_OR_LESS)?200:100)) animated:YES];
     }
     else{
         [self.scrollV setContentOffset:CGPointZero animated:YES];

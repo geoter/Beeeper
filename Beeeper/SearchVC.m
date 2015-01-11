@@ -757,7 +757,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 {
     //    CGSize textsize = [[textSizes objectAtIndex:indexPath.row] CGSizeValue];
     //    CGSize size = CGSizeMake(148, textsize.height + 145 +144);
-    return CGSizeMake((IS_IPHONE_6)?176:148, (IS_IPHONE_6)?330:307);
+    
+    if (IS_IPHONE_6P) {
+        CGSizeMake(195,383);
+    }
+    else if (IS_IPHONE_6){
+        return CGSizeMake(176, 330);
+    }
+    
+     return CGSizeMake(148, 307);
 }
 //- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 //

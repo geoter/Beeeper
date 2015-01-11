@@ -293,15 +293,27 @@
                      placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
         }
         
-        CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:CGSizeMake((IS_IPHONE_6)?267:212, CGFLOAT_MAX)];
+        CGSize size;
+        
+        if (IS_IPHONE_6) {
+            size = CGSizeMake(267, CGFLOAT_MAX);
+        }
+        else if (IS_IPHONE_6P){
+            size = CGSizeMake(313, CGFLOAT_MAX);
+        }
+        else{
+            size = CGSizeMake(212, CGFLOAT_MAX);
+        }
+        
+        CGSize textViewSize = [self frameForText:txtV.attributedText constrainedToSize:size];
         
         int lines = round(textViewSize.height/txtV.font.lineHeight);
         
         if (lines == 2) {
-            txtV.frame = CGRectMake(txtV.frame.origin.x, 16, (IS_IPHONE_6)?267:212, textViewSize.height);
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 16, size.width, textViewSize.height);
         }
         else{
-            txtV.frame = CGRectMake(txtV.frame.origin.x, 20, (IS_IPHONE_6)?267:212, textViewSize.height);
+            txtV.frame = CGRectMake(txtV.frame.origin.x, 20, size.width, textViewSize.height);
         }
     }
     @catch (NSException *exception) {

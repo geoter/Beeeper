@@ -2496,6 +2496,14 @@
                  self.usernameTopLabel.alpha = 0;
              }
          }
+         else if (IS_IPHONE_6P) {
+                 if (scrollView.contentOffset.y > 157) {
+                     self.usernameTopLabel.alpha = 1;
+                 }
+                 else{
+                     self.usernameTopLabel.alpha = 0;
+                 }
+             }
          else if (IS_IPHONE_5){
              if (scrollView.contentOffset.y > 120) {
                  self.usernameTopLabel.alpha = 1;

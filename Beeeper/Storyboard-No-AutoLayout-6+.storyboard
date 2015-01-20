@@ -1841,8 +1841,8 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ghu-p0-mkJ">
-                                                    <rect key="frame" x="40" y="2" width="341" height="35"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                    <rect key="frame" x="40" y="2" width="337" height="35"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -1916,12 +1916,12 @@
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ygg-N2-2yB">
-                                        <rect key="frame" x="183" y="3" width="49" height="45"/>
+                                        <rect key="frame" x="183" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                        <state key="normal" image="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <state key="highlighted" image="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="PHh-02-G9p" eventType="touchUpInside" id="UPs-Oy-Hwr"/>
                                         </connections>
@@ -2006,6 +2006,37 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
+                                    <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="40" sectionHeaderHeight="22" sectionFooterHeight="22" id="OKB-Eu-coX">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="0.95999999999999996" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        <gestureRecognizers/>
+                                        <prototypes>
+                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SearchCell" rowHeight="40" id="fzZ-x0-JfY">
+                                                <rect key="frame" x="0.0" y="22" width="320" height="40"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fzZ-x0-JfY" id="fIe-yd-snL">
+                                                    <rect key="frame" x="0.0" y="0.0" width="287" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VuE-pA-dG1">
+                                                            <rect key="frame" x="40" y="2" width="333" height="35"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </tableViewCellContentView>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <connections>
+                                            <outlet property="dataSource" destination="et8-qV-Ysh" id="qQk-0R-v1i"/>
+                                            <outlet property="delegate" destination="et8-qV-Ysh" id="Tat-bF-ob4"/>
+                                            <outletCollection property="gestureRecognizers" destination="39O-cc-Wva" appends="YES" id="hQP-lP-s62"/>
+                                        </connections>
+                                    </tableView>
                                     <collectionView autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" canCancelContentTouches="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="JKo-S0-44e">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2076,7 +2107,7 @@
                                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                                     </state>
                                                                     <connections>
-                                                                        <action selector="showBeeepComments:" destination="PHh-02-G9p" eventType="touchUpInside" id="xLg-yF-tF4"/>
+                                                                        <action selector="showBeeepComments:" destination="et8-qV-Ysh" eventType="touchUpInside" id="0mn-QP-HNV"/>
                                                                     </connections>
                                                                 </button>
                                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7AQ-Fo-oN4">
@@ -2094,7 +2125,7 @@
                                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                                     </state>
                                                                     <connections>
-                                                                        <action selector="showBeeepLikes:" destination="PHh-02-G9p" eventType="touchUpInside" id="dXu-zT-QFS"/>
+                                                                        <action selector="showBeeepLikes:" destination="et8-qV-Ysh" eventType="touchUpInside" id="Uwn-cz-TL2"/>
                                                                     </connections>
                                                                 </button>
                                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="-5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="R90-f8-CYO">
@@ -2111,7 +2142,7 @@
                                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                                     </state>
                                                                     <connections>
-                                                                        <action selector="showReBeeeps:" destination="PHh-02-G9p" eventType="touchUpInside" id="DFO-ke-oM1"/>
+                                                                        <action selector="showReBeeeps:" destination="et8-qV-Ysh" eventType="touchUpInside" id="DEm-3g-UNK"/>
                                                                     </connections>
                                                                 </button>
                                                             </subviews>
@@ -2129,37 +2160,6 @@
                                             <outlet property="delegate" destination="et8-qV-Ysh" id="Hlw-26-gj4"/>
                                         </connections>
                                     </collectionView>
-                                    <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="40" sectionHeaderHeight="22" sectionFooterHeight="22" id="OKB-Eu-coX">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="0.95999999999999996" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                        <gestureRecognizers/>
-                                        <prototypes>
-                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SearchCell" rowHeight="40" id="fzZ-x0-JfY">
-                                                <rect key="frame" x="0.0" y="22" width="320" height="40"/>
-                                                <autoresizingMask key="autoresizingMask"/>
-                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fzZ-x0-JfY" id="fIe-yd-snL">
-                                                    <rect key="frame" x="0.0" y="0.0" width="287" height="40"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <subviews>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VuE-pA-dG1">
-                                                            <rect key="frame" x="40" y="2" width="333" height="35"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" red="0.13725490200000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                </tableViewCellContentView>
-                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                            </tableViewCell>
-                                        </prototypes>
-                                        <connections>
-                                            <outlet property="dataSource" destination="et8-qV-Ysh" id="qQk-0R-v1i"/>
-                                            <outlet property="delegate" destination="et8-qV-Ysh" id="Tat-bF-ob4"/>
-                                            <outletCollection property="gestureRecognizers" destination="39O-cc-Wva" appends="YES" id="hQP-lP-s62"/>
-                                        </connections>
-                                    </tableView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
@@ -2790,9 +2790,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" id="nzm-vi-0t9">
-                                        <rect key="frame" x="39" y="191" width="337" height="40"/>
+                                        <rect key="frame" x="39" y="239" width="337" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow-cell.png" id="hVP-9J-Nzw">
+                                                <rect key="frame" x="318" y="12" width="9" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Aac-eU-hPh">
                                                 <rect key="frame" x="0.0" y="0.0" width="337" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -2805,10 +2809,6 @@
                                                     <action selector="showPrivacy:" destination="s6O-gz-BVD" eventType="touchUpInside" id="T7h-jB-jqV"/>
                                                 </connections>
                                             </button>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow-cell.png" id="hVP-9J-Nzw">
-                                                <rect key="frame" x="318" y="12" width="9" height="16"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                         <userDefinedRuntimeAttributes>
@@ -2818,7 +2818,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="scaleToFill" id="0B8-o8-f8j">
-                                        <rect key="frame" x="39" y="239" width="337" height="40"/>
+                                        <rect key="frame" x="39" y="287" width="337" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="N9H-d0-pDj">
@@ -2880,12 +2880,40 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VERSION 1.0.2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ylv-0b-XvT">
-                                        <rect key="frame" x="140" y="302" width="134" height="21"/>
+                                        <rect key="frame" x="140" y="350" width="134" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.55294117649999996" green="0.58823529409999997" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" id="UzN-yh-e5V">
+                                        <rect key="frame" x="38" y="191" width="337" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Lbg-AL-x08">
+                                                <rect key="frame" x="0.0" y="0.0" width="337" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <inset key="contentEdgeInsets" minX="14" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title="Learn how Beeeper works">
+                                                    <color key="titleColor" red="0.18431372939999999" green="0.22745099660000001" blue="0.29803922770000002" alpha="1" colorSpace="deviceRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="showWalkthrough:" destination="s6O-gz-BVD" eventType="touchUpInside" id="JNA-Wp-Evu"/>
+                                                </connections>
+                                            </button>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow-cell.png" id="ItR-5b-AfR">
+                                                <rect key="frame" x="318" y="12" width="9" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
                                 </subviews>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="size" keyPath="contentSize">
@@ -3370,12 +3398,12 @@ what they are Beeeping.</string>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="0Ra-Zs-N5G">
-                                        <rect key="frame" x="183" y="3" width="49" height="45"/>
+                                        <rect key="frame" x="183" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                        <state key="normal" image="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <state key="highlighted" image="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="e2g-yO-JfK" eventType="touchUpInside" id="gEw-Ag-bs6"/>
                                         </connections>
@@ -3527,12 +3555,12 @@ what they are Beeeping.</string>
                                         <color key="backgroundColor" red="0.85490196080000003" green="0.87450980389999999" blue="0.8862745098" alpha="0.75" colorSpace="deviceRGB"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Kcd-pC-SMk">
-                                        <rect key="frame" x="183" y="3" width="49" height="45"/>
+                                        <rect key="frame" x="183" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                        <state key="normal" image="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <state key="highlighted" image="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="B70-l0-p2m" eventType="touchUpInside" id="c8W-dE-hn9"/>
                                         </connections>
@@ -4328,12 +4356,12 @@ what they are Beeeping.</string>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Ph7-Wo-cRW">
-                                        <rect key="frame" x="183" y="3" width="49" height="45"/>
+                                        <rect key="frame" x="183" y="2" width="49" height="47"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" backgroundImage="Add_new_beeep_btn.png">
+                                        <state key="normal" image="Add_new_beeep_btn.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" backgroundImage="Add_new_beeep_btn_pressed.png"/>
+                                        <state key="highlighted" image="Add_new_beeep_btn_pressed.png"/>
                                         <connections>
                                             <action selector="addNewBeeep:" destination="e2S-B5-mGx" eventType="touchUpInside" id="HsC-PX-RZ0"/>
                                         </connections>
@@ -4858,8 +4886,8 @@ When a friend suggests you a Beeep, you will find it here.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="Add_new_beeep_btn.png" width="49" height="45"/>
-        <image name="Add_new_beeep_btn_pressed.png" width="49" height="45"/>
+        <image name="Add_new_beeep_btn.png" width="38" height="36"/>
+        <image name="Add_new_beeep_btn_pressed.png" width="38" height="36"/>
         <image name="Beeeps_icon.png" width="16" height="16"/>
         <image name="activityBtn.png" width="14" height="14"/>
         <image name="add_friend_icon.png" width="24" height="24"/>

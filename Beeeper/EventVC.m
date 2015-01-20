@@ -614,6 +614,8 @@
     NSString *extension;
     NSString *imageName;
     
+    [imgV setImage:[UIImage imageNamed:@"event_image"]];
+    
     @try {
         imageURL = [[DTO sharedDTO] fixLink:suggestion.what.imageUrl];
         [imgV sd_setImageWithURL:[NSURL URLWithString:imageURL]
@@ -928,6 +930,8 @@
     
     NSString *extension;
     NSString *imageName;
+    
+    [self.eventImageV setImage:[UIImage imageNamed:@"event_image"]];
     
     @try {
         
@@ -1251,6 +1255,8 @@
     
     NSString *extension;
     NSString *imageName;
+    
+    [self.eventImageV setImage:[UIImage imageNamed:@"event_image"]];
     
     @try {
         
@@ -1599,6 +1605,8 @@
     
     NSString *extension;
     NSString *imageName;
+    
+    [self.eventImageV setImage:[UIImage imageNamed:@"event_image"]];
     
     @try {
         
@@ -1972,6 +1980,9 @@
     
     NSString *extension;
     NSString *imageName;
+    
+    
+    [self.eventImageV setImage:[UIImage imageNamed:@"event_image"]];
     
     @try {
         
@@ -3104,8 +3115,18 @@
     
   // NSString *extension = [[cmnts.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:cmnts.commenter.imagePath]]
-            placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    [imageV setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+   
+    @try {
+        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:cmnts.commenter.imagePath]]
+                  placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    }
+    @catch (NSException *exception) {
+
+    }
+    @finally {
+        
+    }
     
     return cell;
 }

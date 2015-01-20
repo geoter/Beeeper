@@ -79,10 +79,20 @@
     
     UIImageView *imgV = (id)[cell viewWithTag:1];
     
-    [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.url]]
-            placeholderImage:[UIImage imageNamed:@"event_image"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                
-            }];
+    [imgV setImage:[UIImage imageNamed:@"event_image"]];
+   
+    @try {
+        [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.url]]
+                placeholderImage:[UIImage imageNamed:@"event_image"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    
+                }];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
     
     return cell;
 }
@@ -263,12 +273,23 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         imgV.frame = CGRectMake(self.scrollV.contentSize.width, 0, self.scrollV.frame.size.width, self.scrollV.frame.size.height);
         imgV.tag = [images indexOfObject:object]+1;
         imgV.contentMode = UIViewContentModeScaleAspectFit;
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.url]]
-                placeholderImage:[UIImage imageNamed:@"event_image"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+       
+        [imgV setImage:[UIImage imageNamed:@"event_image"]];
+        
+        @try {
+            [imgV sd_setImageWithURL:[NSURL URLWithString:[self fixLink:object.url]]
+                    placeholderImage:[UIImage imageNamed:@"event_image"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        
+                        dispatch_async (dispatch_get_main_queue(), ^{
+                            [self.activityIndicator stopAnimating];
+                        });}];
+        }
+        @catch (NSException *exception) {
             
-            dispatch_async (dispatch_get_main_queue(), ^{
-                [self.activityIndicator stopAnimating];
-            });}];
+        }
+        @finally {
+            
+        }
         
         [self.scrollV addSubview:imgV];
         self.scrollV.contentSize = CGSizeMake(imgV.frame.origin.x+imgV.frame.size.width,self.scrollV.frame.size.height);

@@ -594,8 +594,18 @@
     passedIcon.center = CGPointMake(passedIcon.center.x, favorites.frame.origin.y - centerOfPassedIcon);
    // NSString *extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
     
-    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.eventFfo.eventDetailsFfo.imageUrl]]
-        placeholderImage:[UIImage imageNamed:@"event_image"]];
+    [imageV setImage:[UIImage imageNamed:@"event_image"]];
+    
+    @try {
+        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.eventFfo.eventDetailsFfo.imageUrl]]
+                  placeholderImage:[UIImage imageNamed:@"event_image"]];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
 
     UIView *beeepedByView = (id)[containerV viewWithTag:32];
     UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:45];
@@ -612,8 +622,19 @@
     
    // NSString *who_extension = [[event.eventFfo.eventDetailsFfo.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
 
-    [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.whoFfo.imagePath]]
-             placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    [beeepedByImageV setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+   
+    @try {
+        [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.whoFfo.imagePath]]
+                           placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
+    
     //disable Beeep button if past event
 
     return cell;

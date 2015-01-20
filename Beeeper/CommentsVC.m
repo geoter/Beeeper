@@ -150,16 +150,39 @@
         
         name.text = [[NSString stringWithFormat:@"%@ %@",commentObj.commenter.name,commentObj.commenter.lastname] capitalizedString];
         
-        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
         
-        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, 242, textViewSize.height);
+        CGFloat width;
+        
+        if (IS_IPHONE_6) {
+            width = 292;
+        }
+        else if (IS_IPHONE_6P){
+            width = 331;
+        }
+        else{
+            width = 242;
+        }
+        
+        CGSize textViewSize = [self frameForText:txtV.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)];
+        
+        txtV.frame = CGRectMake(txtV.frame.origin.x, txtV.frame.origin.y, width, textViewSize.height + 5);
         
         //NSString *extension = [[commentObj.commenter.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
+        [image setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
         if (commentObj.commenter.imagePath) {
-            
-            [image sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:commentObj.commenter.imagePath]]
-                    placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+         
+            @try {
+                [image sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:commentObj.commenter.imagePath]]
+                         placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
         }
         
     }
@@ -221,9 +244,22 @@
             comment = [commentObj.userCommentDict objectForKey:@"comment"];
         }
         
-        CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13] constrainedToSize:CGSizeMake(242, CGFLOAT_MAX)];
+        CGFloat width;
         
-        CGFloat height = textViewSize.height;
+        if (IS_IPHONE_6) {
+            width = 292;
+        }
+        else if (IS_IPHONE_6P){
+            width = 331;
+        }
+        else{
+            width = 242;
+        }
+        
+        CGSize textViewSize = [self frameForText:comment sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)];
+        
+        
+        CGFloat height = textViewSize.height + 30 + 5 + 5;
         CGFloat minHeight = 60;
         
         if (IS_IPHONE_6 || IS_IPHONE_6P) {
@@ -246,7 +282,7 @@
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 1;
+    return 44;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{

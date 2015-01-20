@@ -283,15 +283,25 @@
        //NSString *extension;
         NSString *imageName;
         
-        if ([activity.did isEqualToString:@"triggered"]) {
-            
-            EventActivity *event = [activity.eventActivity firstObject];
-            
-            [imgV setImage:[UIImage imageNamed:@"BeeeperNotifIcon"]];
+        [imgV setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
+        @try {
+            if ([activity.did isEqualToString:@"triggered"]) {
+                
+                EventActivity *event = [activity.eventActivity firstObject];
+                
+                [imgV setImage:[UIImage imageNamed:@"BeeeperNotifIcon"]];
+            }
+            else{
+                [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
+                        placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            }
         }
-        else{
-            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
-                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
         }
         
         CGSize size;

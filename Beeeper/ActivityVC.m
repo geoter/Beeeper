@@ -427,9 +427,19 @@
          //   extension = [[w.imagePath.lastPathComponent componentsSeparatedByString:@"."] lastObject];
             imagePath = w.imagePath;
         }
+
+        [imgV setImage:[UIImage imageNamed:@"event_image"]];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
-                     placeholderImage:[UIImage imageNamed:@"event_image"]];
+        @try {
+            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
+                    placeholderImage:[UIImage imageNamed:@"event_image"]];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
         
         return cell;
 

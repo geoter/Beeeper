@@ -362,6 +362,8 @@
     
     imagePath = [[DTO sharedDTO]fixLink:imagePath];
     
+    [userImage setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    
     @try {
       [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
                   placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];

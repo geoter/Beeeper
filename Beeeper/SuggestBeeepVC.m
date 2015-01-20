@@ -11,7 +11,7 @@
 #import "FindFriendsVC.h"
 #import "BeeepedBy.h"
 
-@interface SuggestBeeepVC ()
+@interface SuggestBeeepVC ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSMutableArray *people;
     NSMutableDictionary *pendingImagesDict;
@@ -436,6 +436,8 @@
     
     NSString *imagePath = [user objectForKey:@"image_path"];
    
+    [userImage setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+    
     @try {
     
         [userImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:imagePath]]
@@ -464,6 +466,14 @@
 
     
     return cell;
+}
+
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    return [UIView new];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 40;
 }
 
 -(BOOL)isSelected:(NSDictionary *)dict{

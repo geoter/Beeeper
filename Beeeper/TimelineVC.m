@@ -674,6 +674,8 @@
             self.profileImage.image = img;
         }
   
+        [self.profileImage setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
         Reachability *reachability = [Reachability reachabilityForInternetConnection];
         [reachability startNotifier];
         
@@ -685,16 +687,32 @@
         }
         else if (status == ReachableViaWiFi)
         {
-            
-            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
-                    placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            @try {
+                [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
+                                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            }
+            @catch (NSException *exception) {
+             
+            }
+            @finally {
+             
+            }
            
         }
         else if (status == ReachableViaWWAN) 
         {
             //3G
-            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
-                                 placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            
+            @try {
+                [self.profileImage sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:[user objectForKey:@"image_path"]]]
+                                     placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];
+            }
+            @catch (NSException *exception) {
+                
+            }
+            @finally {
+                
+            }
         }
         
        // }
@@ -1077,8 +1095,18 @@
         
         UIImageView *imgV = (id)[cell viewWithTag:3];
         
-        [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
-                placeholderImage:[UIImage imageNamed:@"event_image"]];
+        [imgV setImage:[UIImage imageNamed:@"event_image"]];
+        
+        @try {
+            [imgV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:b.event.imageUrl]]
+                    placeholderImage:[UIImage imageNamed:@"event_image"]];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
         
         
         if (b.event.timestamp < [[NSDate date]timeIntervalSince1970]) { //PAST

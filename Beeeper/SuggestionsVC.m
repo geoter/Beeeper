@@ -346,10 +346,22 @@
         //Image
        // NSString *extension = [[what.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
         
-        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]
-                placeholderImage:[UIImage imageNamed:@"event_image"]];
+        [imageV setImage:[UIImage imageNamed:@"event_image"]];
+        
+        @try {
+            [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO]fixLink:what.imageUrl]]
+                      placeholderImage:[UIImage imageNamed:@"event_image"]];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
         
         UIImageView *beeepedByImageV = (id)[cell viewWithTag:34];
+        
+        [beeepedByImageV setImage:[UIImage imageNamed:@"user_icon_180x180"]];
         
         [beeepedByImageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:w.imagePath]]
                            placeholderImage:[UIImage imageNamed:@"user_icon_180x180"]];

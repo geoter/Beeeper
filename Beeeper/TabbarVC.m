@@ -333,7 +333,13 @@ static TabbarVC *thisWebServices = nil;
     [UIView animateWithDuration:0.4f
                      animations:^
      {
-         viewController.containerV.center = viewController.view.center;
+         
+         if (IS_IPHONE_4_OR_LESS) {
+             viewController.containerV.center = CGPointMake(viewController.view.center.x, viewController.view.center.y+ 20);
+         }
+         else{
+             viewController.containerV.center = viewController.view.center;
+         }
 
          if (showBlur) {
              viewController.blurContainerV.alpha = 1;

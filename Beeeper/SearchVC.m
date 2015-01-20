@@ -642,8 +642,19 @@
     
   //  NSString *extension = [[event.imageUrl.lastPathComponent componentsSeparatedByString:@"."] lastObject];
 
-    [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
-            placeholderImage:[UIImage imageNamed:@"event_image"]];
+    [imageV setImage:[UIImage imageNamed:@"event_image"]];
+    
+    @try {
+        [imageV sd_setImageWithURL:[NSURL URLWithString:[[DTO sharedDTO] fixLink:event.imageUrl]]
+                  placeholderImage:[UIImage imageNamed:@"event_image"]];
+    }
+    @catch (NSException *exception) {
+
+    }
+    @finally {
+
+    }
+    
     
     UIView *beeepedByView = (id)[containerV viewWithTag:32];
 //    UIImageView *beeepedByImageV =(id)[beeepedByView viewWithTag:34];

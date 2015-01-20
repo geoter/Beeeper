@@ -1442,6 +1442,8 @@
         
         NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         
+        [userImage setImage:[UIImage imageNamed:@"user_icon_180x180"]];
+        
         NSString *imagePath = [user objectForKey:@"image_path"];
         
         @try {

@@ -257,11 +257,15 @@
                 if (completed) {
                     [self loginPressed:@"FB"];
                 }
+                else{
+                  [self hideSplashScreen];
+                }
                 
             }];
         } else {
             // An error occurred, we need to handle the error
             // See: https://developers.facebook.com/docs/ios/errors
+              [self hideSplashScreen];
         }
     }];
     

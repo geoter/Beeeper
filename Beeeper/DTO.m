@@ -25,7 +25,7 @@ static DTO *thisDTO = nil;
 @end
 
 @implementation DTO
-@synthesize databaseName,databasePath;
+@synthesize databaseName,databasePath,hasShownWalkthrough = _hasShownWalkthrough;
 
 -(id)init{
     self = [super init];
@@ -235,6 +235,62 @@ static DTO *thisDTO = nil;
     @finally {
         
     }
+}
+
+- (BOOL)hasShownWalkthrough{
+   
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+    NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+    
+    @try {
+        
+        id flag = [mySettingsPlist objectForKey:@"hasShownWalkthrough"];
+        
+        if (flag) {
+            return YES;
+        }
+        
+        return NO;
+    }
+    @catch (NSException *exception) {
+        return NO;
+    }
+    @finally {
+        
+    }
+}
+
+-(void)setHasShownWalkthrough:(BOOL)hasShownWalkthrough{
+    _hasShownWalkthrough = hasShownWalkthrough;
+    
+    @try {
+    
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+      NSString *documentsDirectory = [paths objectAtIndex:0];
+      
+      NSString *finalPath = [documentsDirectory stringByAppendingPathComponent:@"Settings.plist"];
+      NSMutableDictionary *mySettingsPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:finalPath];
+      
+      if (hasShownWalkthrough) {
+          [mySettingsPlist setObject:@"1" forKey:@"hasShownWalkthrough"];
+          [mySettingsPlist writeToFile:finalPath atomically: YES];
+      }
+      else{
+          [mySettingsPlist removeObjectForKey:@"hasShownWalkthrough"];
+          [mySettingsPlist writeToFile:finalPath atomically: YES];
+      }
+        
+    }
+    @catch (NSException *exception) {
+
+    }
+    @finally {
+        
+    }
+   
 }
 
 #pragma mark - PUSH Notifications

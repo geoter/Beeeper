@@ -14,6 +14,8 @@
 #import "SuggestBeeepVC.h"
 #import "HomeFeedVC.h"
 #import "SearchVC.h"
+#import "EAIntroPage.h"
+#import "EAIntroView.h"
 
 @interface TabbarVC ()<UINavigationControllerDelegate,UIAlertViewDelegate>
 {
@@ -108,12 +110,55 @@ static TabbarVC *thisWebServices = nil;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+}
+
+-(void)showWalkthrough{
+    NSMutableArray *pages = [NSMutableArray array];
     
+    for (int i = 0; i <= 7; i++) {
+        EAIntroPage *page = [EAIntroPage page];
+        if (IS_IPHONE_4_OR_LESS) {
+            page.bgImage = [UIImage imageNamed:[NSString stringWithFormat:@"%d.App_Tour_4.jpg",i]];
+        }
+        else if (IS_IPHONE_5){
+            page.bgImage = [UIImage imageNamed:[NSString stringWithFormat:@"%d.App_Tour_5.jpg",i]];
+        }
+        else if(IS_IPHONE_6){
+            page.bgImage = [UIImage imageNamed:[NSString stringWithFormat:@"%d.App_Tour_6.jpg",i]];
+        }
+        else if(IS_IPHONE_6P){
+            page.bgImage = [UIImage imageNamed:[NSString stringWithFormat:@"%d.App_Tour_6+.jpg",i]];
+        }
+        
+        [pages addObject:page];
+    }
+    
+    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:CGRectMake(0, 0, [TabbarVC sharedTabbar].view.frame.size.width, [TabbarVC sharedTabbar].view.frame.size.height) andPages:pages];
+    intro.pageControl.hidden = YES;
+    //    intro.pageControlY = 250.0f;
+    //
+    //    UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    //    [btn setFrame:CGRectMake((320-230)/2, [UIScreen mainScreen].bounds.size.height - 60, 230, 40)];
+    //    [btn setTitle:@"SKIP NOW" forState:UIControlStateNormal];
+    //    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    //    btn.layer.borderWidth = 2.0f;
+    //    btn.layer.cornerRadius = 10;
+    //    btn.layer.borderColor = [[UIColor whiteColor] CGColor];
+    //    intro.skipButton = btn;
+    
+    //[intro setDelegate:self];
+    [intro showInView:[TabbarVC sharedTabbar].view animateDuration:0.3];
+    [intro setShowSkipButtonOnlyOnLastPage:YES];
+    
+    [DTO sharedDTO].hasShownWalkthrough = YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
+    if (![[DTO sharedDTO] hasShownWalkthrough]) {
+        [self performSelector:@selector(showWalkthrough) withObject:nil afterDelay:1.0];
+    }
 }
 
 -(void)pushReceived:(NSNotification *)notif{

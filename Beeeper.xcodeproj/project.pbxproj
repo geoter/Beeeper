@@ -154,6 +154,9 @@
 		635F47471A6ED5F400D207D0 /* 5.App_Tour_6+.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 635F47221A6ED5F400D207D0 /* 5.App_Tour_6+.jpg */; };
 		635F47481A6ED5F400D207D0 /* 6.App_Tour_6+.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 635F47231A6ED5F400D207D0 /* 6.App_Tour_6+.jpg */; };
 		635F47491A6ED5F400D207D0 /* 7.App_Tour_6+.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 635F47241A6ED5F400D207D0 /* 7.App_Tour_6+.jpg */; };
+		635F476D1A6F05DB00D207D0 /* ActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 635F476C1A6F05DB00D207D0 /* ActionViewController.m */; };
+		635F476F1A6F05DB00D207D0 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635F476E1A6F05DB00D207D0 /* MainInterface.storyboard */; };
+		635F47721A6F05DB00D207D0 /* Beeep it.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 635F47671A6F05DB00D207D0 /* Beeep it.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6366AF8C1A1F38D6009BBE14 /* PUSHDemo in Resources */ = {isa = PBXBuildFile; fileRef = 6366AF8B1A1F38D6009BBE14 /* PUSHDemo */; };
 		636D6A501A4D142700B36C85 /* option_0_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 636D6A481A4D142700B36C85 /* option_0_6.png */; };
 		636D6A511A4D142700B36C85 /* option_1_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 636D6A491A4D142700B36C85 /* option_1_6.png */; };
@@ -567,6 +570,30 @@
 		CEFFF79B198A8E6600FA3CF3 /* Comment_popup_unpressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CEFFF799198A8E6600FA3CF3 /* Comment_popup_unpressed@2x.png */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		635F47701A6F05DB00D207D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEA64F0518B39F4F00B7ECF5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 635F47661A6F05DB00D207D0;
+			remoteInfo = "Beeep it";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		635F47761A6F05DB00D207D0 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				635F47721A6F05DB00D207D0 /* Beeep it.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		5E09B542192216C800AF5DE8 /* Beeep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beeep.h; sourceTree = "<group>"; };
 		5E09B543192216C800AF5DE8 /* Beeep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beeep.m; sourceTree = "<group>"; };
@@ -780,6 +807,11 @@
 		635F47221A6ED5F400D207D0 /* 5.App_Tour_6+.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "5.App_Tour_6+.jpg"; sourceTree = "<group>"; };
 		635F47231A6ED5F400D207D0 /* 6.App_Tour_6+.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "6.App_Tour_6+.jpg"; sourceTree = "<group>"; };
 		635F47241A6ED5F400D207D0 /* 7.App_Tour_6+.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "7.App_Tour_6+.jpg"; sourceTree = "<group>"; };
+		635F47671A6F05DB00D207D0 /* Beeep it.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Beeep it.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		635F476A1A6F05DB00D207D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		635F476B1A6F05DB00D207D0 /* ActionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionViewController.h; sourceTree = "<group>"; };
+		635F476C1A6F05DB00D207D0 /* ActionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionViewController.m; sourceTree = "<group>"; };
+		635F476E1A6F05DB00D207D0 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		6366AF8B1A1F38D6009BBE14 /* PUSHDemo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PUSHDemo; sourceTree = "<group>"; };
 		636D6A481A4D142700B36C85 /* option_0_6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_0_6.png; sourceTree = "<group>"; };
 		636D6A491A4D142700B36C85 /* option_1_6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = option_1_6.png; sourceTree = "<group>"; };
@@ -1335,6 +1367,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		635F47641A6F05DB00D207D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEA64F0A18B39F4F00B7ECF5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1677,6 +1716,25 @@
 				635F47241A6ED5F400D207D0 /* 7.App_Tour_6+.jpg */,
 			);
 			path = "iPhone 6+";
+			sourceTree = "<group>";
+		};
+		635F47681A6F05DB00D207D0 /* Beeep it */ = {
+			isa = PBXGroup;
+			children = (
+				635F476B1A6F05DB00D207D0 /* ActionViewController.h */,
+				635F476C1A6F05DB00D207D0 /* ActionViewController.m */,
+				635F476E1A6F05DB00D207D0 /* MainInterface.storyboard */,
+				635F47691A6F05DB00D207D0 /* Supporting Files */,
+			);
+			path = "Beeep it";
+			sourceTree = "<group>";
+		};
+		635F47691A6F05DB00D207D0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				635F476A1A6F05DB00D207D0 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		636D6A581A4D5CDD00B36C85 /* 6 */ = {
@@ -2489,6 +2547,7 @@
 			children = (
 				CEA64F1618B39F4F00B7ECF5 /* Beeeper */,
 				CEA64F3518B39F4F00B7ECF5 /* BeeeperTests */,
+				635F47681A6F05DB00D207D0 /* Beeep it */,
 				CEA64F0F18B39F4F00B7ECF5 /* Frameworks */,
 				CEA64F0E18B39F4F00B7ECF5 /* Products */,
 			);
@@ -2498,6 +2557,7 @@
 			isa = PBXGroup;
 			children = (
 				CEA64F0D18B39F4F00B7ECF5 /* Beeeper.app */,
+				635F47671A6F05DB00D207D0 /* Beeep it.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2858,6 +2918,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		635F47661A6F05DB00D207D0 /* Beeep it */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 635F47751A6F05DB00D207D0 /* Build configuration list for PBXNativeTarget "Beeep it" */;
+			buildPhases = (
+				635F47631A6F05DB00D207D0 /* Sources */,
+				635F47641A6F05DB00D207D0 /* Frameworks */,
+				635F47651A6F05DB00D207D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Beeep it";
+			productName = "Beeep it";
+			productReference = 635F47671A6F05DB00D207D0 /* Beeep it.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CEA64F0C18B39F4F00B7ECF5 /* Beeeper */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEA64F3F18B39F4F00B7ECF5 /* Build configuration list for PBXNativeTarget "Beeeper" */;
@@ -2865,10 +2942,12 @@
 				CEA64F0918B39F4F00B7ECF5 /* Sources */,
 				CEA64F0A18B39F4F00B7ECF5 /* Frameworks */,
 				CEA64F0B18B39F4F00B7ECF5 /* Resources */,
+				635F47761A6F05DB00D207D0 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				635F47711A6F05DB00D207D0 /* PBXTargetDependency */,
 			);
 			name = Beeeper;
 			productName = Beeeper;
@@ -2885,6 +2964,10 @@
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Beeeper;
 				TargetAttributes = {
+					635F47661A6F05DB00D207D0 = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = C444XSFHUN;
+					};
 					CEA64F0C18B39F4F00B7ECF5 = {
 						DevelopmentTeam = C444XSFHUN;
 					};
@@ -2905,11 +2988,20 @@
 			projectRoot = "";
 			targets = (
 				CEA64F0C18B39F4F00B7ECF5 /* Beeeper */,
+				635F47661A6F05DB00D207D0 /* Beeep it */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		635F47651A6F05DB00D207D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				635F476F1A6F05DB00D207D0 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEA64F0B18B39F4F00B7ECF5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3266,6 +3358,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		635F47631A6F05DB00D207D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				635F476D1A6F05DB00D207D0 /* ActionViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEA64F0918B39F4F00B7ECF5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3460,6 +3560,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		635F47711A6F05DB00D207D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 635F47661A6F05DB00D207D0 /* Beeep it */;
+			targetProxy = 635F47701A6F05DB00D207D0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		63BD3BC11A14D18400102794 /* DZNPhotoPickerController.strings */ = {
 			isa = PBXVariantGroup;
@@ -3497,6 +3605,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		635F47731A6F05DB00D207D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Beeep it/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		635F47741A6F05DB00D207D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beeeper Private Company (C444XSFHUN)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Beeep it/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		CEA64F3D18B39F4F00B7ECF5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3638,6 +3788,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		635F47751A6F05DB00D207D0 /* Build configuration list for PBXNativeTarget "Beeep it" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				635F47731A6F05DB00D207D0 /* Debug */,
+				635F47741A6F05DB00D207D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CEA64F0818B39F4F00B7ECF5 /* Build configuration list for PBXProject "Beeeper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

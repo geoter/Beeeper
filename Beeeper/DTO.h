@@ -42,6 +42,9 @@ typedef void(^completed)(BOOL,id);
 - (void)downloadImageFromURL:(NSString *)url;
 + (BOOL)isInternetReachable;
 
+- (BOOL)hasShownWalkthrough;
+@property (nonatomic,assign) BOOL hasShownWalkthrough;
+
 - (NSString *)sigmaTelikoCorrection:(NSString *)originalString;
 
 - (void)setDeeepLinkEventFingerprint:(NSString *)fingerprint;
@@ -53,6 +56,7 @@ typedef void(^completed)(BOOL,id);
 - (UIImage *)convertViewToBlurredImage:(UIView *)view withRadius: (CGFloat)blurRadius;
 
 -(UIStoryboard *)storyboardWithNameDeviceSpecific:(NSString *)storyboardID;
+
 
 #pragma mark - PUSH
 

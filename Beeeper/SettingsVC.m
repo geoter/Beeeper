@@ -141,7 +141,7 @@
     }
     
     EAIntroView *intro = [[EAIntroView alloc] initWithFrame:CGRectMake(0, 0, [TabbarVC sharedTabbar].view.frame.size.width, [TabbarVC sharedTabbar].view.frame.size.height) andPages:pages];
-    
+    intro.pageControl.hidden = YES;
     //    intro.pageControlY = 250.0f;
     //
     //    UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
